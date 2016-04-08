@@ -1,0 +1,17 @@
+﻿<Properties StartupItem="Everlook/Everlook.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Everlook/MainWindow.cs">
+    <Files>
+      <File FileName="Everlook/Configuration/EverlookConfiguration.cs" Line="1" Column="1" />
+      <File FileName="Everlook/EverlookPreferences.cs" Line="1" Column="1" />
+      <File FileName="Everlook/MainWindow.cs" Line="24" Column="1" />
+      <File FileName="Everlook/Viewport/ViewportRenderer.cs" Line="101" Column="4" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Catchpoint exceptionName="System.Exception" includeSubclasses="True" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
