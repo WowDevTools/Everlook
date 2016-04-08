@@ -4,8 +4,8 @@
     <Files>
       <File FileName="Everlook/Configuration/EverlookConfiguration.cs" Line="1" Column="1" />
       <File FileName="Everlook/EverlookPreferences.cs" Line="1" Column="1" />
-      <File FileName="Everlook/MainWindow.cs" Line="24" Column="1" />
-      <File FileName="Everlook/Viewport/ViewportRenderer.cs" Line="101" Column="4" />
+      <File FileName="Everlook/MainWindow.cs" Line="302" Column="65" />
+      <File FileName="Everlook/Viewport/ViewportRenderer.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

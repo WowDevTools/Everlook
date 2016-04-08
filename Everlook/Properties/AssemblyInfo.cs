@@ -26,13 +26,13 @@ using System.Runtime.CompilerServices;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyTitle("Everlook")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A World of Warcraft model viewer.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Jarl Gullberg")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyProduct("Everlook")]
+[assembly: AssemblyCopyright("Jarl Gullberg 2016 <jarl.gullberg@gmail.com>")]
+[assembly: AssemblyTrademark("Everlook")]
+[assembly: AssemblyCulture("en-GB")]
 
 // The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
 // The form "{Major}.{Minor}.*" will automatically update the build and revision,

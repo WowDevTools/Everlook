@@ -27,21 +27,37 @@ using System.Diagnostics;
 
 namespace Everlook.Viewport
 {
+	/// <summary>
+	/// Viewport renderer for the main Everlook UI.
+	/// </summary>
 	public class ViewportRenderer
 	{
+		/// <summary>
+		/// Occurs when a frame has been rendered.
+		/// </summary>
 		public event FrameRenderedEventHandler FrameRendered;
 
+		/// <summary>
+		/// The frame rendered arguments. Contains the frame as a pixel buffer, as well as the frame delta.
+		/// </summary>
 		public readonly FrameRendererEventArgs FrameRenderedArgs = new FrameRendererEventArgs();
 
 		private readonly Thread RenderThread;
 		private bool bShouldRender;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Everlook.Viewport.ViewportRenderer"/> class.
+		/// </summary>
 		public ViewportRenderer()
 		{			
 			this.RenderThread = new Thread(RenderLoop);
 			this.bShouldRender = false;
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether this instance is actively rendering frames for the viewport.
+		/// </summary>
+		/// <value><c>true</c> if this instance is active; otherwise, <c>false</c>.</value>
 		public bool IsActive
 		{
 			get
@@ -50,6 +66,9 @@ namespace Everlook.Viewport
 			}
 		}
 
+		/// <summary>
+		/// Starts the rendering thread in the background.
+		/// </summary>
 		public void Start()
 		{
 			if (!RenderThread.IsAlive)
@@ -63,6 +82,9 @@ namespace Everlook.Viewport
 			}
 		}
 
+		/// <summary>
+		/// Stops the rendering thread, allowing it to finish the current frame.
+		/// </summary>
 		public void Stop()
 		{
 			if (RenderThread.IsAlive)
@@ -75,6 +97,10 @@ namespace Everlook.Viewport
 			}
 		}
 
+		/// <summary>
+		/// The primary rendering loop. Here, the current object is rendered using OpenGL and gets
+		/// passed to the listeners via the FrameRendered event.
+		/// </summary>
 		private void RenderLoop()
 		{			
 			long previousFrameDelta = 0;
@@ -97,6 +123,9 @@ namespace Everlook.Viewport
 			return null;
 		}
 
+		/// <summary>
+		/// Raises the frame rendered event.
+		/// </summary>
 		protected void OnFrameRendered()
 		{
 			if (FrameRendered != null)
@@ -106,16 +135,30 @@ namespace Everlook.Viewport
 		}
 	}
 
+	/// <summary>
+	/// Frame rendered event handler.
+	/// </summary>
 	public delegate void FrameRenderedEventHandler(object sender,FrameRendererEventArgs e);
 
+	/// <summary>
+	/// Frame renderer event arguments.
+	/// </summary>
 	public class FrameRendererEventArgs : EventArgs
 	{
+		/// <summary>
+		/// The pixel buffer containing the current frame data.
+		/// </summary>
+		/// <value>The frame.</value>
 		public Pixbuf Frame
 		{
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// The frame delta; i.e, the time taken to render the frame.
+		/// </summary>
+		/// <value>The frame delta.</value>
 		public long FrameDelta
 		{
 			get;

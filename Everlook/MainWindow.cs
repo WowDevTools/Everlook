@@ -25,7 +25,6 @@ using UI = Gtk.Builder.ObjectAttribute;
 using Gdk;
 using System.Collections.Generic;
 using Everlook.Configuration;
-using OpenGL;
 using Everlook.Viewport;
 using Warcraft.MPQ;
 using System.IO;
@@ -34,6 +33,10 @@ using System.Linq;
 
 namespace Everlook
 {
+	/// <summary>
+	/// Main UI class for Everlook. The "partial" qualifier is not strictly needed, but prevents the compiler from 
+	/// generating errors about the autoconnected members that relate to UI elements.
+	/// </summary>
 	public partial class MainWindow: Gtk.Window
 	{
 		[UI] ToolButton AboutButton;
@@ -105,12 +108,20 @@ namespace Everlook
 		/// </summary>
 		private readonly ViewportRenderer viewportRenderer = new ViewportRenderer();
 
+		/// <summary>
+		/// Creates an instance of the MainWindow class, loading the glade XML UI as needed.
+		/// </summary>
 		public static MainWindow Create()
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.Everlook.glade", null);
 			return new MainWindow(builder, builder.GetObject("MainWindow").Handle);
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Everlook.MainWindow"/> class.
+		/// </summary>
+		/// <param name="builder">Builder.</param>
+		/// <param name="handle">Handle.</param>
 		protected MainWindow(Builder builder, IntPtr handle)
 			: base(handle)
 		{
@@ -235,10 +246,10 @@ namespace Everlook
 					// Root files and folders in package
 					List<string> TopLevelItems = new List<string>();
 
-					foreach (string Path in PackageListfile)
+					foreach (string FilePath in PackageListfile)
 					{
-						int slashIndex = Path.IndexOf('\\');
-						string topItem = Path.Substring(0, slashIndex + 1);
+						int slashIndex = FilePath.IndexOf('\\');
+						string topItem = FilePath.Substring(0, slashIndex + 1);
 
 						if (!String.IsNullOrWhiteSpace(topItem) && !TopLevelItems.Contains(topItem))
 						{
@@ -249,7 +260,7 @@ namespace Everlook
 						{
 							// It's probably a file
 							// Remove the parent from the directory line
-							string strippedPath = Regex.Replace(Path, "^" + Regex.Escape(rootPath), "");	
+							string strippedPath = Regex.Replace(FilePath, "^" + Regex.Escape(rootPath), "");	
 
 							if (IsFile(strippedPath))
 							{
@@ -265,14 +276,14 @@ namespace Everlook
 					List<string> TopLevelDirectories = new List<string>();
 					bool bHasFoundStartOfFolderBlock = false;
 
-					foreach (string Path in PackageListfile)
+					foreach (string FilePath in PackageListfile)
 					{
-						if (Path.StartsWith(rootPath))
+						if (FilePath.StartsWith(rootPath))
 						{
 							bHasFoundStartOfFolderBlock = true;
 
 							// Remove the parent from the directory line
-							string strippedPath = Regex.Replace(Path, "^" + Regex.Escape(rootPath), "");
+							string strippedPath = Regex.Replace(FilePath, "^" + Regex.Escape(rootPath), "");
 
 							// Get the top folders
 							int slashIndex = strippedPath.IndexOf('\\');
@@ -298,6 +309,12 @@ namespace Everlook
 			}
 		}
 
+		/// <summary>
+		/// Converts any non-native path separators to the current native path separator,
+		/// e.g backslashes to forwardslashes on *nix, and vice versa.
+		/// </summary>
+		/// <returns>The path.</returns>
+		/// <param name="inputPath">Input path.</param>
 		public static string CleanPath(string inputPath)
 		{
 			if (IsRunningOnUnix())
@@ -310,6 +327,11 @@ namespace Everlook
 			}
 		}
 
+		/// <summary>
+		/// Handles extraction of files from the archive triggered by a context menu press.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		protected void OnExtractContextItemActivated(object sender, EventArgs e)
 		{
 			TreeIter selectedIter;
@@ -347,6 +369,11 @@ namespace Everlook
 			}
 		}
 
+		/// <summary>
+		/// Handles opening of files from the archive triggered by a context menu press.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		protected void OnOpenContextItemActivated(object sender, EventArgs e)
 		{
 			TreeIter selectedIter;
@@ -359,9 +386,15 @@ namespace Everlook
 			}
 		}
 
+		/// <summary>
+		/// Handles copying of the file path of a selected item in the archive, triggered by a
+		/// context menu press.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		protected void OnCopyContextItemActivated(object sender, EventArgs e)
 		{
-			Clipboard clipboard = Clipboard.Get(Gdk.Atom.Intern("CLIPBOARD", false));
+			Clipboard clipboard = Clipboard.Get(Atom.Intern("CLIPBOARD", false));
 
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
@@ -369,6 +402,12 @@ namespace Everlook
 			clipboard.Text = GetFilePathFromIter(selectedIter);
 		}
 
+		/// <summary>
+		/// Handles queueing of a selected file in the archive, triggered by a context
+		/// menu press.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		protected void OnQueueContextItemActivated(object sender, EventArgs e)
 		{
 			TreeIter selectedIter;
@@ -393,12 +432,22 @@ namespace Everlook
 			ExportQueueListStore.AppendValues(CleanFilepath, CleanFilepath, "Queued");
 		}
 
+		/// <summary>
+		/// Displays the About dialog to the user.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		protected void OnAboutButtonClicked(object sender, EventArgs e)
 		{		
 			AboutDialog.Run();
 			AboutDialog.Hide();
 		}
 
+		/// <summary>
+		/// Displays the preferences dialog to the user.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		protected void OnPreferencesButtonClicked(object sender, EventArgs e)
 		{
 			EverlookPreferences PreferencesDialog = EverlookPreferences.Create();
@@ -435,6 +484,12 @@ namespace Everlook
 
 		}
 
+		/// <summary>
+		/// Handles expansion of rows in the game explorer, enumerating any subfolders and
+		/// files present under that row.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		protected void OnGameExplorerRowExpanded(object sender, RowExpandedArgs e)
 		{		
 			// Whenever a row is expanded, find the subfolders in the dictionary
@@ -460,6 +515,11 @@ namespace Everlook
 			}
 		}
 
+		/// <summary>
+		/// Handles context menu spawning for the game explorer.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		[GLib.ConnectBefore]
 		protected void OnGameExplorerButtonPressed(object sender, ButtonPressEventArgs e)
 		{
@@ -478,7 +538,6 @@ namespace Everlook
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
 			{			
-				Console.WriteLine("Right click in file tree: ");
 				if (String.IsNullOrEmpty(currentPath))
 				{
 					ExtractItem.Sensitive = false;
@@ -510,6 +569,11 @@ namespace Everlook
 			}
 		}
 
+		/// <summary>
+		/// Handles context menu spawning for the export queue.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		[GLib.ConnectBefore]
 		protected void OnExportQueueButtonPressed(object sender, ButtonPressEventArgs e)
 		{
@@ -526,7 +590,6 @@ namespace Everlook
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
 			{			
-				Console.WriteLine("Right click in export queue: ");
 				if (String.IsNullOrEmpty(currentPath))
 				{
 					RemoveQueueItem.Sensitive = false;
@@ -541,6 +604,11 @@ namespace Everlook
 			}
 		}
 
+		/// <summary>
+		/// Handles removal of items from the export queue, triggered by a context menu press.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		protected void OnQueueRemoveContextItemActivated(object sender, EventArgs e)
 		{
 			TreeIter selectedIter;
@@ -722,7 +790,6 @@ namespace Everlook
 				if (!IsFile(finalPath))
 				{
 					finalPath += @"\";
-					Console.WriteLine(finalPath);
 				}
 			}
 			else
@@ -738,15 +805,15 @@ namespace Everlook
 		/// Determines whether the provided path is a file or not.
 		/// </summary>
 		/// <returns><c>true</c> if the path is a file; otherwise, <c>false</c>.</returns>
-		/// <param name="Path">Input path.</param>
-		private bool IsFile(string Path)
+		/// <param name="InputPath">Input path.</param>
+		private bool IsFile(string InputPath)
 		{
-			string strippedName = Path;
-			if (Path.Contains(":"))
+			string strippedName = InputPath;
+			if (InputPath.Contains(":"))
 			{
 				// Remove the package identifier
-				int packageIDIndex = Path.IndexOf(":");
-				strippedName = Path.Substring(packageIDIndex + 1);
+				int packageIDIndex = InputPath.IndexOf(":");
+				strippedName = InputPath.Substring(packageIDIndex + 1);
 			}
 
 			if (strippedName.EndsWith("\\"))
@@ -758,6 +825,10 @@ namespace Everlook
 			return parts.Length > 1;
 		}
 
+		/// <summary>
+		/// Determines if the application is running on a unix-like system.
+		/// </summary>
+		/// <returns><c>true</c> if is running on unix; otherwise, <c>false</c>.</returns>
 		public static bool IsRunningOnUnix()
 		{
 			int p = (int)Environment.OSVersion.Platform;
@@ -771,6 +842,12 @@ namespace Everlook
 			}
 		}
 
+		/// <summary>
+		/// Handles application shutdown procedures - terminating render threads, cleaning
+		/// up the UI, etc.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="a">The alpha component.</param>
 		protected void OnDeleteEvent(object sender, DeleteEventArgs a)
 		{
 			if (viewportRenderer.IsActive)

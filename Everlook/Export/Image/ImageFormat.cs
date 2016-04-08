@@ -24,12 +24,39 @@ using System;
 
 namespace Everlook.Export.Image
 {
+	/// <summary>
+	/// Supported image formats for the image exporter.
+	/// </summary>
 	public enum ImageFormat
 	{
+		/// <summary>
+		/// Portable Network Graphics (ISO 15948)
+		/// <a href="https://en.wikipedia.org/wiki/Portable_Network_Graphics"/>
+		/// </summary>
 		PNG = 0,
+
+		/// <summary>
+		/// Joint Photographics Export Format (ISO 10918)
+		/// <a href="https://en.wikipedia.org/wiki/JPEG"/>
+		/// </summary>
 		JPG = 1,
+
+		/// <summary>
+		/// Truevision TARGA
+		/// <a href="https://en.wikipedia.org/wiki/Truevision_TGA"/>
+		/// </summary>
 		TGA = 2,
+
+		/// <summary>
+		/// Tagged Image File Format
+		/// <a href="https://en.wikipedia.org/wiki/Tagged_Image_File_Format"/>
+		/// </summary>
 		TIF = 3,
+
+		/// <summary>
+		/// Bitmap Image
+		/// <a href="https://en.wikipedia.org/wiki/BMP_file_format"/>
+		/// </summary>
 		BMP = 4
 	}
 }

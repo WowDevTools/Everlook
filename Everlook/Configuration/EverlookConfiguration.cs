@@ -31,8 +31,15 @@ using Gdk;
 
 namespace Everlook.Configuration
 {
+	/// <summary>
+	/// Everlook configuration handler. Reads and writes local user configuration of the application.
+	/// This class is threadsafe.
+	/// </summary>
 	public class EverlookConfiguration
 	{
+		/// <summary>
+		/// The publicly accessibly instance of the configuration.
+		/// </summary>
 		public static EverlookConfiguration Instance = new EverlookConfiguration();
 
 		private readonly object ReadLock = new object();
@@ -116,11 +123,16 @@ namespace Everlook.Configuration
 						small informational header with the date and change.
 					*/
 
-					IniData data = Parser.ReadFile(GetConfigurationFilePath());
+					// Uncomment this when needed
+					// IniData data = Parser.ReadFile(GetConfigurationFilePath());
 				}
 			}
 		}
 
+		/// <summary>
+		/// Gets the viewport background colour.
+		/// </summary>
+		/// <returns>The viewport background colour.</returns>
 		public RGBA GetViewportBackgroundColour()
 		{
 			lock (ReadLock)
@@ -141,6 +153,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Sets the viewport background colour.
+		/// </summary>
+		/// <param name="colour">Colour.</param>
 		public void SetViewportBackgroundColour(RGBA colour)
 		{
 			lock (ReadLock)
@@ -157,6 +173,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Gets the game directory.
+		/// </summary>
+		/// <returns>The game directory.</returns>
 		public string GetGameDirectory()
 		{
 			lock (ReadLock)
@@ -168,6 +188,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Sets the game directory.
+		/// </summary>
+		/// <param name="GameDirectory">Game directory.</param>
 		public void SetGameDirectory(string GameDirectory)
 		{
 			lock (ReadLock)
@@ -184,6 +208,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Gets the default export directory.
+		/// </summary>
+		/// <returns>The default export directory.</returns>
 		public string GetDefaultExportDirectory()
 		{
 			lock (ReadLock)
@@ -201,6 +229,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Sets the default export directory.
+		/// </summary>
+		/// <param name="ExportDirectory">Export directory.</param>
 		public void SetDefaultExportDirectory(string ExportDirectory)
 		{
 			lock (ReadLock)
@@ -217,6 +249,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Gets the default model format.
+		/// </summary>
+		/// <returns>The default model format.</returns>
 		public ModelFormat GetDefaultModelFormat()
 		{
 			lock (ReadLock)
@@ -236,6 +272,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Sets the default model format.
+		/// </summary>
+		/// <param name="modelFormat">Model format.</param>
 		public void SetDefaultModelFormat(ModelFormat modelFormat)
 		{
 			lock (ReadLock)
@@ -252,6 +292,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Gets the default image format.
+		/// </summary>
+		/// <returns>The default image format.</returns>
 		public ImageFormat GetDefaultImageFormat()
 		{
 			lock (ReadLock)
@@ -271,6 +315,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Sets the default image format.
+		/// </summary>
+		/// <param name="imageFormat">Image format.</param>
 		public void SetDefaultImageFormat(ImageFormat imageFormat)
 		{
 			lock (ReadLock)
@@ -287,6 +335,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Gets the default audio format.
+		/// </summary>
+		/// <returns>The default audio format.</returns>
 		public AudioFormat GetDefaultAudioFormat()
 		{
 			lock (ReadLock)
@@ -306,6 +358,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Sets the default audio format.
+		/// </summary>
+		/// <param name="audioFormat">Audio format.</param>
 		public void SetDefaultAudioFormat(AudioFormat audioFormat)
 		{
 			lock (ReadLock)
@@ -322,6 +378,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Gets the should keep file directory structure.
+		/// </summary>
+		/// <returns><c>true</c>, if should keep file directory structure was gotten, <c>false</c> otherwise.</returns>
 		public bool GetShouldKeepFileDirectoryStructure()
 		{
 			lock (ReadLock)
@@ -341,6 +401,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Sets the keep file directory structure.
+		/// </summary>
+		/// <param name="keepStructure">If set to <c>true</c> keep structure.</param>
 		public void SetKeepFileDirectoryStructure(bool keepStructure)
 		{
 			lock (ReadLock)
@@ -357,6 +421,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Gets whether or not the application should be allowed to send anonymous stats.
+		/// </summary>
+		/// <returns><c>true</c>, if sending anonymous stats is allowed, <c>false</c> otherwise.</returns>
 		public bool GetAllowSendAnonymousStats()
 		{
 			lock (ReadLock)
@@ -376,6 +444,10 @@ namespace Everlook.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Sets whether or not the application should be allowed to send anonymous stats.
+		/// </summary>
+		/// <param name="allowSendAnonymousStats">If set to <c>true</c> allow sending of anonymous stats.</param>
 		public void SetAllowSendAnonymousStats(bool allowSendAnonymousStats)
 		{
 			lock (ReadLock)

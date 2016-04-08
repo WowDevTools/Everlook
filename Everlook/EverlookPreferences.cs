@@ -29,6 +29,9 @@ using Everlook.Export.Audio;
 
 namespace Everlook
 {
+	/// <summary>
+	/// Everlook preferences dialog.
+	/// </summary>
 	public partial class EverlookPreferences : Dialog
 	{
 		[UI] FileChooserButton GameDirectoryFileChooserButton;
@@ -42,12 +45,20 @@ namespace Everlook
 
 		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
 
+		/// <summary>
+		/// Creates an instance of the Preferences dialog, using the glade XML UI file.
+		/// </summary>
 		public static EverlookPreferences Create()
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookPreferences.glade", null);
 			return new EverlookPreferences(builder, builder.GetObject("PreferencesDialog").Handle);
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Everlook.EverlookPreferences"/> class.
+		/// </summary>
+		/// <param name="builder">Builder.</param>
+		/// <param name="handle">Handle.</param>
 		protected EverlookPreferences(Builder builder, IntPtr handle)
 			: base(handle)
 		{
@@ -56,6 +67,9 @@ namespace Everlook
 			LoadPreferences();
 		}
 
+		/// <summary>
+		/// Loads the preferences from disk, setting their values in the UI.
+		/// </summary>
 		private void LoadPreferences()
 		{
 			if (!String.IsNullOrEmpty(Config.GetGameDirectory()))
@@ -77,6 +91,9 @@ namespace Everlook
 			SendStatsCheckButton.Active = Config.GetAllowSendAnonymousStats();
 		}
 
+		/// <summary>
+		/// Saves the selected preferences to disk from the UI elements.
+		/// </summary>
 		public void SavePreferences()
 		{
 			Config.SetGameDirectory(GameDirectoryFileChooserButton.Filename);

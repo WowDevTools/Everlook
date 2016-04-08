@@ -23,11 +23,33 @@ using System;
 
 namespace Everlook.Export.Audio
 {
+	/// <summary>
+	/// Supported audio formats for the audio exporter.
+	/// </summary>
 	public enum AudioFormat
 	{
+		/// <summary>
+		/// Waveform Audio File Format
+		/// <a href="https://en.wikipedia.org/wiki/WAV"/>
+		/// </summary>
 		WAV = 0,
+
+		/// <summary>
+		/// MPEG-2 Audio Layer III
+		/// <a href="https://en.wikipedia.org/wiki/MP3"/>
+		/// </summary>
 		MP3 = 1,
+
+		/// <summary>
+		/// Xiph OGG Audio Format
+		/// <a href="https://en.wikipedia.org/wiki/Ogg"/>
+		/// </summary>
 		OGG = 2,
+
+		/// <summary>
+		/// Free Lossless Audio Codec
+		/// <a href="https://en.wikipedia.org/wiki/FLAC"/>
+		/// </summary>
 		FLAC = 3
 	}
 }
