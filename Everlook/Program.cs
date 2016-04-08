@@ -19,14 +19,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-using System;
 using Gtk;
 
 namespace Everlook
 {
 	class MainClass
 	{
-		public static void Main(string[] args)
+		public static void Main()
 		{
 			Application.Init();
 			MainWindow win = MainWindow.Create();
