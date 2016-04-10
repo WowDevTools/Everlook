@@ -1,5 +1,5 @@
 ﻿//
-//  AudioTypes.cs
+//  IRenderable.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -19,43 +19,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+using System;
 
-namespace Everlook.Export.Audio
+namespace Everlook.Renderables
 {
 	/// <summary>
-	/// Supported audio formats for the audio exporter.
+	/// Interface representing a renderable object that can be passed to the viewport renderer.
+	/// Specific implementations of the rendering is implemented in the viewport renderer.
 	/// </summary>
-	public enum AudioFormat
+	public interface IRenderable
 	{
 		/// <summary>
-		/// Original file format that was stored in the archive.
-		/// Usually Waveform or MPEG-2 Audio Layer III.
+		/// Gets a value indicating whether this instance uses static rendering; that is, 
+		/// a single frame is rendered and then reused. Useful as an optimization for images.
 		/// </summary>
-		Original = 0,
-
-		/// <summary>
-		/// Waveform Audio File Format
-		/// <a href="https://en.wikipedia.org/wiki/WAV"/>
-		/// </summary>
-		WAV = 1,
-
-		/// <summary>
-		/// MPEG-2 Audio Layer III
-		/// <a href="https://en.wikipedia.org/wiki/MP3"/>
-		/// </summary>
-		MP3 = 2,
-
-		/// <summary>
-		/// Xiph OGG Audio Format
-		/// <a href="https://en.wikipedia.org/wiki/Ogg"/>
-		/// </summary>
-		OGG = 3,
-
-		/// <summary>
-		/// Free Lossless Audio Codec
-		/// <a href="https://en.wikipedia.org/wiki/FLAC"/>
-		/// </summary>
-		FLAC = 4
+		/// <value><c>true</c> if this instance is static; otherwise, <c>false</c>.</value>
+		bool IsStatic
+		{
+			get;
+		}
 	}
 }
 

@@ -1,5 +1,5 @@
 ﻿//
-//  AudioTypes.cs
+//  AudioPlayer.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -19,43 +19,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+using System;
 
-namespace Everlook.Export.Audio
+namespace Everlook.Audio
 {
 	/// <summary>
-	/// Supported audio formats for the audio exporter.
+	/// Main audio handling class. Plays, pauses and queues audio tracks.
 	/// </summary>
-	public enum AudioFormat
+	public class AudioPlayer
 	{
 		/// <summary>
-		/// Original file format that was stored in the archive.
-		/// Usually Waveform or MPEG-2 Audio Layer III.
+		/// Initializes a new instance of the <see cref="Everlook.Audio.AudioPlayer"/> class.
 		/// </summary>
-		Original = 0,
-
-		/// <summary>
-		/// Waveform Audio File Format
-		/// <a href="https://en.wikipedia.org/wiki/WAV"/>
-		/// </summary>
-		WAV = 1,
-
-		/// <summary>
-		/// MPEG-2 Audio Layer III
-		/// <a href="https://en.wikipedia.org/wiki/MP3"/>
-		/// </summary>
-		MP3 = 2,
-
-		/// <summary>
-		/// Xiph OGG Audio Format
-		/// <a href="https://en.wikipedia.org/wiki/Ogg"/>
-		/// </summary>
-		OGG = 3,
-
-		/// <summary>
-		/// Free Lossless Audio Codec
-		/// <a href="https://en.wikipedia.org/wiki/FLAC"/>
-		/// </summary>
-		FLAC = 4
+		public AudioPlayer()
+		{
+		}
 	}
 }
 

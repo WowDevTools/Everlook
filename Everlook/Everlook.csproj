@@ -69,6 +69,11 @@
     <Compile Include="Export\Model\ModelFormat.cs" />
     <Compile Include="EverlookPreferences.cs" />
     <Compile Include="Viewport\ViewportRenderer.cs" />
+    <Compile Include="Utility\Utilities.cs" />
+    <Compile Include="ItemReference.cs" />
+    <Compile Include="Audio\AudioPlayer.cs" />
+    <Compile Include="Renderables\IRenderable.cs" />
+    <Compile Include="Renderables\RenderableBLP.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -82,7 +87,9 @@
     <Folder Include="Export\Model\" />
     <Folder Include="Export\Image\" />
     <Folder Include="Viewport\" />
-    <Folder Include="Extraction\" />
+    <Folder Include="Utility\" />
+    <Folder Include="Audio\" />
+    <Folder Include="Renderables\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

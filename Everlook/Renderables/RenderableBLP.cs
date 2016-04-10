@@ -1,5 +1,5 @@
 ﻿//
-//  AudioTypes.cs
+//  RenderableBLP.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -19,43 +19,43 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+using System;
+using Warcraft.BLP;
 
-namespace Everlook.Export.Audio
+namespace Everlook.Renderables
 {
 	/// <summary>
-	/// Supported audio formats for the audio exporter.
+	/// Represents a renderable BLP image.
 	/// </summary>
-	public enum AudioFormat
+	public class RenderableBLP : IRenderable
 	{
 		/// <summary>
-		/// Original file format that was stored in the archive.
-		/// Usually Waveform or MPEG-2 Audio Layer III.
+		/// Gets a value indicating whether this instance uses static rendering; that is, 
+		/// a single frame is rendered and then reused. Useful as an optimization for images.
 		/// </summary>
-		Original = 0,
+		/// <value>true</value>
+		/// <c>false</c>
+		public bool IsStatic
+		{
+			get
+			{
+				return true;
+			}
+		}
 
 		/// <summary>
-		/// Waveform Audio File Format
-		/// <a href="https://en.wikipedia.org/wiki/WAV"/>
+		/// The image contained by this instance.
 		/// </summary>
-		WAV = 1,
+		public readonly BLP Image;
 
 		/// <summary>
-		/// MPEG-2 Audio Layer III
-		/// <a href="https://en.wikipedia.org/wiki/MP3"/>
+		/// Initializes a new instance of the <see cref="Everlook.Renderables.RenderableBLP"/> class.
 		/// </summary>
-		MP3 = 2,
-
-		/// <summary>
-		/// Xiph OGG Audio Format
-		/// <a href="https://en.wikipedia.org/wiki/Ogg"/>
-		/// </summary>
-		OGG = 3,
-
-		/// <summary>
-		/// Free Lossless Audio Codec
-		/// <a href="https://en.wikipedia.org/wiki/FLAC"/>
-		/// </summary>
-		FLAC = 4
+		/// <param name="InImage">In image.</param>
+		public RenderableBLP(BLP InImage)
+		{
+			this.Image = InImage;
+		}
 	}
 }
 

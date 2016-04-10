@@ -24,6 +24,10 @@ using Gdk;
 using OpenGL;
 using System.Threading;
 using System.Diagnostics;
+using Everlook.Renderables;
+using System.Drawing;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace Everlook.Viewport
 {
@@ -44,6 +48,9 @@ namespace Everlook.Viewport
 
 		private readonly Thread RenderThread;
 		private bool bShouldRender;
+
+		private IRenderable RenderTarget;
+		private int RenderQualityLevel;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Viewport.ViewportRenderer"/> class.
@@ -98,6 +105,33 @@ namespace Everlook.Viewport
 		}
 
 		/// <summary>
+		/// Sets the render target that is currently being rendered by the viewport renderer.
+		/// </summary>
+		/// <param name="Renderable">Renderable.</param>
+		public void SetRenderTarget(IRenderable Renderable)
+		{
+			this.RenderTarget = Renderable;
+		}
+
+		/// <summary>
+		/// Sets the requested quality level. Removes certain shaders and FX from models, 
+		/// and selects the mipmap level for images. A lower number means a better quality, 
+		/// down to 0 which is the best possible quality for the render target.
+		///
+		/// Negative input numbers are reset to 0.
+		/// </summary>
+		/// <param name="QualityLevel">Quality level.</param>
+		public void SetRequestedQualityLevel(int QualityLevel)
+		{
+			if (QualityLevel < 0)
+			{
+				QualityLevel = 0;
+			}
+
+			this.RenderQualityLevel = QualityLevel;
+		}
+
+		/// <summary>
 		/// The primary rendering loop. Here, the current object is rendered using OpenGL and gets
 		/// passed to the listeners via the FrameRendered event.
 		/// </summary>
@@ -114,19 +148,44 @@ namespace Everlook.Viewport
 
 				FrameRenderedArgs.FrameDelta = sw.ElapsedMilliseconds;
 				previousFrameDelta = sw.ElapsedMilliseconds;
-				OnFrameRendered();
+				RaiseFrameRendered();
 			}
 		}
 
 		private Pixbuf RenderFrame(long FrameDelta)
 		{			
+			if (RenderTarget is RenderableBLP)
+			{
+				RenderableBLP Renderable = RenderTarget as RenderableBLP;
+
+				Bitmap imageBitmap = null;
+				if (RenderQualityLevel >= Renderable.Image.GetMipMapCount())
+				{
+					int worstMipMapLevel = Renderable.Image.GetMipMapCount();
+					imageBitmap = Renderable.Image.GetMipMap((uint)worstMipMapLevel - 1);
+				}
+				else
+				{					
+					imageBitmap = Renderable.Image.GetMipMap((uint)RenderQualityLevel);
+				}
+
+				// HACK: Find a better way
+				using (MemoryStream ms = new MemoryStream())
+				{
+					imageBitmap.Save(ms, ImageFormat.Png);
+					ms.Position = 0;
+
+					return new Gdk.Pixbuf(ms);
+				}
+			}
+
 			return null;
 		}
 
 		/// <summary>
 		/// Raises the frame rendered event.
 		/// </summary>
-		protected void OnFrameRendered()
+		protected void RaiseFrameRendered()
 		{
 			if (FrameRendered != null)
 			{

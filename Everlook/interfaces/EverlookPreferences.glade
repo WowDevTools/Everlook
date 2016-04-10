@@ -9,7 +9,7 @@
     </columns>
     <data>
       <row>
-        <col id="0" translatable="yes">Wave (.wav)</col>
+        <col id="0" translatable="yes">Original (Wave/MP3)</col>
       </row>
       <row>
         <col id="0" translatable="yes">LAME MP3 (.mp3)</col>
@@ -19,6 +19,9 @@
       </row>
       <row>
         <col id="0" translatable="yes">Lossless (.flac)</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Wave (.wav)</col>
       </row>
     </data>
   </object>

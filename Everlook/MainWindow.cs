@@ -30,6 +30,10 @@ using Warcraft.MPQ;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Linq;
+using Everlook.Utility;
+using Warcraft.Core;
+using Everlook.Renderables;
+using Warcraft.BLP;
 
 namespace Everlook
 {
@@ -39,11 +43,29 @@ namespace Everlook
 	/// </summary>
 	public partial class MainWindow: Gtk.Window
 	{
+		/*
+			Main UI elements
+		*/
 		[UI] ToolButton AboutButton;
 		[UI] AboutDialog AboutDialog;
 		[UI] ToolButton PreferencesButton;
 
-		[UI] DrawingArea MainDrawingArea;
+		[UI] Gtk.Image MainDrawingArea;
+
+		/*
+			Export queue elements
+		*/
+		[UI] TreeView ExportQueueTreeView;
+		[UI] ListStore ExportQueueListStore;
+
+		[UI] Menu QueueContextMenu;
+		[UI] ImageMenuItem RemoveQueueItem;
+
+		/*
+			Game explorer elements
+		*/
+		[UI] TreeView GameExplorerTreeView;
+		[UI] TreeStore GameExplorerTreeStore;
 
 		[UI] Menu FileContextMenu;
 		[UI] ImageMenuItem ExtractItem;
@@ -51,14 +73,33 @@ namespace Everlook
 		[UI] ImageMenuItem CopyItem;
 		[UI] ImageMenuItem QueueItem;
 
-		[UI] Menu QueueContextMenu;
-		[UI] ImageMenuItem RemoveQueueItem;
+		/*
+			General item control elements
+		*/
 
-		[UI] TreeView ExportQueueTreeView;
-		[UI] ListStore ExportQueueListStore;
+		[UI] Notebook ItemControlNotebook;
 
-		[UI] TreeView GameExplorerTreeView;
-		[UI] TreeStore GameExplorerTreeStore;
+		/*
+			Image control elements
+		*/
+		[UI] ComboBox MipLevelComboBox;
+		[UI] ListStore MipLevelListStore;
+		[UI] CheckButton RenderAlphaCheckButton;
+		[UI] CheckButton RenderRedCheckButton;
+		[UI] CheckButton RenderGreenCheckButton;
+		[UI] CheckButton RenderBlueCheckButton;
+
+		/*
+			Model control elements
+		*/
+
+		/*
+			Animation control elements
+		*/
+
+		/*
+			Audio control elements
+		*/
 
 		/// <summary>
 		/// The cached package directory. Used when the user changes game directory during runtime.
@@ -84,14 +125,14 @@ namespace Everlook
 		/// Value.Key: Parent director Name.
 		/// Value.Value: List of subfolders and files.
 		/// </summary>
-		private readonly Dictionary<string, List<string>> PackageSubfolderContent = new Dictionary<string, List<string>>();
+		private readonly Dictionary<ItemReference, List<string>> PackageSubfolderContent = new Dictionary<ItemReference, List<string>>();
 
 		/// <summary>
 		/// The package folder node mapping. Maps package names and paths to tree nodes.
 		/// Key: Path of package, folder or file.
 		/// Value: TreeIter that maps to the package, folder or file.
 		/// </summary>
-		private readonly Dictionary<string, TreeIter> PackageFolderNodeMapping = new Dictionary<string,TreeIter>();
+		private readonly Dictionary<ItemReference, TreeIter> PackageFolderNodeMapping = new Dictionary<ItemReference,TreeIter>();
 
 		/// <summary>
 		/// A path pointing to the currently selected item in the game explorer.
@@ -134,6 +175,7 @@ namespace Everlook
 			MainDrawingArea.OverrideBackgroundColor(StateFlags.Normal, Config.GetViewportBackgroundColour());
 
 			GameExplorerTreeView.RowExpanded += OnGameExplorerRowExpanded;
+			GameExplorerTreeView.RowActivated += OnGameExplorerRowActivated;
 			GameExplorerTreeView.ButtonPressEvent += OnGameExplorerButtonPressed;
 
 			ExportQueueTreeView.ButtonPressEvent += OnExportQueueButtonPressed;	
@@ -148,8 +190,91 @@ namespace Everlook
 			viewportRenderer.FrameRendered += OnFrameRendered;
 			viewportRenderer.Start();
 
+			/*
+				Set up item control sections
+			*/
+			// Image
+			RenderAlphaCheckButton.Sensitive = false;
+			RenderRedCheckButton.Sensitive = false;
+			RenderGreenCheckButton.Sensitive = false;
+			RenderBlueCheckButton.Sensitive = false;
+
+			// Model
+
+			// Animation
+
+			// Audio
+
+			/*
+				Load packages and files
+			*/
+
 			// Check game directory for packages
 			LoadPackages();
+		}
+
+		/// <summary>
+		/// Enables the specified control page and brings it to the front.
+		/// </summary>
+		/// <param name="Page">Page.</param>
+		protected void EnableControlPage(ControlPage Page)
+		{
+			if (Enum.IsDefined(typeof(ControlPage), Page))
+			{
+				ItemControlNotebook.Page = (int)Page;
+
+				if (Page == ControlPage.Image)
+				{
+					MipLevelComboBox.Sensitive = true;
+					RenderAlphaCheckButton.Sensitive = true;
+					RenderRedCheckButton.Sensitive = true;
+					RenderGreenCheckButton.Sensitive = true;
+					RenderBlueCheckButton.Sensitive = true;
+				}
+				else if (Page == ControlPage.Model)
+				{
+
+				}
+				else if (Page == ControlPage.Animation)
+				{
+
+				}
+				else if (Page == ControlPage.Audio)
+				{
+
+				}
+			}
+		}
+
+		/// <summary>
+		/// Disables the specified control page.
+		/// </summary>
+		/// <param name="Page">Page.</param>
+		protected void DisableControlPage(ControlPage Page)
+		{
+			if (Enum.IsDefined(typeof(ControlPage), Page))
+			{
+				if (Page == ControlPage.Image)
+				{
+					MipLevelComboBox.Sensitive = false;
+					RenderAlphaCheckButton.Sensitive = false;
+					RenderRedCheckButton.Sensitive = false;
+					RenderGreenCheckButton.Sensitive = false;
+					RenderBlueCheckButton.Sensitive = false;
+				}
+				else if (Page == ControlPage.Model)
+				{
+
+				}
+				else if (Page == ControlPage.Animation)
+				{
+				
+				}
+				else if (Page == ControlPage.Audio)
+				{
+
+				}
+			}
 		}
 
 		/// <summary>
@@ -224,7 +349,7 @@ namespace Everlook
 						string PackageName = System.IO.Path.GetFileName(PackageListfile.Key);
 						AddPackageNode(PackageName);
 
-						EnumerateFilesAndFolders(PackageName, "");
+						EnumerateFilesAndFolders(new ItemReference(PackageName, ""));
 					}
 				}
 			}
@@ -234,14 +359,13 @@ namespace Everlook
 		/// Enumerates the files and subfolders in the specified package, starting at 
 		/// the provided root path.
 		/// </summary>
-		/// <param name="packageName">Package name.</param>
-		/// <param name="rootPath">Root path where the search should start.</param>
-		private void EnumerateFilesAndFolders(string packageName, string rootPath)
+		/// <param name="parentReference">Parent reference where the search should start.</param>
+		private void EnumerateFilesAndFolders(ItemReference parentReference)
 		{
 			List<string> PackageListfile;
-			if (PackageListfiles.TryGetValue(packageName, out PackageListfile))
+			if (PackageListfiles.TryGetValue(parentReference.PackageName, out PackageListfile))
 			{
-				if (String.IsNullOrWhiteSpace(rootPath) && PackageListfile != null)
+				if (String.IsNullOrWhiteSpace(parentReference.ItemPath) && PackageListfile != null)
 				{
 					// Root files and folders in package
 					List<string> TopLevelItems = new List<string>();
@@ -254,18 +378,20 @@ namespace Everlook
 						if (!String.IsNullOrWhiteSpace(topItem) && !TopLevelItems.Contains(topItem))
 						{
 							TopLevelItems.Add(topItem);
-							AddDirectoryNode(packageName, rootPath, topItem);
+
+							AddDirectoryNode(parentReference, topItem);
 						}
 						else if (String.IsNullOrWhiteSpace(topItem) && slashIndex == -1)
 						{
 							// It's probably a file
 							// Remove the parent from the directory line
-							string strippedPath = Regex.Replace(FilePath, "^" + Regex.Escape(rootPath), "");	
+							string fileName = Regex.Replace(FilePath, "^" + Regex.Escape(parentReference.ItemPath), "");	
 
-							if (IsFile(strippedPath))
+							ItemReference fileReference = new ItemReference(parentReference, fileName);
+							if (fileReference.IsFile())
 							{
 								// We've found a file!
-								AddFileNode(packageName, rootPath, strippedPath);
+								AddFileNode(parentReference, fileReference);
 							}
 						}
 					}
@@ -278,26 +404,27 @@ namespace Everlook
 
 					foreach (string FilePath in PackageListfile)
 					{
-						if (FilePath.StartsWith(rootPath))
+						if (FilePath.StartsWith(parentReference.ItemPath))
 						{
 							bHasFoundStartOfFolderBlock = true;
 
 							// Remove the parent from the directory line
-							string strippedPath = Regex.Replace(FilePath, "^" + Regex.Escape(rootPath), "");
+							string itemName = Regex.Replace(FilePath, "^" + Regex.Escape(parentReference.ItemPath), "");
 
 							// Get the top folders
-							int slashIndex = strippedPath.IndexOf('\\');
-							string topDirectory = strippedPath.Substring(0, slashIndex + 1);
+							int slashIndex = itemName.IndexOf('\\');
+							string topDirectory = itemName.Substring(0, slashIndex + 1);
 
-							if (!String.IsNullOrEmpty(topDirectory) && !TopLevelDirectories.Contains(topDirectory) && !PackageFolderNodeMapping.ContainsKey(packageName + ":" + rootPath + topDirectory))
+							ItemReference newItemReference = new ItemReference(parentReference, itemName);
+							if (!String.IsNullOrEmpty(topDirectory) && !TopLevelDirectories.Contains(topDirectory) && !PackageFolderNodeMapping.ContainsKey(newItemReference))
 							{
 								TopLevelDirectories.Add(topDirectory);
-								AddDirectoryNode(packageName, rootPath, topDirectory);
+								AddDirectoryNode(parentReference, topDirectory);
 							}
-							else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1 && IsFile(strippedPath))
+							else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1 && newItemReference.IsFile())
 							{
 								// We've found a file!
-								AddFileNode(packageName, rootPath, strippedPath);
+								AddFileNode(parentReference, newItemReference);
 							}
 						}
 						else if (bHasFoundStartOfFolderBlock)
@@ -306,24 +433,6 @@ namespace Everlook
 						}
 					}
 				}
-			}
-		}
-
-		/// <summary>
-		/// Converts any non-native path separators to the current native path separator,
-		/// e.g backslashes to forwardslashes on *nix, and vice versa.
-		/// </summary>
-		/// <returns>The path.</returns>
-		/// <param name="inputPath">Input path.</param>
-		public static string CleanPath(string inputPath)
-		{
-			if (IsRunningOnUnix())
-			{
-				return inputPath.Replace('\\', '/');
-			}
-			else
-			{
-				return inputPath.Replace('/', '\\');
 			}
 		}
 
@@ -337,35 +446,48 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			string[] parts = GetFilePathFromIter(selectedIter).Split(':');
-			string packageName = parts[0];
-			string filePath = parts[1];
+			ItemReference fileReference = GetItemReferenceFromIter(selectedIter);
 
+			string CleanFilepath = Utilities.CleanPath(fileReference.ItemPath);
+			string exportpath;
+			if (Config.GetShouldKeepFileDirectoryStructure())
+			{
+				exportpath = Config.GetDefaultExportDirectory() + CleanFilepath;
+				Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
+			}
+			else
+			{
+				string filename = System.IO.Path.GetFileName(CleanFilepath);
+				exportpath = Config.GetDefaultExportDirectory() + filename;
+			}
+
+			byte[] file = ExtractReference(fileReference);
+			if (file != null)
+			{
+				File.WriteAllBytes(exportpath, file);
+			}
+		}
+
+		/// <summary>
+		/// Extracts the specified reference from its associated package.
+		/// </summary>
+		/// <param name="fileReference">File reference.</param>
+		private byte[] ExtractReference(ItemReference fileReference)
+		{
 			string packagePath;
-			if (PackagePathMapping.TryGetValue(packageName, out packagePath))
+			if (PackagePathMapping.TryGetValue(fileReference.PackageName, out packagePath))
 			{
 				using (FileStream fs = File.OpenRead(packagePath))
 				{
 					using (MPQ mpq = new MPQ(fs))
-					{
-						string CleanFilepath = CleanPath(filePath);
-
-						string exportpath;
-						if (Config.GetShouldKeepFileDirectoryStructure())
-						{
-							exportpath = Config.GetDefaultExportDirectory() + CleanFilepath;
-							Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
-						}
-						else
-						{
-							string filename = System.IO.Path.GetFileName(CleanFilepath);
-							exportpath = Config.GetDefaultExportDirectory() + filename;
-						}
-
-						byte[] file = mpq.ExtractFile(filePath);
-						File.WriteAllBytes(exportpath, file);
+					{						
+						return mpq.ExtractFile(fileReference.ItemPath);
 					}
 				}
+			}
+			else
+			{
+				return null;
 			}
 		}
 
@@ -379,8 +501,8 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			string path = GetFilePathFromIter(selectedIter);
-			if (!IsFile(path))
+			ItemReference itemReference = GetItemReferenceFromIter(selectedIter);
+			if (!itemReference.IsFile())
 			{				
 				GameExplorerTreeView.ExpandRow(CurrentGameExplorerPath, false);
 			}
@@ -399,7 +521,7 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			clipboard.Text = GetFilePathFromIter(selectedIter);
+			clipboard.Text = GetItemReferenceFromIter(selectedIter).ToString();
 		}
 
 		/// <summary>
@@ -413,21 +535,18 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			string[] parts = GetFilePathFromIter(selectedIter).Split(':');
-			string packageName = parts[0];
-			string filePath = parts[1];
+			ItemReference itemReference = GetItemReferenceFromIter(selectedIter);
 
-			string CleanFilepath = CleanPath(filePath);
+			string CleanFilepath = Utilities.CleanPath(itemReference.ItemPath);
 
-			if (String.IsNullOrEmpty(filePath))
+			if (String.IsNullOrEmpty(CleanFilepath))
 			{
-				CleanFilepath = packageName;
+				CleanFilepath = itemReference.PackageName;
 			}
 			else if (String.IsNullOrEmpty(System.IO.Path.GetFileName(CleanFilepath)))
 			{
 				CleanFilepath = Directory.GetParent(CleanFilepath).FullName.Replace(Directory.GetCurrentDirectory(), "");
 			}
-			
 
 			ExportQueueListStore.AppendValues(CleanFilepath, CleanFilepath, "Queued");
 		}
@@ -468,20 +587,27 @@ namespace Everlook
 		protected void ReloadRuntimeValues()
 		{
 			MainDrawingArea.OverrideBackgroundColor(StateFlags.Normal, Config.GetViewportBackgroundColour());
-			MainDrawingArea.QueueDraw();
 
 			LoadPackages();
 		}
 
 		/// <summary>
 		/// Handles the Frame Rendered event. Takes the input frame from the rendering thread and 
-		/// draws it in the viewport.
+		/// draws it in the viewport on the GUI thread.
 		/// </summary>
 		/// <param name="sender">Sending object (a viewport rendering thread).</param>
 		/// <param name="e">Frame renderer arguments, containing the frame and frame delta.</param>
 		protected void OnFrameRendered(object sender, FrameRendererEventArgs e)
 		{
+			Application.Invoke(delegate
+				{
+					if (MainDrawingArea.Pixbuf != null)
+					{
+						MainDrawingArea.Pixbuf.Dispose();
+					}
 
+					MainDrawingArea.Pixbuf = e.Frame;
+				});
 		}
 
 		/// <summary>
@@ -497,20 +623,116 @@ namespace Everlook
 			TreeIter iterNode;
 			GameExplorerTreeStore.GetIter(out iterNode, e.Path);
 
-			string itemKey = GetFilePathFromIter(e.Iter);
+			ItemReference itemKey = GetItemReferenceFromIter(e.Iter);
 			if (PackageSubfolderContent.ContainsKey(itemKey))
 			{
-				string[] parts = itemKey.Split(':');
-				string packageName = parts[0];
-				string rootPath = parts[1];
 
 				List<string> Subfolders;
 				if (PackageSubfolderContent.TryGetValue(itemKey, out Subfolders))
 				{
 					foreach (string Subfolder in Subfolders)
 					{
-						EnumerateFilesAndFolders(packageName, rootPath + Subfolder);						
+						EnumerateFilesAndFolders(new ItemReference(itemKey, Subfolder));						
 					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Handles selection of files in the game explorer, displaying them to the user and routing 
+		/// whatever rendering functionality the file needs to the viewport.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		protected void OnGameExplorerRowActivated(object sender, RowActivatedArgs e)
+		{
+			ItemReference fileReference = null;
+			if (e.Path != null)
+			{
+				TreeIter iter;
+				GameExplorerTreeStore.GetIterFromString(out iter, e.Path.ToString());
+
+				fileReference = GetItemReferenceFromIter(iter);
+			}
+
+			if (fileReference != null && !String.IsNullOrEmpty(fileReference.ItemPath))
+			{
+				string fileName = System.IO.Path.GetFileName(Utilities.CleanPath(fileReference.ItemPath));
+				switch (Filetype.GetFiletypeOfFile(fileName))
+				{
+					case EWarcraftFiletype.AddonManifest:
+						{
+							break;
+						}
+					case EWarcraftFiletype.AddonManifestSignature:
+						{
+							break;
+						}
+					case EWarcraftFiletype.MoPaQArchive:
+						{
+							break;
+						}
+					case EWarcraftFiletype.ConfigurationFile:
+						{
+							break;
+						}
+					case EWarcraftFiletype.DatabaseContainer:
+						{
+							break;
+						}
+					case EWarcraftFiletype.Shader:
+						{
+							break;
+						}
+					case EWarcraftFiletype.TerrainWater:
+						{
+							break;
+						}
+					case EWarcraftFiletype.TerrainLiquid:
+						{
+							break;
+						}
+					case EWarcraftFiletype.TerrainLevel:
+						{
+							break;
+						}
+					case EWarcraftFiletype.TerrainTable:
+						{
+							break;
+						}
+					case EWarcraftFiletype.TerrainData:
+						{
+							break;
+						}
+					case EWarcraftFiletype.BinaryImage:
+						{
+							if (!viewportRenderer.IsActive)
+							{
+								viewportRenderer.Start();							
+							}
+
+							byte[] fileData = ExtractReference(fileReference);
+							if (fileData != null)
+							{
+								RenderableBLP image = new RenderableBLP(new BLP(fileData));
+								viewportRenderer.SetRenderTarget(image);
+
+								EnableControlPage(ControlPage.Image);
+							}
+							break;
+						}
+					case EWarcraftFiletype.Hashmap:
+						{
+							break;
+						}
+					case EWarcraftFiletype.GameObjectModel:
+						{
+							break;
+						}
+					case EWarcraftFiletype.WorldObjectModel:
+						{
+							break;
+						}
 				}
 			}
 		}
@@ -528,17 +750,17 @@ namespace Everlook
 
 			CurrentGameExplorerPath = path;
 
-			string currentPath = "";
+			ItemReference currentItemReference = null;
 			if (path != null)
 			{
 				TreeIter iter;
 				GameExplorerTreeStore.GetIterFromString(out iter, path.ToString());
-				currentPath = GetFilePathFromIter(iter);
+				currentItemReference = GetItemReferenceFromIter(iter);
 			}
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
-			{			
-				if (String.IsNullOrEmpty(currentPath))
+			{		
+				if (currentItemReference == null || String.IsNullOrEmpty(currentItemReference.ItemPath))
 				{
 					ExtractItem.Sensitive = false;
 					OpenItem.Sensitive = false;
@@ -547,7 +769,7 @@ namespace Everlook
 				}
 				else
 				{
-					if (!IsFile(currentPath))
+					if (!currentItemReference.IsFile())
 					{
 						ExtractItem.Sensitive = false;
 						OpenItem.Sensitive = true;
@@ -580,17 +802,17 @@ namespace Everlook
 			TreePath path;
 			ExportQueueTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out path);
 
-			string currentPath = "";
+			ItemReference currentReference = null;
 			if (path != null)
 			{
 				TreeIter iter;
 				ExportQueueListStore.GetIterFromString(out iter, path.ToString());
-				currentPath = GetFilePathFromIter(iter);
+				currentReference = GetItemReferenceFromIter(iter);
 			}
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
 			{			
-				if (String.IsNullOrEmpty(currentPath))
+				if (currentReference == null || String.IsNullOrEmpty(currentReference.ItemPath))
 				{
 					RemoveQueueItem.Sensitive = false;
 				}
@@ -625,51 +847,45 @@ namespace Everlook
 		{
 			// I'm a new root node					
 			TreeIter PackageNode = GameExplorerTreeStore.AppendValues("package-x-generic", packageName.Replace("\\", ""), "", packageName);
-			PackageFolderNodeMapping.Add(packageName + ":", PackageNode);
+			ItemReference packageReference = new ItemReference(packageName, "");
+			PackageFolderNodeMapping.Add(packageReference, PackageNode);
 		}
 
 		/// <summary>
 		/// Adds a directory node to the game explorer view, attachedt to the provided parent
 		/// package and directory.
 		/// </summary>
-		/// <param name="PackagePath">Package path.</param>
-		/// <param name="parentNodeKey">Parent node key.</param>
+		/// <param name="fileReference">File reference containing the package name and file path.</param>
 		/// <param name="directoryName">Directory name.</param>
-		private void AddDirectoryNode(string PackagePath, string parentNodeKey, string directoryName)
+		private void AddDirectoryNode(ItemReference fileReference, string directoryName)
 		{
-			string PackageName = System.IO.Path.GetFileName(PackagePath);
-
 			TreeIter parentNode;
-			PackageFolderNodeMapping.TryGetValue(PackageName + ":" + parentNodeKey, out parentNode);
-
-			if (!GameExplorerTreeStore.IterIsValid(parentNode))
-			{				
-				PackageFolderNodeMapping.TryGetValue(PackageName + ":", out parentNode);
-			}
+			PackageFolderNodeMapping.TryGetValue(fileReference, out parentNode);
 
 			if (GameExplorerTreeStore.IterIsValid(parentNode))
 			{
 				// Add myself to that node
-				if (!PackageFolderNodeMapping.ContainsKey(PackageName + ":" + parentNodeKey + directoryName))
+				ItemReference subnodeReference = new ItemReference(fileReference, directoryName);
+				if (!PackageFolderNodeMapping.ContainsKey(subnodeReference))
 				{
-					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, Stock.Directory, directoryName.Replace("\\", ""), "", PackagePath);
-					PackageFolderNodeMapping.Add(PackageName + ":" + parentNodeKey + directoryName, node);
+					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, Stock.Directory, directoryName.Replace("\\", ""), "", "");
+					PackageFolderNodeMapping.Add(subnodeReference, node);
 
-					if (PackageSubfolderContent.ContainsKey(PackageName + ":" + parentNodeKey))
+					if (PackageSubfolderContent.ContainsKey(fileReference))
 					{
 						List<string> ContentList;
-						if (PackageSubfolderContent.TryGetValue(PackageName + ":" + parentNodeKey, out ContentList))
+						if (PackageSubfolderContent.TryGetValue(fileReference, out ContentList))
 						{
 							ContentList.Add(directoryName);
-							PackageSubfolderContent.Remove(PackageName + ":" + parentNodeKey);
-							PackageSubfolderContent.Add(PackageName + ":" + parentNodeKey, ContentList);
+							PackageSubfolderContent.Remove(fileReference);
+							PackageSubfolderContent.Add(fileReference, ContentList);
 						}
 					}
 					else
 					{
 						List<string> ContentList = new List<string>();
 						ContentList.Add(directoryName);
-						PackageSubfolderContent.Add(PackageName + ":" + parentNodeKey, ContentList);
+						PackageSubfolderContent.Add(fileReference, ContentList);
 					}
 				}
 			}
@@ -679,167 +895,54 @@ namespace Everlook
 		/// Adds a file node to the game explorer view, attached to the provided parent
 		/// package and directory.
 		/// </summary>
-		/// <param name="PackagePath">Package path.</param>
-		/// <param name="parentNodeKey">Parent node key.</param>
-		/// <param name="fileName">File name.</param>
-		private void AddFileNode(string PackagePath, string parentNodeKey, string fileName)
+		/// <param name="parentReference">Parent file reference</param>
+		/// <param name="childReference">Child file reference.</param>
+		private void AddFileNode(ItemReference parentReference, ItemReference childReference)
 		{
-			string PackageName = System.IO.Path.GetFileName(PackagePath);
-
 			TreeIter parentNode;
-			PackageFolderNodeMapping.TryGetValue(PackageName + ":" + parentNodeKey, out parentNode);
-
-			if (!GameExplorerTreeStore.IterIsValid(parentNode))
-			{				
-				PackageFolderNodeMapping.TryGetValue(PackageName + ":", out parentNode);
-			}
+			PackageFolderNodeMapping.TryGetValue(parentReference, out parentNode);
 
 			if (GameExplorerTreeStore.IterIsValid(parentNode))
 			{
 				// Add myself to that node
-				if (!PackageFolderNodeMapping.ContainsKey(PackageName + ":" + parentNodeKey + fileName))
+				if (!PackageFolderNodeMapping.ContainsKey(childReference))
 				{
-					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, GetIconForFiletype(fileName), fileName.Replace("\\", ""), "", PackagePath);
-					PackageFolderNodeMapping.Add(PackageName + ":" + parentNodeKey + fileName, node);
+					string CleanPath = Utilities.CleanPath(childReference.ItemPath);
+					string fileName = System.IO.Path.GetFileName(CleanPath);
+					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, Utilities.GetIconForFiletype(childReference.ItemPath), fileName, "", "");
+					PackageFolderNodeMapping.Add(childReference, node);
 				}
 			}			
 		}
 
 		/// <summary>
-		/// Gets the icon that would best represent the provided file. This is
-		/// usually the mimetype.
-		/// </summary>
-		/// <returns>The icon for the filetype.</returns>
-		/// <param name="file">File.</param>
-		private string GetIconForFiletype(string file)
-		{
-			string fileIcon = Stock.File;
-
-			if (file.EndsWith(".m2"))
-			{
-				// Blender armature icon?
-			}
-			else if (file.EndsWith(".wmo"))
-			{
-				// Blender object icon?
-			}
-			else if (file.EndsWith(".blp") || file.EndsWith(".jpg") || file.EndsWith(".gif"))
-			{
-				fileIcon = "image-x-generic";
-			}
-			else if (file.EndsWith(".wav") || file.EndsWith(".mp3") || file.EndsWith(".ogg"))
-			{
-				fileIcon = "audio-x-generic";
-			}
-			else if (file.EndsWith(".txt"))
-			{
-				fileIcon = "text-x-generic";
-			}
-			else if (file.EndsWith(".dbc") || file.EndsWith(".wdt"))
-			{
-				fileIcon = "x-office-spreadsheet";
-			}
-			else if (file.EndsWith(".exe"))
-			{
-				fileIcon = "application-x-executable";
-			}
-			else if (file.EndsWith(".dll"))
-			{
-				fileIcon = "application-x-executable";
-			}
-			else if (file.EndsWith(".wtf") || file.EndsWith(".ini"))
-			{
-				fileIcon = "text-x-script";
-			}
-			else if (file.EndsWith(".html") || file.EndsWith(".url"))
-			{
-				fileIcon = "text-html";
-			}
-			else if (file.EndsWith(".pdf"))
-			{
-				fileIcon = "x-office-address-book";
-			}
-			else if (file.EndsWith(".ttf") || file.EndsWith(".TTF"))
-			{
-				fileIcon = "font-x-generic";
-			}
-			else if (file.EndsWith(".wdl"))
-			{
-				fileIcon = "text-x-generic-template";
-			}
-
-			return fileIcon;
-		}
-
-		/// <summary>
-		/// Converts a TreeIter into a file path. The final path is returned in the format of
-		/// [packagename]:[file path].
+		/// Converts a TreeIter into a file path. The final path is returned as a file reference
+		/// object.
 		/// </summary>
 		/// <returns>The file path from iter.</returns>
 		/// <param name="iter">Iter.</param>
-		private string GetFilePathFromIter(TreeIter iter)
+		private ItemReference GetItemReferenceFromIter(TreeIter iter)
 		{
 			TreeIter parentIter;
-			string finalPath;
+			ItemReference finalPath;
 
 			GameExplorerTreeStore.IterParent(out parentIter, iter);
 			if (GameExplorerTreeStore.IterIsValid(parentIter))
 			{
-				finalPath = GetFilePathFromIter(parentIter) + (string)GameExplorerTreeStore.GetValue(iter, 1);
+				finalPath = new ItemReference(GetItemReferenceFromIter(parentIter), (string)GameExplorerTreeStore.GetValue(iter, 1));
 
-				if (!IsFile(finalPath))
+				if (!finalPath.IsFile())
 				{
-					finalPath += @"\";
+					finalPath.ItemPath += @"\";
 				}
 			}
 			else
 			{
 				// Parentless nodes are package nodes
-				finalPath = (string)GameExplorerTreeStore.GetValue(iter, 1) + ":";
+				finalPath = new ItemReference((string)GameExplorerTreeStore.GetValue(iter, 1), "");
 			}
 
 			return finalPath;
-		}
-
-		/// <summary>
-		/// Determines whether the provided path is a file or not.
-		/// </summary>
-		/// <returns><c>true</c> if the path is a file; otherwise, <c>false</c>.</returns>
-		/// <param name="InputPath">Input path.</param>
-		private bool IsFile(string InputPath)
-		{
-			string strippedName = InputPath;
-			if (InputPath.Contains(":"))
-			{
-				// Remove the package identifier
-				int packageIDIndex = InputPath.IndexOf(":");
-				strippedName = InputPath.Substring(packageIDIndex + 1);
-			}
-
-			if (strippedName.EndsWith("\\"))
-			{
-				return false;
-			}
-
-			string[] parts = strippedName.Split('.');
-			return parts.Length > 1;
-		}
-
-		/// <summary>
-		/// Determines if the application is running on a unix-like system.
-		/// </summary>
-		/// <returns><c>true</c> if is running on unix; otherwise, <c>false</c>.</returns>
-		public static bool IsRunningOnUnix()
-		{
-			int p = (int)Environment.OSVersion.Platform;
-			if ((p == 4) || (p == 6) || (p == 128))
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
 		}
 
 		/// <summary>
@@ -858,5 +961,32 @@ namespace Everlook
 			Application.Quit();
 			a.RetVal = true;
 		}
+	}
+
+	/// <summary>
+	/// Available control pages in the Everlook UI.
+	/// </summary>
+	public enum ControlPage
+	{
+		/// <summary>
+		/// Image control page. Handles mip levels and rendered channels.
+		/// </summary>
+		Image = 0,
+
+		/// <summary>
+		/// Model control page. Handles vertex joining, geoset rendering and other model
+		/// settings.
+		/// </summary>
+		Model = 1,
+
+		/// <summary>
+		/// Animation control page. Handles active animations and their settings.
+		/// </summary>
+		Animation = 2,
+
+		/// <summary>
+		/// Audio control page. Handles playback of audio.
+		/// </summary>
+		Audio = 3
 	}
 }
