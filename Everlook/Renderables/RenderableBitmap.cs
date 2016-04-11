@@ -1,5 +1,5 @@
 ﻿//
-//  RenderableMDX.cs
+//  RenderableBitmap.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -20,14 +20,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
-using Warcraft.MDX;
+using System.Drawing;
 
 namespace Everlook.Renderables
 {
-	/// <summary>
-	/// Represents a renderable Game Object Model.
-	/// </summary>
-	public sealed class RenderableMDX : IRenderable
+	public sealed class RenderableBitmap : IRenderable
 	{
 		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is, 
@@ -43,45 +40,38 @@ namespace Everlook.Renderables
 			}
 		}
 
-		/// <summary>
-		/// The model contained by this renderable game object.
-		/// </summary>
-		/// <value>The model.</value>
-		public MDX Model
+		public Bitmap Image
 		{
 			get;
 			private set;
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Renderables.RenderableMDX"/> class.
-		/// </summary>
-		public RenderableMDX(MDX InModel)
+		public RenderableBitmap(Bitmap InImage)
 		{
-			this.Model = InModel;
+			this.Image = InImage;
 		}
 
 		/// <summary>
-		/// Releases all resource used by the <see cref="Everlook.Renderables.RenderableMDX"/> object.
+		/// Releases all resource used by the <see cref="Everlook.Renderables.RenderableBitmap"/> object.
 		/// </summary>
-		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="Everlook.Renderables.RenderableMDX"/>. The
-		/// <see cref="Dispose"/> method leaves the <see cref="Everlook.Renderables.RenderableMDX"/> in an unusable state.
+		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="Everlook.Renderables.RenderableBitmap"/>. The
+		/// <see cref="Dispose"/> method leaves the <see cref="Everlook.Renderables.RenderableBitmap"/> in an unusable state.
 		/// After calling <see cref="Dispose"/>, you must release all references to the
-		/// <see cref="Everlook.Renderables.RenderableMDX"/> so the garbage collector can reclaim the memory that the
-		/// <see cref="Everlook.Renderables.RenderableMDX"/> was occupying.</remarks>
+		/// <see cref="Everlook.Renderables.RenderableBitmap"/> so the garbage collector can reclaim the memory that the
+		/// <see cref="Everlook.Renderables.RenderableBitmap"/> was occupying.</remarks>
 		public void Dispose()
 		{
-			Model.Dispose();
-			Model = null;
+			Image.Dispose();
+			Image = null;
 		}
 
 		/// <summary>
-		/// Serves as a hash function for a <see cref="Everlook.Renderables.RenderableMDX"/> object.
+		/// Serves as a hash function for a <see cref="Everlook.Renderables.RenderableBitmap"/> object.
 		/// </summary>
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()
 		{
-			return (IsStatic.GetHashCode() + Model.GetHashCode()).GetHashCode();
+			return (IsStatic.GetHashCode() + Image.GetHashCode()).GetHashCode();
 		}
 	}
 }

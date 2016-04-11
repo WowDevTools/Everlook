@@ -76,6 +76,8 @@
     <Compile Include="Renderables\RenderableBLP.cs" />
     <Compile Include="Renderables\RenderableMDX.cs" />
     <Compile Include="Renderables\RenderableWMO.cs" />
+    <Compile Include="Explorer\ExplorerBuilder.cs" />
+    <Compile Include="Renderables\RenderableBitmap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -92,6 +94,7 @@
     <Folder Include="Utility\" />
     <Folder Include="Audio\" />
     <Folder Include="Renderables\" />
+    <Folder Include="Explorer\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

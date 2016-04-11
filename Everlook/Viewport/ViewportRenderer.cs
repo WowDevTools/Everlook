@@ -50,6 +50,7 @@ namespace Everlook.Viewport
 		private bool bShouldRender;
 
 		private IRenderable RenderTarget;
+		private object RenderTargetLock = new object();
 		private uint RenderQualityLevel;
 		private bool HasPendingQualityChange;
 		private int RenderTargetHashSum;
@@ -114,7 +115,17 @@ namespace Everlook.Viewport
 		/// <param name="Renderable">Renderable.</param>
 		public void SetRenderTarget(IRenderable Renderable)
 		{
-			this.RenderTarget = Renderable;
+			lock (RenderTargetLock)
+			{
+				// Dispose of the old render target
+				if (this.RenderTarget != null)
+				{
+					this.RenderTarget.Dispose();
+				}
+
+				// Assign the new one
+				this.RenderTarget = Renderable;
+			}
 		}
 
 		/// <summary>
@@ -150,17 +161,31 @@ namespace Everlook.Viewport
 
 			while (bShouldRender)
 			{
-
-				if (RenderTarget != null)
+				lock (RenderTargetLock)
 				{
-					if (RenderTarget.IsStatic)
+					if (RenderTarget != null)
 					{
-						// Check if the render target has changed
-						// If it has, rerender a single frame and pass it on
-
-						if (RenderTarget.GetHashCode() != RenderTargetHashSum || HasPendingQualityChange)
+						if (RenderTarget.IsStatic)
 						{
-							RenderTargetHashSum = RenderTarget.GetHashCode();
+							// Check if the render target has changed
+							// If it has, rerender a single frame and pass it on
+
+							if (RenderTarget.GetHashCode() != RenderTargetHashSum || HasPendingQualityChange)
+							{
+								RenderTargetHashSum = RenderTarget.GetHashCode();
+								Stopwatch sw = new Stopwatch();
+
+								sw.Start();
+								FrameRenderedArgs.Frame = RenderFrame(previousFrameDelta);
+								sw.Stop();
+
+								FrameRenderedArgs.FrameDelta = sw.ElapsedMilliseconds;
+								previousFrameDelta = sw.ElapsedMilliseconds;
+								RaiseFrameRendered();
+							}
+						}
+						else
+						{
 							Stopwatch sw = new Stopwatch();
 
 							sw.Start();
@@ -171,18 +196,6 @@ namespace Everlook.Viewport
 							previousFrameDelta = sw.ElapsedMilliseconds;
 							RaiseFrameRendered();
 						}
-					}
-					else
-					{
-						Stopwatch sw = new Stopwatch();
-
-						sw.Start();
-						FrameRenderedArgs.Frame = RenderFrame(previousFrameDelta);
-						sw.Stop();
-
-						FrameRenderedArgs.FrameDelta = sw.ElapsedMilliseconds;
-						previousFrameDelta = sw.ElapsedMilliseconds;
-						RaiseFrameRendered();
 					}
 				}
 			}
@@ -212,6 +225,20 @@ namespace Everlook.Viewport
 				{					
 					imageBitmap.Save(ms, ImageFormat.Png);
 					imageBitmap.Dispose();
+
+					ms.Position = 0;
+
+					frame = new Pixbuf(ms);
+				}
+			}
+			else if (RenderTarget is RenderableBitmap)
+			{
+				RenderableBitmap Renderable = RenderTarget as RenderableBitmap;
+
+				// HACK: Find a better way
+				using (MemoryStream ms = new MemoryStream())
+				{					
+					Renderable.Image.Save(ms, ImageFormat.Png);
 
 					ms.Position = 0;
 

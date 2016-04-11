@@ -82,7 +82,7 @@ namespace Everlook.Utility
 			{
 				// Blender object icon?
 			}
-			else if (file.EndsWith(".blp") || file.EndsWith(".jpg") || file.EndsWith(".gif"))
+			else if (file.EndsWith(".blp") || file.EndsWith(".jpg") || file.EndsWith(".gif") || file.EndsWith(".png"))
 			{
 				fileIcon = "image-x-generic";
 			}

@@ -27,7 +27,7 @@ namespace Everlook.Renderables
 	/// <summary>
 	/// Represents a renderable BLP image.
 	/// </summary>
-	public class RenderableBLP : IRenderable
+	public sealed class RenderableBLP : IRenderable
 	{
 		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is, 

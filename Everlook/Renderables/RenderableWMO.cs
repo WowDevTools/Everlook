@@ -27,7 +27,7 @@ namespace Everlook.Renderables
 	/// <summary>
 	/// Represents a renderable World Model Object
 	/// </summary>
-	public class RenderableWMO : IRenderable
+	public sealed class RenderableWMO : IRenderable
 	{
 		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is, 
