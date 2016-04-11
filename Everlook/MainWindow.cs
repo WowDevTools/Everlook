@@ -194,6 +194,8 @@ namespace Everlook
 				Set up item control sections
 			*/
 			// Image
+			MipLevelComboBox.Changed += OnSelectedMipLevelChanged;
+
 			RenderAlphaCheckButton.Sensitive = false;
 			RenderRedCheckButton.Sensitive = false;
 			RenderGreenCheckButton.Sensitive = false;
@@ -492,6 +494,25 @@ namespace Everlook
 		}
 
 		/// <summary>
+		/// Handles changing the mip level that is being rendered in the viewport based
+		/// on the user selection.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		protected void OnSelectedMipLevelChanged(object sender, EventArgs e)
+		{
+			if (viewportRenderer.IsActive)
+			{
+				int qualityLevel = MipLevelComboBox.Active;
+
+				if (qualityLevel >= 0)
+				{
+					viewportRenderer.SetRequestedQualityLevel((uint)qualityLevel);
+				}
+			}
+		}
+
+		/// <summary>
 		/// Handles opening of files from the archive triggered by a context menu press.
 		/// </summary>
 		/// <param name="sender">Sender.</param>
@@ -714,8 +735,17 @@ namespace Everlook
 							byte[] fileData = ExtractReference(fileReference);
 							if (fileData != null)
 							{
-								RenderableBLP image = new RenderableBLP(new BLP(fileData));
+								BLP blp = new BLP(fileData);
+								RenderableBLP image = new RenderableBLP(blp);
 								viewportRenderer.SetRenderTarget(image);
+
+								MipLevelListStore.Clear();
+								foreach (string mipString in blp.GetMipMapLevelStrings())
+								{
+									MipLevelListStore.AppendValues(mipString);
+								}
+
+								MipLevelComboBox.Active = 0;
 
 								EnableControlPage(ControlPage.Image);
 							}

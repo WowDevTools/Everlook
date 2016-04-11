@@ -27,7 +27,7 @@ namespace Everlook.Renderables
 	/// Interface representing a renderable object that can be passed to the viewport renderer.
 	/// Specific implementations of the rendering is implemented in the viewport renderer.
 	/// </summary>
-	public interface IRenderable
+	public interface IRenderable : IDisposable
 	{
 		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is, 

@@ -126,6 +126,14 @@ namespace Everlook.Utility
 			{
 				fileIcon = "text-x-generic-template";
 			}
+			else if (file.EndsWith(".sbt"))
+			{
+				fileIcon = "text-x-generic";
+			}
+			else if (file.EndsWith(".zmp"))
+			{
+				fileIcon = "application-x-executable";
+			}
 
 			return fileIcon;
 		}

@@ -50,7 +50,11 @@ namespace Everlook.Viewport
 		private bool bShouldRender;
 
 		private IRenderable RenderTarget;
-		private int RenderQualityLevel;
+		private uint RenderQualityLevel;
+		private bool HasPendingQualityChange;
+		private int RenderTargetHashSum;
+
+		private uint MaxFramesPerSecond;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Viewport.ViewportRenderer"/> class.
@@ -121,14 +125,19 @@ namespace Everlook.Viewport
 		/// Negative input numbers are reset to 0.
 		/// </summary>
 		/// <param name="QualityLevel">Quality level.</param>
-		public void SetRequestedQualityLevel(int QualityLevel)
+		public void SetRequestedQualityLevel(uint QualityLevel)
 		{
-			if (QualityLevel < 0)
-			{
-				QualityLevel = 0;
-			}
-
 			this.RenderQualityLevel = QualityLevel;
+			this.HasPendingQualityChange = true;
+		}
+
+		/// <summary>
+		/// Sets the max frame count per second. A value of 0 is treated as infinite.
+		/// </summary>
+		/// <param name="FramesPerSecond">Frames per second.</param>
+		public void SetMaxFrameCountPerSecond(uint FramesPerSecond)
+		{
+			this.MaxFramesPerSecond = FramesPerSecond;
 		}
 
 		/// <summary>
@@ -138,27 +147,56 @@ namespace Everlook.Viewport
 		private void RenderLoop()
 		{			
 			long previousFrameDelta = 0;
+
 			while (bShouldRender)
 			{
-				Stopwatch sw = new Stopwatch();
 
-				sw.Start();
-				FrameRenderedArgs.Frame = RenderFrame(previousFrameDelta);
-				sw.Stop();
+				if (RenderTarget != null)
+				{
+					if (RenderTarget.IsStatic)
+					{
+						// Check if the render target has changed
+						// If it has, rerender a single frame and pass it on
 
-				FrameRenderedArgs.FrameDelta = sw.ElapsedMilliseconds;
-				previousFrameDelta = sw.ElapsedMilliseconds;
-				RaiseFrameRendered();
+						if (RenderTarget.GetHashCode() != RenderTargetHashSum || HasPendingQualityChange)
+						{
+							RenderTargetHashSum = RenderTarget.GetHashCode();
+							Stopwatch sw = new Stopwatch();
+
+							sw.Start();
+							FrameRenderedArgs.Frame = RenderFrame(previousFrameDelta);
+							sw.Stop();
+
+							FrameRenderedArgs.FrameDelta = sw.ElapsedMilliseconds;
+							previousFrameDelta = sw.ElapsedMilliseconds;
+							RaiseFrameRendered();
+						}
+					}
+					else
+					{
+						Stopwatch sw = new Stopwatch();
+
+						sw.Start();
+						FrameRenderedArgs.Frame = RenderFrame(previousFrameDelta);
+						sw.Stop();
+
+						FrameRenderedArgs.FrameDelta = sw.ElapsedMilliseconds;
+						previousFrameDelta = sw.ElapsedMilliseconds;
+						RaiseFrameRendered();
+					}
+				}
 			}
 		}
 
 		private Pixbuf RenderFrame(long FrameDelta)
-		{			
+		{		
+			Pixbuf frame = null;
+					
 			if (RenderTarget is RenderableBLP)
 			{
 				RenderableBLP Renderable = RenderTarget as RenderableBLP;
 
-				Bitmap imageBitmap = null;
+				Bitmap imageBitmap;
 				if (RenderQualityLevel >= Renderable.Image.GetMipMapCount())
 				{
 					int worstMipMapLevel = Renderable.Image.GetMipMapCount();
@@ -166,20 +204,25 @@ namespace Everlook.Viewport
 				}
 				else
 				{					
-					imageBitmap = Renderable.Image.GetMipMap((uint)RenderQualityLevel);
+					imageBitmap = Renderable.Image.GetMipMap(RenderQualityLevel);
 				}
 
 				// HACK: Find a better way
 				using (MemoryStream ms = new MemoryStream())
-				{
+				{					
 					imageBitmap.Save(ms, ImageFormat.Png);
+					imageBitmap.Dispose();
+
 					ms.Position = 0;
 
-					return new Gdk.Pixbuf(ms);
+					frame = new Pixbuf(ms);
 				}
 			}
 
-			return null;
+			// At this point, any pending quality changes would have been implemented
+			HasPendingQualityChange = false;
+
+			return frame;
 		}
 
 		/// <summary>

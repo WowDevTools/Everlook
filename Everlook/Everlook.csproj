@@ -74,6 +74,8 @@
     <Compile Include="Audio\AudioPlayer.cs" />
     <Compile Include="Renderables\IRenderable.cs" />
     <Compile Include="Renderables\RenderableBLP.cs" />
+    <Compile Include="Renderables\RenderableMDX.cs" />
+    <Compile Include="Renderables\RenderableWMO.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
