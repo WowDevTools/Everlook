@@ -74,6 +74,8 @@ namespace Everlook.Utility
 		{
 			string fileIcon = Stock.File;
 
+			file = file.ToLower();
+
 			if (file.EndsWith(".m2"))
 			{
 				// Blender armature icon?
@@ -118,7 +120,7 @@ namespace Everlook.Utility
 			{
 				fileIcon = "x-office-address-book";
 			}
-			else if (file.EndsWith(".ttf") || file.EndsWith(".TTF"))
+			else if (file.EndsWith(".ttf"))
 			{
 				fileIcon = "font-x-generic";
 			}

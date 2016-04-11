@@ -28,8 +28,6 @@ using Everlook.Configuration;
 using Everlook.Viewport;
 using Warcraft.MPQ;
 using System.IO;
-using System.Text.RegularExpressions;
-using System.Linq;
 using Everlook.Utility;
 using Warcraft.Core;
 using Everlook.Renderables;
@@ -149,7 +147,7 @@ namespace Everlook
 			MainDrawingArea.OverrideBackgroundColor(StateFlags.Normal, Config.GetViewportBackgroundColour());
 
 			GameExplorerTreeView.RowExpanded += OnGameExplorerRowExpanded;
-			GameExplorerTreeView.RowActivated += OnGameExplorerRowActivated;
+			GameExplorerTreeView.Selection.Changed += OnGameExplorerSelectionChanged;
 			GameExplorerTreeView.ButtonPressEvent += OnGameExplorerButtonPressed;
 
 			ExportQueueTreeView.ButtonPressEvent += OnExportQueueButtonPressed;	
@@ -185,11 +183,6 @@ namespace Everlook
 			// Animation
 
 			// Audio
-		}
-
-		private void LoadPackages()
-		{
-			GameExplorerTreeStore.Clear();
 		}
 
 		/// <summary>
@@ -427,7 +420,8 @@ namespace Everlook
 		{
 			MainDrawingArea.OverrideBackgroundColor(StateFlags.Normal, Config.GetViewportBackgroundColour());
 
-			LoadPackages();
+			GameExplorerTreeStore.Clear();
+			explorerBuilder.Reload();
 		}
 
 		/// <summary>
@@ -483,17 +477,12 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnGameExplorerRowActivated(object sender, RowActivatedArgs e)
+		protected void OnGameExplorerSelectionChanged(object sender, EventArgs e)
 		{
-			ItemReference fileReference = null;
-			if (e.Path != null)
-			{
-				TreeIter iter;
-				GameExplorerTreeStore.GetIterFromString(out iter, e.Path.ToString());
+			TreeIter selectedIter;
+			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-				fileReference = GetItemReferenceFromIter(iter);
-			}
-
+			ItemReference fileReference = GetItemReferenceFromIter(selectedIter);
 			if (fileReference != null && !String.IsNullOrEmpty(fileReference.ItemPath))
 			{
 				string fileName = System.IO.Path.GetFileName(Utilities.CleanPath(fileReference.ItemPath));
@@ -563,6 +552,7 @@ namespace Everlook
 									MipLevelListStore.AppendValues(mipString);
 								}
 
+								viewportRenderer.SetRequestedQualityLevel(0);
 								MipLevelComboBox.Active = 0;
 
 								EnableControlPage(ControlPage.Image);

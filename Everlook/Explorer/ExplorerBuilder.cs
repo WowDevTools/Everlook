@@ -189,6 +189,7 @@ namespace Everlook.Explorer
 				if (PackagePaths.Count > 0)
 				{
 					CachedPackageDirectory = Config.GetGameDirectory();
+					PackagePathMapping.Clear();
 					PackageListfiles.Clear();
 					PackageSubfolderContent.Clear();
 					PackageFolderNodeMapping.Clear();
@@ -208,7 +209,7 @@ namespace Everlook.Explorer
 									PackagePathMapping.Add(PackageName, PackagePath);
 								}
 							}
-							catch (Exception ex)
+							catch (FileLoadException ex)
 							{						
 								Console.WriteLine(String.Format("Exception in ExplorerBuilder.LoadPackages() (Package: {0}): {1}", PackageName, ex.Message));
 								break;
