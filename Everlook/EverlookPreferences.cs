@@ -30,7 +30,7 @@ using Everlook.Export.Audio;
 namespace Everlook
 {
 	/// <summary>
-	/// Everlook preferences dialog.The "partial" qualifier is not strictly needed, but prevents the compiler from 
+	/// Everlook preferences dialog. The "partial" qualifier is not strictly needed, but prevents the compiler from 
 	/// generating errors about the autoconnected members that relate to UI elements.
 	/// </summary>
 	public partial class EverlookPreferences : Dialog

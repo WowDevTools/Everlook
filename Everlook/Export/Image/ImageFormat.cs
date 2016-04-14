@@ -41,22 +41,16 @@ namespace Everlook.Export.Image
 		JPG = 1,
 
 		/// <summary>
-		/// Truevision TARGA
-		/// <a href="https://en.wikipedia.org/wiki/Truevision_TGA"/>
-		/// </summary>
-		TGA = 2,
-
-		/// <summary>
 		/// Tagged Image File Format
 		/// <a href="https://en.wikipedia.org/wiki/Tagged_Image_File_Format"/>
 		/// </summary>
-		TIF = 3,
+		TIF = 2,
 
 		/// <summary>
 		/// Bitmap Image
 		/// <a href="https://en.wikipedia.org/wiki/BMP_file_format"/>
 		/// </summary>
-		BMP = 4
+		BMP = 3
 	}
 }
 

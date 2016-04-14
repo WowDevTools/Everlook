@@ -38,9 +38,6 @@
         <col id="0" translatable="yes">JPG (.jpg/.jpeg)</col>
       </row>
       <row>
-        <col id="0" translatable="yes">Targa (.tga)</col>
-      </row>
-      <row>
         <col id="0" translatable="yes">Tiff (.tif)</col>
       </row>
       <row>

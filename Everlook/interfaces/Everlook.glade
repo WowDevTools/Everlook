@@ -941,6 +941,11 @@ Any bugs in the software or underlying libraries should be reported to the distr
     <property name="stock">gtk-convert</property>
     <property name="icon_size">1</property>
   </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-convert</property>
+  </object>
   <object class="GtkMenu" id="FileContextMenu">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -952,6 +957,15 @@ Any bugs in the software or underlying libraries should be reported to the distr
         <property name="tooltip_text" translatable="yes">Extract the currently selected item from the archive</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="ExportItem">
+        <property name="label" translatable="yes">Export</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="image">image2</property>
+        <property name="use_stock">False</property>
       </object>
     </child>
     <child>

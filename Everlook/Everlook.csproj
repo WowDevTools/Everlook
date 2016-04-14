@@ -78,11 +78,14 @@
     <Compile Include="Renderables\RenderableWMO.cs" />
     <Compile Include="Explorer\ExplorerBuilder.cs" />
     <Compile Include="Renderables\RenderableBitmap.cs" />
+    <Compile Include="Export\Image\EverlookImageExportDialog.cs" />
+    <Compile Include="Package\PackageInteractionHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="interfaces\Everlook.glade" />
     <EmbeddedResource Include="interfaces\EverlookPreferences.glade" />
+    <EmbeddedResource Include="interfaces\EverlookImageExport.glade" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
@@ -95,6 +98,7 @@
     <Folder Include="Audio\" />
     <Folder Include="Renderables\" />
     <Folder Include="Explorer\" />
+    <Folder Include="Package\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

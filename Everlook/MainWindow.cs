@@ -34,6 +34,8 @@ using Everlook.Renderables;
 using Warcraft.BLP;
 using Everlook.Explorer;
 using System.Drawing;
+using Everlook.Package;
+using Everlook.Export.Image;
 
 namespace Everlook
 {
@@ -69,6 +71,7 @@ namespace Everlook
 
 		[UI] Menu FileContextMenu;
 		[UI] ImageMenuItem ExtractItem;
+		[UI] ImageMenuItem ExportItem;
 		[UI] ImageMenuItem OpenItem;
 		[UI] ImageMenuItem CopyItem;
 		[UI] ImageMenuItem QueueItem;
@@ -153,6 +156,7 @@ namespace Everlook
 			ExportQueueTreeView.ButtonPressEvent += OnExportQueueButtonPressed;	
 
 			ExtractItem.Activated += OnExtractContextItemActivated;
+			ExportItem.Activated += OnExportItemContextItemActivated;
 			OpenItem.Activated += OnOpenContextItemActivated;
 			CopyItem.Activated += OnCopyContextItemActivated;
 			QueueItem.Activated += OnQueueContextItemActivated;
@@ -250,6 +254,40 @@ namespace Everlook
 		}
 
 		/// <summary>
+		/// Handles the export item context item activated event.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		protected void OnExportItemContextItemActivated(object sender, EventArgs e)
+		{
+			TreeIter selectedIter;
+			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
+
+			ItemReference fileReference = GetItemReferenceFromIter(selectedIter);
+			if (fileReference != null && !String.IsNullOrEmpty(fileReference.ItemPath))
+			{
+				string fileName = System.IO.Path.GetFileName(Utilities.CleanPath(fileReference.ItemPath));
+				switch (Filetype.GetFiletypeOfFile(fileName))
+				{
+					case EWarcraftFiletype.BinaryImage:
+						{
+							string PackagePath = explorerBuilder.PackagePathMapping[fileReference.PackageName];
+							using (EverlookImageExportDialog ExportDialog = EverlookImageExportDialog.Create(fileReference, PackagePath))
+							{
+								ExportDialog.Run();
+								ExportDialog.Destroy();
+							}
+							break;
+						}
+					default:
+						{
+							break;
+						}
+				}
+			}
+		}
+
+		/// <summary>
 		/// Handles extraction of files from the archive triggered by a context menu press.
 		/// </summary>
 		/// <param name="sender">Sender.</param>
@@ -274,33 +312,14 @@ namespace Everlook
 				exportpath = Config.GetDefaultExportDirectory() + filename;
 			}
 
-			byte[] file = ExtractReference(fileReference);
-			if (file != null)
+			string PackagePath = explorerBuilder.PackagePathMapping[fileReference.PackageName];
+			using (PackageInteractionHandler PackageHandler = new PackageInteractionHandler(PackagePath))
 			{
-				File.WriteAllBytes(exportpath, file);
-			}
-		}
-
-		/// <summary>
-		/// Extracts the specified reference from its associated package.
-		/// </summary>
-		/// <param name="fileReference">File reference.</param>
-		private byte[] ExtractReference(ItemReference fileReference)
-		{
-			string packagePath;
-			if (explorerBuilder.PackagePathMapping.TryGetValue(fileReference.PackageName, out packagePath))
-			{
-				using (FileStream fs = File.OpenRead(packagePath))
+				byte[] file = PackageHandler.ExtractReference(fileReference);
+				if (file != null)
 				{
-					using (MPQ mpq = new MPQ(fs))
-					{						
-						return mpq.ExtractFile(fileReference.ItemPath);
-					}
+					File.WriteAllBytes(exportpath, file);
 				}
-			}
-			else
-			{
-				return null;
 			}
 		}
 
@@ -401,15 +420,16 @@ namespace Everlook
 		/// <param name="e">E.</param>
 		protected void OnPreferencesButtonClicked(object sender, EventArgs e)
 		{
-			EverlookPreferences PreferencesDialog = EverlookPreferences.Create();
-
-			if (PreferencesDialog.Run() == (int)ResponseType.Ok)
+			using (EverlookPreferences PreferencesDialog = EverlookPreferences.Create())
 			{
-				PreferencesDialog.SavePreferences();
-				ReloadRuntimeValues();
-			}
+				if (PreferencesDialog.Run() == (int)ResponseType.Ok)
+				{
+					PreferencesDialog.SavePreferences();
+					ReloadRuntimeValues();
+				}
 
-			PreferencesDialog.Destroy();
+				PreferencesDialog.Destroy();
+			}
 		}
 
 		/// <summary>
@@ -539,24 +559,30 @@ namespace Everlook
 								viewportRenderer.Start();							
 							}
 
-							byte[] fileData = ExtractReference(fileReference);
-							if (fileData != null)
+							string PackagePath = explorerBuilder.PackagePathMapping[fileReference.PackageName];
+							using (PackageInteractionHandler PackageHandler = new PackageInteractionHandler(PackagePath))
 							{
-								BLP blp = new BLP(fileData);
-								RenderableBLP image = new RenderableBLP(blp);
-								viewportRenderer.SetRenderTarget(image);
-
-								MipLevelListStore.Clear();
-								foreach (string mipString in blp.GetMipMapLevelStrings())
+								byte[] fileData = PackageHandler.ExtractReference(fileReference);
+								if (fileData != null)
 								{
-									MipLevelListStore.AppendValues(mipString);
+									BLP blp = new BLP(fileData);
+									RenderableBLP image = new RenderableBLP(blp);
+									viewportRenderer.SetRenderTarget(image);
+
+									MipLevelListStore.Clear();
+									foreach (string mipString in blp.GetMipMapLevelStrings())
+									{
+										MipLevelListStore.AppendValues(mipString);
+									}
+
+									viewportRenderer.SetRequestedQualityLevel(0);
+									MipLevelComboBox.Active = 0;
+
+									EnableControlPage(ControlPage.Image);
 								}
-
-								viewportRenderer.SetRequestedQualityLevel(0);
-								MipLevelComboBox.Active = 0;
-
-								EnableControlPage(ControlPage.Image);
 							}
+
+
 							break;
 						}
 					case EWarcraftFiletype.Hashmap:
@@ -581,20 +607,24 @@ namespace Everlook
 						viewportRenderer.Start();							
 					}
 
-					byte[] fileData = ExtractReference(fileReference);
-					if (fileData != null)
+					string PackagePath = explorerBuilder.PackagePathMapping[fileReference.PackageName];
+					using (PackageInteractionHandler PackageHandler = new PackageInteractionHandler(PackagePath))
 					{
-						using (MemoryStream ms = new MemoryStream(fileData))
+						byte[] fileData = PackageHandler.ExtractReference(fileReference);
+						if (fileData != null)
 						{
-							Bitmap Image = new Bitmap(ms);
-							RenderableBitmap Renderable = new RenderableBitmap(Image);
+							using (MemoryStream ms = new MemoryStream(fileData))
+							{
+								Bitmap Image = new Bitmap(ms);
+								RenderableBitmap Renderable = new RenderableBitmap(Image);
 
-							viewportRenderer.SetRenderTarget(Renderable);
+								viewportRenderer.SetRenderTarget(Renderable);
+							}
+
+							// Normal image files don't have mipmap levels
+							MipLevelListStore.Clear();
+							EnableControlPage(ControlPage.Image);
 						}
-
-						// Normal image files don't have mipmap levels
-						MipLevelListStore.Clear();
-						EnableControlPage(ControlPage.Image);
 					}
 				}
 			}
