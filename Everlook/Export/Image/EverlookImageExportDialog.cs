@@ -20,18 +20,15 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
-using Gtk;
-using UI = Gtk.Builder.ObjectAttribute;
+using System.IO;
 using Everlook.Configuration;
 using Everlook.Export.Image;
 using Everlook.Package;
-using System.IO;
-using System.Drawing;
-using Warcraft.BLP;
-using Warcraft.MPQ.FileInfo;
 using Everlook.Utility;
 using Gdk;
-
+using Gtk;
+using Warcraft.BLP;
+using UI = Gtk.Builder.ObjectAttribute;
 
 namespace Everlook.Export.Image
 {
