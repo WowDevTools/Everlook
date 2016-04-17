@@ -56,8 +56,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="OpenGL.Net">
-      <HintPath>..\packages\OpenGL.Net.0.2.0.0\lib\net20\OpenGL.Net.dll</HintPath>
+      <HintPath>..\packages\OpenGL.Net.0.2.1\lib\net20\OpenGL.Net.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />

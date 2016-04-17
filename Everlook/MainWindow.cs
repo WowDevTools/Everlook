@@ -26,7 +26,6 @@ using Gdk;
 using System.Collections.Generic;
 using Everlook.Configuration;
 using Everlook.Viewport;
-using Warcraft.MPQ;
 using System.IO;
 using Everlook.Utility;
 using Warcraft.Core;
@@ -274,7 +273,10 @@ namespace Everlook
 							string PackagePath = explorerBuilder.PackagePathMapping[fileReference.PackageName];
 							using (EverlookImageExportDialog ExportDialog = EverlookImageExportDialog.Create(fileReference, PackagePath))
 							{
-								ExportDialog.Run();
+								if (ExportDialog.Run() == (int)ResponseType.Ok)
+								{
+									ExportDialog.RunExport();
+								}
 								ExportDialog.Destroy();
 							}
 							break;
@@ -440,8 +442,11 @@ namespace Everlook
 		{
 			MainDrawingArea.OverrideBackgroundColor(StateFlags.Normal, Config.GetViewportBackgroundColour());
 
-			GameExplorerTreeStore.Clear();
-			explorerBuilder.Reload();
+			if (explorerBuilder.HasPackageDirectoryChanged())
+			{
+				GameExplorerTreeStore.Clear();
+				explorerBuilder.Reload();
+			}
 		}
 
 		/// <summary>

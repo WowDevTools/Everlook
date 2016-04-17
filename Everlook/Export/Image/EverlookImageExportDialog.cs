@@ -30,6 +30,7 @@ using System.Drawing;
 using Warcraft.BLP;
 using Warcraft.MPQ.FileInfo;
 using Everlook.Utility;
+using Gdk;
 
 
 namespace Everlook.Export.Image
@@ -40,16 +41,16 @@ namespace Everlook.Export.Image
 	/// </summary>
 	public partial class EverlookImageExportDialog : Dialog
 	{
-		[UI] TextBuffer ImageInformationTextBuffer;
 		[UI] ListStore MipLevelListStore;
+		[UI] TreeView MipLevelListingTreeView;
+		[UI] CellRendererToggle ExportMipToggleRenderer;
+
+		[UI] Menu ExportPopupMenu;
+		[UI] ImageMenuItem SelectAllItem;
+		[UI] ImageMenuItem SelectNoneItem;
 
 		[UI] ComboBox ExportFormatComboBox;
-		[UI] CheckButton ExportAllMipsCheckButton;
-		[UI] ComboBox MipStartComboBox;
-		[UI] ComboBox MipEndComboBox;
 		[UI] FileChooserButton ExportDirectoryFileChooserButton;
-
-		[UI] Button OKButton;
 
 		/// <summary>
 		/// The reference to the file in the package that is to be exported.
@@ -104,76 +105,77 @@ namespace Everlook.Export.Image
 			/*
 				 UI Setup
 			*/
+			ExportMipToggleRenderer.Toggled += OnExportMipToggleClicked;
+			MipLevelListingTreeView.ButtonPressEvent += OnMipListingButtonPressed;
+			SelectAllItem.Activated += OnSelectAllItemActivated;
+			SelectNoneItem.Activated += OnSelectNoneItemActivated;
+
 			LoadInformation();
-			//OKButton.Clicked += OnOKButtonClicked;
-			ExportAllMipsCheckButton.Clicked += OnExportAllMipsButtonClicked;
 		}
 
 		private void LoadInformation()
 		{
+			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(Utilities.CleanPath(ExportTarget.ItemPath));
+			this.Title = "Export Image | " + ImageFilename;
+
 			byte[] file = this.InteractionHandler.ExtractReference(ExportTarget);
 			Image = new BLP(file);
 
-			MPQFileInfo ImageInfo = this.InteractionHandler.GetReferenceInfo(ExportTarget);
-
-			ImageInformationTextBuffer.Text = String.Format(
-				"Image Version: {0}\n" +
-				"Image Size (package): {1}\n" +
-				"Image Size (disk): {2}\n" +
-				"Storage Format: {3}\n\n" +
-				"" +
-				"Flags: {4}", 
-				Image.GetFormat(), 
-				ImageInfo.GetStoredSize(),
-				ImageInfo.GetActualSize(),
-				Image.GetCompressionType(),
-				ImageInfo.GetFlags());
-
 			ExportFormatComboBox.Active = (int)Config.GetDefaultImageFormat();
 			
-			ExportAllMipsCheckButton.Active = false;
-
 			MipLevelListStore.Clear();
 			foreach (string mipString in Image.GetMipMapLevelStrings())
 			{
-				MipLevelListStore.AppendValues(mipString);
+				MipLevelListStore.AppendValues(true, mipString);
 			}
-
-			MipStartComboBox.Sensitive = true;
-			MipStartComboBox.Active = 0;
-
-			MipEndComboBox.Sensitive = true;
-			MipEndComboBox.Active = 0;
 
 			ExportDirectoryFileChooserButton.SetFilename(Config.GetDefaultExportDirectory());
 		}
 
-		private void ExportImage()
+		/// <summary>
+		/// Exports the mipmaps in the image.
+		/// </summary>
+		public void RunExport()
 		{
 			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(Utilities.CleanPath(ExportTarget.ItemPath));
 
-			string ExportPath = ExportDirectoryFileChooserButton.Filename + System.IO.Path.DirectorySeparatorChar +
-			                    ImageFilename;
-
-			if (ExportAllMipsCheckButton.Active)
+			string ExportPath = "";
+			if (Config.GetShouldKeepFileDirectoryStructure())
 			{
-				for (int i = 0; i <= Image.GetMipMapCount(); ++i)
-				{
-					Image.GetMipMap((uint)i).Save(ExportPath + "_" + i, 
-						GetSystemImageFormatFromImageFormat((ImageFormat)ExportFormatComboBox.Active));
-				}
+				ExportPath = String.Format("{0}{1}{2}", ExportDirectoryFileChooserButton.Filename, System.IO.Path.DirectorySeparatorChar,
+					Utilities.CleanPath(ExportTarget.ItemPath).Replace(".blp", ""));
 			}
 			else
 			{
-				for (int i = MipStartComboBox.Active; i <= MipEndComboBox.Active; ++i)
-				{
-					Image.GetMipMap((uint)i).Save(ExportPath + "_" + i, 
-						GetSystemImageFormatFromImageFormat((ImageFormat)ExportFormatComboBox.Active));
-				}
+				ExportPath = String.Format("{0}{1}{2}", ExportDirectoryFileChooserButton.Filename, System.IO.Path.DirectorySeparatorChar,
+					ImageFilename);
 			}
+
+
+			int i = 0;
+			MipLevelListStore.Foreach(new TreeModelForeachFunc(delegate(ITreeModel model, TreePath path, TreeIter iter)
+					{
+						bool bShouldExport = (bool)MipLevelListStore.GetValue(iter, 0);
+
+						if (bShouldExport)
+						{
+							string formatExtension = GetFileExtensionFromImageFormat((ImageFormat)ExportFormatComboBox.Active);
+							Directory.CreateDirectory(Directory.GetParent(ExportPath).FullName);
+
+							string fullExportPath = String.Format("{0}_{1}.{2}", ExportPath, i, formatExtension);
+							Image.GetMipMap((uint)i).Save(fullExportPath, GetSystemImageFormatFromImageFormat((ImageFormat)ExportFormatComboBox.Active));
+						}
+
+						++i;
+						return false;
+					}));
 		}
 
-
+		/// <summary>
+		/// Gets the system image format from image format.
+		/// </summary>
+		/// <returns>The system image format from image format.</returns>
+		/// <param name="Format">Format.</param>
 		private System.Drawing.Imaging.ImageFormat GetSystemImageFormatFromImageFormat(ImageFormat Format)
 		{
 			switch (Format)
@@ -192,32 +194,93 @@ namespace Everlook.Export.Image
 		}
 
 		/// <summary>
+		/// Gets the file extension from image format.
+		/// </summary>
+		/// <returns>The file extension from image format.</returns>
+		/// <param name="Format">Format.</param>
+		private string GetFileExtensionFromImageFormat(ImageFormat Format)
+		{
+			switch (Format)
+			{
+				case ImageFormat.PNG:
+					return "png";
+				case ImageFormat.JPG:
+					return "jpg";
+				case ImageFormat.TIF:
+					return "tif";
+				case ImageFormat.BMP:
+					return "bmp";
+				default:
+					return "png";
+			}
+		}
+
+		/// <summary>
+		/// Handles context menu spawning for the game explorer.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		[GLib.ConnectBefore]
+		protected void OnMipListingButtonPressed(object sender, ButtonPressEventArgs e)
+		{
+			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
+			{
+				ExportPopupMenu.ShowAll();
+				ExportPopupMenu.Popup();
+			}
+		}
+
+		/// <summary>
+		/// Handles the select all item activated event.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		protected void OnSelectAllItemActivated(object sender, EventArgs e)
+		{
+			MipLevelListStore.Foreach(new TreeModelForeachFunc(delegate(ITreeModel model, TreePath path, TreeIter iter)
+					{
+						MipLevelListStore.SetValue(iter, 0, true);
+						return false;
+					}));
+		}
+
+		/// <summary>
+		/// Handles the select none item activated event.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		protected void OnSelectNoneItemActivated(object sender, EventArgs e)
+		{
+			MipLevelListStore.Foreach(new TreeModelForeachFunc(delegate(ITreeModel model, TreePath path, TreeIter iter)
+					{
+						MipLevelListStore.SetValue(iter, 0, false);
+						return false;
+					}));
+		}
+
+		/// <summary>
+		/// Handles the export mip toggle clicked event.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		protected void OnExportMipToggleClicked(object sender, ToggledArgs e)
+		{
+			TreeIter Iter;
+			MipLevelListStore.GetIterFromString(out Iter, e.Path);
+
+			bool currentValue = (bool)MipLevelListStore.GetValue(Iter, 0);
+
+			MipLevelListStore.SetValue(Iter, 0, !currentValue);
+		}
+
+		/// <summary>
 		/// Handles the OK button clicked event.
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
 		protected void OnOKButtonClicked(object sender, EventArgs e)
 		{
-			ExportImage();
-		}
-
-		/// <summary>
-		/// Handles the export all mips button clicked event.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		protected void OnExportAllMipsButtonClicked(object sender, EventArgs e)
-		{
-			if (ExportAllMipsCheckButton.Active)
-			{
-				MipStartComboBox.Sensitive = false;			
-				MipEndComboBox.Sensitive = false;			
-			}
-			else
-			{
-				MipStartComboBox.Sensitive = false;			
-				MipEndComboBox.Sensitive = false;
-			}
+			RunExport();
 		}
 
 		/// <summary>

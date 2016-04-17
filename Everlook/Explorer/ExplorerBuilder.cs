@@ -170,14 +170,24 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
+		/// Determines whether the package directory changed.
+		/// </summary>
+		/// <returns><c>true</c> if the package directory has changed; otherwise, <c>false</c>.</returns>
+		public bool HasPackageDirectoryChanged()
+		{
+			return CachedPackageDirectory != Config.GetGameDirectory();
+		}
+
+		/// <summary>
 		/// Loads all packages in the currently selected game directory. This function does not enumerate files
 		/// and directories deeper than one to keep the UI responsive.
 		/// </summary>
 		protected void Reload_Implementation()
 		{
-			if (CachedPackageDirectory != Config.GetGameDirectory() && Directory.Exists(Config.GetGameDirectory()))
+			if (HasPackageDirectoryChanged() && Directory.Exists(Config.GetGameDirectory()))
 			{
-				
+				CachedPackageDirectory = Config.GetGameDirectory();
+
 				// Grab all packages in the game directory
 				List<string> PackagePaths = new List<string>();
 				foreach (string file in Directory.EnumerateFiles(Config.GetGameDirectory(), "*.*", SearchOption.AllDirectories)
@@ -188,7 +198,6 @@ namespace Everlook.Explorer
 
 				if (PackagePaths.Count > 0)
 				{
-					CachedPackageDirectory = Config.GetGameDirectory();
 					PackagePathMapping.Clear();
 					PackageListfiles.Clear();
 					PackageSubfolderContent.Clear();
