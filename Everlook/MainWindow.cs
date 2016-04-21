@@ -35,6 +35,7 @@ using Everlook.Explorer;
 using System.Drawing;
 using Everlook.Package;
 using Everlook.Export.Image;
+using Everlook.Export.Directory;
 
 namespace Everlook
 {
@@ -51,6 +52,7 @@ namespace Everlook
 		[UI] AboutDialog AboutDialog;
 		[UI] ToolButton PreferencesButton;
 
+		[UI] Gtk.Viewport MainViewportContainer;
 		[UI] Gtk.Image MainDrawingArea;
 
 		/*
@@ -168,6 +170,7 @@ namespace Everlook
 			explorerBuilder.PackageEnumerated += OnPackageEnumerated;
 			explorerBuilder.DirectoryEnumerated += OnDirectoryEnumerated;
 			explorerBuilder.FileEnumerated += OnFileEnumerated;
+			explorerBuilder.EnumerationFinished += OnEnumerationFinished;
 			explorerBuilder.Start();
 
 			/*
@@ -264,11 +267,31 @@ namespace Everlook
 
 			ItemReference fileReference = GetItemReferenceFromIter(selectedIter);
 			if (fileReference != null && !String.IsNullOrEmpty(fileReference.ItemPath))
-			{
-				string fileName = System.IO.Path.GetFileName(Utilities.CleanPath(fileReference.ItemPath));
-				switch (Filetype.GetFiletypeOfFile(fileName))
+			{	
+				WarcraftFileType fileType = fileReference.GetReferencedFileType();
+				switch (fileType)
 				{
-					case EWarcraftFiletype.BinaryImage:
+					case WarcraftFileType.Directory:
+						{
+							if (fileReference.IsEnumerated)
+							{
+								string PackagePath = explorerBuilder.PackagePathMapping[fileReference.PackageName];
+								using (EverlookDirectoryExportDialog ExportDialog = EverlookDirectoryExportDialog.Create(fileReference, PackagePath))
+								{
+									if (ExportDialog.Run() == (int)ResponseType.Ok)
+									{
+										ExportDialog.RunExport();
+									}
+									ExportDialog.Destroy();
+								}
+							}
+							else
+							{
+								// TODO: Implement wait message when the directory and its subdirectories have not yet been enumerated.
+							}
+							break;
+						}
+					case WarcraftFileType.BinaryImage:
 						{
 							string PackagePath = explorerBuilder.PackagePathMapping[fileReference.PackageName];
 							using (EverlookImageExportDialog ExportDialog = EverlookImageExportDialog.Create(fileReference, PackagePath))
@@ -355,7 +378,7 @@ namespace Everlook
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
 			ItemReference itemReference = GetItemReferenceFromIter(selectedIter);
-			if (!itemReference.IsFile())
+			if (!itemReference.IsFile)
 			{				
 				GameExplorerTreeView.ExpandRow(CurrentGameExplorerPath, false);
 			}
@@ -441,7 +464,7 @@ namespace Everlook
 		protected void ReloadRuntimeValues()
 		{
 			MainDrawingArea.OverrideBackgroundColor(StateFlags.Normal, Config.GetViewportBackgroundColour());
-
+		
 			if (explorerBuilder.HasPackageDirectoryChanged())
 			{
 				GameExplorerTreeStore.Clear();
@@ -456,7 +479,7 @@ namespace Everlook
 		/// <param name="sender">Sending object (a viewport rendering thread).</param>
 		/// <param name="e">Frame renderer arguments, containing the frame and frame delta.</param>
 		protected void OnFrameRendered(object sender, FrameRendererEventArgs e)
-		{
+		{			
 			Application.Invoke(delegate
 				{
 					if (MainDrawingArea.Pixbuf != null)
@@ -511,53 +534,53 @@ namespace Everlook
 			if (fileReference != null && !String.IsNullOrEmpty(fileReference.ItemPath))
 			{
 				string fileName = System.IO.Path.GetFileName(Utilities.CleanPath(fileReference.ItemPath));
-				switch (Filetype.GetFiletypeOfFile(fileName))
+				switch (fileReference.GetReferencedFileType())
 				{
-					case EWarcraftFiletype.AddonManifest:
+					case WarcraftFileType.AddonManifest:
 						{
 							break;
 						}
-					case EWarcraftFiletype.AddonManifestSignature:
+					case WarcraftFileType.AddonManifestSignature:
 						{
 							break;
 						}
-					case EWarcraftFiletype.MoPaQArchive:
+					case WarcraftFileType.MoPaQArchive:
 						{
 							break;
 						}
-					case EWarcraftFiletype.ConfigurationFile:
+					case WarcraftFileType.ConfigurationFile:
 						{
 							break;
 						}
-					case EWarcraftFiletype.DatabaseContainer:
+					case WarcraftFileType.DatabaseContainer:
 						{
 							break;
 						}
-					case EWarcraftFiletype.Shader:
+					case WarcraftFileType.Shader:
 						{
 							break;
 						}
-					case EWarcraftFiletype.TerrainWater:
+					case WarcraftFileType.TerrainWater:
 						{
 							break;
 						}
-					case EWarcraftFiletype.TerrainLiquid:
+					case WarcraftFileType.TerrainLiquid:
 						{
 							break;
 						}
-					case EWarcraftFiletype.TerrainLevel:
+					case WarcraftFileType.TerrainLevel:
 						{
 							break;
 						}
-					case EWarcraftFiletype.TerrainTable:
+					case WarcraftFileType.TerrainTable:
 						{
 							break;
 						}
-					case EWarcraftFiletype.TerrainData:
+					case WarcraftFileType.TerrainData:
 						{
 							break;
 						}
-					case EWarcraftFiletype.BinaryImage:
+					case WarcraftFileType.BinaryImage:
 						{
 							if (!viewportRenderer.IsActive)
 							{
@@ -590,15 +613,15 @@ namespace Everlook
 
 							break;
 						}
-					case EWarcraftFiletype.Hashmap:
+					case WarcraftFileType.Hashmap:
 						{
 							break;
 						}
-					case EWarcraftFiletype.GameObjectModel:
+					case WarcraftFileType.GameObjectModel:
 						{
 							break;
 						}
-					case EWarcraftFiletype.WorldObjectModel:
+					case WarcraftFileType.WorldObjectModel:
 						{
 							break;
 						}
@@ -667,7 +690,7 @@ namespace Everlook
 				}
 				else
 				{
-					if (!currentItemReference.IsFile())
+					if (!currentItemReference.IsFile)
 					{
 						ExtractItem.Sensitive = false;
 						OpenItem.Sensitive = true;
@@ -758,7 +781,8 @@ namespace Everlook
 		{
 			// I'm a new root node
 			TreeIter PackageNode = GameExplorerTreeStore.AppendValues("package-x-generic", packageReference.PackageName, "", "");
-			explorerBuilder.PackageFolderNodeMapping.Add(packageReference, PackageNode);
+			explorerBuilder.PackageItemNodeMapping.Add(packageReference, PackageNode);
+			explorerBuilder.PackageNodeItemMapping.Add(PackageNode, packageReference);
 		}
 
 		/// <summary>
@@ -784,18 +808,19 @@ namespace Everlook
 		private void AddDirectoryNode(ItemReference parentReference, ItemReference childReference)
 		{
 			TreeIter parentNode;
-			explorerBuilder.PackageFolderNodeMapping.TryGetValue(parentReference, out parentNode);
+			explorerBuilder.PackageItemNodeMapping.TryGetValue(parentReference, out parentNode);
 
 			if (GameExplorerTreeStore.IterIsValid(parentNode))
 			{
 				// Add myself to that node
-				if (!explorerBuilder.PackageFolderNodeMapping.ContainsKey(childReference))
+				if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(childReference))
 				{
 					string CleanPath = Utilities.CleanPath(childReference.ItemPath);
 					string DirectoryName = Directory.GetParent(CleanPath).Name;
 
 					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, Stock.Directory, DirectoryName, "", "");
-					explorerBuilder.PackageFolderNodeMapping.Add(childReference, node);
+					explorerBuilder.PackageItemNodeMapping.Add(childReference, node);
+					explorerBuilder.PackageNodeItemMapping.Add(node, childReference);
 
 					if (explorerBuilder.PackageSubfolderContent.ContainsKey(parentReference))
 					{
@@ -831,6 +856,16 @@ namespace Everlook
 		}
 
 		/// <summary>
+		/// Handles the enumeration finished event.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		protected void OnEnumerationFinished(object sender, ItemEnumeratedEventArgs e)
+		{
+			Console.WriteLine("Item enumerated: " + e.Item.IsEnumerated + " : " + e.Item.ItemPath);
+		}
+
+		/// <summary>
 		/// Adds a file node to the game explorer view, attached to the provided parent
 		/// package and directory.
 		/// </summary>
@@ -839,18 +874,19 @@ namespace Everlook
 		private void AddFileNode(ItemReference parentReference, ItemReference childReference)
 		{
 			TreeIter parentNode;
-			explorerBuilder.PackageFolderNodeMapping.TryGetValue(parentReference, out parentNode);
+			explorerBuilder.PackageItemNodeMapping.TryGetValue(parentReference, out parentNode);
 
 			if (GameExplorerTreeStore.IterIsValid(parentNode))
 			{
 				// Add myself to that node
-				if (!explorerBuilder.PackageFolderNodeMapping.ContainsKey(childReference))
+				if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(childReference))
 				{
 					string CleanPath = Utilities.CleanPath(childReference.ItemPath);
 					string fileName = System.IO.Path.GetFileName(CleanPath);
 
 					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, Utilities.GetIconForFiletype(childReference.ItemPath), fileName, "", "");
-					explorerBuilder.PackageFolderNodeMapping.Add(childReference, node);
+					explorerBuilder.PackageItemNodeMapping.Add(childReference, node);
+					explorerBuilder.PackageNodeItemMapping.Add(node, childReference);
 				}
 			}			
 		}
@@ -863,26 +899,15 @@ namespace Everlook
 		/// <param name="iter">Iter.</param>
 		private ItemReference GetItemReferenceFromIter(TreeIter iter)
 		{
-			TreeIter parentIter;
-			ItemReference finalPath;
-
-			GameExplorerTreeStore.IterParent(out parentIter, iter);
-			if (GameExplorerTreeStore.IterIsValid(parentIter))
+			ItemReference reference;
+			if (explorerBuilder.PackageNodeItemMapping.TryGetValue(iter, out reference))
 			{
-				finalPath = new ItemReference(GetItemReferenceFromIter(parentIter), (string)GameExplorerTreeStore.GetValue(iter, 1));
-
-				if (!finalPath.IsFile())
-				{
-					finalPath.ItemPath += @"\";
-				}
+				return reference;
 			}
 			else
 			{
-				// Parentless nodes are package nodes
-				finalPath = new ItemReference((string)GameExplorerTreeStore.GetValue(iter, 1), "");
+				return null;
 			}
-
-			return finalPath;
 		}
 
 		/// <summary>

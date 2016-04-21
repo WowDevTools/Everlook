@@ -20,6 +20,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
+using Warcraft.Core;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Everlook
 {
@@ -40,6 +44,11 @@ namespace Everlook
 		}
 
 		/// <summary>
+		/// Contains a list of references that have this reference as a parent.
+		/// </summary>
+		public List<ItemReference> ChildReferences = new List<ItemReference>();
+
+		/// <summary>
 		/// Gets or sets the name of the package where the file is stored.
 		/// </summary>
 		/// <value>The name of the package.</value>
@@ -57,6 +66,67 @@ namespace Everlook
 		{
 			get;
 			set;
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this reference has had its children enumerated.
+		/// </summary>
+		/// <value><c>true</c> if this instance is enumerated; otherwise, <c>false</c>.</value>
+		public bool IsEnumerated
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Walks through this reference's children and checks whether or not all of them have had their
+		/// children enumerated. Depending on the depth of the item, this may be an expensive operation.
+		/// </summary>
+		/// <value><c>true</c> if this instance is fully enumerated; otherwise, <c>false</c>.</value>
+		public bool IsFullyEnumerated
+		{
+			get
+			{
+				bool areChildrenEnumerated = true;
+				foreach (ItemReference childReference in ChildReferences)
+				{					
+					if (childReference.IsDirectory)
+					{			
+						if (!childReference.IsEnumerated)
+						{
+							return false;
+						}
+
+						areChildrenEnumerated = areChildrenEnumerated & childReference.IsFullyEnumerated;
+					}
+				}
+
+				return areChildrenEnumerated;
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this reference is a directory.
+		/// </summary>
+		/// <value><c>true</c> if this instance is directory; otherwise, <c>false</c>.</value>
+		public bool IsDirectory
+		{
+			get
+			{
+				return GetReferencedFileType() == WarcraftFileType.Directory;
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this reference is a file.
+		/// </summary>
+		/// <value><c>true</c> if this instance is file; otherwise, <c>false</c>.</value>
+		public bool IsFile
+		{
+			get
+			{
+				return GetReferencedFileType() != WarcraftFileType.Directory;
+			}
 		}
 
 		/// <summary>
@@ -84,18 +154,106 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Determines whether the provided path is a file or not.
+		/// Gets the name of the referenced item.
 		/// </summary>
-		/// <returns><c>true</c> if the path is a file; otherwise, <c>false</c>.</returns>
-		public bool IsFile()
-		{	
-			if (ItemPath.EndsWith("\\"))
+		/// <returns>The referenced item name.</returns>
+		public string GetReferencedItemName()
+		{
+			if (String.IsNullOrEmpty(ParentReference.ItemPath))
 			{
-				return false;
+				return ItemPath;
 			}
+			else
+			{
+				string childPath = ItemPath.Replace(ParentReference.ItemPath, "");
+				return childPath;
+			}
+		}
 
-			string[] parts = ItemPath.Split('.');
-			return parts.Length > 1;
+		/// <summary>
+		/// Gets the type of the referenced file.
+		/// </summary>
+		/// <returns>The referenced file type.</returns>
+		public WarcraftFileType GetReferencedFileType()
+		{
+			string itemPath = ItemPath.ToLower();
+			if (!itemPath.EndsWith("\\"))
+			{
+				string fileExtension = Path.GetExtension(itemPath).Replace(".", "");
+
+				switch (fileExtension)
+				{
+					case "mpq":
+						{	
+							return WarcraftFileType.MoPaQArchive;
+						}
+					case "toc":
+						{
+							return WarcraftFileType.AddonManifest;
+						}
+					case "sig":
+						{
+							return WarcraftFileType.AddonManifestSignature;
+						}
+					case "wtf":
+						{
+							return WarcraftFileType.ConfigurationFile;
+						}
+					case "dbc":
+						{
+							return WarcraftFileType.DatabaseContainer;
+						}
+					case "bls":
+						{
+							return WarcraftFileType.Shader;
+						}
+					case "wlw":
+						{
+							return WarcraftFileType.TerrainWater;
+						}
+					case "wlq":
+						{
+							return WarcraftFileType.TerrainLiquid;
+						}
+					case "wdl":
+						{
+							return WarcraftFileType.TerrainLiquid;
+						}
+					case "wdt":
+						{
+							return WarcraftFileType.TerrainTable;
+						}
+					case "adt":
+						{
+							return WarcraftFileType.TerrainData;
+						}
+					case "blp":
+						{
+							return WarcraftFileType.BinaryImage;
+						}
+					case "trs":
+						{
+							return WarcraftFileType.Hashmap;
+						}				
+					case "m2":
+					case "mdx":
+						{
+							return WarcraftFileType.GameObjectModel;
+						}
+					case "wmo":
+						{
+							return WarcraftFileType.WorldObjectModel;
+						}
+					default: 
+						{
+							return WarcraftFileType.Unknown;
+						}
+				}
+			}
+			else
+			{
+				return WarcraftFileType.Directory;
+			}
 		}
 
 		#region IEquatable implementation

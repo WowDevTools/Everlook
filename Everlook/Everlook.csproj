@@ -14,7 +14,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG;GTK3;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -55,10 +55,10 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
-    <Reference Include="OpenGL.Net">
-      <HintPath>..\packages\OpenGL.Net.0.2.1\lib\net20\OpenGL.Net.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="cairo-sharp, Version=1.10.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Package>gtk-sharp-3.0</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -81,12 +81,14 @@
     <Compile Include="Renderables\RenderableBitmap.cs" />
     <Compile Include="Export\Image\EverlookImageExportDialog.cs" />
     <Compile Include="Package\PackageInteractionHandler.cs" />
+    <Compile Include="Export\Directory\EverlookDirectoryExportDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="interfaces\Everlook.glade" />
     <EmbeddedResource Include="interfaces\EverlookPreferences.glade" />
     <EmbeddedResource Include="interfaces\EverlookImageExport.glade" />
+    <EmbeddedResource Include="interfaces\EverlookDirectoryExport.glade" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
@@ -100,6 +102,7 @@
     <Folder Include="Renderables\" />
     <Folder Include="Explorer\" />
     <Folder Include="Package\" />
+    <Folder Include="Export\Directory\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

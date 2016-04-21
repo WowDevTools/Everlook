@@ -21,7 +21,6 @@
 //
 using System;
 using Gdk;
-using OpenGL;
 using System.Threading;
 using System.Diagnostics;
 using Everlook.Renderables;

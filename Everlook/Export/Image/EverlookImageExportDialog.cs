@@ -157,7 +157,7 @@ namespace Everlook.Export.Image
 						if (bShouldExport)
 						{
 							string formatExtension = GetFileExtensionFromImageFormat((ImageFormat)ExportFormatComboBox.Active);
-							Directory.CreateDirectory(Directory.GetParent(ExportPath).FullName);
+							System.IO.Directory.CreateDirectory(System.IO.Directory.GetParent(ExportPath).FullName);
 
 							string fullExportPath = String.Format("{0}_{1}.{2}", ExportPath, i, formatExtension);
 							Image.GetMipMap((uint)i).Save(fullExportPath, GetSystemImageFormatFromImageFormat((ImageFormat)ExportFormatComboBox.Active));

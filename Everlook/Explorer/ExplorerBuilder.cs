@@ -40,21 +40,27 @@ namespace Everlook.Explorer
 		/// Occurs when a top-level package has been enumerated. This event does not mean that all files in the 
 		/// package have been enumerated, only that the package has been registered by the builder.
 		/// </summary>
-		public event PackageEnumeratedEventHandler PackageEnumerated;
+		public event ItemEnumeratedEventHandler PackageEnumerated;
 
 		/// <summary>
 		/// Occurs when a directory has been enumerated.
 		/// </summary>
-		public event DirectoryEnumeratedEventHandler DirectoryEnumerated;
+		public event ItemEnumeratedEventHandler DirectoryEnumerated;
 
 		/// <summary>
 		/// Occurs when a file has been enumerated.
 		/// </summary>
-		public event FileEnumeratedEventHandler FileEnumerated;
+		public event ItemEnumeratedEventHandler FileEnumerated;
+
+		/// <summary>
+		/// Occurs when a work order has been completed.
+		/// </summary>
+		public event ItemEnumeratedEventHandler EnumerationFinished;
 
 		private ItemEnumeratedEventArgs PackageEnumeratedArgs;
 		private ItemEnumeratedEventArgs DirectoryEnumeratedArgs;
 		private ItemEnumeratedEventArgs FileEnumeratedArgs;
+		private ItemEnumeratedEventArgs EnumerationFinishedArgs;
 
 		/// <summary>
 		/// The cached package directory. Used when the user changes game directory during runtime.
@@ -83,11 +89,18 @@ namespace Everlook.Explorer
 		public readonly Dictionary<ItemReference, List<ItemReference>> PackageSubfolderContent = new Dictionary<ItemReference, List<ItemReference>>();
 
 		/// <summary>
-		/// The package folder node mapping. Maps package names and paths to tree nodes.
+		/// The package item node mapping. Maps package names and paths to tree nodes.
 		/// Key: Path of package, folder or file.
 		/// Value: TreeIter that maps to the package, folder or file.
 		/// </summary>
-		public readonly Dictionary<ItemReference, TreeIter> PackageFolderNodeMapping = new Dictionary<ItemReference,TreeIter>();
+		public readonly Dictionary<ItemReference, TreeIter> PackageItemNodeMapping = new Dictionary<ItemReference, TreeIter>();
+
+		/// <summary>
+		/// The package folder node mapping. Maps package names and paths to tree nodes.
+		/// Key: TreeIter that represents the itemreference
+		/// Value: ItemReference that the iter maps to.
+		/// </summary>
+		public readonly Dictionary<TreeIter, ItemReference> PackageNodeItemMapping = new Dictionary<TreeIter, ItemReference>();
 
 		/// <summary>
 		/// Static reference to the configuration handler.
@@ -201,7 +214,8 @@ namespace Everlook.Explorer
 					PackagePathMapping.Clear();
 					PackageListfiles.Clear();
 					PackageSubfolderContent.Clear();
-					PackageFolderNodeMapping.Clear();
+					PackageItemNodeMapping.Clear();
+					PackageNodeItemMapping.Clear();
 
 					// Load the list files from all packages
 					foreach (string PackagePath in PackagePaths)
@@ -231,7 +245,7 @@ namespace Everlook.Explorer
 					{
 						if (PackageListfile.Value != null)
 						{
-							string PackageName = System.IO.Path.GetFileName(PackageListfile.Key);
+							string PackageName = Path.GetFileName(PackageListfile.Key);
 
 							ItemReference packageReference = new ItemReference(PackageName, "");
 							PackageEnumeratedArgs = new ItemEnumeratedEventArgs(packageReference);
@@ -305,16 +319,24 @@ namespace Everlook.Explorer
 						if (!String.IsNullOrEmpty(topDirectory))
 						{
 							ItemReference itemReference = new ItemReference(parentReference, topDirectory);
+							if (!parentReference.ChildReferences.Contains(itemReference))
+							{
+								parentReference.ChildReferences.Add(itemReference);
 
-							DirectoryEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
-							RaiseDirectoryEnumerated();
+								DirectoryEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
+								RaiseDirectoryEnumerated();
+							}
 						}
 						else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1)
 						{									
 							ItemReference itemReference = new ItemReference(parentReference, childPath);
+							if (!parentReference.ChildReferences.Contains(itemReference))
+							{
+								parentReference.ChildReferences.Add(itemReference);
 
-							FileEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
-							RaiseFileEnumerated();
+								FileEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
+								RaiseFileEnumerated();
+							}
 						}
 					}
 					else if (bHasFoundStartOfFolderBlock)
@@ -322,6 +344,10 @@ namespace Everlook.Explorer
 						break;
 					}
 				}
+
+				parentReference.IsEnumerated = true;
+				EnumerationFinishedArgs = new ItemEnumeratedEventArgs(parentReference);
+				RaiseEnumerationFinished();
 			}		
 		}
 
@@ -357,22 +383,20 @@ namespace Everlook.Explorer
 				FileEnumerated(this, FileEnumeratedArgs);
 			}
 		}
+
+		protected void RaiseEnumerationFinished()
+		{
+			if (EnumerationFinished != null)
+			{
+				EnumerationFinished(this, EnumerationFinishedArgs);
+			}
+		}
 	}
 
 	/// <summary>
 	/// Package enumerated event handler.
 	/// </summary>
-	public delegate void PackageEnumeratedEventHandler(object sender,ItemEnumeratedEventArgs e);
-
-	/// <summary>
-	/// Directory enumerated event handler.
-	/// </summary>
-	public delegate void DirectoryEnumeratedEventHandler(object sender,ItemEnumeratedEventArgs e);
-
-	/// <summary>
-	/// File enumerated event handler.
-	/// </summary>
-	public delegate void FileEnumeratedEventHandler(object sender,ItemEnumeratedEventArgs e);
+	public delegate void ItemEnumeratedEventHandler(object sender,ItemEnumeratedEventArgs e);
 
 	/// <summary>
 	/// Item enumerated event arguments.
