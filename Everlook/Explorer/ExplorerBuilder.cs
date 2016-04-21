@@ -212,7 +212,7 @@ namespace Everlook.Explorer
 					{
 						using (FileStream fs = File.OpenRead(PackagePath))
 						{
-							string PackageName = System.IO.Path.GetFileName(PackagePath);
+							string PackageName = Path.GetFileName(PackagePath);
 
 							try
 							{
@@ -282,7 +282,6 @@ namespace Everlook.Explorer
 			}
 		}
 
-		// TODO: Rework
 		/// <summary>
 		/// Enumerates the files and subfolders in the specified package, starting at 
 		/// the provided root path.
@@ -293,52 +292,45 @@ namespace Everlook.Explorer
 			List<string> PackageListfile;
 			if (PackageListfiles.TryGetValue(parentReference.PackageName, out PackageListfile))
 			{
-				bool bHasFoundStartOfFolderBlock = false;
-
-				foreach (string FilePath in PackageListfile)
+				foreach (string FilePath in PackageListfile.Where(s => s.StartsWith(parentReference.ItemPath)))
 				{
-					if (FilePath.StartsWith(parentReference.ItemPath))
+					string childPath = Regex.Replace(FilePath, "^" + Regex.Escape(parentReference.ItemPath), "");
+
+					int slashIndex = childPath.IndexOf('\\');
+					string topDirectory = childPath.Substring(0, slashIndex + 1);
+
+					if (!String.IsNullOrEmpty(topDirectory))
 					{
-						bHasFoundStartOfFolderBlock = true;
-
-						string childPath = Regex.Replace(FilePath, "^" + Regex.Escape(parentReference.ItemPath), "");
-
-						int slashIndex = childPath.IndexOf('\\');
-						string topDirectory = childPath.Substring(0, slashIndex + 1);
-
-						if (!String.IsNullOrEmpty(topDirectory))
+						ItemReference itemReference = new ItemReference(parentReference, topDirectory);
+						if (!parentReference.ChildReferences.Contains(itemReference))
 						{
-							ItemReference itemReference = new ItemReference(parentReference, topDirectory);
-							if (!parentReference.ChildReferences.Contains(itemReference))
-							{
-								parentReference.ChildReferences.Add(itemReference);
+							parentReference.ChildReferences.Add(itemReference);
 
-								DirectoryEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
-								RaiseDirectoryEnumerated();
-							}
-						}
-						else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1)
-						{									
-							ItemReference itemReference = new ItemReference(parentReference, childPath);
-							if (!parentReference.ChildReferences.Contains(itemReference))
-							{
-								parentReference.ChildReferences.Add(itemReference);
-
-								FileEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
-								RaiseFileEnumerated();
-							}
+							DirectoryEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
+							RaiseDirectoryEnumerated();
 						}
 					}
-					else if (bHasFoundStartOfFolderBlock)
-					{
-						break;
+					else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1)
+					{									
+						ItemReference itemReference = new ItemReference(parentReference, childPath);
+						if (!parentReference.ChildReferences.Contains(itemReference))
+						{
+							parentReference.ChildReferences.Add(itemReference);
+
+							FileEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
+							RaiseFileEnumerated();
+						}
 					}
 				}
 
 				parentReference.IsEnumerated = true;
 				EnumerationFinishedArgs = new ItemEnumeratedEventArgs(parentReference);
 				RaiseEnumerationFinished();
-			}		
+			}
+			else
+			{
+				throw new InvalidDataException("No listfile was found for the package referenced by this item reference.");
+			}	
 		}
 
 		/// <summary>
