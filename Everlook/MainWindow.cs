@@ -170,7 +170,6 @@ namespace Everlook
 			explorerBuilder.PackageEnumerated += OnPackageEnumerated;
 			explorerBuilder.DirectoryEnumerated += OnDirectoryEnumerated;
 			explorerBuilder.FileEnumerated += OnFileEnumerated;
-			explorerBuilder.EnumerationFinished += OnEnumerationFinished;
 			explorerBuilder.Start();
 
 			/*
@@ -273,7 +272,7 @@ namespace Everlook
 				{
 					case WarcraftFileType.Directory:
 						{
-							if (fileReference.IsEnumerated)
+							if (fileReference.IsFullyEnumerated)
 							{
 								string PackagePath = explorerBuilder.PackagePathMapping[fileReference.PackageName];
 								using (EverlookDirectoryExportDialog ExportDialog = EverlookDirectoryExportDialog.Create(fileReference, PackagePath))
@@ -505,16 +504,11 @@ namespace Everlook
 			GameExplorerTreeStore.GetIter(out iterNode, e.Path);
 
 			ItemReference parentReference = GetItemReferenceFromIter(e.Iter);
-			if (explorerBuilder.PackageSubfolderContent.ContainsKey(parentReference))
+			foreach (ItemReference childReference in parentReference.ChildReferences)
 			{
-
-				List<ItemReference> Subfolders;
-				if (explorerBuilder.PackageSubfolderContent.TryGetValue(parentReference, out Subfolders))
+				if (childReference.IsDirectory)
 				{
-					foreach (ItemReference Subfolder in Subfolders)
-					{
-						explorerBuilder.SubmitWork(Subfolder);
-					}
+					explorerBuilder.SubmitWork(childReference);
 				}
 			}
 		}
@@ -815,29 +809,9 @@ namespace Everlook
 				// Add myself to that node
 				if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(childReference))
 				{
-					string CleanPath = Utilities.CleanPath(childReference.ItemPath);
-					string DirectoryName = Directory.GetParent(CleanPath).Name;
-
-					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, Stock.Directory, DirectoryName, "", "");
+					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, Stock.Directory, childReference.GetReferencedItemName(), "", "");
 					explorerBuilder.PackageItemNodeMapping.Add(childReference, node);
 					explorerBuilder.PackageNodeItemMapping.Add(node, childReference);
-
-					if (explorerBuilder.PackageSubfolderContent.ContainsKey(parentReference))
-					{
-						List<ItemReference> ContentList;
-						if (explorerBuilder.PackageSubfolderContent.TryGetValue(parentReference, out ContentList))
-						{
-							ContentList.Add(childReference);
-							explorerBuilder.PackageSubfolderContent.Remove(parentReference);
-							explorerBuilder.PackageSubfolderContent.Add(parentReference, ContentList);
-						}
-					}
-					else
-					{
-						List<ItemReference> ContentList = new List<ItemReference>();
-						ContentList.Add(childReference);
-						explorerBuilder.PackageSubfolderContent.Add(parentReference, ContentList);
-					}
 				}
 			}
 		}
@@ -856,16 +830,6 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Handles the enumeration finished event.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		protected void OnEnumerationFinished(object sender, ItemEnumeratedEventArgs e)
-		{
-			Console.WriteLine("Item enumerated: " + e.Item.IsEnumerated + " : " + e.Item.ItemPath);
-		}
-
-		/// <summary>
 		/// Adds a file node to the game explorer view, attached to the provided parent
 		/// package and directory.
 		/// </summary>
@@ -881,10 +845,7 @@ namespace Everlook
 				// Add myself to that node
 				if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(childReference))
 				{
-					string CleanPath = Utilities.CleanPath(childReference.ItemPath);
-					string fileName = System.IO.Path.GetFileName(CleanPath);
-
-					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, Utilities.GetIconForFiletype(childReference.ItemPath), fileName, "", "");
+					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, Utilities.GetIconForFiletype(childReference.ItemPath), childReference.GetReferencedItemName(), "", "");
 					explorerBuilder.PackageItemNodeMapping.Add(childReference, node);
 					explorerBuilder.PackageNodeItemMapping.Add(node, childReference);
 				}

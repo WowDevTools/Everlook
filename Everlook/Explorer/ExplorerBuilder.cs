@@ -80,15 +80,6 @@ namespace Everlook.Explorer
 		public readonly Dictionary<string, List<string>> PackageListfiles = new Dictionary<string, List<string>>();
 
 		/// <summary>
-		/// The package folder dictionary. Holds values in the following configuration:
-		///	Key: Package Path.
-		/// Value: Dictionary of folders and files in the package.
-		/// Value.Key: Parent director Name.
-		/// Value.Value: List of subfolders and files.
-		/// </summary>
-		public readonly Dictionary<ItemReference, List<ItemReference>> PackageSubfolderContent = new Dictionary<ItemReference, List<ItemReference>>();
-
-		/// <summary>
 		/// The package item node mapping. Maps package names and paths to tree nodes.
 		/// Key: Path of package, folder or file.
 		/// Value: TreeIter that maps to the package, folder or file.
@@ -213,7 +204,6 @@ namespace Everlook.Explorer
 				{
 					PackagePathMapping.Clear();
 					PackageListfiles.Clear();
-					PackageSubfolderContent.Clear();
 					PackageItemNodeMapping.Clear();
 					PackageNodeItemMapping.Clear();
 
@@ -384,6 +374,9 @@ namespace Everlook.Explorer
 			}
 		}
 
+		/// <summary>
+		/// Raises the enumeration finished event.
+		/// </summary>
 		protected void RaiseEnumerationFinished()
 		{
 			if (EnumerationFinished != null)

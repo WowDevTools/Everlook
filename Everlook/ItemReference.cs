@@ -22,7 +22,6 @@
 using System;
 using Warcraft.Core;
 using System.IO;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace Everlook
@@ -159,15 +158,24 @@ namespace Everlook
 		/// <returns>The referenced item name.</returns>
 		public string GetReferencedItemName()
 		{
+			string itemName;
 			if (String.IsNullOrEmpty(ParentReference.ItemPath))
 			{
-				return ItemPath;
+				itemName = ItemPath;
 			}
 			else
 			{
-				string childPath = ItemPath.Replace(ParentReference.ItemPath, "");
-				return childPath;
+				itemName = ItemPath.Substring(ParentReference.ItemPath.Length);
 			}
+
+			if (IsDirectory)
+			{
+				// Remove the trailing slash from directory names.
+				int slashIndex = itemName.LastIndexOf("\\");
+				itemName = itemName.Substring(0, slashIndex);
+			}
+
+			return itemName;
 		}
 
 		/// <summary>
