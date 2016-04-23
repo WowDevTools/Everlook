@@ -36,6 +36,21 @@ namespace Everlook.Package
 	public sealed class PackageGroup : IDisposable
 	{
 		/// <summary>
+		/// Gets the name of the package group.
+		/// </summary>
+		/// <value>The name of the group.</value>
+		public string GroupName
+		{
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// The root package directory.
+		/// </summary>
+		private string RootPackageDirectory;
+
+		/// <summary>
 		/// The packages handled by this package group.
 		/// </summary>
 		private readonly List<PackageInteractionHandler> Packages = new List<PackageInteractionHandler>();
@@ -54,17 +69,21 @@ namespace Everlook.Package
 		public readonly List<string> PackageGroupFileList = new List<string>();
 
 		/// <summary>
-		/// Static reference to the configuration handler.
-		/// </summary>
-		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Package.PackageGroup"/> class.
 		/// </summary>
-		public PackageGroup()
+		public PackageGroup(string GroupName, string InRootPackageDirectory)
 		{
+			if (String.IsNullOrEmpty(GroupName))
+			{
+				throw new ArgumentNullException(GroupName, "A package group must be provided with a name.");
+			}
+
+			this.RootPackageDirectory = InRootPackageDirectory;
+
+			this.GroupName = GroupName;
+			
 			// Grab all packages in the game directory
-			List<string> PackagePaths = Directory.EnumerateFiles(Config.GetGameDirectory(), "*.*", SearchOption.AllDirectories)
+			List<string> PackagePaths = Directory.EnumerateFiles(RootPackageDirectory, "*.*", SearchOption.AllDirectories)
 				.OrderBy(a => a)
 				.Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ"))
 				.ToList();

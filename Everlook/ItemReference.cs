@@ -23,6 +23,7 @@ using System;
 using Warcraft.Core;
 using System.IO;
 using System.Collections.Generic;
+using Everlook.Package;
 
 namespace Everlook
 {
@@ -46,6 +47,16 @@ namespace Everlook
 		/// Contains a list of references that have this reference as a parent.
 		/// </summary>
 		public List<ItemReference> ChildReferences = new List<ItemReference>();
+
+		/// <summary>
+		/// Gets or sets the group this reference belongs to.
+		/// </summary>
+		/// <value>The group.</value>
+		public PackageGroup Group
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		/// Gets or sets the name of the package where the file is stored.
@@ -105,6 +116,30 @@ namespace Everlook
 		}
 
 		/// <summary>
+		/// Gets a value indicating whether this or not this reference is a package group.
+		/// </summary>
+		/// <value><c>true</c> if this reference is a package group; otherwise, <c>false</c>.</value>
+		public bool IsGroup
+		{
+			get
+			{
+				return Group != null && !IsDirectory && !IsFile;
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this or not this reference is a package.
+		/// </summary>
+		/// <value><c>true</c> if this reference is a package; otherwise, <c>false</c>.</value>
+		public bool IsPackage
+		{
+			get
+			{
+				return !String.IsNullOrEmpty(ItemPath) && String.IsNullOrEmpty(ItemPath);
+			}
+		}
+
+		/// <summary>
 		/// Gets a value indicating whether this reference is a directory.
 		/// </summary>
 		/// <value><c>true</c> if this instance is directory; otherwise, <c>false</c>.</value>
@@ -112,7 +147,7 @@ namespace Everlook
 		{
 			get
 			{
-				return GetReferencedFileType() == WarcraftFileType.Directory;
+				return !String.IsNullOrEmpty(ItemPath) && GetReferencedFileType() == WarcraftFileType.Directory;
 			}
 		}
 
@@ -124,8 +159,17 @@ namespace Everlook
 		{
 			get
 			{
-				return GetReferencedFileType() != WarcraftFileType.Directory;
+				return !String.IsNullOrEmpty(ItemPath) && (GetReferencedFileType() != WarcraftFileType.Directory);
 			}
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Everlook.ItemReference"/> class.
+		/// </summary>
+		/// <param name="InGroup">Group.</param>
+		public ItemReference(PackageGroup InGroup)
+		{
+			this.Group = InGroup;
 		}
 
 		/// <summary>
@@ -133,8 +177,10 @@ namespace Everlook
 		/// </summary>
 		/// <param name="InPackageName">In package name.</param>
 		/// <param name="InFilePath">In file path.</param>
-		public ItemReference(string InPackageName, string InFilePath)
+		public ItemReference(PackageGroup InGroup, ItemReference InReference, string InPackageName, string InFilePath)
 		{
+			this.Group = InGroup;
+			this.ParentReference = InReference;
 			this.PackageName = InPackageName;
 			this.ItemPath = InFilePath;
 		}
@@ -145,8 +191,9 @@ namespace Everlook
 		/// </summary>
 		/// <param name="InReference">In reference.</param>
 		/// <param name="subPath">Sub directory.</param>
-		public ItemReference(ItemReference InReference, string subPath)
+		public ItemReference(PackageGroup InGroup, ItemReference InReference, string subPath)
 		{
+			this.Group = InGroup;
 			this.ParentReference = InReference;
 			this.PackageName = InReference.PackageName;
 			this.ItemPath = InReference.ItemPath + subPath;
@@ -296,7 +343,14 @@ namespace Everlook
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()
 		{
-			return this.ToString().GetHashCode();
+			if (this.ParentReference != null)
+			{
+				return (this.ToString().GetHashCode() + this.ParentReference.GetHashCode()).GetHashCode();
+			}
+			else
+			{
+				return (this.ToString().GetHashCode() + 0).GetHashCode();			
+			}
 		}
 	}
 }

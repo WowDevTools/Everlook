@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using Warcraft.MPQ;
 using System.Text.RegularExpressions;
+using Everlook.Package;
 
 namespace Everlook.Explorer
 {
@@ -36,6 +37,11 @@ namespace Everlook.Explorer
 	/// </summary>
 	public class ExplorerBuilder
 	{
+		/// <summary>
+		/// Occurs when a package group has been added.
+		/// </summary>
+		public event ItemEnumeratedEventHandler PackageGroupAdded;
+		
 		/// <summary>
 		/// Occurs when a top-level package has been enumerated. This event does not mean that all files in the 
 		/// package have been enumerated, only that the package has been registered by the builder.
@@ -57,6 +63,7 @@ namespace Everlook.Explorer
 		/// </summary>
 		public event ItemEnumeratedEventHandler EnumerationFinished;
 
+		private ItemEnumeratedEventArgs PackageGroupAddedArgs;
 		private ItemEnumeratedEventArgs PackageEnumeratedArgs;
 		private ItemEnumeratedEventArgs DirectoryEnumeratedArgs;
 		private ItemEnumeratedEventArgs FileEnumeratedArgs;
@@ -68,16 +75,16 @@ namespace Everlook.Explorer
 		private string CachedPackageDirectory;
 
 		/// <summary>
+		/// The package groups. This is, at a glance, groupings of packages in a game directory
+		/// that act as a cohesive unit. Usually, a single package group represents a single game
+		/// instance.
+		/// </summary>
+		public readonly Dictionary<string, PackageGroup> PackageGroups = new Dictionary<string, PackageGroup>();
+
+		/// <summary>
 		/// The package path mapping. Maps the package names to their paths on disk.
 		/// </summary>
 		public readonly Dictionary<string, string> PackagePathMapping = new Dictionary<string, string>();
-
-		/// <summary>
-		/// The package listfiles. 
-		/// Key: The package name.
-		/// Value: A list of all files present in the package.
-		/// </summary>
-		public readonly Dictionary<string, List<string>> PackageListfiles = new Dictionary<string, List<string>>();
 
 		/// <summary>
 		/// Maps package names and paths to tree nodes.
@@ -183,57 +190,41 @@ namespace Everlook.Explorer
 			{
 				CachedPackageDirectory = Config.GetGameDirectory();
 
-				// Grab all packages in the game directory
-				List<string> PackagePaths = Directory.EnumerateFiles(Config.GetGameDirectory(), "*.*", SearchOption.AllDirectories)
-				.OrderBy(a => a)
-				.Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ"))
-				.ToList();
+				this.PackageGroups.Clear();
 
-				PackagePaths.Sort();
+				string FolderName = Path.GetFileName(Config.GetGameDirectory());
+				this.PackageGroups.Add(FolderName, new PackageGroup(FolderName, Config.GetGameDirectory()));
 
-				if (PackagePaths.Count > 0)
+				if (this.PackageGroups.Count > 0)
 				{
 					WorkQueue.Clear();
 					PackagePathMapping.Clear();
-					PackageListfiles.Clear();
 					PackageItemNodeMapping.Clear();
 					PackageNodeItemMapping.Clear();
 
-					// Load the list files from all packages
-					foreach (string PackagePath in PackagePaths)
+					foreach (KeyValuePair<string, PackageGroup> GroupEntry in PackageGroups)
 					{
-						using (FileStream fs = File.OpenRead(PackagePath))
-						{
-							string PackageName = Path.GetFileName(PackagePath);
+						ItemReference packageGroupReference = new ItemReference(GroupEntry.Value);
+						ItemReference packageGroupPackagesFolderReference = new ItemReference(GroupEntry.Value, packageGroupReference, "");
 
-							try
+						packageGroupReference.ChildReferences.Add(packageGroupPackagesFolderReference);
+
+						this.PackageGroupAddedArgs = new ItemEnumeratedEventArgs(packageGroupReference);
+						RaisePackageGroupAdded();
+
+						// Add top level package nodes to the game explorer view
+						foreach (KeyValuePair<string, List<string>> PackageListfile in GroupEntry.Value.PackageListfiles)
+						{
+							if (PackageListfile.Value != null)
 							{
-								using (MPQ Package = new MPQ(fs))
-								{
-									PackageListfiles.Add(PackageName, Package.GetFileList());
-									PackagePathMapping.Add(PackageName, PackagePath);
-								}
+								string PackageName = Path.GetFileName(PackageListfile.Key);
+
+								ItemReference packageReference = new ItemReference(GroupEntry.Value, packageGroupPackagesFolderReference, PackageName, "");
+								PackageEnumeratedArgs = new ItemEnumeratedEventArgs(packageReference);
+
+								RaisePackageEnumerated();
+								SubmitWork(packageReference);
 							}
-							catch (FileLoadException ex)
-							{						
-								Console.WriteLine(String.Format("Exception in ExplorerBuilder.LoadPackages() (Package: {0}): {1}", PackageName, ex.Message));
-								break;
-							}
-						}
-					}
-
-					// Add top level package nodes to the game explorer view
-					foreach (KeyValuePair<string, List<string>> PackageListfile in PackageListfiles)
-					{
-						if (PackageListfile.Value != null)
-						{
-							string PackageName = Path.GetFileName(PackageListfile.Key);
-
-							ItemReference packageReference = new ItemReference(PackageName, "");
-							PackageEnumeratedArgs = new ItemEnumeratedEventArgs(packageReference);
-
-							RaisePackageEnumerated();
-							SubmitWork(packageReference);
 						}
 					}
 				}
@@ -291,7 +282,7 @@ namespace Everlook.Explorer
 		protected void EnumerateFilesAndFolders(ItemReference parentReference)
 		{
 			List<string> PackageListfile;
-			if (PackageListfiles.TryGetValue(parentReference.PackageName, out PackageListfile))
+			if (parentReference.Group.PackageListfiles.TryGetValue(parentReference.PackageName, out PackageListfile))
 			{
 				foreach (string FilePath in PackageListfile.Where(s => s.StartsWith(parentReference.ItemPath)))
 				{
@@ -302,7 +293,7 @@ namespace Everlook.Explorer
 
 					if (!String.IsNullOrEmpty(topDirectory))
 					{
-						ItemReference itemReference = new ItemReference(parentReference, topDirectory);
+						ItemReference itemReference = new ItemReference(parentReference.Group, parentReference, topDirectory);
 						if (!parentReference.ChildReferences.Contains(itemReference))
 						{
 							parentReference.ChildReferences.Add(itemReference);
@@ -313,7 +304,7 @@ namespace Everlook.Explorer
 					}
 					else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1)
 					{									
-						ItemReference itemReference = new ItemReference(parentReference, childPath);
+						ItemReference itemReference = new ItemReference(parentReference.Group, parentReference, childPath);
 						if (!parentReference.ChildReferences.Contains(itemReference))
 						{
 							parentReference.ChildReferences.Add(itemReference);
@@ -331,7 +322,16 @@ namespace Everlook.Explorer
 			else
 			{
 				throw new InvalidDataException("No listfile was found for the package referenced by this item reference.");
-			}	
+			}
+			
+		}
+
+		protected void RaisePackageGroupAdded()
+		{
+			if (PackageGroupAdded != null)
+			{
+				PackageGroupAdded(this, PackageGroupAddedArgs);
+			}
 		}
 
 		/// <summary>

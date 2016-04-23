@@ -35,6 +35,7 @@ using System.Drawing;
 using Everlook.Package;
 using Everlook.Export.Image;
 using Everlook.Export.Directory;
+using System.Linq;
 
 namespace Everlook
 {
@@ -166,6 +167,7 @@ namespace Everlook
 			viewportRenderer.FrameRendered += OnFrameRendered;
 			viewportRenderer.Start();
 
+			explorerBuilder.PackageGroupAdded += OnPackageGroupAdded;
 			explorerBuilder.PackageEnumerated += OnPackageEnumerated;
 			explorerBuilder.DirectoryEnumerated += OnDirectoryEnumerated;
 			explorerBuilder.FileEnumerated += OnFileEnumerated;
@@ -754,6 +756,36 @@ namespace Everlook
 		}
 
 		/// <summary>
+		/// Handles the package group added event from the explorer builder.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		protected void OnPackageGroupAdded(object sender, ItemEnumeratedEventArgs e)
+		{
+			Application.Invoke(delegate
+				{
+					AddPackageGroupNode(e.Item);
+				});
+		}
+
+		/// <summary>
+		/// Adds a package group node to the game explorer view
+		/// </summary>
+		/// <param name="groupReference">Group reference.</param>
+		private void AddPackageGroupNode(ItemReference groupReference)
+		{
+			// Add the group node
+			TreeIter PackageGroupNode = GameExplorerTreeStore.AppendValues("user-home", groupReference.Group.GroupName, "", "");
+			explorerBuilder.PackageItemNodeMapping.Add(groupReference, PackageGroupNode);
+			explorerBuilder.PackageNodeItemMapping.Add(PackageGroupNode, groupReference);
+
+			// Add the package folder subnode
+			TreeIter PackageFolderNode = GameExplorerTreeStore.AppendValues(PackageGroupNode, "applications-other", "Packages", "", "");
+			explorerBuilder.PackageItemNodeMapping.Add(groupReference.ChildReferences.First(), PackageFolderNode);
+			explorerBuilder.PackageNodeItemMapping.Add(PackageFolderNode, groupReference.ChildReferences.First());
+		}
+
+		/// <summary>
 		/// Handles the package enumerated event from the explorer builder.
 		/// </summary>
 		/// <param name="sender">Sender.</param>
@@ -762,20 +794,32 @@ namespace Everlook
 		{
 			Application.Invoke(delegate
 				{
-					AddPackageNode(e.Item);
+					AddPackageNode(e.Item.ParentReference, e.Item);
 				});
 		}
 
 		/// <summary>
 		/// Adds a package node to the game explorer view.
 		/// </summary>
+		/// <param name="parentReference">Parent reference where the package should be added.</param>
 		/// <param name="packageReference">Item reference pointing to the package..</param>
-		private void AddPackageNode(ItemReference packageReference)
+		private void AddPackageNode(ItemReference parentReference, ItemReference packageReference)
 		{
 			// I'm a new root node
-			TreeIter PackageNode = GameExplorerTreeStore.AppendValues("package-x-generic", packageReference.PackageName, "", "");
-			explorerBuilder.PackageItemNodeMapping.Add(packageReference, PackageNode);
-			explorerBuilder.PackageNodeItemMapping.Add(PackageNode, packageReference);
+			TreeIter parentNode;
+			explorerBuilder.PackageItemNodeMapping.TryGetValue(parentReference, out parentNode);
+
+			if (GameExplorerTreeStore.IterIsValid(parentNode))
+			{
+				// Add myself to that node
+				if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(packageReference))
+				{
+					TreeIter PackageNode = GameExplorerTreeStore.AppendValues(parentNode, "package-x-generic", packageReference.PackageName, "", "");
+					explorerBuilder.PackageItemNodeMapping.Add(packageReference, PackageNode);
+					explorerBuilder.PackageNodeItemMapping.Add(PackageNode, packageReference);
+				}
+			}
+
 		}
 
 		/// <summary>
