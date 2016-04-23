@@ -82,6 +82,7 @@
     <Compile Include="Export\Image\EverlookImageExportDialog.cs" />
     <Compile Include="Package\PackageInteractionHandler.cs" />
     <Compile Include="Export\Directory\EverlookDirectoryExportDialog.cs" />
+    <Compile Include="Package\PackageGroup.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

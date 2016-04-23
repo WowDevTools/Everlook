@@ -80,15 +80,15 @@ namespace Everlook.Explorer
 		public readonly Dictionary<string, List<string>> PackageListfiles = new Dictionary<string, List<string>>();
 
 		/// <summary>
-		/// The package item node mapping. Maps package names and paths to tree nodes.
+		/// Maps package names and paths to tree nodes.
 		/// Key: Path of package, folder or file.
 		/// Value: TreeIter that maps to the package, folder or file.
 		/// </summary>
 		public readonly Dictionary<ItemReference, TreeIter> PackageItemNodeMapping = new Dictionary<ItemReference, TreeIter>();
 
 		/// <summary>
-		/// The package folder node mapping. Maps package names and paths to tree nodes.
-		/// Key: TreeIter that represents the itemreference
+		/// Maps tree nodes to package names and paths.
+		/// Key: TreeIter that represents the item reference.
 		/// Value: ItemReference that the iter maps to.
 		/// </summary>
 		public readonly Dictionary<TreeIter, ItemReference> PackageNodeItemMapping = new Dictionary<TreeIter, ItemReference>();
@@ -101,9 +101,9 @@ namespace Everlook.Explorer
 		private readonly List<ItemReference> WorkQueue = new List<ItemReference>();
 
 		private readonly Thread EnumerationThread;
-		private bool bShouldProcessWork = false;
-		private bool bArePackageListsLoaded = false;
-		private bool bIsReloading = false;
+		private bool bShouldProcessWork;
+		private bool bArePackageListsLoaded;
+		private bool bIsReloading;
 
 
 		/// <summary>
@@ -174,15 +174,6 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Determines whether the package directory changed.
-		/// </summary>
-		/// <returns><c>true</c> if the package directory has changed; otherwise, <c>false</c>.</returns>
-		public bool HasPackageDirectoryChanged()
-		{
-			return CachedPackageDirectory != Config.GetGameDirectory();
-		}
-
-		/// <summary>
 		/// Loads all packages in the currently selected game directory. This function does not enumerate files
 		/// and directories deeper than one to keep the UI responsive.
 		/// </summary>
@@ -193,15 +184,16 @@ namespace Everlook.Explorer
 				CachedPackageDirectory = Config.GetGameDirectory();
 
 				// Grab all packages in the game directory
-				List<string> PackagePaths = new List<string>();
-				foreach (string file in Directory.EnumerateFiles(Config.GetGameDirectory(), "*.*", SearchOption.AllDirectories)
-				.Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ")))
-				{
-					PackagePaths.Add(file);
-				}
+				List<string> PackagePaths = Directory.EnumerateFiles(Config.GetGameDirectory(), "*.*", SearchOption.AllDirectories)
+				.OrderBy(a => a)
+				.Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ"))
+				.ToList();
+
+				PackagePaths.Sort();
 
 				if (PackagePaths.Count > 0)
 				{
+					WorkQueue.Clear();
 					PackagePathMapping.Clear();
 					PackageListfiles.Clear();
 					PackageItemNodeMapping.Clear();
@@ -249,6 +241,15 @@ namespace Everlook.Explorer
 
 			bIsReloading = false;
 			bArePackageListsLoaded = true;
+		}
+
+		/// <summary>
+		/// Determines whether the package directory changed.
+		/// </summary>
+		/// <returns><c>true</c> if the package directory has changed; otherwise, <c>false</c>.</returns>
+		public bool HasPackageDirectoryChanged()
+		{
+			return CachedPackageDirectory != Config.GetGameDirectory();
 		}
 
 		/// <summary>

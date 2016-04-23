@@ -23,7 +23,6 @@ using System;
 using Gtk;
 using UI = Gtk.Builder.ObjectAttribute;
 using Gdk;
-using System.Collections.Generic;
 using Everlook.Configuration;
 using Everlook.Viewport;
 using System.IO;
