@@ -54,8 +54,6 @@
       <HintPath>..\packages\ini-parser.2.2.4\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="cairo-sharp, Version=1.10.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <Package>gtk-sharp-3.0</Package>
     </Reference>
@@ -83,6 +81,7 @@
     <Compile Include="Package\PackageInteractionHandler.cs" />
     <Compile Include="Export\Directory\EverlookDirectoryExportDialog.cs" />
     <Compile Include="Package\PackageGroup.cs" />
+    <Compile Include="VirtualItemReference.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -21,7 +21,6 @@
 //
 using System;
 using System.Collections.Generic;
-using Everlook.Configuration;
 using System.IO;
 using System.Linq;
 
@@ -63,12 +62,6 @@ namespace Everlook.Package
 		public readonly Dictionary<string, List<string>> PackageListfiles = new Dictionary<string, List<string>>();
 
 		/// <summary>
-		/// The package group file list. Contains a complete list of all files present in all packages in the package
-		/// group as a single, unified list.
-		/// </summary>
-		public readonly List<string> PackageGroupFileList = new List<string>();
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Package.PackageGroup"/> class.
 		/// </summary>
 		public PackageGroup(string GroupName, string InRootPackageDirectory)
@@ -98,13 +91,6 @@ namespace Everlook.Package
 			foreach (PackageInteractionHandler Package in Packages)
 			{
 				PackageListfiles.Add(Package.PackageName, Package.GetFileList());
-			}
-
-			foreach (KeyValuePair<string, List<string>> PackageListfile in PackageListfiles)
-			{
-				List<string> Listfile = PackageListfile.Value;
-
-				PackageGroupFileList = PackageGroupFileList.Union(Listfile).ToList();
 			}
 		}
 
@@ -136,6 +122,13 @@ namespace Everlook.Package
 		/// <param name="fileReference">File reference.</param>
 		public byte[] ExtractFile(ItemReference fileReference)
 		{
+			for (int i = Packages.Count - 1; i >= 0; --i)
+			{
+				if (Packages[i].ContainsFile(fileReference))
+				{
+					return Packages[i].ExtractReference(fileReference);
+				}
+			}
 			return null;
 		}
 

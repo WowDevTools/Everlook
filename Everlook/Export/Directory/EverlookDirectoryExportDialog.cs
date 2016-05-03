@@ -49,26 +49,16 @@ namespace Everlook.Export.Directory
 		/// </summary>
 		private readonly ItemReference ExportTarget;
 
-		/// <summary>
-		/// The package path.
-		/// </summary>
-		private readonly string PackagePath;
-
-		/// <summary>
-		/// The interaction handler.
-		/// </summary>
-		private readonly PackageInteractionHandler InteractionHandler;
-
 		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
 
 		/// <summary>
 		/// Creates an instance of the Image Export dialog, using the glade XML UI file.
 		/// </summary>
-		public static EverlookDirectoryExportDialog Create(ItemReference InExportTarget, string InPackagePath)
+		public static EverlookDirectoryExportDialog Create(ItemReference InExportTarget)
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookDirectoryExport.glade", null);
 			return new EverlookDirectoryExportDialog(builder, builder.GetObject("EverlookDirectoryExportDialog").Handle, 
-				InExportTarget, InPackagePath);
+				InExportTarget);
 		}
 
 		/// <summary>
@@ -77,17 +67,12 @@ namespace Everlook.Export.Directory
 		/// <param name="builder">Builder.</param>
 		/// <param name="handle">Handle.</param>
 		/// <param name="InExportTarget">In export target.</param>
-		/// <param name="InPackagePath">In package path.</param>
-		protected EverlookDirectoryExportDialog(Builder builder, IntPtr handle, ItemReference InExportTarget, 
-		                                        string InPackagePath)
+		protected EverlookDirectoryExportDialog(Builder builder, IntPtr handle, ItemReference InExportTarget)
 			: base(handle)
 		{
 			builder.Autoconnect(this);
 
 			this.ExportTarget = InExportTarget;
-			this.PackagePath = InPackagePath;
-
-			this.InteractionHandler = new PackageInteractionHandler(this.PackagePath);
 
 			/*
 				 UI Setup
@@ -194,20 +179,6 @@ namespace Everlook.Export.Directory
 		protected void OnOKButtonClicked(object sender, EventArgs e)
 		{
 			RunExport();
-		}
-
-		/// <summary>
-		/// Disposes the object and the underlying base class.
-		/// </summary>
-		/// <param name="disposing">If set to <c>true</c> disposing.</param>
-		protected override void Dispose(bool disposing)
-		{
-			base.Dispose(disposing);
-
-			if (InteractionHandler != null)
-			{
-				InteractionHandler.Dispose();
-			}
 		}
 	}
 }

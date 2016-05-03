@@ -20,10 +20,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
-using System.IO;
 using Everlook.Configuration;
 using Everlook.Export.Image;
-using Everlook.Package;
 using Everlook.Utility;
 using Gdk;
 using Gtk;
@@ -55,16 +53,6 @@ namespace Everlook.Export.Image
 		private readonly ItemReference ExportTarget;
 
 		/// <summary>
-		/// The package path.
-		/// </summary>
-		private readonly string PackagePath;
-
-		/// <summary>
-		/// The interaction handler.
-		/// </summary>
-		private readonly PackageInteractionHandler InteractionHandler;
-
-		/// <summary>
 		/// The image we're exporting.
 		/// </summary>
 		private BLP Image;
@@ -74,11 +62,11 @@ namespace Everlook.Export.Image
 		/// <summary>
 		/// Creates an instance of the Image Export dialog, using the glade XML UI file.
 		/// </summary>
-		public static EverlookImageExportDialog Create(ItemReference InExportTarget, string InPackagePath)
+		public static EverlookImageExportDialog Create(ItemReference InExportTarget)
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookImageExport.glade", null);
 			return new EverlookImageExportDialog(builder, builder.GetObject("EverlookImageExportDialog").Handle, 
-				InExportTarget, InPackagePath);
+				InExportTarget);
 		}
 
 		/// <summary>
@@ -87,18 +75,12 @@ namespace Everlook.Export.Image
 		/// <param name="builder">Builder.</param>
 		/// <param name="handle">Handle.</param>
 		/// <param name="InExportTarget">In export target.</param>
-		/// <param name="InPackagePath">In package path.</param>
-		protected EverlookImageExportDialog(Builder builder, IntPtr handle, ItemReference InExportTarget, 
-		                                    string InPackagePath)
+		protected EverlookImageExportDialog(Builder builder, IntPtr handle, ItemReference InExportTarget)
 			: base(handle)
 		{
 			builder.Autoconnect(this);
 
 			this.ExportTarget = InExportTarget;
-			this.PackagePath = InPackagePath;
-
-			this.InteractionHandler = new PackageInteractionHandler(this.PackagePath);
-
 			/*
 				 UI Setup
 			*/
@@ -115,7 +97,7 @@ namespace Everlook.Export.Image
 			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(Utilities.CleanPath(ExportTarget.ItemPath));
 			this.Title = "Export Image | " + ImageFilename;
 
-			byte[] file = this.InteractionHandler.ExtractReference(ExportTarget);
+			byte[] file = ExportTarget.Extract();
 			Image = new BLP(file);
 
 			ExportFormatComboBox.Active = (int)Config.GetDefaultImageFormat();
@@ -278,20 +260,6 @@ namespace Everlook.Export.Image
 		protected void OnOKButtonClicked(object sender, EventArgs e)
 		{
 			RunExport();
-		}
-
-		/// <summary>
-		/// Disposes the object and the underlying base class.
-		/// </summary>
-		/// <param name="disposing">If set to <c>true</c> disposing.</param>
-		protected override void Dispose(bool disposing)
-		{
-			base.Dispose(disposing);
-
-			if (InteractionHandler != null)
-			{
-				InteractionHandler.Dispose();
-			}
 		}
 	}
 }

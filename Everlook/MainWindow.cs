@@ -268,15 +268,15 @@ namespace Everlook
 			ItemReference fileReference = GetItemReferenceFromIter(selectedIter);
 			if (fileReference != null && !String.IsNullOrEmpty(fileReference.ItemPath))
 			{	
+
 				WarcraftFileType fileType = fileReference.GetReferencedFileType();
 				switch (fileType)
 				{
 					case WarcraftFileType.Directory:
 						{
 							if (fileReference.IsFullyEnumerated)
-							{
-								string PackagePath = explorerBuilder.PackagePathMapping[fileReference.PackageName];
-								using (EverlookDirectoryExportDialog ExportDialog = EverlookDirectoryExportDialog.Create(fileReference, PackagePath))
+							{							
+								using (EverlookDirectoryExportDialog ExportDialog = EverlookDirectoryExportDialog.Create(fileReference))
 								{
 									if (ExportDialog.Run() == (int)ResponseType.Ok)
 									{
@@ -293,8 +293,7 @@ namespace Everlook
 						}
 					case WarcraftFileType.BinaryImage:
 						{
-							string PackagePath = explorerBuilder.PackagePathMapping[fileReference.PackageName];
-							using (EverlookImageExportDialog ExportDialog = EverlookImageExportDialog.Create(fileReference, PackagePath))
+							using (EverlookImageExportDialog ExportDialog = EverlookImageExportDialog.Create(fileReference))
 							{
 								if (ExportDialog.Run() == (int)ResponseType.Ok)
 								{
@@ -337,15 +336,11 @@ namespace Everlook
 				exportpath = Config.GetDefaultExportDirectory() + filename;
 			}
 
-			string PackagePath = explorerBuilder.PackagePathMapping[fileReference.PackageName];
-			using (PackageInteractionHandler PackageHandler = new PackageInteractionHandler(PackagePath))
+			byte[] file = fileReference.Extract();
+			if (file != null)
 			{
-				byte[] file = PackageHandler.ExtractReference(fileReference);
-				if (file != null)
-				{
-					File.WriteAllBytes(exportpath, file);
-				}
-			}
+				File.WriteAllBytes(exportpath, file);
+			}			
 		}
 
 		/// <summary>
@@ -582,29 +577,24 @@ namespace Everlook
 								viewportRenderer.Start();							
 							}
 
-							string PackagePath = explorerBuilder.PackagePathMapping[fileReference.PackageName];
-							using (PackageInteractionHandler PackageHandler = new PackageInteractionHandler(PackagePath))
+							byte[] fileData = fileReference.Extract();
+							if (fileData != null)
 							{
-								byte[] fileData = PackageHandler.ExtractReference(fileReference);
-								if (fileData != null)
+								BLP blp = new BLP(fileData);
+								RenderableBLP image = new RenderableBLP(blp);
+								viewportRenderer.SetRenderTarget(image);
+
+								MipLevelListStore.Clear();
+								foreach (string mipString in blp.GetMipMapLevelStrings())
 								{
-									BLP blp = new BLP(fileData);
-									RenderableBLP image = new RenderableBLP(blp);
-									viewportRenderer.SetRenderTarget(image);
-
-									MipLevelListStore.Clear();
-									foreach (string mipString in blp.GetMipMapLevelStrings())
-									{
-										MipLevelListStore.AppendValues(mipString);
-									}
-
-									viewportRenderer.SetRequestedQualityLevel(0);
-									MipLevelComboBox.Active = 0;
-
-									EnableControlPage(ControlPage.Image);
+									MipLevelListStore.AppendValues(mipString);
 								}
-							}
 
+								viewportRenderer.SetRequestedQualityLevel(0);
+								MipLevelComboBox.Active = 0;
+
+								EnableControlPage(ControlPage.Image);
+							}
 
 							break;
 						}
@@ -630,25 +620,21 @@ namespace Everlook
 						viewportRenderer.Start();							
 					}
 
-					string PackagePath = explorerBuilder.PackagePathMapping[fileReference.PackageName];
-					using (PackageInteractionHandler PackageHandler = new PackageInteractionHandler(PackagePath))
+					byte[] fileData = fileReference.Extract();
+					if (fileData != null)
 					{
-						byte[] fileData = PackageHandler.ExtractReference(fileReference);
-						if (fileData != null)
+						using (MemoryStream ms = new MemoryStream(fileData))
 						{
-							using (MemoryStream ms = new MemoryStream(fileData))
-							{
-								Bitmap Image = new Bitmap(ms);
-								RenderableBitmap Renderable = new RenderableBitmap(Image);
+							Bitmap Image = new Bitmap(ms);
+							RenderableBitmap Renderable = new RenderableBitmap(Image);
 
-								viewportRenderer.SetRenderTarget(Renderable);
-							}
-
-							// Normal image files don't have mipmap levels
-							MipLevelListStore.Clear();
-							EnableControlPage(ControlPage.Image);
+							viewportRenderer.SetRenderTarget(Renderable);
 						}
-					}
+
+						// Normal image files don't have mipmap levels
+						MipLevelListStore.Clear();
+						EnableControlPage(ControlPage.Image);
+					}					
 				}
 			}
 		}
@@ -779,6 +765,12 @@ namespace Everlook
 			explorerBuilder.PackageItemNodeMapping.Add(groupReference, PackageGroupNode);
 			explorerBuilder.PackageNodeItemMapping.Add(PackageGroupNode, groupReference);
 
+			VirtualItemReference virtualGroupReference = groupReference as VirtualItemReference;
+			if (virtualGroupReference != null)
+			{
+				explorerBuilder.VirtualReferenceMapping.Add(groupReference.ItemPath, virtualGroupReference);
+			}
+
 			// Add the package folder subnode
 			TreeIter PackageFolderNode = GameExplorerTreeStore.AppendValues(PackageGroupNode, "applications-other", "Packages", "", "");
 			explorerBuilder.PackageItemNodeMapping.Add(groupReference.ChildReferences.First(), PackageFolderNode);
@@ -857,6 +849,46 @@ namespace Everlook
 					explorerBuilder.PackageNodeItemMapping.Add(node, childReference);
 				}
 			}
+
+			// Now, let's add (or append to) the virtual node
+			VirtualItemReference virtualParentReference;
+			explorerBuilder.VirtualReferenceMapping.TryGetValue(parentReference.ItemPath, out virtualParentReference);
+
+			if (virtualParentReference != null)
+			{
+				TreeIter virtualParentNode;
+				explorerBuilder.PackageItemNodeMapping.TryGetValue(virtualParentReference, out virtualParentNode);
+
+				if (GameExplorerTreeStore.IterIsValid(virtualParentNode))
+				{
+					
+					VirtualItemReference virtualChildReference;
+					explorerBuilder.VirtualReferenceMapping.TryGetValue(childReference.ItemPath, out virtualChildReference);
+
+					if (virtualChildReference != null)
+					{
+						// Append this directory reference as an additional overridden hard reference
+						virtualChildReference.OverriddenHardReferences.Add(childReference);
+					}
+					else
+					{
+						
+						virtualChildReference = new VirtualItemReference(virtualParentReference, childReference.Group, childReference);
+
+						// Create a new virtual reference and a node that maps to it.
+						if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(virtualChildReference))
+						{
+
+							TreeIter node = GameExplorerTreeStore.AppendValues(virtualParentNode, 
+								                Stock.Directory, virtualChildReference.GetReferencedItemName(), "", "");
+
+							explorerBuilder.PackageItemNodeMapping.Add(virtualChildReference, node);
+							explorerBuilder.PackageNodeItemMapping.Add(node, virtualChildReference);
+							explorerBuilder.VirtualReferenceMapping.Add(virtualChildReference.ItemPath, virtualChildReference);
+						}
+					}					
+				}			
+			}
 		}
 
 		/// <summary>
@@ -892,7 +924,47 @@ namespace Everlook
 					explorerBuilder.PackageItemNodeMapping.Add(childReference, node);
 					explorerBuilder.PackageNodeItemMapping.Add(node, childReference);
 				}
-			}			
+			}		
+
+			// Now, let's add (or append to) the virtual node
+			VirtualItemReference virtualParentReference;
+			explorerBuilder.VirtualReferenceMapping.TryGetValue(parentReference.ItemPath, out virtualParentReference);
+
+			if (virtualParentReference != null)
+			{
+				TreeIter virtualParentNode;
+				explorerBuilder.PackageItemNodeMapping.TryGetValue(virtualParentReference, out virtualParentNode);
+
+				if (GameExplorerTreeStore.IterIsValid(virtualParentNode))
+				{
+					
+					VirtualItemReference virtualChildReference;
+					explorerBuilder.VirtualReferenceMapping.TryGetValue(childReference.ItemPath, out virtualChildReference);
+
+					if (virtualChildReference != null)
+					{
+						// Append this directory reference as an additional overridden hard reference
+						virtualChildReference.OverriddenHardReferences.Add(childReference);
+					}
+					else
+					{
+						
+						virtualChildReference = new VirtualItemReference(virtualParentReference, childReference.Group, childReference);
+
+						// Create a new virtual reference and a node that maps to it.
+						if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(virtualChildReference))
+						{
+
+							TreeIter node = GameExplorerTreeStore.AppendValues(virtualParentNode, 
+								                Utilities.GetIconForFiletype(childReference.ItemPath), virtualChildReference.GetReferencedItemName(), "", "");
+
+							explorerBuilder.PackageItemNodeMapping.Add(virtualChildReference, node);
+							explorerBuilder.PackageNodeItemMapping.Add(node, virtualChildReference);
+							explorerBuilder.VirtualReferenceMapping.Add(virtualChildReference.ItemPath, virtualChildReference);
+						}
+					}					
+				}			
+			}	
 		}
 
 		/// <summary>
@@ -930,6 +1002,7 @@ namespace Everlook
 			if (explorerBuilder.IsActive)
 			{
 				explorerBuilder.Stop();
+				explorerBuilder.Dispose();
 			}
 
 			Application.Quit();

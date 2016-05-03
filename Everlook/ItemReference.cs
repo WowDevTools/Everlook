@@ -62,21 +62,21 @@ namespace Everlook
 		/// Gets or sets the name of the package where the file is stored.
 		/// </summary>
 		/// <value>The name of the package.</value>
-		public string PackageName
+		public virtual string PackageName
 		{
 			get;
 			set;
-		}
+		} = "";
 
 		/// <summary>
 		/// Gets or sets the file path of the file inside the package.
 		/// </summary>
 		/// <value>The file path.</value>
-		public string ItemPath
+		public virtual string ItemPath
 		{
 			get;
 			set;
-		}
+		} = "";
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this reference has had its children enumerated.
@@ -128,10 +128,10 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Gets a value indicating whether this or not this reference is a package.
+		/// Gets a value indicating whether this or not this reference is a package reference.
 		/// </summary>
 		/// <value><c>true</c> if this reference is a package; otherwise, <c>false</c>.</value>
-		public bool IsPackage
+		public virtual bool IsPackage
 		{
 			get
 			{
@@ -165,22 +165,24 @@ namespace Everlook
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.ItemReference"/> class.
+		/// This creates a new, empty item reference.
 		/// </summary>
-		/// <param name="InGroup">Group.</param>
-		public ItemReference(PackageGroup InGroup)
+		protected ItemReference()
 		{
-			this.Group = InGroup;
+
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.ItemReference"/> class.
 		/// </summary>
-		/// <param name="InPackageName">In package name.</param>
-		/// <param name="InFilePath">In file path.</param>
-		public ItemReference(PackageGroup InGroup, ItemReference InReference, string InPackageName, string InFilePath)
+		/// <param name="InGroup">The package group this reference belongs to.</param>
+		/// <param name="InParentReference">The parent of this item reference.</param>
+		/// <param name="InPackageName">The name of the package this reference belongs to.</param>
+		/// <param name="InFilePath">The complete file path this reference points to.</param>
+		public ItemReference(PackageGroup InGroup, ItemReference InParentReference, string InPackageName, string InFilePath)
+			: this(InGroup)
 		{
-			this.Group = InGroup;
-			this.ParentReference = InReference;
+			this.ParentReference = InParentReference;
 			this.PackageName = InPackageName;
 			this.ItemPath = InFilePath;
 		}
@@ -189,24 +191,42 @@ namespace Everlook
 		/// Initializes a new instance of the <see cref="Everlook.ItemReference"/> class by
 		/// appending the provided subpath to the provided refererence's file path.
 		/// </summary>
-		/// <param name="InReference">In reference.</param>
+		/// <param name="InGroup">The package group this reference belongs to.</param>
+		/// <param name="InParentReference">In reference.</param>
 		/// <param name="subPath">Sub directory.</param>
-		public ItemReference(PackageGroup InGroup, ItemReference InReference, string subPath)
+		public ItemReference(PackageGroup InGroup, ItemReference InParentReference, string subPath)
+			: this(InGroup)
+		{
+			this.ParentReference = InParentReference;
+			this.PackageName = InParentReference.PackageName;
+			this.ItemPath = InParentReference.ItemPath + subPath;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Everlook.ItemReference"/> class.
+		/// </summary>
+		/// <param name="InGroup">Group.</param>
+		public ItemReference(PackageGroup InGroup)
 		{
 			this.Group = InGroup;
-			this.ParentReference = InReference;
-			this.PackageName = InReference.PackageName;
-			this.ItemPath = InReference.ItemPath + subPath;
+		}
+
+		/// <summary>
+		/// Extracts this instance from the package group it is associated with.
+		/// </summary>
+		public byte[] Extract()
+		{
+			return this.Group.ExtractUnversionedFile(this);
 		}
 
 		/// <summary>
 		/// Gets the name of the referenced item.
 		/// </summary>
 		/// <returns>The referenced item name.</returns>
-		public string GetReferencedItemName()
+		public virtual string GetReferencedItemName()
 		{
 			string itemName;
-			if (String.IsNullOrEmpty(ParentReference.ItemPath))
+			if (ParentReference == null || String.IsNullOrEmpty(ParentReference.ItemPath))
 			{
 				itemName = ItemPath;
 			}
