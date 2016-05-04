@@ -57,6 +57,12 @@ namespace Everlook.Configuration
 		{
 			if (!File.Exists(GetPathStoragePath()))
 			{
+				string storageDirectory = Directory.GetParent (GetPathStoragePath ()).FullName;
+				if (!Directory.Exists(storageDirectory))
+				{
+					Directory.CreateDirectory (storageDirectory);
+				}
+
 				File.Create(GetPathStoragePath()).Close();
 			}
 		}
