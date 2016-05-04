@@ -32,7 +32,6 @@ using Everlook.Renderables;
 using Warcraft.BLP;
 using Everlook.Explorer;
 using System.Drawing;
-using Everlook.Package;
 using Everlook.Export.Image;
 using Everlook.Export.Directory;
 using System.Linq;
@@ -52,7 +51,6 @@ namespace Everlook
 		[UI] AboutDialog AboutDialog;
 		[UI] ToolButton PreferencesButton;
 
-		[UI] Gtk.Viewport MainViewportContainer;
 		[UI] Gtk.Image MainDrawingArea;
 
 		/*
@@ -69,6 +67,8 @@ namespace Everlook
 		*/
 		[UI] TreeView GameExplorerTreeView;
 		[UI] TreeStore GameExplorerTreeStore;
+		[UI] TreeModelFilter GameExplorerTreeFilter;
+		[UI] TreeModelSort GameExplorerTreeSorter;
 
 		[UI] Menu FileContextMenu;
 		[UI] ImageMenuItem ExtractItem;
@@ -153,6 +153,10 @@ namespace Everlook
 			GameExplorerTreeView.RowExpanded += OnGameExplorerRowExpanded;
 			GameExplorerTreeView.Selection.Changed += OnGameExplorerSelectionChanged;
 			GameExplorerTreeView.ButtonPressEvent += OnGameExplorerButtonPressed;
+
+			GameExplorerTreeFilter.VisibleFunc = FilterGameExplorerRow;
+			GameExplorerTreeSorter.SetSortFunc(1, SortGameExplorerRow);
+			GameExplorerTreeSorter.SetSortColumnId(1, SortType.Descending);
 
 			ExportQueueTreeView.ButtonPressEvent += OnExportQueueButtonPressed;	
 
@@ -256,6 +260,67 @@ namespace Everlook
 		}
 
 		/// <summary>
+		/// Filters the provided game explorer row.
+		/// </summary>
+		/// <returns><c>true</c>, if the row should be shown in the explorer view, <c>false</c> otherwise.</returns>
+		/// <param name="model">Model.</param>
+		/// <param name="iter">Iter.</param>
+		protected bool FilterGameExplorerRow(ITreeModel model, TreeIter iter)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Sorts the game explorer row. If <paramref name="iterA"/> should be sorted before
+		/// <paramref name="iterB"/>
+		/// </summary>
+		/// <returns>The sorting priority of the row. This value can be -1, 0 or 1 if 
+		/// A sorts before B, A sorts with B or A sorts after B, respectively.</returns>
+		/// <param name="model">Model.</param>
+		/// <param name="iterA">Iter a.</param>
+		/// <param name="iterB">Iter b.</param>
+		protected int SortGameExplorerRow(ITreeModel model, TreeIter iterA, TreeIter iterB)
+		{
+			const int SORT_A_BEFORE_B = -1;
+			const int SORT_WITH = 0;
+			const int SORT_A_AFTER_B = 1;
+
+			NodeType typeofA = (NodeType)model.GetValue(iterA, 4);
+			NodeType typeofB = (NodeType)model.GetValue(iterB, 4);
+
+			if (typeofA < typeofB)
+			{
+				return SORT_A_AFTER_B;	
+			}
+			else if (typeofA > typeofB)
+			{
+				return SORT_A_BEFORE_B;
+			}
+			else
+			{
+				string AComparisonString = (string)model.GetValue(iterA, 1);
+
+				string BComparisonString = (string)model.GetValue(iterB, 1);
+
+				int sortingOrder = String.Compare(AComparisonString, BComparisonString);
+
+				// Invert the sorting order
+				if (sortingOrder == SORT_A_BEFORE_B)
+				{
+					return SORT_A_AFTER_B;
+				}
+				else if (sortingOrder == SORT_A_AFTER_B)
+				{
+					return SORT_A_BEFORE_B;
+				}
+				else
+				{
+					return SORT_WITH;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Handles the export item context item activated event.
 		/// </summary>
 		/// <param name="sender">Sender.</param>
@@ -265,7 +330,7 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			ItemReference fileReference = GetItemReferenceFromIter(selectedIter);
+			ItemReference fileReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter));
 			if (fileReference != null && !String.IsNullOrEmpty(fileReference.ItemPath))
 			{	
 
@@ -494,12 +559,8 @@ namespace Everlook
 		/// <param name="e">E.</param>
 		protected void OnGameExplorerRowExpanded(object sender, RowExpandedArgs e)
 		{		
-			// Whenever a row is expanded, find the subfolders in the dictionary
-			// Enumerate the files and subfolders in those.
-			TreeIter iterNode;
-			GameExplorerTreeStore.GetIter(out iterNode, e.Path);
-
-			ItemReference parentReference = GetItemReferenceFromIter(e.Iter);
+			// Whenever a row is expanded, enumerate the subfolders of that row.
+			ItemReference parentReference = GetItemReferenceFromIter(GetStoreIterFromVisiblePath(e.Path));
 			foreach (ItemReference childReference in parentReference.ChildReferences)
 			{
 				if (childReference.IsDirectory)
@@ -508,6 +569,25 @@ namespace Everlook
 				}
 			}
 		}
+
+		private TreeIter GetStoreIterFromVisiblePath(TreePath path)
+		{			
+			TreeIter sorterIter;
+			GameExplorerTreeSorter.GetIter(out sorterIter, path);
+			return GetStoreIterFromSorterIter(sorterIter);
+		}
+
+		private TreeIter GetStoreIterFromSorterIter(TreeIter sorterIter)
+		{
+			TreeIter filterIter = GameExplorerTreeSorter.ConvertIterToChildIter(sorterIter);
+			return GetStoreIterFromFilterIter(filterIter);
+		}
+
+		private TreeIter GetStoreIterFromFilterIter(TreeIter filterIter)
+		{
+			return GameExplorerTreeFilter.ConvertIterToChildIter(filterIter);	
+		}
+
 
 		/// <summary>
 		/// Handles selection of files in the game explorer, displaying them to the user and routing 
@@ -520,7 +600,7 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			ItemReference fileReference = GetItemReferenceFromIter(selectedIter);
+			ItemReference fileReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter));
 			if (fileReference != null && !String.IsNullOrEmpty(fileReference.ItemPath))
 			{
 				string fileName = System.IO.Path.GetFileName(Utilities.CleanPath(fileReference.ItemPath));
@@ -580,20 +660,27 @@ namespace Everlook
 							byte[] fileData = fileReference.Extract();
 							if (fileData != null)
 							{
-								BLP blp = new BLP(fileData);
-								RenderableBLP image = new RenderableBLP(blp);
-								viewportRenderer.SetRenderTarget(image);
-
-								MipLevelListStore.Clear();
-								foreach (string mipString in blp.GetMipMapLevelStrings())
+								try
 								{
-									MipLevelListStore.AppendValues(mipString);
+									BLP blp = new BLP(fileData);
+									RenderableBLP image = new RenderableBLP(blp);
+									viewportRenderer.SetRenderTarget(image);
+
+									MipLevelListStore.Clear();
+									foreach (string mipString in blp.GetMipMapLevelStrings())
+									{
+										MipLevelListStore.AppendValues(mipString);
+									}
+
+									viewportRenderer.SetRequestedQualityLevel(0);
+									MipLevelComboBox.Active = 0;
+
+									EnableControlPage(ControlPage.Image);
 								}
-
-								viewportRenderer.SetRequestedQualityLevel(0);
-								MipLevelComboBox.Active = 0;
-
-								EnableControlPage(ControlPage.Image);
+								catch (FileLoadException fex)
+								{
+									Console.WriteLine("FileLoadException when opening BLP: " + fex.Message);
+								}
 							}
 
 							break;
@@ -655,8 +742,7 @@ namespace Everlook
 			ItemReference currentItemReference = null;
 			if (path != null)
 			{
-				TreeIter iter;
-				GameExplorerTreeStore.GetIterFromString(out iter, path.ToString());
+				TreeIter iter = GetStoreIterFromVisiblePath(path);
 				currentItemReference = GetItemReferenceFromIter(iter);
 			}
 
@@ -761,18 +847,20 @@ namespace Everlook
 		private void AddPackageGroupNode(ItemReference groupReference)
 		{
 			// Add the group node
-			TreeIter PackageGroupNode = GameExplorerTreeStore.AppendValues("user-home", groupReference.Group.GroupName, "", "");
+			TreeIter PackageGroupNode = GameExplorerTreeStore.AppendValues("user-home", 
+				                            groupReference.Group.GroupName, "", "Virtual file tree", (int)NodeType.PackageGroup);
 			explorerBuilder.PackageItemNodeMapping.Add(groupReference, PackageGroupNode);
 			explorerBuilder.PackageNodeItemMapping.Add(PackageGroupNode, groupReference);
 
 			VirtualItemReference virtualGroupReference = groupReference as VirtualItemReference;
 			if (virtualGroupReference != null)
 			{
-				explorerBuilder.VirtualReferenceMapping.Add(groupReference.ItemPath, virtualGroupReference);
+				explorerBuilder.PackageGroupVirtualNodeMapping.Add(groupReference.Group, virtualGroupReference);
 			}
 
 			// Add the package folder subnode
-			TreeIter PackageFolderNode = GameExplorerTreeStore.AppendValues(PackageGroupNode, "applications-other", "Packages", "", "");
+			TreeIter PackageFolderNode = GameExplorerTreeStore.AppendValues(PackageGroupNode, 
+				                             "applications-other", "Packages", "", "Individual packages", (int)NodeType.PackageFolder);
 			explorerBuilder.PackageItemNodeMapping.Add(groupReference.ChildReferences.First(), PackageFolderNode);
 			explorerBuilder.PackageNodeItemMapping.Add(PackageFolderNode, groupReference.ChildReferences.First());
 		}
@@ -806,12 +894,19 @@ namespace Everlook
 				// Add myself to that node
 				if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(packageReference))
 				{
-					TreeIter PackageNode = GameExplorerTreeStore.AppendValues(parentNode, "package-x-generic", packageReference.PackageName, "", "");
+					TreeIter PackageNode = GameExplorerTreeStore.AppendValues(parentNode, 
+						                       "package-x-generic", packageReference.PackageName, "", "", (int)NodeType.Package);
 					explorerBuilder.PackageItemNodeMapping.Add(packageReference, PackageNode);
 					explorerBuilder.PackageNodeItemMapping.Add(PackageNode, packageReference);
 				}
 			}
 
+			// Map package nodes to virtual root nodes
+			VirtualItemReference virtualGroupReference;
+			if (explorerBuilder.PackageGroupVirtualNodeMapping.TryGetValue(packageReference.Group, out virtualGroupReference))
+			{
+				explorerBuilder.VirtualReferenceMapping.Add(packageReference, virtualGroupReference);			
+			}
 		}
 
 		/// <summary>
@@ -844,7 +939,8 @@ namespace Everlook
 				// Add myself to that node
 				if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(childReference))
 				{
-					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, Stock.Directory, childReference.GetReferencedItemName(), "", "");
+					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, 
+						                Stock.Directory, childReference.GetReferencedItemName(), "", "", (int)NodeType.Directory);
 					explorerBuilder.PackageItemNodeMapping.Add(childReference, node);
 					explorerBuilder.PackageNodeItemMapping.Add(node, childReference);
 				}
@@ -852,7 +948,7 @@ namespace Everlook
 
 			// Now, let's add (or append to) the virtual node
 			VirtualItemReference virtualParentReference;
-			explorerBuilder.VirtualReferenceMapping.TryGetValue(parentReference.ItemPath, out virtualParentReference);
+			explorerBuilder.VirtualReferenceMapping.TryGetValue(parentReference, out virtualParentReference);
 
 			if (virtualParentReference != null)
 			{
@@ -863,7 +959,7 @@ namespace Everlook
 				{
 					
 					VirtualItemReference virtualChildReference;
-					explorerBuilder.VirtualReferenceMapping.TryGetValue(childReference.ItemPath, out virtualChildReference);
+					explorerBuilder.VirtualReferenceMapping.TryGetValue(childReference, out virtualChildReference);
 
 					if (virtualChildReference != null)
 					{
@@ -871,20 +967,24 @@ namespace Everlook
 						virtualChildReference.OverriddenHardReferences.Add(childReference);
 					}
 					else
-					{
-						
+					{						
 						virtualChildReference = new VirtualItemReference(virtualParentReference, childReference.Group, childReference);
 
-						// Create a new virtual reference and a node that maps to it.
-						if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(virtualChildReference))
+						if (!virtualParentReference.ChildReferences.Contains(virtualChildReference))
 						{
+							virtualParentReference.ChildReferences.Add(virtualChildReference);
 
-							TreeIter node = GameExplorerTreeStore.AppendValues(virtualParentNode, 
-								                Stock.Directory, virtualChildReference.GetReferencedItemName(), "", "");
+							// Create a new virtual reference and a node that maps to it.
+							if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(virtualChildReference))
+							{
 
-							explorerBuilder.PackageItemNodeMapping.Add(virtualChildReference, node);
-							explorerBuilder.PackageNodeItemMapping.Add(node, virtualChildReference);
-							explorerBuilder.VirtualReferenceMapping.Add(virtualChildReference.ItemPath, virtualChildReference);
+								TreeIter node = GameExplorerTreeStore.AppendValues(virtualParentNode, 
+									                Stock.Directory, virtualChildReference.GetReferencedItemName(), "", "", (int)NodeType.Directory);
+
+								explorerBuilder.PackageItemNodeMapping.Add(virtualChildReference, node);
+								explorerBuilder.PackageNodeItemMapping.Add(node, virtualChildReference);
+								explorerBuilder.VirtualReferenceMapping.Add(childReference, virtualChildReference);
+							}
 						}
 					}					
 				}			
@@ -920,7 +1020,10 @@ namespace Everlook
 				// Add myself to that node
 				if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(childReference))
 				{
-					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, Utilities.GetIconForFiletype(childReference.ItemPath), childReference.GetReferencedItemName(), "", "");
+					parentReference.ChildReferences.Add(childReference);
+
+					TreeIter node = GameExplorerTreeStore.AppendValues(parentNode, 
+						                Utilities.GetIconForFiletype(childReference.ItemPath), childReference.GetReferencedItemName(), "", "", (int)NodeType.File);
 					explorerBuilder.PackageItemNodeMapping.Add(childReference, node);
 					explorerBuilder.PackageNodeItemMapping.Add(node, childReference);
 				}
@@ -928,7 +1031,7 @@ namespace Everlook
 
 			// Now, let's add (or append to) the virtual node
 			VirtualItemReference virtualParentReference;
-			explorerBuilder.VirtualReferenceMapping.TryGetValue(parentReference.ItemPath, out virtualParentReference);
+			explorerBuilder.VirtualReferenceMapping.TryGetValue(parentReference, out virtualParentReference);
 
 			if (virtualParentReference != null)
 			{
@@ -939,7 +1042,7 @@ namespace Everlook
 				{
 					
 					VirtualItemReference virtualChildReference;
-					explorerBuilder.VirtualReferenceMapping.TryGetValue(childReference.ItemPath, out virtualChildReference);
+					explorerBuilder.VirtualReferenceMapping.TryGetValue(childReference, out virtualChildReference);
 
 					if (virtualChildReference != null)
 					{
@@ -951,16 +1054,21 @@ namespace Everlook
 						
 						virtualChildReference = new VirtualItemReference(virtualParentReference, childReference.Group, childReference);
 
-						// Create a new virtual reference and a node that maps to it.
-						if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(virtualChildReference))
+						if (!virtualParentReference.ChildReferences.Contains(virtualChildReference))
 						{
+							virtualParentReference.ChildReferences.Add(virtualChildReference);
+							// Create a new virtual reference and a node that maps to it.
+							if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(virtualChildReference))
+							{
 
-							TreeIter node = GameExplorerTreeStore.AppendValues(virtualParentNode, 
-								                Utilities.GetIconForFiletype(childReference.ItemPath), virtualChildReference.GetReferencedItemName(), "", "");
+								TreeIter node = GameExplorerTreeStore.AppendValues(virtualParentNode, 
+									                Utilities.GetIconForFiletype(childReference.ItemPath), 
+									                virtualChildReference.GetReferencedItemName(), "", "", (int)NodeType.File);
 
-							explorerBuilder.PackageItemNodeMapping.Add(virtualChildReference, node);
-							explorerBuilder.PackageNodeItemMapping.Add(node, virtualChildReference);
-							explorerBuilder.VirtualReferenceMapping.Add(virtualChildReference.ItemPath, virtualChildReference);
+								explorerBuilder.PackageItemNodeMapping.Add(virtualChildReference, node);
+								explorerBuilder.PackageNodeItemMapping.Add(node, virtualChildReference);
+								explorerBuilder.VirtualReferenceMapping.Add(childReference, virtualChildReference);
+							}
 						}
 					}					
 				}			

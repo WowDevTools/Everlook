@@ -34,8 +34,8 @@ namespace Everlook
 	public class VirtualItemReference : ItemReference
 	{
 		/// <summary>
-		/// Gets the hard reference. The hard reference is the primary underlying reference to which 
-		/// this virtual reference points.
+		/// Gets the hard reference. The hard reference is the primary underlying package-specific 
+		/// reference to which this virtual reference points.
 		/// </summary>
 		/// <value>The hard reference.</value>
 		public ItemReference HardReference
@@ -130,6 +130,14 @@ namespace Everlook
 			: this(InGroup, InHardReference)
 		{
 			this.ParentReference = ParentVirtualReference;	
+		}
+
+		/// <summary>
+		/// Extracts this instance from the package group it is associated with.
+		/// </summary>
+		public override byte[] Extract()
+		{
+			return this.HardReference.Extract();
 		}
 
 		/// <summary>

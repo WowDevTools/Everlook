@@ -24,6 +24,9 @@ using System.Drawing;
 
 namespace Everlook.Renderables
 {
+	/// <summary>
+	/// Encapsulated a standard bitmap as a renderable object.
+	/// </summary>
 	public sealed class RenderableBitmap : IRenderable
 	{
 		/// <summary>
@@ -40,12 +43,20 @@ namespace Everlook.Renderables
 			}
 		}
 
+		/// <summary>
+		/// The encapsulated image.
+		/// </summary>
+		/// <value>The image.</value>
 		public Bitmap Image
 		{
 			get;
 			private set;
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Everlook.Renderables.RenderableBitmap"/> class.
+		/// </summary>
+		/// <param name="InImage">In image.</param>
 		public RenderableBitmap(Bitmap InImage)
 		{
 			this.Image = InImage;

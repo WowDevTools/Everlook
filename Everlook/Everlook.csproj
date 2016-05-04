@@ -82,6 +82,9 @@
     <Compile Include="Export\Directory\EverlookDirectoryExportDialog.cs" />
     <Compile Include="Package\PackageGroup.cs" />
     <Compile Include="VirtualItemReference.cs" />
+    <Compile Include="Explorer\NodeType.cs" />
+    <Compile Include="Explorer\FilterType.cs" />
+    <Compile Include="Configuration\GamePathStorage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

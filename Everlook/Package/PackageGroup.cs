@@ -85,7 +85,14 @@ namespace Everlook.Package
 
 			foreach (string PackagePath in PackagePaths)
 			{
-				Packages.Add(new PackageInteractionHandler(PackagePath));
+				try
+				{
+					Packages.Add(new PackageInteractionHandler(PackagePath));				
+				}
+				catch (FileLoadException fex)
+				{
+					Console.WriteLine(String.Format("FileLoadException for package \"{0}\": {1}", PackagePath, fex.Message));
+				}
 			}
 
 			foreach (PackageInteractionHandler Package in Packages)

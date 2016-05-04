@@ -26,6 +26,7 @@ using Everlook.Configuration;
 using Everlook.Export.Model;
 using Everlook.Export.Image;
 using Everlook.Export.Audio;
+using System.IO;
 
 namespace Everlook
 {
@@ -35,14 +36,22 @@ namespace Everlook
 	/// </summary>
 	public partial class EverlookPreferences : Dialog
 	{
-		[UI] FileChooserButton GameDirectoryFileChooserButton;
+		[UI] FileChooserDialog GameSelectionFileChooserDialog;
+		[UI] TreeView GamePathSelectionTreeView;
+		[UI] ListStore GamePathListStore;
+		[UI] Button AddPathButton;
+		[UI] Button RemovePathButton;
+
+		[UI] ColorButton ViewportColourButton;
+		[UI] CheckButton ShowUnknownFilesCheckButton;
+
 		[UI] FileChooserButton DefaultExportDirectoryFileChooserButton;
 		[UI] ComboBox DefaultModelExportFormatComboBox;
 		[UI] ComboBox DefaultImageExportFormatComboBox;
 		[UI] ComboBox DefaultAudioExportFormatComboBox;
 		[UI] CheckButton KeepDirectoryStructureCheckButton;
+
 		[UI] CheckButton SendStatsCheckButton;
-		[UI] ColorButton ViewportColourButton;
 
 		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
 
@@ -65,7 +74,49 @@ namespace Everlook
 		{
 			builder.Autoconnect(this);
 
+			AddPathButton.Clicked += OnAddPathButtonClicked;
+			RemovePathButton.Clicked += OnRemovePathButtonClicked;
+
 			LoadPreferences();
+		}
+
+		/// <summary>
+		/// Handles the add path button clicked event.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		protected void OnAddPathButtonClicked(object sender, EventArgs e)
+		{
+			GameSelectionFileChooserDialog.SetCurrentFolder(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+			if (GameSelectionFileChooserDialog.Run() == (int)ResponseType.Ok)
+			{
+				string pathToStore = GameSelectionFileChooserDialog.Filename;
+				if (Directory.Exists(pathToStore))
+				{
+					this.GamePathListStore.AppendValues(pathToStore);
+					GamePathStorage.Instance.StorePath(pathToStore);
+				}
+			}
+
+			GameSelectionFileChooserDialog.Hide();
+		}
+
+		/// <summary>
+		/// Handles the remove path button clicked event.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		protected void OnRemovePathButtonClicked(object sender, EventArgs e)
+		{
+			TreeIter selectedIter;
+			GamePathSelectionTreeView.Selection.GetSelected(out selectedIter);
+
+			if (GamePathListStore.IterIsValid(selectedIter))
+			{
+				string gamePath = (string)GamePathListStore.GetValue(selectedIter, 0);
+				GamePathStorage.Instance.RemoveStoredPath(gamePath);
+				GamePathListStore.Remove(ref selectedIter);
+			}
 		}
 
 		/// <summary>
@@ -73,9 +124,12 @@ namespace Everlook
 		/// </summary>
 		private void LoadPreferences()
 		{
-			if (!String.IsNullOrEmpty(Config.GetGameDirectory()))
+			foreach (string gamePath in GamePathStorage.Instance.GamePaths)
 			{
-				GameDirectoryFileChooserButton.SetFilename(Config.GetGameDirectory());
+				if (Directory.Exists(gamePath))
+				{
+					this.GamePathListStore.AppendValues(gamePath);
+				}
 			}
 
 			ViewportColourButton.Rgba = Config.GetViewportBackgroundColour();
@@ -97,7 +151,14 @@ namespace Everlook
 		/// </summary>
 		public void SavePreferences()
 		{
-			Config.SetGameDirectory(GameDirectoryFileChooserButton.Filename);
+			GamePathListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
+				{
+					string GamePath = (string)model.GetValue(iter, 0);
+					GamePathStorage.Instance.StorePath(GamePath);
+
+					return false;
+				});
+
 			Config.SetViewportBackgroundColour(ViewportColourButton.Rgba);
 			Config.SetDefaultExportDirectory(DefaultExportDirectoryFileChooserButton.Filename);
 			Config.SetDefaultModelFormat((ModelFormat)DefaultModelExportFormatComboBox.Active);

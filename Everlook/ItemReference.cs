@@ -116,18 +116,6 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Gets a value indicating whether this or not this reference is a package group.
-		/// </summary>
-		/// <value><c>true</c> if this reference is a package group; otherwise, <c>false</c>.</value>
-		public bool IsGroup
-		{
-			get
-			{
-				return Group != null && !IsDirectory && !IsFile;
-			}
-		}
-
-		/// <summary>
 		/// Gets a value indicating whether this or not this reference is a package reference.
 		/// </summary>
 		/// <value><c>true</c> if this reference is a package; otherwise, <c>false</c>.</value>
@@ -135,7 +123,7 @@ namespace Everlook
 		{
 			get
 			{
-				return !String.IsNullOrEmpty(ItemPath) && String.IsNullOrEmpty(ItemPath);
+				return !String.IsNullOrEmpty(PackageName) && String.IsNullOrEmpty(ItemPath);
 			}
 		}
 
@@ -214,7 +202,7 @@ namespace Everlook
 		/// <summary>
 		/// Extracts this instance from the package group it is associated with.
 		/// </summary>
-		public byte[] Extract()
+		public virtual byte[] Extract()
 		{
 			return this.Group.ExtractUnversionedFile(this);
 		}
@@ -365,11 +353,11 @@ namespace Everlook
 		{
 			if (this.ParentReference != null)
 			{
-				return (this.ToString().GetHashCode() + this.ParentReference.GetHashCode()).GetHashCode();
+				return (this.ToString().GetHashCode() + this.ParentReference.GetHashCode() + this.Group.GroupName.GetHashCode()).GetHashCode();
 			}
 			else
 			{
-				return (this.ToString().GetHashCode() + 0).GetHashCode();			
+				return (this.ToString().GetHashCode() + 0 + this.Group.GroupName.GetHashCode()).GetHashCode();			
 			}
 		}
 	}

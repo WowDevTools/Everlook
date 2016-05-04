@@ -53,6 +53,8 @@ namespace Everlook.Configuration
 			{
 				if (!File.Exists(GetConfigurationFilePath()))
 				{
+					// Create the default configuration file
+
 					Directory.CreateDirectory(Directory.GetParent(GetConfigurationFilePath()).FullName);
 					File.Create(GetConfigurationFilePath()).Close();
 					IniData data = Parser.ReadFile(GetConfigurationFilePath());
@@ -61,8 +63,8 @@ namespace Everlook.Configuration
 					data.Sections.AddSection("Export");
 					data.Sections.AddSection("Privacy");
 
-					data["General"].AddKey("GameDirectory", "");
 					data["General"].AddKey("ViewportBackgroundColour", "rgb(133, 146, 173)");
+					data["General"].AddKey("bShowUnknownFilesWhenFiltering", "true");
 
 					data["Export"].AddKey("DefaultExportDirectory", "./Export");
 
@@ -124,8 +126,68 @@ namespace Everlook.Configuration
 					*/
 
 					// Uncomment this when needed
-					// IniData data = Parser.ReadFile(GetConfigurationFilePath());
+					IniData data = Parser.ReadFile(GetConfigurationFilePath());
+
+					// May 4th, 2016 - Added option to show unknown file types in the tree view.
+					AddNewConfigurationOption(data, "General", "bShowUnknownFilesWhenFiltering", "true");
+
+					// May 4th, 2016 - Implemented support for multiple games at once.
+					// Makes the GameDirectory option obsolete.
+					if (data["General"].ContainsKey("GameDirectory"))
+					{
+						GamePathStorage.Instance.StorePath(data["General"]["GameDirectory"]);
+						data["General"].RemoveKey("GameDirectory");
+					}
+
+					lock (WriteLock)
+					{
+						WriteConfig(Parser, data);
+					}
 				}
+			}
+		}
+
+		private void AddNewConfigurationSection(IniData configData, string keySection)
+		{
+			if (!configData.Sections.ContainsSection(keySection))
+			{
+				configData.Sections.AddSection(keySection);
+			}
+		}
+
+		private void AddNewConfigurationOption(IniData configData, string keySection, string keyName, string keyData)
+		{
+			if (!configData.Sections[keySection].ContainsKey(keyName))
+			{
+				configData.Sections[keySection].AddKey(keyName);
+			}
+
+			if (!configData.Sections[keySection][keyName].Equals(keyData))
+			{
+				configData.Sections[keySection][keyName] = keyData;
+			}
+		}
+
+		private void RenameConfigurationOption(IniData configData, string keySection, string oldKeyName, string newKeyName)
+		{
+			if (configData.Sections[keySection].ContainsKey(oldKeyName))
+			{
+				string oldKeyData = configData.Sections[keySection][oldKeyName];
+
+				AddNewConfigurationOption(configData, keySection, newKeyName, oldKeyData);
+
+				configData.Sections[keySection].RemoveKey(oldKeyName);
+			}
+		}
+
+		private void RenameConfigurationSection(IniData configData, string oldSectionName, string newSectionName)
+		{
+			if (configData.Sections.ContainsSection(oldSectionName))
+			{
+				SectionData oldSectionData = configData.Sections.GetSectionData(oldSectionName);
+				configData.Sections.RemoveSection(oldSectionName);
+				configData.Sections.AddSection(newSectionName);
+				configData.Sections.SetSectionData(newSectionName, oldSectionData);
 			}
 		}
 
@@ -165,41 +227,6 @@ namespace Everlook.Configuration
 				IniData data = Parser.ReadFile(GetConfigurationFilePath());
 
 				data["General"]["ViewportBackgroundColour"] = colour.ToString();
-
-				lock (WriteLock)
-				{
-					WriteConfig(Parser, data);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Gets the game directory.
-		/// </summary>
-		/// <returns>The game directory.</returns>
-		public string GetGameDirectory()
-		{
-			lock (ReadLock)
-			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
-
-				return data["General"]["GameDirectory"];
-			}
-		}
-
-		/// <summary>
-		/// Sets the game directory.
-		/// </summary>
-		/// <param name="GameDirectory">Game directory.</param>
-		public void SetGameDirectory(string GameDirectory)
-		{
-			lock (ReadLock)
-			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
-
-				data["General"]["GameDirectory"] = GameDirectory;
 
 				lock (WriteLock)
 				{

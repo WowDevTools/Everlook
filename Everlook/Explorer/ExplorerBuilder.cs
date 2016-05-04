@@ -26,7 +26,6 @@ using Gtk;
 using Everlook.Configuration;
 using System.IO;
 using System.Linq;
-using Warcraft.MPQ;
 using System.Text.RegularExpressions;
 using Everlook.Package;
 
@@ -72,7 +71,7 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// The cached package directory. Used when the user changes game directory during runtime.
 		/// </summary>
-		private string CachedPackageDirectory;
+		private List<string> CachedPackageDirectories = new List<string>();
 
 		/// <summary>
 		/// The package groups. This is, at a glance, groupings of packages in a game directory
@@ -80,6 +79,11 @@ namespace Everlook.Explorer
 		/// instance.
 		/// </summary>
 		public readonly Dictionary<string, PackageGroup> PackageGroups = new Dictionary<string, PackageGroup>();
+
+		/// <summary>
+		/// The package node group mapping. Maps package groups to their base virtual item references.
+		/// </summary>
+		public readonly Dictionary<PackageGroup, VirtualItemReference> PackageGroupVirtualNodeMapping = new Dictionary<PackageGroup, VirtualItemReference>();
 
 		/// <summary>
 		/// Maps package names and paths to tree nodes.
@@ -100,23 +104,17 @@ namespace Everlook.Explorer
 		/// Key: An item path in an arbitrary package.
 		/// Value: A virtual item reference that hosts the hard item references.
 		/// </summary>
-		public readonly Dictionary<string, VirtualItemReference> VirtualReferenceMapping = new Dictionary<string, VirtualItemReference>();
-
-		/// <summary>
-		/// Static reference to the configuration handler.
-		/// </summary>
-		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
+		public readonly Dictionary<ItemReference, VirtualItemReference> VirtualReferenceMapping = new Dictionary<ItemReference, VirtualItemReference>();
 
 		private readonly List<ItemReference> WorkQueue = new List<ItemReference>();
 
 		private readonly Thread EnumerationLoopThread;
 
-		private object ActiveThreadsListLock = new object();
 		private readonly List<Thread> ActiveEnumerationThreads = new List<Thread>();
 		private readonly int MaxEnumerationThreadCount;
 
 		private bool bShouldProcessWork;
-		private bool bArePackageListsLoaded;
+		private bool bArePackageGroupsLoaded;
 		private bool bIsReloading;
 
 
@@ -182,7 +180,7 @@ namespace Everlook.Explorer
 			if (!bIsReloading)
 			{
 				bIsReloading = true;
-				bArePackageListsLoaded = false;
+				bArePackageGroupsLoaded = false;
 				Thread t = new Thread(Reload_Implementation);
 
 				t.Start();
@@ -195,14 +193,19 @@ namespace Everlook.Explorer
 		/// </summary>
 		protected void Reload_Implementation()
 		{
-			if (HasPackageDirectoryChanged() && Directory.Exists(Config.GetGameDirectory()))
+			if (HasPackageDirectoryChanged())
 			{
-				CachedPackageDirectory = Config.GetGameDirectory();
-
+				CachedPackageDirectories = GamePathStorage.Instance.GamePaths;
 				this.PackageGroups.Clear();
 
-				string FolderName = Path.GetFileName(Config.GetGameDirectory());
-				this.PackageGroups.Add(FolderName, new PackageGroup(FolderName, Config.GetGameDirectory()));
+				foreach (string packageDirectory in CachedPackageDirectories)
+				{
+					if (Directory.Exists(packageDirectory))
+					{						
+						string FolderName = Path.GetFileName(packageDirectory);
+						this.PackageGroups.Add(FolderName, new PackageGroup(FolderName, packageDirectory));
+					}
+				}
 
 				if (this.PackageGroups.Count > 0)
 				{
@@ -236,10 +239,10 @@ namespace Everlook.Explorer
 						}
 					}
 				}
-			}
 
-			bIsReloading = false;
-			bArePackageListsLoaded = true;
+				bIsReloading = false;
+				bArePackageGroupsLoaded = true;
+			}
 		}
 
 		/// <summary>
@@ -248,7 +251,7 @@ namespace Everlook.Explorer
 		/// <returns><c>true</c> if the package directory has changed; otherwise, <c>false</c>.</returns>
 		public bool HasPackageDirectoryChanged()
 		{
-			return CachedPackageDirectory != Config.GetGameDirectory();
+			return !Enumerable.SequenceEqual(CachedPackageDirectories.OrderBy(t => t), GamePathStorage.Instance.GamePaths.OrderBy(t => t));
 		}
 
 		/// <summary>
@@ -258,7 +261,7 @@ namespace Everlook.Explorer
 		{
 			while (bShouldProcessWork)
 			{				
-				if (bArePackageListsLoaded && WorkQueue.Count > 0)
+				if (bArePackageGroupsLoaded && WorkQueue.Count > 0)
 				{
 					// Clear out finished threads
 					List<Thread> FinishedThreads = new List<Thread>();
@@ -312,48 +315,74 @@ namespace Everlook.Explorer
 			ItemReference parentReference = parentReferenceObject as ItemReference;
 			if (parentReference != null)
 			{
-				List<string> PackageListfile;
-				if (parentReference.Group.PackageListfiles.TryGetValue(parentReference.PackageName, out PackageListfile))
+				VirtualItemReference virtualParentReference = parentReference as VirtualItemReference;
+				if (virtualParentReference != null)
 				{
-					foreach (string FilePath in PackageListfile.Where(s => s.StartsWith(parentReference.ItemPath)))
+					EnumerateHardReference(virtualParentReference.HardReference);
+
+					foreach (ItemReference hardReference in virtualParentReference.OverriddenHardReferences)
 					{
-						string childPath = Regex.Replace(FilePath, "^" + Regex.Escape(parentReference.ItemPath), "");
-
-						int slashIndex = childPath.IndexOf('\\');
-						string topDirectory = childPath.Substring(0, slashIndex + 1);
-
-						if (!String.IsNullOrEmpty(topDirectory))
-						{
-							ItemReference itemReference = new ItemReference(parentReference.Group, parentReference, topDirectory);
-							if (!parentReference.ChildReferences.Contains(itemReference))
-							{
-								parentReference.ChildReferences.Add(itemReference);
-
-								DirectoryEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
-								RaiseDirectoryEnumerated();
-							}
-						}
-						else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1)
-						{									
-							ItemReference itemReference = new ItemReference(parentReference.Group, parentReference, childPath);
-							if (!parentReference.ChildReferences.Contains(itemReference))
-							{
-								parentReference.ChildReferences.Add(itemReference);
-
-								FileEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
-								RaiseFileEnumerated();
-							}
-						}
+						EnumerateHardReference(hardReference);
 					}
-
-					parentReference.IsEnumerated = true;
-					EnumerationFinishedArgs = new ItemEnumeratedEventArgs(parentReference);
-					RaiseEnumerationFinished();
 				}
 				else
 				{
-					throw new InvalidDataException("No listfile was found for the package referenced by this item reference.");
+					EnumerateHardReference(parentReference);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Enumerates a hard reference.
+		/// </summary>
+		/// <param name="hardReference">Hard reference.</param>
+		protected void EnumerateHardReference(ItemReference hardReference)
+		{
+			List<string> PackageListfile;
+			if (hardReference.Group.PackageListfiles.TryGetValue(hardReference.PackageName, out PackageListfile))
+			{
+				foreach (string FilePath in PackageListfile.Where(s => s.StartsWith(hardReference.ItemPath)))
+				{
+					string childPath = Regex.Replace(FilePath, "^" + Regex.Escape(hardReference.ItemPath), "");
+
+					int slashIndex = childPath.IndexOf('\\');
+					string topDirectory = childPath.Substring(0, slashIndex + 1);
+
+					if (!String.IsNullOrEmpty(topDirectory))
+					{
+						ItemReference itemReference = new ItemReference(hardReference.Group, hardReference, topDirectory);
+						if (!hardReference.ChildReferences.Contains(itemReference))
+						{
+							hardReference.ChildReferences.Add(itemReference);
+
+							DirectoryEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
+							RaiseDirectoryEnumerated();
+						}
+					}
+					else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1)
+					{									
+						ItemReference itemReference = new ItemReference(hardReference.Group, hardReference, childPath);
+						if (!hardReference.ChildReferences.Contains(itemReference))
+						{
+							hardReference.ChildReferences.Add(itemReference);
+
+							FileEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
+							RaiseFileEnumerated();
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+
+				hardReference.IsEnumerated = true;
+				EnumerationFinishedArgs = new ItemEnumeratedEventArgs(hardReference);
+				RaiseEnumerationFinished();
+			}
+			else
+			{
+				throw new InvalidDataException("No listfile was found for the package referenced by this item reference.");
 			}
 		}
 
