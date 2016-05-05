@@ -23,6 +23,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Warcraft.MPQ.FileInfo;
+using Warcraft.MPQ;
 
 namespace Everlook.Package
 {
@@ -32,7 +34,7 @@ namespace Everlook.Package
 	///
 	/// Files and packages are registered on an alphabetical first-in last-out basis.
 	/// </summary>
-	public sealed class PackageGroup : IDisposable
+	public sealed class PackageGroup : IDisposable, IPackage
 	{
 		/// <summary>
 		/// Gets the name of the package group.
@@ -102,12 +104,48 @@ namespace Everlook.Package
 		}
 
 		/// <summary>
+		/// Gets the reference info for the specified reference. This method gets the most recent info for the file from
+		/// overriding packages.
+		/// </summary>
+		/// <returns>The reference info.</returns>
+		/// <param name="fileReference">File reference.</param>
+		public MPQFileInfo GetReferenceInfo(ItemReference fileReference)
+		{
+			for (int i = Packages.Count - 1; i >= 0; --i)
+			{
+				if (Packages[i].ContainsFile(fileReference))
+				{
+					return Packages[i].GetReferenceInfo(fileReference);
+				}
+			}
+			return null;
+		}
+
+
+		/// <summary>
+		/// Gets the file info for the specified reference in its specific package. If the file does not exist in
+		/// the package referenced in <paramref name="itemReference"/>, this method returned will return null.
+		/// </summary>
+		/// <returns>The reference info.</returns>
+		/// <param name="itemReference">Item reference.</param>
+		public MPQFileInfo GetUnversionedReferenceInfo(ItemReference itemReference)
+		{
+			PackageInteractionHandler Package = GetPackageByName(itemReference.PackageName);
+			if (Package != null)
+			{
+				return Package.GetReferenceInfo(itemReference);
+			}
+
+			return null;
+		}
+
+		/// <summary>
 		/// Extracts a file from a specific package in the package group. If the file does not exist in
 		/// the package referenced in <paramref name="fileReference"/>, this method returned will return null.
 		/// </summary>
 		/// <returns>The unversioned file or null.</returns>
 		/// <param name="fileReference">File reference.</param>
-		public byte[] ExtractUnversionedFile(ItemReference fileReference)
+		public byte[] ExtractUnversionedReference(ItemReference fileReference)
 		{
 			PackageInteractionHandler Package = GetPackageByName(fileReference.PackageName);
 			if (Package != null)
@@ -127,7 +165,7 @@ namespace Everlook.Package
 		/// </summary>
 		/// <returns>The file or null.</returns>
 		/// <param name="fileReference">File reference.</param>
-		public byte[] ExtractFile(ItemReference fileReference)
+		public byte[] ExtractReference(ItemReference fileReference)
 		{
 			for (int i = Packages.Count - 1; i >= 0; --i)
 			{
@@ -137,6 +175,24 @@ namespace Everlook.Package
 				}
 			}
 			return null;
+		}
+
+		/// <summary>
+		/// Checks whether or not this package group contains the specified item reference.
+		/// </summary>
+		/// <returns><c>true</c>, if reference exist was doesed, <c>false</c> otherwise.</returns>
+		/// <param name="itemReference">Item reference.</param>
+		public bool DoesReferenceExist(ItemReference itemReference)
+		{
+			for (int i = Packages.Count - 1; i >= 0; --i)
+			{
+				if (Packages[i].ContainsFile(itemReference))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -156,6 +212,73 @@ namespace Everlook.Package
 
 			return null;
 		}
+
+		#region IPackage implementation
+
+		/// <summary>
+		/// Extracts the file.
+		/// </summary>
+		/// <returns>The file.</returns>
+		/// <param name="filePath">File path.</param>
+		public byte[] ExtractFile(string filePath)
+		{
+			ItemReference itemReference = new ItemReference(this, null, "", filePath);
+			return this.ExtractReference(itemReference);
+		}
+
+		/// <summary>
+		/// Determines whether this archive has a listfile.
+		/// </summary>
+		/// <returns>true</returns>
+		/// <c>false</c>
+		public bool HasFileList()
+		{
+			return PackageListfiles.Count > 0;
+		}
+
+		/// <summary>
+		/// Gets the best available listfile from the archive. If an external listfile has been provided, 
+		/// that one is prioritized over the one stored in the archive.
+		/// </summary>
+		/// <returns>The listfile.</returns>
+		public List<string> GetFileList()
+		{
+			// Merge all listfiles in the package lists.
+
+			List<List<string>> FileLists = new List<List<string>>();
+
+			foreach (KeyValuePair<string, List<string>> ListPair in PackageListfiles)
+			{
+				FileLists.Add(ListPair.Value);
+			}
+
+			return FileLists.SelectMany(t => t).Distinct().ToList();
+		}
+
+		/// <summary>
+		/// Checks if the specified file path exists in the archive.
+		/// </summary>
+		/// <returns>true</returns>
+		/// <c>false</c>
+		/// <param name="filePath">File path.</param>
+		public bool ContainsFile(string filePath)
+		{
+			ItemReference itemReference = new ItemReference(this, null, "", filePath);
+			return this.DoesReferenceExist(itemReference);
+		}
+
+		/// <summary>
+		/// Gets the file info of the provided path.
+		/// </summary>
+		/// <returns>The file info, or null if the file doesn't exist in the archive.</returns>
+		/// <param name="filePath">File path.</param>
+		public MPQFileInfo GetFileInfo(string filePath)
+		{
+			ItemReference itemReference = new ItemReference(this, null, "", filePath);
+			return this.GetReferenceInfo(itemReference);
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Releases all resource used by the <see cref="Everlook.Package.PackageGroup"/> object.

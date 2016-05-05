@@ -31,7 +31,7 @@ namespace Everlook.Package
 	/// Package interaction handler. This class is responsible for loading a package and performing file operations
 	/// on it.
 	/// </summary>
-	public class PackageInteractionHandler : IDisposable
+	public class PackageInteractionHandler : IDisposable, IPackage
 	{
 		/// <summary>
 		/// Gets the package path.
@@ -76,16 +76,7 @@ namespace Everlook.Package
 		}
 
 		/// <summary>
-		/// Gets the file list.
-		/// </summary>
-		/// <returns>The file list.</returns>
-		public List<string> GetFileList()
-		{
-			return this.Package.GetFileList();
-		}
-
-		/// <summary>
-		/// Checks if the package contains the specified file.
+		/// Checks if the package contains the specified file. This method only checks the file path.
 		/// </summary>
 		/// <returns><c>true</c>, if the package contains the file, <c>false</c> otherwise.</returns>
 		/// <param name="fileReference">File reference.</param>
@@ -96,11 +87,11 @@ namespace Everlook.Package
 				return false;
 			}
 
-			return Package.DoesFileExist(fileReference.ItemPath);
+			return Package.ContainsFile(fileReference.ItemPath);
 		}
 
 		/// <summary>
-		/// Extracts the specified reference from its associated package.
+		/// Extracts the specified reference from its associated package. This method only operates on the file path.
 		/// </summary>
 		/// <param name="fileReference">File reference.</param>
 		public byte[] ExtractReference(ItemReference fileReference)
@@ -128,6 +119,64 @@ namespace Everlook.Package
 
 			return Package.GetFileInfo(fileReference.ItemPath);
 		}
+
+		#region IPackage implementation
+
+		/// <summary>
+		/// Extracts the file.
+		/// </summary>
+		/// <returns>The file.</returns>
+		/// <param name="filePath">File path.</param>
+		public byte[] ExtractFile(string filePath)
+		{
+			ItemReference itemReference = new ItemReference(null, null, "", filePath);
+			return this.ExtractReference(itemReference);
+		}
+
+		/// <summary>
+		/// Determines whether this archive has a listfile.
+		/// </summary>
+		/// <returns>true</returns>
+		/// <c>false</c>
+		public bool HasFileList()
+		{
+			return this.Package.HasFileList();
+		}
+
+		/// <summary>
+		/// Gets the best available listfile from the archive. If an external listfile has been provided, 
+		/// that one is prioritized over the one stored in the archive.
+		/// </summary>
+		/// <returns>The listfile.</returns>
+		public List<string> GetFileList()
+		{
+			return this.Package.GetFileList();
+		}
+
+		/// <summary>
+		/// Checks if the specified file path exists in the archive.
+		/// </summary>
+		/// <returns>true</returns>
+		/// <c>false</c>
+		/// <param name="filePath">File path.</param>
+		public bool ContainsFile(string filePath)
+		{
+			ItemReference itemReference = new ItemReference(null, null, "", filePath);
+			return this.ContainsFile(itemReference);
+		}
+
+		/// <summary>
+		/// Gets the file info of the provided path.
+		/// </summary>
+		/// <returns>The file info, or null if the file doesn't exist in the archive.</returns>
+		/// <param name="filePath">File path.</param>
+		public MPQFileInfo GetFileInfo(string filePath)
+		{
+			ItemReference itemReference = new ItemReference(null, null, "", filePath);
+			return this.GetReferenceInfo(itemReference);
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Releases all resource used by the <see cref="Everlook.Package.PackageInteractionHandler"/> object.

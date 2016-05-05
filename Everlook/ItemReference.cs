@@ -24,6 +24,7 @@ using Warcraft.Core;
 using System.IO;
 using System.Collections.Generic;
 using Everlook.Package;
+using Warcraft.MPQ.FileInfo;
 
 namespace Everlook
 {
@@ -79,6 +80,25 @@ namespace Everlook
 		} = "";
 
 		/// <summary>
+		/// Gets the file info of this reference.
+		/// </summary>
+		/// <value>The file info.</value>
+		public virtual MPQFileInfo ReferenceInfo
+		{
+			get
+			{
+				if (this.IsFile)
+				{
+					return this.Group.GetReferenceInfo(this);
+				}
+				else
+				{
+					return null;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets a value indicating whether this reference has had its children enumerated.
 		/// </summary>
 		/// <value><c>true</c> if this instance is enumerated; otherwise, <c>false</c>.</value>
@@ -112,6 +132,18 @@ namespace Everlook
 				}
 
 				return areChildrenEnumerated;
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this reference is deleted in package it is stored in.
+		/// </summary>
+		/// <value><c>true</c> if this instance is deleted in package; otherwise, <c>false</c>.</value>
+		public virtual bool IsDeletedInPackage
+		{
+			get
+			{
+				return this.ReferenceInfo.IsDeleted;
 			}
 		}
 
@@ -204,7 +236,7 @@ namespace Everlook
 		/// </summary>
 		public virtual byte[] Extract()
 		{
-			return this.Group.ExtractUnversionedFile(this);
+			return this.Group.ExtractUnversionedReference(this);
 		}
 
 		/// <summary>

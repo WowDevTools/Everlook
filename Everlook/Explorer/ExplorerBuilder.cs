@@ -350,23 +350,26 @@ namespace Everlook.Explorer
 
 					if (!String.IsNullOrEmpty(topDirectory))
 					{
-						ItemReference itemReference = new ItemReference(hardReference.Group, hardReference, topDirectory);
-						if (!hardReference.ChildReferences.Contains(itemReference))
+						ItemReference directoryReference = new ItemReference(hardReference.Group, hardReference, topDirectory);
+						if (!hardReference.ChildReferences.Contains(directoryReference))
 						{
-							hardReference.ChildReferences.Add(itemReference);
+							hardReference.ChildReferences.Add(directoryReference);
 
-							DirectoryEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
+							DirectoryEnumeratedArgs = new ItemEnumeratedEventArgs(directoryReference);
 							RaiseDirectoryEnumerated();
 						}
 					}
 					else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1)
 					{									
-						ItemReference itemReference = new ItemReference(hardReference.Group, hardReference, childPath);
-						if (!hardReference.ChildReferences.Contains(itemReference))
+						ItemReference fileReference = new ItemReference(hardReference.Group, hardReference, childPath);
+						if (!hardReference.ChildReferences.Contains(fileReference))
 						{
-							hardReference.ChildReferences.Add(itemReference);
+							// Files can't have any children, so it will always be enumerated.
+							fileReference.IsEnumerated = true;
 
-							FileEnumeratedArgs = new ItemEnumeratedEventArgs(itemReference);
+							hardReference.ChildReferences.Add(fileReference);
+
+							FileEnumeratedArgs = new ItemEnumeratedEventArgs(fileReference);
 							RaiseFileEnumerated();
 						}
 					}

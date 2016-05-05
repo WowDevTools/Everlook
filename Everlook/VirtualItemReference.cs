@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using Everlook.Package;
+using Warcraft.MPQ.FileInfo;
 
 namespace Everlook
 {
@@ -130,6 +131,18 @@ namespace Everlook
 			: this(InGroup, InHardReference)
 		{
 			this.ParentReference = ParentVirtualReference;	
+		}
+
+		/// <summary>
+		/// Gets the file info of this reference.
+		/// </summary>
+		/// <value>The file info.</value>
+		public override MPQFileInfo ReferenceInfo
+		{
+			get
+			{
+				return this.HardReference.ReferenceInfo;
+			}
 		}
 
 		/// <summary>
