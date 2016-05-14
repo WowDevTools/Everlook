@@ -49,7 +49,7 @@ namespace Everlook.Package
 		/// <summary>
 		/// The root package directory.
 		/// </summary>
-		private string RootPackageDirectory;
+		private readonly string RootPackageDirectory;
 
 		/// <summary>
 		/// The packages handled by this package group.
@@ -276,6 +276,36 @@ namespace Everlook.Package
 		{
 			ItemReference itemReference = new ItemReference(this, null, "", filePath);
 			return this.GetReferenceInfo(itemReference);
+		}
+
+		/// <summary>
+		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Everlook.Package.PackageGroup"/>.
+		/// </summary>
+		/// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Everlook.Package.PackageGroup"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+		/// <see cref="Everlook.Package.PackageGroup"/>; otherwise, <c>false</c>.</returns>
+		public override bool Equals(object obj)
+		{
+			PackageGroup other = obj as PackageGroup;
+			if (other != null)
+			{
+				return this.GroupName.Equals(other.GroupName) &&
+				this.RootPackageDirectory.Equals(other.RootPackageDirectory) &&
+				this.Packages.Equals(other.Packages);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Serves as a hash function for a <see cref="Everlook.Package.PackageGroup"/> object.
+		/// </summary>
+		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
+		public override int GetHashCode()
+		{
+			return (this.GroupName.GetHashCode() + this.RootPackageDirectory.GetHashCode() + this.Packages.GetHashCode()).GetHashCode();
 		}
 
 		#endregion

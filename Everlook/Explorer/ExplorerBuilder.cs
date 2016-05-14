@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Everlook.Package;
+using System.Globalization;
 
 namespace Everlook.Explorer
 {
@@ -69,9 +70,12 @@ namespace Everlook.Explorer
 		private ItemEnumeratedEventArgs EnumerationFinishedArgs;
 
 		/// <summary>
-		/// The cached package directory. Used when the user changes game directory during runtime.
+		/// The cached package directories. Used when the user adds or removes game directories during runtime.
 		/// </summary>
 		private List<string> CachedPackageDirectories = new List<string>();
+
+		private readonly List<string> DiscoveredDirectoryNames = new List<string>();
+		private readonly List<string> DiscoveredFileNames = new List<string>();
 
 		/// <summary>
 		/// The package groups. This is, at a glance, groupings of packages in a game directory
@@ -101,10 +105,11 @@ namespace Everlook.Explorer
 
 		/// <summary>
 		/// The virtual reference mapping. Maps item references to their virtual counterparts.
-		/// Key: An item path in an arbitrary package.
-		/// Value: A virtual item reference that hosts the hard item references.
+		/// Key: Group that hosts this virtual reference.
+		/// Dictionary::Key: An item path in an arbitrary package.
+		/// Dictionary::Value: A virtual item reference that hosts the hard item references.
 		/// </summary>
-		public readonly Dictionary<ItemReference, VirtualItemReference> VirtualReferenceMapping = new Dictionary<ItemReference, VirtualItemReference>();
+		private readonly Dictionary<PackageGroup, Dictionary<string, VirtualItemReference>> VirtualReferenceMappings = new Dictionary<PackageGroup, Dictionary<string, VirtualItemReference>>();
 
 		private readonly List<ItemReference> WorkQueue = new List<ItemReference>();
 
@@ -212,6 +217,9 @@ namespace Everlook.Explorer
 					WorkQueue.Clear();
 					PackageItemNodeMapping.Clear();
 					PackageNodeItemMapping.Clear();
+
+					PackageGroupVirtualNodeMapping.Clear();
+					VirtualReferenceMappings.Clear();
 
 					foreach (KeyValuePair<string, PackageGroup> GroupEntry in PackageGroups)
 					{
@@ -337,13 +345,14 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <param name="hardReference">Hard reference.</param>
 		protected void EnumerateHardReference(ItemReference hardReference)
-		{
+		{				
 			List<string> PackageListfile;
 			if (hardReference.Group.PackageListfiles.TryGetValue(hardReference.PackageName, out PackageListfile))
 			{
-				foreach (string FilePath in PackageListfile.Where(s => s.StartsWith(hardReference.ItemPath)))
+				IEnumerable<string> strippedListfile = PackageListfile.Where(s => s.StartsWith(hardReference.ItemPath, true, new CultureInfo("en-GB")));
+				foreach (string FilePath in strippedListfile)
 				{
-					string childPath = Regex.Replace(FilePath, "^" + Regex.Escape(hardReference.ItemPath), "");
+					string childPath = Regex.Replace(FilePath, "^(?-i)" + Regex.Escape(hardReference.ItemPath), "");
 
 					int slashIndex = childPath.IndexOf('\\');
 					string topDirectory = childPath.Substring(0, slashIndex + 1);
@@ -360,7 +369,7 @@ namespace Everlook.Explorer
 						}
 					}
 					else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1)
-					{									
+					{
 						ItemReference fileReference = new ItemReference(hardReference.Group, hardReference, childPath);
 						if (!hardReference.ChildReferences.Contains(fileReference))
 						{
@@ -387,6 +396,50 @@ namespace Everlook.Explorer
 			{
 				throw new InvalidDataException("No listfile was found for the package referenced by this item reference.");
 			}
+		}
+
+		/// <summary>
+		/// Adds a virtual mapping.
+		/// </summary>
+		/// <param name="hardReference">Hard reference.</param>
+		/// <param name="virtualReference">Virtual reference.</param>
+		public void AddVirtualMapping(ItemReference hardReference, VirtualItemReference virtualReference)
+		{
+			PackageGroup referenceGroup = hardReference.Group;
+			if (VirtualReferenceMappings.ContainsKey(referenceGroup))
+			{
+				if (!VirtualReferenceMappings[referenceGroup].ContainsKey(hardReference.ItemPath))
+				{
+					VirtualReferenceMappings[referenceGroup].Add(hardReference.ItemPath, virtualReference);
+				}
+			}
+			else
+			{
+				Dictionary<string, VirtualItemReference> groupDictionary = new Dictionary<string, VirtualItemReference>();
+				groupDictionary.Add(hardReference.ItemPath, virtualReference);
+
+				VirtualReferenceMappings.Add(referenceGroup, groupDictionary);
+			}
+		}
+
+		/// <summary>
+		/// Gets a virtual reference.
+		/// </summary>
+		/// <returns>The virtual reference.</returns>
+		/// <param name="hardReference">Hard reference.</param>
+		public VirtualItemReference GetVirtualReference(ItemReference hardReference)
+		{
+			PackageGroup referenceGroup = hardReference.Group;
+			if (VirtualReferenceMappings.ContainsKey(referenceGroup))
+			{
+				VirtualItemReference virtualReference;
+				if (VirtualReferenceMappings[referenceGroup].TryGetValue(hardReference.ItemPath, out virtualReference))
+				{
+					return virtualReference;
+				}
+			}
+
+			return null;
 		}
 
 		/// <summary>

@@ -25,6 +25,7 @@ using System.IO;
 using System.Collections.Generic;
 using Everlook.Package;
 using Warcraft.MPQ.FileInfo;
+using System.Linq;
 
 namespace Everlook
 {
@@ -32,7 +33,7 @@ namespace Everlook
 	/// Represents a file stored in a game package. Holds the package name and path of the file
 	/// inside the package.
 	/// </summary>
-	public class ItemReference: IEquatable<ItemReference>
+	public class ItemReference : IEquatable<ItemReference>
 	{
 		/// <summary>
 		/// Gets or sets the parent reference.
@@ -143,7 +144,16 @@ namespace Everlook
 		{
 			get
 			{
-				return this.ReferenceInfo.IsDeleted;
+				if (this.ReferenceInfo != null && this.IsFile)
+				{
+					return this.ReferenceInfo.IsDeleted;				
+				}
+				else if (this.IsDirectory)
+				{
+					return false;
+				}
+
+				return false;
 			}
 		}
 
@@ -354,6 +364,25 @@ namespace Everlook
 		#region IEquatable implementation
 
 		/// <summary>
+		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Everlook.ItemReference"/>.
+		/// </summary>
+		/// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Everlook.ItemReference"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="Everlook.ItemReference"/> is equal to the current
+		/// <see cref="Everlook.ItemReference"/>; otherwise, <c>false</c>.</returns>
+		public override bool Equals(object obj)
+		{
+			ItemReference other = obj as ItemReference;
+			if (other != null)
+			{
+				return Equals(other);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		/// <summary>
 		/// Determines whether the specified <see cref="Everlook.ItemReference"/> is equal to the current <see cref="Everlook.ItemReference"/>.
 		/// </summary>
 		/// <param name="other">The <see cref="Everlook.ItemReference"/> to compare with the current <see cref="Everlook.ItemReference"/>.</param>
@@ -361,9 +390,28 @@ namespace Everlook
 		/// <see cref="Everlook.ItemReference"/>; otherwise, <c>false</c>.</returns>
 		public bool Equals(ItemReference other)
 		{
-			return 
-			this.PackageName == other.PackageName &&
-			this.ItemPath == other.ItemPath;
+			if (other != null)
+			{
+				bool parentsEqual = false;
+				if (this.ParentReference != null && other.ParentReference != null)
+				{
+					parentsEqual = this.ParentReference.Equals(other.ParentReference);
+				}
+				else if (this.ParentReference == null && other.ParentReference == null)
+				{
+					parentsEqual = true;
+				}
+
+				return 
+					parentsEqual &&
+				this.Group == other.Group &&
+				this.PackageName == other.PackageName &&
+				this.ItemPath == other.ItemPath;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		#endregion
@@ -385,11 +433,19 @@ namespace Everlook
 		{
 			if (this.ParentReference != null)
 			{
-				return (this.ToString().GetHashCode() + this.ParentReference.GetHashCode() + this.Group.GroupName.GetHashCode()).GetHashCode();
+				return (this.PackageName.GetHashCode() +
+				this.ItemPath.GetHashCode() +
+				this.ParentReference.GetHashCode() +
+				this.Group.GroupName.GetHashCode()
+				).GetHashCode();
 			}
 			else
 			{
-				return (this.ToString().GetHashCode() + 0 + this.Group.GroupName.GetHashCode()).GetHashCode();			
+				return (this.PackageName.GetHashCode() +
+				this.ItemPath.GetHashCode() +
+				0 +
+				this.Group.GroupName.GetHashCode()
+				).GetHashCode();			
 			}
 		}
 	}

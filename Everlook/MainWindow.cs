@@ -457,7 +457,7 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			clipboard.Text = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter)).ItemPath.ToString();
+			clipboard.Text = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter)).ItemPath;
 		}
 
 		/// <summary>
@@ -471,7 +471,7 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			ItemReference itemReference = GetItemReferenceFromIter(selectedIter);
+			ItemReference itemReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter));
 
 			string CleanFilepath = Utilities.CleanPath(itemReference.ItemPath);
 
@@ -795,7 +795,7 @@ namespace Everlook
 			{
 				TreeIter iter;
 				ExportQueueListStore.GetIterFromString(out iter, path.ToString());
-				currentReference = GetItemReferenceFromIter(iter);
+				currentReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(iter));
 			}
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
@@ -904,8 +904,9 @@ namespace Everlook
 			// Map package nodes to virtual root nodes
 			VirtualItemReference virtualGroupReference;
 			if (explorerBuilder.PackageGroupVirtualNodeMapping.TryGetValue(packageReference.Group, out virtualGroupReference))
-			{
-				explorerBuilder.VirtualReferenceMapping.Add(packageReference, virtualGroupReference);			
+			{	
+				// TODO: Investigate possible bug			
+				explorerBuilder.AddVirtualMapping(packageReference, virtualGroupReference);
 			}
 		}
 
@@ -946,8 +947,7 @@ namespace Everlook
 			}
 
 			// Now, let's add (or append to) the virtual node
-			VirtualItemReference virtualParentReference;
-			explorerBuilder.VirtualReferenceMapping.TryGetValue(parentReference, out virtualParentReference);
+			VirtualItemReference virtualParentReference = explorerBuilder.GetVirtualReference(parentReference);
 
 			if (virtualParentReference != null)
 			{
@@ -957,8 +957,8 @@ namespace Everlook
 				if (GameExplorerTreeStore.IterIsValid(virtualParentNode))
 				{
 					
-					VirtualItemReference virtualChildReference;
-					explorerBuilder.VirtualReferenceMapping.TryGetValue(childReference, out virtualChildReference);
+					VirtualItemReference virtualChildReference = explorerBuilder.GetVirtualReference(childReference);
+					//explorerBuilder.VirtualReferenceMapping.TryGetValue(childReference, out virtualChildReference);
 
 					if (virtualChildReference != null)
 					{
@@ -966,7 +966,11 @@ namespace Everlook
 						virtualChildReference.OverriddenHardReferences.Add(childReference);
 					}
 					else
-					{						
+					{
+						if (childReference.GetReferencedItemName() == "WTF")
+						{
+							Console.WriteLine("");
+						}
 						virtualChildReference = new VirtualItemReference(virtualParentReference, childReference.Group, childReference);
 
 						if (!virtualParentReference.ChildReferences.Contains(virtualChildReference))
@@ -981,7 +985,9 @@ namespace Everlook
 
 								explorerBuilder.PackageItemNodeMapping.Add(virtualChildReference, node);
 								explorerBuilder.PackageNodeItemMapping.Add(node, virtualChildReference);
-								explorerBuilder.VirtualReferenceMapping.Add(childReference, virtualChildReference);
+
+								// Needs to be a path, not a reference
+								explorerBuilder.AddVirtualMapping(childReference, virtualChildReference);
 							}
 						}
 					}					
@@ -1034,8 +1040,7 @@ namespace Everlook
 			}		
 
 			// Now, let's add (or append to) the virtual node
-			VirtualItemReference virtualParentReference;
-			explorerBuilder.VirtualReferenceMapping.TryGetValue(parentReference, out virtualParentReference);
+			VirtualItemReference virtualParentReference = explorerBuilder.GetVirtualReference(parentReference); 
 
 			if (virtualParentReference != null)
 			{
@@ -1045,8 +1050,7 @@ namespace Everlook
 				if (GameExplorerTreeStore.IterIsValid(virtualParentNode))
 				{
 					
-					VirtualItemReference virtualChildReference;
-					explorerBuilder.VirtualReferenceMapping.TryGetValue(childReference, out virtualChildReference);
+					VirtualItemReference virtualChildReference = explorerBuilder.GetVirtualReference(childReference);
 
 					if (virtualChildReference != null)
 					{
@@ -1054,8 +1058,7 @@ namespace Everlook
 						virtualChildReference.OverriddenHardReferences.Add(childReference);
 					}
 					else
-					{
-						
+					{						
 						virtualChildReference = new VirtualItemReference(virtualParentReference, childReference.Group, childReference);
 
 						if (!virtualParentReference.ChildReferences.Contains(virtualChildReference))
@@ -1064,12 +1067,12 @@ namespace Everlook
 							// Create a new virtual reference and a node that maps to it.
 							if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(virtualChildReference))
 							{
-
 								TreeIter node = CreateFileTreeNode(virtualParentNode, virtualChildReference);
 
 								explorerBuilder.PackageItemNodeMapping.Add(virtualChildReference, node);
 								explorerBuilder.PackageNodeItemMapping.Add(node, virtualChildReference);
-								explorerBuilder.VirtualReferenceMapping.Add(childReference, virtualChildReference);
+
+								explorerBuilder.AddVirtualMapping(childReference, virtualChildReference);
 							}
 						}
 					}					
