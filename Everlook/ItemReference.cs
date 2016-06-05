@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
 using System;
 using Warcraft.Core;
 using System.IO;
@@ -39,11 +40,7 @@ namespace Everlook
 		/// Gets or sets the parent reference.
 		/// </summary>
 		/// <value>The parent reference.</value>
-		public ItemReference ParentReference
-		{
-			get;
-			set;
-		}
+		public ItemReference ParentReference { get; set; }
 
 		/// <summary>
 		/// Contains a list of references that have this reference as a parent.
@@ -54,31 +51,19 @@ namespace Everlook
 		/// Gets or sets the group this reference belongs to.
 		/// </summary>
 		/// <value>The group.</value>
-		public PackageGroup Group
-		{
-			get;
-			set;
-		}
+		public PackageGroup Group { get; set; }
 
 		/// <summary>
 		/// Gets or sets the name of the package where the file is stored.
 		/// </summary>
 		/// <value>The name of the package.</value>
-		public virtual string PackageName
-		{
-			get;
-			set;
-		} = "";
+		public virtual string PackageName { get; set; } = "";
 
 		/// <summary>
 		/// Gets or sets the file path of the file inside the package.
 		/// </summary>
 		/// <value>The file path.</value>
-		public virtual string ItemPath
-		{
-			get;
-			set;
-		} = "";
+		public virtual string ItemPath { get; set; } = "";
 
 		/// <summary>
 		/// Gets the file info of this reference.
@@ -103,11 +88,7 @@ namespace Everlook
 		/// Gets or sets a value indicating whether this reference has had its children enumerated.
 		/// </summary>
 		/// <value><c>true</c> if this instance is enumerated; otherwise, <c>false</c>.</value>
-		public bool IsEnumerated
-		{
-			get;
-			set;
-		}
+		public bool IsEnumerated { get; set; }
 
 		/// <summary>
 		/// Walks through this reference's children and checks whether or not all of them have had their
@@ -120,9 +101,9 @@ namespace Everlook
 			{
 				bool areChildrenEnumerated = true;
 				foreach (ItemReference childReference in ChildReferences)
-				{					
+				{
 					if (childReference.IsDirectory)
-					{			
+					{
 						if (!childReference.IsEnumerated)
 						{
 							return false;
@@ -146,7 +127,7 @@ namespace Everlook
 			{
 				if (this.ReferenceInfo != null && this.IsFile)
 				{
-					return this.ReferenceInfo.IsDeleted;				
+					return this.ReferenceInfo.IsDeleted;
 				}
 				else if (this.IsDirectory)
 				{
@@ -163,10 +144,7 @@ namespace Everlook
 		/// <value><c>true</c> if this reference is a package; otherwise, <c>false</c>.</value>
 		public virtual bool IsPackage
 		{
-			get
-			{
-				return !String.IsNullOrEmpty(PackageName) && String.IsNullOrEmpty(ItemPath);
-			}
+			get { return !String.IsNullOrEmpty(PackageName) && String.IsNullOrEmpty(ItemPath); }
 		}
 
 		/// <summary>
@@ -175,10 +153,7 @@ namespace Everlook
 		/// <value><c>true</c> if this instance is directory; otherwise, <c>false</c>.</value>
 		public bool IsDirectory
 		{
-			get
-			{
-				return !String.IsNullOrEmpty(ItemPath) && GetReferencedFileType() == WarcraftFileType.Directory;
-			}
+			get { return !String.IsNullOrEmpty(ItemPath) && GetReferencedFileType() == WarcraftFileType.Directory; }
 		}
 
 		/// <summary>
@@ -187,10 +162,7 @@ namespace Everlook
 		/// <value><c>true</c> if this instance is file; otherwise, <c>false</c>.</value>
 		public bool IsFile
 		{
-			get
-			{
-				return !String.IsNullOrEmpty(ItemPath) && (GetReferencedFileType() != WarcraftFileType.Directory);
-			}
+			get { return !String.IsNullOrEmpty(ItemPath) && (GetReferencedFileType() != WarcraftFileType.Directory); }
 		}
 
 		/// <summary>
@@ -199,7 +171,6 @@ namespace Everlook
 		/// </summary>
 		protected ItemReference()
 		{
-
 		}
 
 		/// <summary>
@@ -289,70 +260,70 @@ namespace Everlook
 				switch (fileExtension)
 				{
 					case "mpq":
-						{	
-							return WarcraftFileType.MoPaQArchive;
-						}
+					{
+						return WarcraftFileType.MoPaQArchive;
+					}
 					case "toc":
-						{
-							return WarcraftFileType.AddonManifest;
-						}
+					{
+						return WarcraftFileType.AddonManifest;
+					}
 					case "sig":
-						{
-							return WarcraftFileType.AddonManifestSignature;
-						}
+					{
+						return WarcraftFileType.AddonManifestSignature;
+					}
 					case "wtf":
-						{
-							return WarcraftFileType.ConfigurationFile;
-						}
+					{
+						return WarcraftFileType.ConfigurationFile;
+					}
 					case "dbc":
-						{
-							return WarcraftFileType.DatabaseContainer;
-						}
+					{
+						return WarcraftFileType.DatabaseContainer;
+					}
 					case "bls":
-						{
-							return WarcraftFileType.Shader;
-						}
+					{
+						return WarcraftFileType.Shader;
+					}
 					case "wlw":
-						{
-							return WarcraftFileType.TerrainWater;
-						}
+					{
+						return WarcraftFileType.TerrainWater;
+					}
 					case "wlq":
-						{
-							return WarcraftFileType.TerrainLiquid;
-						}
+					{
+						return WarcraftFileType.TerrainLiquid;
+					}
 					case "wdl":
-						{
-							return WarcraftFileType.TerrainLiquid;
-						}
+					{
+						return WarcraftFileType.TerrainLiquid;
+					}
 					case "wdt":
-						{
-							return WarcraftFileType.TerrainTable;
-						}
+					{
+						return WarcraftFileType.TerrainTable;
+					}
 					case "adt":
-						{
-							return WarcraftFileType.TerrainData;
-						}
+					{
+						return WarcraftFileType.TerrainData;
+					}
 					case "blp":
-						{
-							return WarcraftFileType.BinaryImage;
-						}
+					{
+						return WarcraftFileType.BinaryImage;
+					}
 					case "trs":
-						{
-							return WarcraftFileType.Hashmap;
-						}				
+					{
+						return WarcraftFileType.Hashmap;
+					}
 					case "m2":
 					case "mdx":
-						{
-							return WarcraftFileType.GameObjectModel;
-						}
+					{
+						return WarcraftFileType.GameObjectModel;
+					}
 					case "wmo":
-						{
-							return WarcraftFileType.WorldObjectModel;
-						}
-					default: 
-						{
-							return WarcraftFileType.Unknown;
-						}
+					{
+						return WarcraftFileType.WorldObjectModel;
+					}
+					default:
+					{
+						return WarcraftFileType.Unknown;
+					}
 				}
 			}
 			else
@@ -402,11 +373,11 @@ namespace Everlook
 					parentsEqual = true;
 				}
 
-				return 
+				return
 					parentsEqual &&
-				this.Group == other.Group &&
-				this.PackageName == other.PackageName &&
-				this.ItemPath == other.ItemPath;
+					this.Group == other.Group &&
+					this.PackageName == other.PackageName &&
+					this.ItemPath == other.ItemPath;
 			}
 			else
 			{
@@ -434,20 +405,19 @@ namespace Everlook
 			if (this.ParentReference != null)
 			{
 				return (this.PackageName.GetHashCode() +
-				this.ItemPath.GetHashCode() +
-				this.ParentReference.GetHashCode() +
-				this.Group.GroupName.GetHashCode()
-				).GetHashCode();
+				        this.ItemPath.GetHashCode() +
+				        this.ParentReference.GetHashCode() +
+				        this.Group.GroupName.GetHashCode()
+				       ).GetHashCode();
 			}
 			else
 			{
 				return (this.PackageName.GetHashCode() +
-				this.ItemPath.GetHashCode() +
-				0 +
-				this.Group.GroupName.GetHashCode()
-				).GetHashCode();			
+				        this.ItemPath.GetHashCode() +
+				        0 +
+				        this.Group.GroupName.GetHashCode()
+				       ).GetHashCode();
 			}
 		}
 	}
 }
-

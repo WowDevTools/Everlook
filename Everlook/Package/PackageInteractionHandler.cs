@@ -24,6 +24,7 @@ using Warcraft.MPQ;
 using System.IO;
 using Warcraft.MPQ.FileInfo;
 using System.Collections.Generic;
+using liblistfile;
 
 namespace Everlook.Package
 {
@@ -40,7 +41,6 @@ namespace Everlook.Package
 		public string PackagePath
 		{
 			get;
-			private set;
 		}
 
 		/// <summary>
@@ -51,11 +51,13 @@ namespace Everlook.Package
 		{
 			get
 			{
-				return Path.GetFileName(PackagePath);
+				return Path.GetFileNameWithoutExtension(PackagePath);
 			}
 		}
 
 		private readonly MPQ Package;
+
+		private byte[] ArchiveHashTableHash;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Package.PackageInteractionHandler"/> class.
@@ -73,6 +75,22 @@ namespace Everlook.Package
 			}
 
 			this.PackagePath = InPackagePath;
+		}
+
+		/// <summary>
+		/// Gets the MD5 hash of the hash table of this package.
+		/// </summary>
+		/// <returns>The hash table hash.</returns>
+		public byte[] GetHashTableHash()
+		{
+			// Check if we've already computed the hash. The package interaction handler is,
+			// in a sense, immutable, so there's no need to to it more than once.
+			if (this.ArchiveHashTableHash == null)
+			{
+				this.ArchiveHashTableHash = this.Package.ArchiveHashTable.Serialize().ComputeHash();
+			}
+
+			return this.ArchiveHashTableHash;
 		}
 
 		/// <summary>
@@ -101,7 +119,7 @@ namespace Everlook.Package
 				return null;
 			}
 
-			return Package.ExtractFile(fileReference.ItemPath);		
+			return Package.ExtractFile(fileReference.ItemPath);
 		}
 
 		/// <summary>
@@ -144,7 +162,7 @@ namespace Everlook.Package
 		}
 
 		/// <summary>
-		/// Gets the best available listfile from the archive. If an external listfile has been provided, 
+		/// Gets the best available listfile from the archive. If an external listfile has been provided,
 		/// that one is prioritized over the one stored in the archive.
 		/// </summary>
 		/// <returns>The listfile.</returns>

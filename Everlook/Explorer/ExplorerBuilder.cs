@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
 using System;
 using System.Threading;
 using System.Collections.Generic;
@@ -41,9 +42,9 @@ namespace Everlook.Explorer
 		/// Occurs when a package group has been added.
 		/// </summary>
 		public event ItemEnumeratedEventHandler PackageGroupAdded;
-		
+
 		/// <summary>
-		/// Occurs when a top-level package has been enumerated. This event does not mean that all files in the 
+		/// Occurs when a top-level package has been enumerated. This event does not mean that all files in the
 		/// package have been enumerated, only that the package has been registered by the builder.
 		/// </summary>
 		public event ItemEnumeratedEventHandler PackageEnumerated;
@@ -74,9 +75,6 @@ namespace Everlook.Explorer
 		/// </summary>
 		private List<string> CachedPackageDirectories = new List<string>();
 
-		private readonly List<string> DiscoveredDirectoryNames = new List<string>();
-		private readonly List<string> DiscoveredFileNames = new List<string>();
-
 		/// <summary>
 		/// The package groups. This is, at a glance, groupings of packages in a game directory
 		/// that act as a cohesive unit. Usually, a single package group represents a single game
@@ -87,21 +85,24 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// The package node group mapping. Maps package groups to their base virtual item references.
 		/// </summary>
-		public readonly Dictionary<PackageGroup, VirtualItemReference> PackageGroupVirtualNodeMapping = new Dictionary<PackageGroup, VirtualItemReference>();
+		public readonly Dictionary<PackageGroup, VirtualItemReference> PackageGroupVirtualNodeMapping =
+			new Dictionary<PackageGroup, VirtualItemReference>();
 
 		/// <summary>
 		/// Maps package names and paths to tree nodes.
 		/// Key: Path of package, folder or file.
 		/// Value: TreeIter that maps to the package, folder or file.
 		/// </summary>
-		public readonly Dictionary<ItemReference, TreeIter> PackageItemNodeMapping = new Dictionary<ItemReference, TreeIter>();
+		public readonly Dictionary<ItemReference, TreeIter> PackageItemNodeMapping =
+			new Dictionary<ItemReference, TreeIter>();
 
 		/// <summary>
 		/// Maps tree nodes to package names and paths.
 		/// Key: TreeIter that represents the item reference.
 		/// Value: ItemReference that the iter maps to.
 		/// </summary>
-		public readonly Dictionary<TreeIter, ItemReference> PackageNodeItemMapping = new Dictionary<TreeIter, ItemReference>();
+		public readonly Dictionary<TreeIter, ItemReference> PackageNodeItemMapping =
+			new Dictionary<TreeIter, ItemReference>();
 
 		/// <summary>
 		/// The virtual reference mapping. Maps item references to their virtual counterparts.
@@ -109,7 +110,8 @@ namespace Everlook.Explorer
 		/// Dictionary::Key: An item path in an arbitrary package.
 		/// Dictionary::Value: A virtual item reference that hosts the hard item references.
 		/// </summary>
-		private readonly Dictionary<PackageGroup, Dictionary<string, VirtualItemReference>> VirtualReferenceMappings = new Dictionary<PackageGroup, Dictionary<string, VirtualItemReference>>();
+		private readonly Dictionary<PackageGroup, Dictionary<string, VirtualItemReference>> VirtualReferenceMappings =
+			new Dictionary<PackageGroup, Dictionary<string, VirtualItemReference>>();
 
 		private readonly List<ItemReference> WorkQueue = new List<ItemReference>();
 
@@ -135,15 +137,12 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Gets a value indicating whether this instance is actively rendering frames for the viewport.
+		/// Gets a value indicating whether this instance is actively accepting work orders.
 		/// </summary>
 		/// <value><c>true</c> if this instance is active; otherwise, <c>false</c>.</value>
 		public bool IsActive
 		{
-			get
-			{
-				return bShouldProcessWork;
-			}
+			get { return bShouldProcessWork; }
 		}
 
 		/// <summary>
@@ -203,16 +202,7 @@ namespace Everlook.Explorer
 				CachedPackageDirectories = GamePathStorage.Instance.GamePaths;
 				this.PackageGroups.Clear();
 
-				foreach (string packageDirectory in CachedPackageDirectories)
-				{
-					if (Directory.Exists(packageDirectory))
-					{						
-						string FolderName = Path.GetFileName(packageDirectory);
-						this.PackageGroups.Add(FolderName, new PackageGroup(FolderName, packageDirectory));
-					}
-				}
-
-				if (this.PackageGroups.Count > 0)
+				if (CachedPackageDirectories.Count > 0)
 				{
 					WorkQueue.Clear();
 					PackageItemNodeMapping.Clear();
@@ -220,28 +210,47 @@ namespace Everlook.Explorer
 
 					PackageGroupVirtualNodeMapping.Clear();
 					VirtualReferenceMappings.Clear();
+				}
 
-					foreach (KeyValuePair<string, PackageGroup> GroupEntry in PackageGroups)
+				foreach (string packageDirectory in CachedPackageDirectories)
+				{
+					if (Directory.Exists(packageDirectory))
 					{
-						VirtualItemReference packageGroupReference = new VirtualItemReference(GroupEntry.Value, new ItemReference(GroupEntry.Value));
-						ItemReference packageGroupPackagesFolderReference = new ItemReference(GroupEntry.Value, packageGroupReference, "");
+						// Create the package group and add it to the available ones
+						string FolderName = Path.GetFileName(packageDirectory);
+						PackageGroup Group = new PackageGroup(FolderName, packageDirectory);
+						// TODO: Creating a package group is real slow. Speed it up
 
+						this.PackageGroups.Add(FolderName, Group);
+
+						// Create a virtual item reference that points to the package group
+						VirtualItemReference packageGroupReference = new VirtualItemReference(Group,
+							new ItemReference(Group));
+
+						// Create a virtual package folder for the individual packages under the package group
+						ItemReference packageGroupPackagesFolderReference = new ItemReference(Group, packageGroupReference, "");
+
+						// Add the package folder as a child to the package group node
 						packageGroupReference.ChildReferences.Add(packageGroupPackagesFolderReference);
 
+						// Send the references to the UI
 						this.PackageGroupAddedArgs = new ItemEnumeratedEventArgs(packageGroupReference);
 						RaisePackageGroupAdded();
 
-						// Add top level package nodes to the game explorer view
-						foreach (KeyValuePair<string, List<string>> PackageListfile in GroupEntry.Value.PackageListfiles)
+						// Add the packages in the package group as nodes to the package folder
+						foreach (KeyValuePair<string, List<string>> PackageListfile in Group.PackageListfiles)
 						{
 							if (PackageListfile.Value != null)
 							{
 								string PackageName = Path.GetFileName(PackageListfile.Key);
+								ItemReference packageReference = new ItemReference(Group, packageGroupPackagesFolderReference,
+									PackageName, "");
 
-								ItemReference packageReference = new ItemReference(GroupEntry.Value, packageGroupPackagesFolderReference, PackageName, "");
-								PackageEnumeratedArgs = new ItemEnumeratedEventArgs(packageReference);
-
+								// Send the package node to the UI
+								this.PackageEnumeratedArgs = new ItemEnumeratedEventArgs(packageReference);
 								RaisePackageEnumerated();
+
+								// Submit the package as a work order, enumerating the topmost directories
 								SubmitWork(packageReference);
 							}
 						}
@@ -259,7 +268,7 @@ namespace Everlook.Explorer
 		/// <returns><c>true</c> if the package directory has changed; otherwise, <c>false</c>.</returns>
 		public bool HasPackageDirectoryChanged()
 		{
-			return !Enumerable.SequenceEqual(CachedPackageDirectories.OrderBy(t => t), GamePathStorage.Instance.GamePaths.OrderBy(t => t));
+			return !CachedPackageDirectories.OrderBy(t => t).SequenceEqual(GamePathStorage.Instance.GamePaths.OrderBy(t => t));
 		}
 
 		/// <summary>
@@ -268,8 +277,8 @@ namespace Everlook.Explorer
 		private void EnumerationLoop()
 		{
 			while (bShouldProcessWork)
-			{				
-				if (bArePackageGroupsLoaded && WorkQueue.Count > 0)
+			{
+				if (ActiveEnumerationThreads.Count > 0)
 				{
 					// Clear out finished threads
 					List<Thread> FinishedThreads = new List<Thread>();
@@ -285,12 +294,16 @@ namespace Everlook.Explorer
 					{
 						ActiveEnumerationThreads.Remove(t);
 					}
+				}
 
+				if (bArePackageGroupsLoaded && WorkQueue.Count > 0)
+				{
+					// If there's room for more threads, get the first work order and start a new one
 					if (ActiveEnumerationThreads.Count < this.MaxEnumerationThreadCount)
 					{
 						// Grab the first item in the queue.
 						ItemReference targetReference = WorkQueue.First();
-						Thread t = new Thread(new ParameterizedThreadStart(EnumerateFilesAndFolders));
+						Thread t = new Thread(EnumerateFilesAndFolders);
 						this.ActiveEnumerationThreads.Add(t);
 
 						t.Start(targetReference);
@@ -301,7 +314,7 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Submits work to the explorer builder. The work submitted is processed in a 
+		/// Submits work to the explorer builder. The work submitted is processed in a
 		/// first-in, first-out order as work orders may depend on each other.
 		/// </summary>
 		/// <param name="reference">Reference.</param>
@@ -314,7 +327,7 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Enumerates the files and subfolders in the specified package, starting at 
+		/// Enumerates the files and subfolders in the specified package, starting at
 		/// the provided root path.
 		/// </summary>
 		/// <param name="parentReferenceObject">Parent reference where the search should start.</param>
@@ -345,11 +358,12 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <param name="hardReference">Hard reference.</param>
 		protected void EnumerateHardReference(ItemReference hardReference)
-		{				
+		{
 			List<string> PackageListfile;
 			if (hardReference.Group.PackageListfiles.TryGetValue(hardReference.PackageName, out PackageListfile))
 			{
-				IEnumerable<string> strippedListfile = PackageListfile.Where(s => s.StartsWith(hardReference.ItemPath, true, new CultureInfo("en-GB")));
+				IEnumerable<string> strippedListfile =
+					PackageListfile.Where(s => s.StartsWith(hardReference.ItemPath, true, new CultureInfo("en-GB")));
 				foreach (string FilePath in strippedListfile)
 				{
 					string childPath = Regex.Replace(FilePath, "^(?-i)" + Regex.Escape(hardReference.ItemPath), "");
@@ -517,7 +531,7 @@ namespace Everlook.Explorer
 	/// <summary>
 	/// Package enumerated event handler.
 	/// </summary>
-	public delegate void ItemEnumeratedEventHandler(object sender,ItemEnumeratedEventArgs e);
+	public delegate void ItemEnumeratedEventHandler(object sender, ItemEnumeratedEventArgs e);
 
 	/// <summary>
 	/// Item enumerated event arguments.
@@ -528,11 +542,7 @@ namespace Everlook.Explorer
 		/// Contains the enumerated item reference.
 		/// </summary>
 		/// <value>The item.</value>
-		public ItemReference Item
-		{
-			get;
-			private set;
-		}
+		public ItemReference Item { get; private set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Explorer.ItemEnumeratedEventArgs"/> class.
@@ -544,4 +554,3 @@ namespace Everlook.Explorer
 		}
 	}
 }
-

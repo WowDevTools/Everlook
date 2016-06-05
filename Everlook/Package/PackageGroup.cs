@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using Warcraft.MPQ.FileInfo;
 using Warcraft.MPQ;
+using Everlook.Configuration;
 
 namespace Everlook.Package
 {
@@ -40,11 +41,7 @@ namespace Everlook.Package
 		/// Gets the name of the package group.
 		/// </summary>
 		/// <value>The name of the group.</value>
-		public string GroupName
-		{
-			get;
-			private set;
-		}
+		public readonly string GroupName;
 
 		/// <summary>
 		/// The root package directory.
@@ -57,7 +54,7 @@ namespace Everlook.Package
 		private readonly List<PackageInteractionHandler> Packages = new List<PackageInteractionHandler>();
 
 		/// <summary>
-		/// The package listfiles. 
+		/// The package listfiles.
 		/// Key: The package name.
 		/// Value: A list of all files present in the package.
 		/// </summary>
@@ -66,40 +63,53 @@ namespace Everlook.Package
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Package.PackageGroup"/> class.
 		/// </summary>
-		public PackageGroup(string GroupName, string InRootPackageDirectory)
+		public PackageGroup(string InGroupName, string InRootPackageDirectory)
 		{
-			if (String.IsNullOrEmpty(GroupName))
+			if (String.IsNullOrEmpty(InGroupName))
 			{
-				throw new ArgumentNullException(GroupName, "A package group must be provided with a name.");
+				throw new ArgumentNullException(InGroupName, "A package group must be provided with a name.");
 			}
 
 			this.RootPackageDirectory = InRootPackageDirectory;
 
-			this.GroupName = GroupName;
-			
+			this.GroupName = InGroupName;
+
 			// Grab all packages in the game directory
 			List<string> PackagePaths = Directory.EnumerateFiles(RootPackageDirectory, "*.*", SearchOption.AllDirectories)
 				.OrderBy(a => a)
 				.Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ"))
 				.ToList();
 
-			PackagePaths.Sort();
-
 			foreach (string PackagePath in PackagePaths)
 			{
 				try
 				{
-					Packages.Add(new PackageInteractionHandler(PackagePath));				
+					this.Packages.Add(new PackageInteractionHandler(PackagePath));
 				}
 				catch (FileLoadException fex)
 				{
-					Console.WriteLine(String.Format("FileLoadException for package \"{0}\": {1}", PackagePath, fex.Message));
+					Console.WriteLine($"FileLoadException for package \"{PackagePath}\": {fex.Message}");
 				}
 			}
 
 			foreach (PackageInteractionHandler Package in Packages)
 			{
-				PackageListfiles.Add(Package.PackageName, Package.GetFileList());
+				if (BundledListfiles.Instance.HasListfileForPackage(Package))
+				{
+					this.PackageListfiles.Add(Package.PackageName, BundledListfiles.Instance.GetBundledListfile(Package));
+				}
+				else
+				{
+					// Try lazy loading the listfile, since we may be the first package to request it.
+					if (BundledListfiles.Instance.LoadListfileByPackage(Package))
+					{
+						this.PackageListfiles.Add(Package.PackageName, BundledListfiles.Instance.GetBundledListfile(Package));
+					}
+					else
+					{
+						this.PackageListfiles.Add(Package.PackageName, Package.GetFileList());
+					}
+				}
 			}
 		}
 
@@ -158,7 +168,7 @@ namespace Everlook.Package
 
 		/// <summary>
 		/// Extracts a file from the package group. This method returns the most recently overridden version
-		/// of the specified file with no regard for the origin package. The returned file may originate from the 
+		/// of the specified file with no regard for the origin package. The returned file may originate from the
 		/// package referenced in the <paramref name="fileReference"/>, or it may originate from a patch package.
 		///
 		/// If the file does not exist in any package, this method will return null.
@@ -237,7 +247,7 @@ namespace Everlook.Package
 		}
 
 		/// <summary>
-		/// Gets the best available listfile from the archive. If an external listfile has been provided, 
+		/// Gets the best available listfile from the archive. If an external listfile has been provided,
 		/// that one is prioritized over the one stored in the archive.
 		/// </summary>
 		/// <returns>The listfile.</returns>
