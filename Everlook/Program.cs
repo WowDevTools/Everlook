@@ -23,7 +23,7 @@ using Gtk;
 
 namespace Everlook
 {
-	class MainClass
+	internal class MainClass
 	{
 		public static void Main()
 		{

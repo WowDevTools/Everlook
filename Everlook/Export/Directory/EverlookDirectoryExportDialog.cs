@@ -21,7 +21,7 @@
 //
 using System;
 using Everlook.Configuration;
-using Everlook.Package;
+using Everlook.Explorer;
 using Gdk;
 using Gtk;
 using UI = Gtk.Builder.ObjectAttribute;
@@ -29,7 +29,7 @@ using UI = Gtk.Builder.ObjectAttribute;
 namespace Everlook.Export.Directory
 {
 	/// <summary>
-	/// Everlook directory export dialog. The "partial" qualifier is not strictly needed, but prevents the compiler from 
+	/// Everlook directory export dialog. The "partial" qualifier is not strictly needed, but prevents the compiler from
 	/// generating errors about the autoconnected members that relate to UI elements.
 	/// </summary>
 	public partial class EverlookDirectoryExportDialog : Dialog
@@ -57,7 +57,7 @@ namespace Everlook.Export.Directory
 		public static EverlookDirectoryExportDialog Create(ItemReference InExportTarget)
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookDirectoryExport.glade", null);
-			return new EverlookDirectoryExportDialog(builder, builder.GetObject("EverlookDirectoryExportDialog").Handle, 
+			return new EverlookDirectoryExportDialog(builder, builder.GetObject("EverlookDirectoryExportDialog").Handle,
 				InExportTarget);
 		}
 
@@ -99,18 +99,18 @@ namespace Everlook.Export.Directory
 		public void RunExport()
 		{
 			int i = 0;
-			ItemExportListStore.Foreach(new TreeModelForeachFunc(delegate(ITreeModel model, TreePath path, TreeIter iter)
-					{
-						bool bShouldExport = (bool)ItemExportListStore.GetValue(iter, 0);
+			ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
+			{
+				bool bShouldExport = (bool)ItemExportListStore.GetValue(iter, 0);
 
-						if (bShouldExport)
-						{
+				if (bShouldExport)
+				{
 
-						}
+				}
 
-						++i;
-						return false;
-					}));
+				++i;
+				return false;
+			});
 		}
 
 		/// <summary>
@@ -135,11 +135,11 @@ namespace Everlook.Export.Directory
 		/// <param name="e">E.</param>
 		protected void OnSelectAllItemActivated(object sender, EventArgs e)
 		{
-			ItemExportListStore.Foreach(new TreeModelForeachFunc(delegate(ITreeModel model, TreePath path, TreeIter iter)
-					{
-						ItemExportListStore.SetValue(iter, 0, true);
-						return false;
-					}));
+			ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
+			{
+				ItemExportListStore.SetValue(iter, 0, true);
+				return false;
+			});
 		}
 
 		/// <summary>
@@ -149,11 +149,11 @@ namespace Everlook.Export.Directory
 		/// <param name="e">E.</param>
 		protected void OnSelectNoneItemActivated(object sender, EventArgs e)
 		{
-			ItemExportListStore.Foreach(new TreeModelForeachFunc(delegate(ITreeModel model, TreePath path, TreeIter iter)
-					{
-						ItemExportListStore.SetValue(iter, 0, false);
-						return false;
-					}));
+			ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
+			{
+				ItemExportListStore.SetValue(iter, 0, false);
+				return false;
+			});
 		}
 
 		/// <summary>

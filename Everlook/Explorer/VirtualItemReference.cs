@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using Everlook.Package;
 using Warcraft.MPQ.FileInfo;
 
-namespace Everlook
+namespace Everlook.Explorer
 {
 	/// <summary>
 	/// A virtual item reference. This type of item reference does not point to a specific file in a package, but
@@ -35,14 +35,13 @@ namespace Everlook
 	public class VirtualItemReference : ItemReference
 	{
 		/// <summary>
-		/// Gets the hard reference. The hard reference is the primary underlying package-specific 
+		/// Gets the hard reference. The hard reference is the primary underlying package-specific
 		/// reference to which this virtual reference points.
 		/// </summary>
 		/// <value>The hard reference.</value>
 		public ItemReference HardReference
 		{
 			get;
-			private set;
 		}
 
 		/// <summary>
@@ -107,12 +106,12 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.VirtualItemReference"/> class.
+		/// Initializes a new instance of the <see cref="Everlook.Explorer.VirtualItemReference"/> class.
 		/// </summary>
 		/// <param name="InHardReference">The primary hard reference this virtual reference points to.</param>
 		/// <param name="InGroup">The package group this reference is a part of.</param>
 		public VirtualItemReference(PackageGroup InGroup, ItemReference InHardReference)
-		{			
+		{
 			this.OverriddenHardReferences = new List<ItemReference>();
 
 			this.Group = InGroup;
@@ -121,8 +120,8 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.VirtualItemReference"/> class, 
-		/// where the reference has a parent <see cref="Everlook.VirtualItemReference"/>.
+		/// Initializes a new instance of the <see cref="Everlook.Explorer.VirtualItemReference"/> class,
+		/// where the reference has a parent <see cref="Everlook.Explorer.VirtualItemReference"/>.
 		/// </summary>
 		/// <param name="ParentVirtualReference">Parent virtual reference.</param>
 		/// <param name="InGroup">In group.</param>
@@ -130,7 +129,7 @@ namespace Everlook
 		public VirtualItemReference(VirtualItemReference ParentVirtualReference, PackageGroup InGroup, ItemReference InHardReference)
 			: this(InGroup, InHardReference)
 		{
-			this.ParentReference = ParentVirtualReference;	
+			this.ParentReference = ParentVirtualReference;
 		}
 
 		/// <summary>
@@ -154,7 +153,7 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Serves as a hash function for a <see cref="Everlook.VirtualItemReference"/> object.
+		/// Serves as a hash function for a <see cref="Everlook.Explorer.VirtualItemReference"/> object.
 		/// </summary>
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()

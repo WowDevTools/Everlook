@@ -26,6 +26,7 @@ using System.Linq;
 using Warcraft.MPQ.FileInfo;
 using Warcraft.MPQ;
 using Everlook.Configuration;
+using Everlook.Explorer;
 
 namespace Everlook.Package
 {

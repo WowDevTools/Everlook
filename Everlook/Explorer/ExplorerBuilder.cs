@@ -233,7 +233,7 @@ namespace Everlook.Explorer
 						// Add the package folder as a child to the package group node
 						packageGroupReference.ChildReferences.Add(packageGroupPackagesFolderReference);
 
-						// Send the references to the UI
+						// Send the package group node to the UI
 						this.PackageGroupAddedArgs = new ItemEnumeratedEventArgs(packageGroupReference);
 						RaisePackageGroupAdded();
 

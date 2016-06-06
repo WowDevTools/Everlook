@@ -21,6 +21,7 @@
 //
 using System;
 using Everlook.Configuration;
+using Everlook.Explorer;
 using Everlook.Export.Image;
 using Everlook.Utility;
 using Gdk;
@@ -31,7 +32,7 @@ using UI = Gtk.Builder.ObjectAttribute;
 namespace Everlook.Export.Image
 {
 	/// <summary>
-	/// Everlook image export dialog. The "partial" qualifier is not strictly needed, but prevents the compiler from 
+	/// Everlook image export dialog. The "partial" qualifier is not strictly needed, but prevents the compiler from
 	/// generating errors about the autoconnected members that relate to UI elements.
 	/// </summary>
 	public partial class EverlookImageExportDialog : Dialog
@@ -65,7 +66,7 @@ namespace Everlook.Export.Image
 		public static EverlookImageExportDialog Create(ItemReference InExportTarget)
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookImageExport.glade", null);
-			return new EverlookImageExportDialog(builder, builder.GetObject("EverlookImageExportDialog").Handle, 
+			return new EverlookImageExportDialog(builder, builder.GetObject("EverlookImageExportDialog").Handle,
 				InExportTarget);
 		}
 
@@ -101,7 +102,7 @@ namespace Everlook.Export.Image
 			Image = new BLP(file);
 
 			ExportFormatComboBox.Active = (int)Config.GetDefaultImageFormat();
-			
+
 			MipLevelListStore.Clear();
 			foreach (string mipString in Image.GetMipMapLevelStrings())
 			{
@@ -121,33 +122,32 @@ namespace Everlook.Export.Image
 			string ExportPath = "";
 			if (Config.GetShouldKeepFileDirectoryStructure())
 			{
-				ExportPath = String.Format("{0}{1}{2}", ExportDirectoryFileChooserButton.Filename, System.IO.Path.DirectorySeparatorChar,
-					Utilities.CleanPath(ExportTarget.ItemPath).Replace(".blp", ""));
+				ExportPath =
+					$"{ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{Utilities.CleanPath(ExportTarget.ItemPath).Replace(".blp", "")}";
 			}
 			else
 			{
-				ExportPath = String.Format("{0}{1}{2}", ExportDirectoryFileChooserButton.Filename, System.IO.Path.DirectorySeparatorChar,
-					ImageFilename);
+				ExportPath = $"{ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{ImageFilename}";
 			}
 
 
 			int i = 0;
-			MipLevelListStore.Foreach(new TreeModelForeachFunc(delegate(ITreeModel model, TreePath path, TreeIter iter)
-					{
-						bool bShouldExport = (bool)MipLevelListStore.GetValue(iter, 0);
+			MipLevelListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
+			{
+				bool bShouldExport = (bool)MipLevelListStore.GetValue(iter, 0);
 
-						if (bShouldExport)
-						{
-							string formatExtension = GetFileExtensionFromImageFormat((ImageFormat)ExportFormatComboBox.Active);
-							System.IO.Directory.CreateDirectory(System.IO.Directory.GetParent(ExportPath).FullName);
+				if (bShouldExport)
+				{
+					string formatExtension = GetFileExtensionFromImageFormat((ImageFormat)ExportFormatComboBox.Active);
+					System.IO.Directory.CreateDirectory(System.IO.Directory.GetParent(ExportPath).FullName);
 
-							string fullExportPath = String.Format("{0}_{1}.{2}", ExportPath, i, formatExtension);
-							Image.GetMipMap((uint)i).Save(fullExportPath, GetSystemImageFormatFromImageFormat((ImageFormat)ExportFormatComboBox.Active));
-						}
+					string fullExportPath = $"{ExportPath}_{i}.{formatExtension}";
+					Image.GetMipMap((uint)i).Save(fullExportPath, GetSystemImageFormatFromImageFormat((ImageFormat)ExportFormatComboBox.Active));
+				}
 
-						++i;
-						return false;
-					}));
+				++i;
+				return false;
+			});
 		}
 
 		/// <summary>
@@ -155,7 +155,7 @@ namespace Everlook.Export.Image
 		/// </summary>
 		/// <returns>The system image format from image format.</returns>
 		/// <param name="Format">Format.</param>
-		private System.Drawing.Imaging.ImageFormat GetSystemImageFormatFromImageFormat(ImageFormat Format)
+		private static System.Drawing.Imaging.ImageFormat GetSystemImageFormatFromImageFormat(ImageFormat Format)
 		{
 			switch (Format)
 			{
@@ -177,7 +177,7 @@ namespace Everlook.Export.Image
 		/// </summary>
 		/// <returns>The file extension from image format.</returns>
 		/// <param name="Format">Format.</param>
-		private string GetFileExtensionFromImageFormat(ImageFormat Format)
+		private static string GetFileExtensionFromImageFormat(ImageFormat Format)
 		{
 			switch (Format)
 			{
@@ -216,11 +216,11 @@ namespace Everlook.Export.Image
 		/// <param name="e">E.</param>
 		protected void OnSelectAllItemActivated(object sender, EventArgs e)
 		{
-			MipLevelListStore.Foreach(new TreeModelForeachFunc(delegate(ITreeModel model, TreePath path, TreeIter iter)
-					{
-						MipLevelListStore.SetValue(iter, 0, true);
-						return false;
-					}));
+			MipLevelListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
+			{
+				MipLevelListStore.SetValue(iter, 0, true);
+				return false;
+			});
 		}
 
 		/// <summary>
@@ -230,11 +230,11 @@ namespace Everlook.Export.Image
 		/// <param name="e">E.</param>
 		protected void OnSelectNoneItemActivated(object sender, EventArgs e)
 		{
-			MipLevelListStore.Foreach(new TreeModelForeachFunc(delegate(ITreeModel model, TreePath path, TreeIter iter)
-					{
-						MipLevelListStore.SetValue(iter, 0, false);
-						return false;
-					}));
+			MipLevelListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
+			{
+				MipLevelListStore.SetValue(iter, 0, false);
+				return false;
+			});
 		}
 
 		/// <summary>

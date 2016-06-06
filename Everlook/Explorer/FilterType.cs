@@ -70,7 +70,7 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <returns>The extension list for the provided filter category.</returns>
 		/// <param name="filterCategory">The category to get.</param>
-		public static List<string> GetExtensionListForFilterType(FilterType filterCategory)
+		public static List<string> GetExtensionList(this FilterType filterCategory)
 		{
 			switch (filterCategory)
 			{
@@ -179,7 +179,7 @@ namespace Everlook.Explorer
 			"sbt",
 			"trs",
 
-			// This extension list comes with a bunch of normal-ish filetypes that are packed into 
+			// This extension list comes with a bunch of normal-ish filetypes that are packed into
 			// some archives as a backup for the client and launcher.
 			"lua",
 			"html",
@@ -208,7 +208,7 @@ namespace Everlook.Explorer
 			"wlq",
 			"wlw",
 			"lit",
-			"def",		
+			"def",
 		};
 	}
 }

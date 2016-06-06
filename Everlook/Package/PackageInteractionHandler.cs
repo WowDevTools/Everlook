@@ -24,6 +24,7 @@ using Warcraft.MPQ;
 using System.IO;
 using Warcraft.MPQ.FileInfo;
 using System.Collections.Generic;
+using Everlook.Explorer;
 using liblistfile;
 
 namespace Everlook.Package
