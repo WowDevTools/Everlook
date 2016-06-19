@@ -310,6 +310,11 @@ namespace Everlook.Package
 			}
 		}
 
+		public override string ToString()
+		{
+			return this.GroupName;
+		}
+
 		/// <summary>
 		/// Serves as a hash function for a <see cref="Everlook.Package.PackageGroup"/> object.
 		/// </summary>

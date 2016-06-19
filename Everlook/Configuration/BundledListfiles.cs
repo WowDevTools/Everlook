@@ -25,7 +25,6 @@ using System.IO;
 using System.Collections.Generic;
 using liblistfile;
 using Everlook.Package;
-using Warcraft.MPQ;
 
 namespace Everlook.Configuration
 {

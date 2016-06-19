@@ -35,7 +35,7 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <returns>The path.</returns>
 		/// <param name="inputPath">Input path.</param>
-		public static string CleanPath(string inputPath)
+		public static string ConvertPathSeparatorsToCurrentNative(string inputPath)
 		{
 			if (IsRunningOnUnix())
 			{

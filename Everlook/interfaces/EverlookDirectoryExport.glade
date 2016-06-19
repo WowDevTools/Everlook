@@ -116,33 +116,40 @@
                         <property name="can_focus">False</property>
                         <property name="right_padding">8</property>
                         <child>
-                          <object class="GtkTreeView" id="ItemListingTreeView">
+                          <object class="GtkScrolledWindow" id="scrolledwindow1">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="model">ItemExportListStore</property>
-                            <property name="search_column">0</property>
-                            <child internal-child="selection">
-                              <object class="GtkTreeSelection" id="treeview-selection"/>
-                            </child>
+                            <property name="shadow_type">in</property>
                             <child>
-                              <object class="GtkTreeViewColumn" id="ShouldExportColumn">
-                                <property name="title" translatable="yes">Export</property>
-                                <child>
-                                  <object class="GtkCellRendererToggle" id="ExportItemToggleRenderer"/>
-                                  <attributes>
-                                    <attribute name="active">0</attribute>
-                                  </attributes>
+                              <object class="GtkTreeView" id="ItemListingTreeView">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="model">ItemExportListStore</property>
+                                <property name="search_column">0</property>
+                                <child internal-child="selection">
+                                  <object class="GtkTreeSelection" id="treeview-selection"/>
                                 </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkTreeViewColumn" id="MipDescriptionColumn">
-                                <property name="title" translatable="yes">Item</property>
                                 <child>
-                                  <object class="GtkCellRendererText" id="ItemDescriptionTextRenderer"/>
-                                  <attributes>
-                                    <attribute name="text">1</attribute>
-                                  </attributes>
+                                  <object class="GtkTreeViewColumn" id="ShouldExportColumn">
+                                    <property name="title" translatable="yes">Export</property>
+                                    <child>
+                                      <object class="GtkCellRendererToggle" id="ExportItemToggleRenderer"/>
+                                      <attributes>
+                                        <attribute name="active">0</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkTreeViewColumn" id="MipDescriptionColumn">
+                                    <property name="title" translatable="yes">Item</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="ItemDescriptionTextRenderer"/>
+                                      <attributes>
+                                        <attribute name="text">1</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
                                 </child>
                               </object>
                             </child>

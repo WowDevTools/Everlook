@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Everlook.Package;
 using System.Globalization;
+using Gdk;
 
 namespace Everlook.Explorer
 {
@@ -62,7 +63,13 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Occurs when a work order has been completed.
 		/// </summary>
-		public event ItemEnumeratedEventHandler EnumerationFinished;
+		public event ReferenceEnumeratedEventHandler EnumerationFinished;
+
+		/// <summary>
+		/// A list of enumerated references. This list acts as an intermediate location where the UI can fetch results
+		/// when it's idle.
+		/// </summary>
+		public readonly List<ItemReference> EnumeratedReferences = new List<ItemReference>();
 
 		private ItemEnumeratedEventArgs PackageGroupAddedArgs;
 		private ItemEnumeratedEventArgs PackageEnumeratedArgs;
@@ -378,8 +385,7 @@ namespace Everlook.Explorer
 						{
 							hardReference.ChildReferences.Add(directoryReference);
 
-							DirectoryEnumeratedArgs = new ItemEnumeratedEventArgs(directoryReference);
-							RaiseDirectoryEnumerated();
+							EnumeratedReferences.Add(directoryReference);
 						}
 					}
 					else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1)
@@ -389,11 +395,9 @@ namespace Everlook.Explorer
 						{
 							// Files can't have any children, so it will always be enumerated.
 							fileReference.IsEnumerated = true;
-
 							hardReference.ChildReferences.Add(fileReference);
 
-							FileEnumeratedArgs = new ItemEnumeratedEventArgs(fileReference);
-							RaiseFileEnumerated();
+							EnumeratedReferences.Add(fileReference);
 						}
 					}
 					else
@@ -403,6 +407,7 @@ namespace Everlook.Explorer
 				}
 
 				hardReference.IsEnumerated = true;
+
 				EnumerationFinishedArgs = new ItemEnumeratedEventArgs(hardReference);
 				RaiseEnumerationFinished();
 			}
@@ -532,6 +537,8 @@ namespace Everlook.Explorer
 	/// Package enumerated event handler.
 	/// </summary>
 	public delegate void ItemEnumeratedEventHandler(object sender, ItemEnumeratedEventArgs e);
+
+	public delegate void ReferenceEnumeratedEventHandler(object sender, ItemEnumeratedEventArgs e);
 
 	/// <summary>
 	/// Item enumerated event arguments.

@@ -95,7 +95,7 @@ namespace Everlook.Export.Image
 
 		private void LoadInformation()
 		{
-			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(Utilities.CleanPath(ExportTarget.ItemPath));
+			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(Utilities.ConvertPathSeparatorsToCurrentNative(ExportTarget.ItemPath));
 			this.Title = "Export Image | " + ImageFilename;
 
 			byte[] file = ExportTarget.Extract();
@@ -117,13 +117,13 @@ namespace Everlook.Export.Image
 		/// </summary>
 		public void RunExport()
 		{
-			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(Utilities.CleanPath(ExportTarget.ItemPath));
+			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(Utilities.ConvertPathSeparatorsToCurrentNative(ExportTarget.ItemPath));
 
 			string ExportPath = "";
 			if (Config.GetShouldKeepFileDirectoryStructure())
 			{
 				ExportPath =
-					$"{ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{Utilities.CleanPath(ExportTarget.ItemPath).Replace(".blp", "")}";
+					$"{ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{Utilities.ConvertPathSeparatorsToCurrentNative(ExportTarget.ItemPath).Replace(".blp", "")}";
 			}
 			else
 			{

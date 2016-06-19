@@ -20,8 +20,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
+using System.Collections.Generic;
+using System.IO;
+using Atk;
 using Everlook.Configuration;
 using Everlook.Explorer;
+using Everlook.Utility;
 using Gdk;
 using Gtk;
 using UI = Gtk.Builder.ObjectAttribute;
@@ -50,6 +54,8 @@ namespace Everlook.Export.Directory
 		private readonly ItemReference ExportTarget;
 
 		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
+
+		private readonly Dictionary<string, ItemReference> ReferenceMapping = new Dictionary<string, ItemReference>();
 
 		/// <summary>
 		/// Creates an instance of the Image Export dialog, using the glade XML UI file.
@@ -91,6 +97,19 @@ namespace Everlook.Export.Directory
 			ExportDirectoryFileChooserButton.SetFilename(Config.GetDefaultExportDirectory());
 
 			// Load all references
+			foreach (ItemReference childReference in ExportTarget.ChildReferences)
+			{
+				// TODO: Support recursive folder export
+				if (childReference.IsFile)
+				{
+					ItemExportListStore.AppendValues(true, childReference.GetReferencedItemName());
+
+					if (!this.ReferenceMapping.ContainsKey(childReference.GetReferencedItemName()))
+					{
+						this.ReferenceMapping.Add(childReference.GetReferencedItemName(), childReference);
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -98,17 +117,37 @@ namespace Everlook.Export.Directory
 		/// </summary>
 		public void RunExport()
 		{
-			int i = 0;
 			ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
 			{
 				bool bShouldExport = (bool)ItemExportListStore.GetValue(iter, 0);
 
 				if (bShouldExport)
 				{
+					ItemReference referenceToExport = this.ReferenceMapping[(string)ItemExportListStore.GetValue(iter, 1)];
 
+					string ExportPath = "";
+					if (Config.GetShouldKeepFileDirectoryStructure())
+					{
+						string parentDirectoryOfFile =
+							Utilities.ConvertPathSeparatorsToCurrentNative(ExportTarget.ItemPath);
+
+						ExportPath =
+							$"{ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{parentDirectoryOfFile}{System.IO.Path.DirectorySeparatorChar}{referenceToExport.GetReferencedItemName()}";
+					}
+					else
+					{
+						ExportPath = $"{ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{referenceToExport.GetReferencedItemName()}";
+					}
+
+					System.IO.Directory.CreateDirectory(System.IO.Directory.GetParent(ExportPath).FullName);
+
+					byte[] fileData = referenceToExport.Extract();
+					if (fileData != null)
+					{
+						File.WriteAllBytes(ExportPath, fileData);
+					}
 				}
 
-				++i;
 				return false;
 			});
 		}

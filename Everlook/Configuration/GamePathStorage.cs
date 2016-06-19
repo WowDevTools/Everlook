@@ -34,7 +34,7 @@ namespace Everlook.Configuration
 	/// </summary>
 	public sealed class GamePathStorage
 	{
-		private object StorageLock = new object();
+		private readonly object StorageLock = new object();
 
 		/// <summary>
 		/// A static instance of the path storage class.
@@ -76,7 +76,7 @@ namespace Everlook.Configuration
 			if (!GamePaths.Contains(pathToStore))
 			{
 				lock (StorageLock)
-				{				
+				{
 					using (FileStream fs = File.Open(GetPathStoragePath(), FileMode.Append))
 					{
 						using (BinaryWriter bw = new BinaryWriter(fs))
@@ -153,7 +153,7 @@ namespace Everlook.Configuration
 		/// <returns>The path storage path.</returns>
 		private static string GetPathStoragePath()
 		{
-			return String.Format("{0}{1}Everlook{1}gamepaths.store", 
+			return String.Format("{0}{1}Everlook{1}gamepaths.store",
 				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
 				Path.DirectorySeparatorChar);
 		}

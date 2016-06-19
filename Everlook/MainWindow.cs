@@ -19,22 +19,29 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
 using System;
-using Gtk;
-using UI = Gtk.Builder.ObjectAttribute;
-using Gdk;
-using Everlook.Configuration;
-using Everlook.Viewport;
 using System.IO;
-using Everlook.Utility;
-using Warcraft.Core;
-using Everlook.Renderables;
-using Warcraft.BLP;
-using Everlook.Explorer;
-using System.Drawing;
-using Everlook.Export.Image;
-using Everlook.Export.Directory;
 using System.Linq;
+using System.Drawing;
+
+using Application = Gtk.Application;
+using UI = Gtk.Builder.ObjectAttribute;
+using GLib;
+using Gdk;
+using Gtk;
+
+using Everlook.Export.Directory;
+using Everlook.Export.Image;
+using Everlook.Configuration;
+using Everlook.Renderables;
+using Everlook.Explorer;
+using Everlook.Viewport;
+using Everlook.Utility;
+
+using Warcraft.Core;
+using Warcraft.BLP;
+
 
 namespace Everlook
 {
@@ -106,11 +113,6 @@ namespace Everlook
 		*/
 
 		/// <summary>
-		/// A path pointing to the currently selected item in the game explorer.
-		/// </summary>
-		private TreePath CurrentGameExplorerPath;
-
-		/// <summary>
 		/// Static reference to the configuration handler.
 		/// </summary>
 		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
@@ -124,6 +126,8 @@ namespace Everlook
 		/// Background file explorer tree builder. Handles enumeration of files in the archives.
 		/// </summary>
 		private readonly ExplorerBuilder explorerBuilder = new ExplorerBuilder();
+
+
 
 		/// <summary>
 		/// Creates an instance of the MainWindow class, loading the glade XML UI as needed.
@@ -144,6 +148,9 @@ namespace Everlook
 		{
 			builder.Autoconnect(this);
 			DeleteEvent += OnDeleteEvent;
+
+			// TODO: Allow user to configure timeout value
+			Timeout.Add(20, OnGLibLoopIdle, Priority.DefaultIdle);
 
 			AboutButton.Clicked += OnAboutButtonClicked;
 			PreferencesButton.Clicked += OnPreferencesButtonClicked;
@@ -173,8 +180,7 @@ namespace Everlook
 
 			explorerBuilder.PackageGroupAdded += OnPackageGroupAdded;
 			explorerBuilder.PackageEnumerated += OnPackageEnumerated;
-			explorerBuilder.DirectoryEnumerated += OnDirectoryEnumerated;
-			explorerBuilder.FileEnumerated += OnFileEnumerated;
+			//explorerBuilder.EnumerationFinished += OnReferenceEnumerated;
 			explorerBuilder.Start();
 
 			/*
@@ -282,7 +288,7 @@ namespace Everlook
 		protected int SortGameExplorerRow(ITreeModel model, TreeIter iterA, TreeIter iterB)
 		{
 			const int SORT_A_BEFORE_B = -1;
-			const int SORT_WITH = 0;
+			const int SORT_A_WITH_B = 0;
 			const int SORT_A_AFTER_B = 1;
 
 			NodeType typeofA = (NodeType)model.GetValue(iterA, 4);
@@ -292,32 +298,67 @@ namespace Everlook
 			{
 				return SORT_A_AFTER_B;
 			}
-			else if (typeofA > typeofB)
+			if (typeofA > typeofB)
 			{
 				return SORT_A_BEFORE_B;
 			}
-			else
+
+			string AComparisonString = (string)model.GetValue(iterA, 1);
+
+			string BComparisonString = (string)model.GetValue(iterB, 1);
+
+			int result = String.CompareOrdinal(AComparisonString, BComparisonString);
+
+			if (result <= SORT_A_BEFORE_B)
 			{
-				string AComparisonString = (string)model.GetValue(iterA, 1);
-
-				string BComparisonString = (string)model.GetValue(iterB, 1);
-
-				int sortingOrder = String.CompareOrdinal(AComparisonString, BComparisonString);
-
-				// Invert the sorting order
-				if (sortingOrder == SORT_A_BEFORE_B)
-				{
-					return SORT_A_AFTER_B;
-				}
-				else if (sortingOrder == SORT_A_AFTER_B)
-				{
-					return SORT_A_BEFORE_B;
-				}
-				else
-				{
-					return SORT_WITH;
-				}
+				return SORT_A_AFTER_B;
 			}
+
+			if (result >= SORT_A_AFTER_B)
+			{
+				return SORT_A_BEFORE_B;
+			}
+
+			return SORT_A_WITH_B;
+
+		}
+
+		/// <summary>
+		/// Idle functionality. This code is called as a way of lazily loading rows into the UI
+		/// without causing lockups due to sheer data volume.
+		/// </summary>
+		protected bool OnGLibLoopIdle()
+		{
+			const bool KEEP_CALLING = true;
+			const bool STOP_CALLING = false;
+
+			//if (explorerBuilder.EnumeratedReferences.Count > 0 && bAllowedToAddNewRow)
+			if (explorerBuilder.EnumeratedReferences.Count > 0)
+			{
+				// There's content to be added to the UI
+
+				// Get the last reference in the list.
+				ItemReference newContent = explorerBuilder.EnumeratedReferences[explorerBuilder.EnumeratedReferences.Count - 1];
+
+				if (newContent == null)
+				{
+					explorerBuilder.EnumeratedReferences.RemoveAt(explorerBuilder.EnumeratedReferences.Count - 1);
+					return KEEP_CALLING;
+				}
+
+				if (newContent.IsFile)
+				{
+					AddFileNode(newContent.ParentReference, newContent);
+				}
+				else if (newContent.IsDirectory)
+				{
+					AddDirectoryNode(newContent.ParentReference, newContent);
+				}
+
+				explorerBuilder.EnumeratedReferences.Remove(newContent);
+			}
+
+			return KEEP_CALLING;
 		}
 
 		/// <summary>
@@ -388,7 +429,7 @@ namespace Everlook
 
 			ItemReference fileReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter));
 
-			string cleanFilepath = Utilities.CleanPath(fileReference.ItemPath);
+			string cleanFilepath = Utilities.ConvertPathSeparatorsToCurrentNative(fileReference.ItemPath);
 			string exportpath;
 			if (Config.GetShouldKeepFileDirectoryStructure())
 			{
@@ -440,7 +481,7 @@ namespace Everlook
 			ItemReference itemReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter));
 			if (!itemReference.IsFile)
 			{
-				GameExplorerTreeView.ExpandRow(CurrentGameExplorerPath, false);
+				GameExplorerTreeView.ExpandRow(GameExplorerTreeSorter.GetPath(selectedIter), false);
 			}
 		}
 
@@ -473,7 +514,7 @@ namespace Everlook
 
 			ItemReference itemReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter));
 
-			string cleanFilepath = Utilities.CleanPath(itemReference.ItemPath);
+			string cleanFilepath = Utilities.ConvertPathSeparatorsToCurrentNative(itemReference.ItemPath);
 
 			if (String.IsNullOrEmpty(cleanFilepath))
 			{
@@ -603,7 +644,7 @@ namespace Everlook
 			ItemReference fileReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter));
 			if (fileReference != null && fileReference.IsFile)
 			{
-				string fileName = System.IO.Path.GetFileName(Utilities.CleanPath(fileReference.ItemPath));
+				string fileName = System.IO.Path.GetFileName(Utilities.ConvertPathSeparatorsToCurrentNative(fileReference.ItemPath));
 				switch (fileReference.GetReferencedFileType())
 				{
 					case WarcraftFileType.AddonManifest:
@@ -737,8 +778,6 @@ namespace Everlook
 			TreePath path;
 			GameExplorerTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out path);
 
-			CurrentGameExplorerPath = path;
-
 			ItemReference currentItemReference = null;
 			if (path != null)
 			{
@@ -751,6 +790,7 @@ namespace Everlook
 				if (currentItemReference == null || String.IsNullOrEmpty(currentItemReference.ItemPath))
 				{
 					ExtractItem.Sensitive = false;
+					ExportItem.Sensitive = false;
 					OpenItem.Sensitive = false;
 					QueueItem.Sensitive = false;
 					CopyItem.Sensitive = false;
@@ -760,6 +800,7 @@ namespace Everlook
 					if (!currentItemReference.IsFile)
 					{
 						ExtractItem.Sensitive = false;
+						ExportItem.Sensitive = true;
 						OpenItem.Sensitive = true;
 						QueueItem.Sensitive = true;
 						CopyItem.Sensitive = true;
@@ -767,6 +808,7 @@ namespace Everlook
 					else
 					{
 						ExtractItem.Sensitive = true;
+						ExportItem.Sensitive = true;
 						OpenItem.Sensitive = true;
 						QueueItem.Sensitive = true;
 						CopyItem.Sensitive = true;
@@ -910,20 +952,6 @@ namespace Everlook
 			}
 		}
 
-
-		/// <summary>
-		/// Handles the directory enumerated event from the explorer builder.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		protected void OnDirectoryEnumerated(object sender, ItemEnumeratedEventArgs e)
-		{
-			Application.Invoke(delegate
-				{
-					AddDirectoryNode(e.Item.ParentReference, e.Item);
-				});
-		}
-
 		/// <summary>
 		/// Adds a directory node to the game explorer view, attachedt to the provided parent
 		/// package and directory.
@@ -1002,19 +1030,6 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Handles the file enumerated event from the explorer builder.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		protected void OnFileEnumerated(object sender, ItemEnumeratedEventArgs e)
-		{
-			Application.Invoke(delegate
-				{
-					AddFileNode(e.Item.ParentReference, e.Item);
-				});
-		}
-
-		/// <summary>
 		/// Adds a file node to the game explorer view, attached to the provided parent
 		/// package and directory.
 		/// </summary>
@@ -1087,6 +1102,16 @@ namespace Everlook
 		}
 
 		/// <summary>
+		/// Unlocks a folder reference for exploration once it's been completely enumerated at the top level.
+		/// </summary>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="e">The event arguments containing the list of enumeration results.</param>
+		protected void OnReferenceEnumerated(object sender, ItemEnumeratedEventArgs e)
+		{
+
+		}
+
+		/// <summary>
 		/// Converts a TreeIter into a file path. The final path is returned as a file reference
 		/// object.
 		/// </summary>
@@ -1099,10 +1124,8 @@ namespace Everlook
 			{
 				return reference;
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 
 		/// <summary>
