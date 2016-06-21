@@ -20,7 +20,7 @@ Currently, Everlook is in early development and may not be usable in your day-to
 * The export queue does not work beyond the UI.
 * Everlook lacks any testing on Windows-based systems.
 * The UI becomes sluggish when loading directories with many files in them (mainly Textures/Minimap and Textures/BakedNPCTextures, who both have thousands of files under a single directory).
-* 
+* Models are not rendered in the viewport.
 
 ### Compiling
 In order to compile Everlook, you will need a Nuget-capable IDE that supports the C# language. The most commonly used ones are Visual Studio, MonoDevelop and more recently Project Rider. Additionally, you need a recent copy of libwarcraft, which can be cloned from here: https://github.com/Nihlus/libwarcraft
