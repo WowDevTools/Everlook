@@ -30,7 +30,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Everlook.Package;
 using System.Globalization;
-using Gdk;
 
 namespace Everlook.Explorer
 {
@@ -120,15 +119,47 @@ namespace Everlook.Explorer
 		private readonly Dictionary<PackageGroup, Dictionary<string, VirtualItemReference>> VirtualReferenceMappings =
 			new Dictionary<PackageGroup, Dictionary<string, VirtualItemReference>>();
 
+
+		/// <summary>
+		/// A queue of work submitted by the UI (and indirectly, the user). Worker threads are given
+		/// one reference from this queue to be enumerated, and then it is removed.
+		/// </summary>
 		private readonly List<ItemReference> WorkQueue = new List<ItemReference>();
 
+		/// <summary>
+		/// The main enumeration loop thread. Accepts work from the work queue and distributes it
+		/// to the available threads.
+		/// </summary>
 		private readonly Thread EnumerationLoopThread;
 
+		/// <summary>
+		/// A collection of threads that are currently enumerating a directory.
+		/// </summary>
 		private readonly List<Thread> ActiveEnumerationThreads = new List<Thread>();
+
+		/// <summary>
+		/// The maximum number of enumeration threads that can be active at any one point. This value
+		/// is calcuated in the constructor, and is equal to the number of available processor cores
+		/// multiplied by 250.
+		/// </summary>
 		private readonly int MaxEnumerationThreadCount;
 
+		/// <summary>
+		/// Whether or not the explorer builder should currently process any work. Acts as an on/off switch
+		/// for the main background thread.
+		/// </summary>
 		private bool bShouldProcessWork;
+
+		/// <summary>
+		/// Whether or not all possible package groups for the provided paths in <see cref="CachedPackageDirectories"/>
+		/// have been created and loaded.
+		/// </summary>
 		private bool bArePackageGroupsLoaded;
+
+		/// <summary>
+		/// Whether or not the explorer builder is currently reloading. Reloading constitutes clearing all
+		/// enumerated data, and recreating all package groups using the new paths.
+		/// </summary>
 		private bool bIsReloading;
 
 

@@ -371,7 +371,7 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			ItemReference fileReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter));
+			ItemReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
 			if (fileReference != null && !String.IsNullOrEmpty(fileReference.ItemPath))
 			{
 
@@ -427,7 +427,7 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			ItemReference fileReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter));
+			ItemReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
 
 			string cleanFilepath = Utilities.ConvertPathSeparatorsToCurrentNative(fileReference.ItemPath);
 			string exportpath;
@@ -478,7 +478,7 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			ItemReference itemReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter));
+			ItemReference itemReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
 			if (!itemReference.IsFile)
 			{
 				GameExplorerTreeView.ExpandRow(GameExplorerTreeSorter.GetPath(selectedIter), false);
@@ -498,7 +498,7 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			clipboard.Text = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter)).ItemPath;
+			clipboard.Text = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter)).ItemPath;
 		}
 
 		/// <summary>
@@ -512,7 +512,7 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			ItemReference itemReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter));
+			ItemReference itemReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
 
 			string cleanFilepath = Utilities.ConvertPathSeparatorsToCurrentNative(itemReference.ItemPath);
 
@@ -601,16 +601,22 @@ namespace Everlook
 		protected void OnGameExplorerRowExpanded(object sender, RowExpandedArgs e)
 		{
 			// Whenever a row is expanded, enumerate the subfolders of that row.
-			ItemReference parentReference = GetItemReferenceFromIter(GetStoreIterFromVisiblePath(e.Path));
+			ItemReference parentReference = GetItemReferenceFromStoreIter(GetStoreIterFromVisiblePath(e.Path));
 			foreach (ItemReference childReference in parentReference.ChildReferences)
 			{
-				if (childReference.IsDirectory)
+				if (childReference.IsDirectory && !childReference.IsEnumerated)
 				{
 					explorerBuilder.SubmitWork(childReference);
 				}
 			}
 		}
 
+		/// <summary>
+		/// Gets a <see cref="TreeIter"/> that's valid for the <see cref="GameExplorerTreeStore"/> from a
+		/// <see cref="TreePath"/> visible to the user in the UI.
+		/// </summary>
+		/// <param name="path">The TreePath.</param>
+		/// <returns>A <see cref="TreeIter"/>.</returns>
 		private TreeIter GetStoreIterFromVisiblePath(TreePath path)
 		{
 			TreeIter sorterIter;
@@ -618,17 +624,28 @@ namespace Everlook
 			return GetStoreIterFromSorterIter(sorterIter);
 		}
 
+		/// <summary>
+		/// Gets a <see cref="TreeIter"/> that's valid for the <see cref="GameExplorerTreeStore"/> from a TreeIter
+		/// valid for the <see cref="GameExplorerTreeSorter"/>.
+		/// </summary>
+		/// <param name="sorterIter">The GameExplorerTreeSorter iter.</param>
+		/// <returns>A <see cref="TreeIter"/>.</returns>
 		private TreeIter GetStoreIterFromSorterIter(TreeIter sorterIter)
 		{
 			TreeIter filterIter = GameExplorerTreeSorter.ConvertIterToChildIter(sorterIter);
 			return GetStoreIterFromFilterIter(filterIter);
 		}
 
+		/// <summary>
+		/// Gets a <see cref="TreeIter"/> that's valid for the <see cref="GameExplorerTreeStore"/> from a TreeIter
+		/// valid for the <see cref="GameExplorerTreeFilter"/>.
+		/// </summary>
+		/// <param name="filterIter">The GameExplorerTreeFilter iter.</param>
+		/// <returns>A <see cref="TreeIter"/>.</returns>
 		private TreeIter GetStoreIterFromFilterIter(TreeIter filterIter)
 		{
 			return GameExplorerTreeFilter.ConvertIterToChildIter(filterIter);
 		}
-
 
 		/// <summary>
 		/// Handles selection of files in the game explorer, displaying them to the user and routing
@@ -641,7 +658,7 @@ namespace Everlook
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			ItemReference fileReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(selectedIter));
+			ItemReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
 			if (fileReference != null && fileReference.IsFile)
 			{
 				string fileName = System.IO.Path.GetFileName(Utilities.ConvertPathSeparatorsToCurrentNative(fileReference.ItemPath));
@@ -772,7 +789,7 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		[GLib.ConnectBefore]
+		[ConnectBefore]
 		protected void OnGameExplorerButtonPressed(object sender, ButtonPressEventArgs e)
 		{
 			TreePath path;
@@ -782,7 +799,7 @@ namespace Everlook
 			if (path != null)
 			{
 				TreeIter iter = GetStoreIterFromVisiblePath(path);
-				currentItemReference = GetItemReferenceFromIter(iter);
+				currentItemReference = GetItemReferenceFromStoreIter(iter);
 			}
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
@@ -826,7 +843,7 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		[GLib.ConnectBefore]
+		[ConnectBefore]
 		protected void OnExportQueueButtonPressed(object sender, ButtonPressEventArgs e)
 		{
 			TreePath path;
@@ -837,7 +854,7 @@ namespace Everlook
 			{
 				TreeIter iter;
 				ExportQueueListStore.GetIterFromString(out iter, path.ToString());
-				currentReference = GetItemReferenceFromIter(GetStoreIterFromSorterIter(iter));
+				currentReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(iter));
 			}
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
@@ -924,7 +941,7 @@ namespace Everlook
 		/// Adds a package node to the game explorer view.
 		/// </summary>
 		/// <param name="parentReference">Parent reference where the package should be added.</param>
-		/// <param name="packageReference">Item reference pointing to the package..</param>
+		/// <param name="packageReference">Item reference pointing to the package.</param>
 		private void AddPackageNode(ItemReference parentReference, ItemReference packageReference)
 		{
 			// I'm a new root node
@@ -957,7 +974,7 @@ namespace Everlook
 		/// package and directory.
 		/// </summary>
 		/// <param name="parentReference">Parent reference where the new directory should be added.</param>
-		/// <param name="childReference">Child reference representing the directory..</param>
+		/// <param name="childReference">Child reference representing the directory.</param>
 		private void AddDirectoryNode(ItemReference parentReference, ItemReference childReference)
 		{
 			TreeIter parentNode;
@@ -1023,6 +1040,13 @@ namespace Everlook
 			}
 		}
 
+		/// <summary>
+		/// Creates a node in the <see cref="GameExplorerTreeView"/> for the specified directory reference, as
+		/// a child below the specified parent node.
+		/// </summary>
+		/// <param name="parentNode">The parent node where the new node should be attached.</param>
+		/// <param name="directory">The <see cref="ItemReference"/> describing the directory.</param>
+		/// <returns>A <see cref="TreeIter"/> pointing to the new directory node.</returns>
 		private TreeIter CreateDirectoryTreeNode(TreeIter parentNode, ItemReference directory)
 		{
 			return GameExplorerTreeStore.AppendValues(parentNode,
@@ -1095,6 +1119,13 @@ namespace Everlook
 			}
 		}
 
+		/// <summary>
+		/// Creates a node in the <see cref="GameExplorerTreeView"/> for the specified file reference, as
+		/// a child below the specified parent node.
+		/// </summary>
+		/// <param name="parentNode">The parent node where the new node should be attached.</param>
+		/// <param name="file">The <see cref="ItemReference"/> describing the file.</param>
+		/// <returns>A <see cref="TreeIter"/> pointing to the new directory node.</returns>
 		private TreeIter CreateFileTreeNode(TreeIter parentNode, ItemReference file)
 		{
 			return GameExplorerTreeStore.AppendValues(parentNode, Utilities.GetIconForFiletype(file.ItemPath),
@@ -1112,12 +1143,12 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Converts a TreeIter into a file path. The final path is returned as a file reference
-		/// object.
+		/// Converts a <see cref="TreeIter"/> into an <see cref="ItemReference"/>. The reference object is queried
+		/// from the explorerBuilder's internal store.
 		/// </summary>
-		/// <returns>The file path from iter.</returns>
-		/// <param name="iter">Iter.</param>
-		private ItemReference GetItemReferenceFromIter(TreeIter iter)
+		/// <returns>The ItemReference object pointed to by the TreeIter.</returns>
+		/// <param name="iter">The TreeIter.</param>
+		private ItemReference GetItemReferenceFromStoreIter(TreeIter iter)
 		{
 			ItemReference reference;
 			if (explorerBuilder.PackageNodeItemMapping.TryGetValue(iter, out reference))
