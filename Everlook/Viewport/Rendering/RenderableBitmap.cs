@@ -21,6 +21,8 @@
 //
 using System;
 using System.Drawing;
+using Everlook.Rendering.Interfaces;
+using OpenTK;
 
 namespace Everlook.Renderables
 {
@@ -30,7 +32,7 @@ namespace Everlook.Renderables
 	public sealed class RenderableBitmap : IRenderable
 	{
 		/// <summary>
-		/// Gets a value indicating whether this instance uses static rendering; that is, 
+		/// Gets a value indicating whether this instance uses static rendering; that is,
 		/// a single frame is rendered and then reused. Useful as an optimization for images.
 		/// </summary>
 		/// <value>true</value>
@@ -41,6 +43,26 @@ namespace Everlook.Renderables
 			{
 				return true;
 			}
+		}
+
+		public bool IsInitialized { get; set; }
+
+		public ProjectionType Projection
+		{
+			get
+			{
+				return ProjectionType.Orthographic;
+			}
+		}
+
+		public void Initialize()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix)
+		{
+			throw new NotImplementedException();
 		}
 
 		/// <summary>

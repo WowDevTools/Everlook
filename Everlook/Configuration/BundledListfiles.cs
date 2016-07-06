@@ -144,7 +144,7 @@ namespace Everlook.Configuration
 		/// Determines whether there are any bundled listfiles stored along with the program.
 		/// </summary>
 		/// <returns><c>true</c> if this instance has bundled listfiles; otherwise, <c>false</c>.</returns>
-		private bool HasBundledListfiles()
+		private static bool HasBundledListfiles()
 		{
 			return Directory.Exists(GetBundledListfileFolderPath()) && GetBundledListfileCount() > 0;
 		}

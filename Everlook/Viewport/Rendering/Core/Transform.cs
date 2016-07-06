@@ -1,5 +1,5 @@
 ﻿//
-//  IRenderable.cs
+//  Transform.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -19,25 +19,41 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-using System;
 
-namespace Everlook.Renderables
+using OpenTK;
+
+namespace Everlook.Renderables.Core
 {
-	/// <summary>
-	/// Interface representing a renderable object that can be passed to the viewport renderer.
-	/// Specific implementations of the rendering is implemented in the viewport renderer.
-	/// </summary>
-	public interface IRenderable : IDisposable
+	public struct Transform
 	{
-		/// <summary>
-		/// Gets a value indicating whether this instance uses static rendering; that is, 
-		/// a single frame is rendered and then reused. Useful as an optimization for images.
-		/// </summary>
-		/// <value><c>true</c> if this instance is static; otherwise, <c>false</c>.</value>
-		bool IsStatic
+		public Vector3 Translation
 		{
 			get;
+			set;
+		}
+
+		public Quaternion Rotation
+		{
+			get;
+			set;
+		}
+
+		public Vector3 Scale
+		{
+			get;
+			set;
+		}
+
+		public Transform(Vector3 Translation)
+			: this(Translation, Quaternion.FromAxisAngle(Vector3.UnitX, 0.0f), Vector3.One)
+		{
+		}
+
+		public Transform(Vector3 Translation, Quaternion Rotation, Vector3 Scale)
+		{
+			this.Translation = Translation;
+			this.Rotation = Rotation;
+			this.Scale = Scale;
 		}
 	}
 }
-

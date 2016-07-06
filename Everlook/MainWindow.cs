@@ -36,11 +36,14 @@ using Everlook.Export.Image;
 using Everlook.Configuration;
 using Everlook.Renderables;
 using Everlook.Explorer;
+using Everlook.Rendering;
 using Everlook.Viewport;
 using Everlook.Utility;
-
+using OpenTK;
+using OpenTK.Graphics;
 using Warcraft.Core;
 using Warcraft.BLP;
+using KeyPressEventArgs = Gtk.KeyPressEventArgs;
 
 
 namespace Everlook
@@ -58,7 +61,8 @@ namespace Everlook
 		[UI] private readonly AboutDialog AboutDialog;
 		[UI] private readonly ToolButton PreferencesButton;
 
-		[UI] private readonly Gtk.Image MainDrawingArea;
+		[UI] private readonly Alignment ViewportAlignment;
+		private readonly GLWidget ViewportWidget;
 
 		/*
 			Export queue elements
@@ -120,14 +124,12 @@ namespace Everlook
 		/// <summary>
 		/// Background viewport renderer. Handles all rendering in the viewport.
 		/// </summary>
-		private readonly ViewportRenderer viewportRenderer = new ViewportRenderer();
+		private readonly ViewportRenderer viewportRenderer;
 
 		/// <summary>
 		/// Background file explorer tree builder. Handles enumeration of files in the archives.
 		/// </summary>
 		private readonly ExplorerBuilder explorerBuilder = new ExplorerBuilder();
-
-
 
 		/// <summary>
 		/// Creates an instance of the MainWindow class, loading the glade XML UI as needed.
@@ -149,13 +151,39 @@ namespace Everlook
 			builder.Autoconnect(this);
 			DeleteEvent += OnDeleteEvent;
 
-			// TODO: Allow user to configure timeout value
-			Timeout.Add(20, OnGLibLoopIdle, Priority.DefaultIdle);
+			this.ViewportWidget = new GLWidget(GraphicsMode.Default)
+			{
+				CanFocus = true,
+				SingleBuffer = false,
+				ColorBPP = 32,
+				DepthBPP = 16,
+				Samples = 4,
+				GLVersionMajor = 3,
+				GLVersionMinor = 3,
+				GraphicsContextFlags = GraphicsContextFlags.Default
+			};
+
+			this.ViewportWidget.Events |=
+            				EventMask.ButtonPressMask |
+            				EventMask.ButtonReleaseMask |
+            				EventMask.KeyPressMask |
+            				EventMask.KeyReleaseMask;
+
+			this.ViewportWidget.Initialized += OnViewportInitialized;
+			this.ViewportWidget.ButtonPressEvent += OnViewportButtonPressed;
+			this.ViewportWidget.ButtonReleaseEvent += OnViewportButtonReleased;
+			this.ViewportWidget.KeyPressEvent += OnViewportKeyPressed;
+			this.ViewportWidget.KeyReleaseEvent += OnViewportKeyReleased;
+
+			this.ViewportAlignment.Add(this.ViewportWidget);
+			this.ViewportAlignment.ShowAll();
+
+			this.viewportRenderer = new ViewportRenderer(this.ViewportWidget);
+
+			Timeout.Add(10, OnGLibLoopIdle, Priority.DefaultIdle);
 
 			AboutButton.Clicked += OnAboutButtonClicked;
 			PreferencesButton.Clicked += OnPreferencesButtonClicked;
-
-			MainDrawingArea.OverrideBackgroundColor(StateFlags.Normal, Config.GetViewportBackgroundColour());
 
 			GameExplorerTreeView.RowExpanded += OnGameExplorerRowExpanded;
 			GameExplorerTreeView.Selection.Changed += OnGameExplorerSelectionChanged;
@@ -175,20 +203,15 @@ namespace Everlook
 
 			RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
 
-			viewportRenderer.FrameRendered += OnFrameRendered;
-			viewportRenderer.Start();
-
 			explorerBuilder.PackageGroupAdded += OnPackageGroupAdded;
 			explorerBuilder.PackageEnumerated += OnPackageEnumerated;
-			//explorerBuilder.EnumerationFinished += OnReferenceEnumerated;
 			explorerBuilder.Start();
 
 			/*
 				Set up item control sections
 			*/
-			// Image
-			MipLevelComboBox.Changed += OnSelectedMipLevelChanged;
 
+			// Image
 			RenderAlphaCheckButton.Sensitive = false;
 			RenderRedCheckButton.Sensitive = false;
 			RenderGreenCheckButton.Sensitive = false;
@@ -199,6 +222,148 @@ namespace Everlook
 			// Animation
 
 			// Audio
+		}
+
+		/// <summary>
+		/// Handles input inside the OpenGL viewport for key releases. Mainly, it
+		/// sets the different movement axes to zero, stopping movement.
+		/// </summary>
+		[ConnectBefore]
+		protected void OnViewportKeyReleased(object o, KeyReleaseEventArgs args)
+		{
+			if (args.Event.Type == EventType.KeyRelease)
+			{
+				if( args.Event.Key == Gdk.Key.w || args.Event.Key == Gdk.Key.W)
+				{
+					this.viewportRenderer.ForwardAxis = 0.0f;
+				}
+				else if( args.Event.Key == Gdk.Key.s || args.Event.Key == Gdk.Key.S)
+				{
+					this.viewportRenderer.ForwardAxis = 0.0f;
+				}
+
+				if( args.Event.Key == Gdk.Key.d || args.Event.Key == Gdk.Key.D)
+				{
+					this.viewportRenderer.RightAxis = 0.0f;
+				}
+				else if( args.Event.Key == Gdk.Key.a || args.Event.Key == Gdk.Key.A)
+				{
+					this.viewportRenderer.RightAxis = 0.0f;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Handles input inside the OpenGL viewport for key presses. Mainly, it
+		/// sets the different movement axes to nonzero, starting movement.
+		/// </summary>
+		[ConnectBefore]
+		protected void OnViewportKeyPressed(object o, KeyPressEventArgs args)
+		{
+			if (args.Event.Type == EventType.KeyPress)
+			{
+				if( args.Event.Key == Gdk.Key.w || args.Event.Key == Gdk.Key.W)
+				{
+					this.viewportRenderer.ForwardAxis = 1.0f;
+				}
+				else if( args.Event.Key == Gdk.Key.s || args.Event.Key == Gdk.Key.S)
+				{
+					this.viewportRenderer.ForwardAxis = -1.0f;
+				}
+
+				if( args.Event.Key == Gdk.Key.d || args.Event.Key == Gdk.Key.D)
+				{
+					this.viewportRenderer.RightAxis = 1.0f;
+				}
+				else if( args.Event.Key == Gdk.Key.a || args.Event.Key == Gdk.Key.A)
+				{
+					this.viewportRenderer.RightAxis = -1.0f;
+				}
+
+				if( args.Event.Key == Gdk.Key.r || args.Event.Key == Gdk.Key.R)
+				{
+					this.viewportRenderer.ResetCamera();
+				}
+
+				if (args.Event.Key == Gdk.Key.Escape)
+				{
+					Application.Quit();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Handles input inside the OpenGL viewport for mouse button releases.
+		/// This function restores input focus to the main UI and returns the
+		/// cursor to its original appearance.
+		/// </summary>
+		[ConnectBefore]
+		protected void OnViewportButtonReleased(object o, ButtonReleaseEventArgs args)
+		{
+			// Right click is released
+			if (args.Event.Type == EventType.ButtonRelease && args.Event.Button == 3)
+			{
+				// Return the mouse pointer
+				this.Window.Cursor = new Cursor(CursorType.Arrow);
+
+				this.GrabFocus();
+				this.viewportRenderer.WantsToMove = false;
+			}
+		}
+
+		/// <summary>
+		/// Handles input inside the OpenGL viewport for mouse button presses.
+		/// This function grabs focus for the viewport, and hides the mouse
+		/// cursor during movement.
+		/// </summary>
+		[ConnectBefore]
+		protected void OnViewportButtonPressed(object o, ButtonPressEventArgs args)
+		{
+			if (this.viewportRenderer.IsMovementDisabled())
+			{
+				return;
+			}
+
+			// Right click is pressed
+			if (args.Event.Type == EventType.ButtonPress && args.Event.Button == 3)
+			{
+				// Hide the mouse pointer
+				this.Window.Cursor = new Cursor(CursorType.BlankCursor);
+
+				this.ViewportWidget.GrabFocus();
+				this.viewportRenderer.WantsToMove = true;
+				this.ViewportWidget.GetPointer(out this.viewportRenderer.MouseXLastFrame, out this.viewportRenderer.MouseYLastFrame);
+			}
+		}
+
+		/// <summary>
+		/// Handles OpenGL initialization post-context creation. This function
+		/// passes the main OpenGL initialization to the viewport renderer, and
+		/// adds an idle function for rendering.
+		/// </summary>
+		protected void OnViewportInitialized(object sender, EventArgs e)
+		{
+			// Initialize all OpenGL rendering parameters
+			this.viewportRenderer.Initialize();
+			GLib.Idle.Add(OnIdleRenderFrame);
+		}
+
+		/// <summary>
+		/// This function lazily renders frames of the currently focused object.
+		/// All rendering functionality is either in the viewport renderer, or in a
+		/// renderable object currently hosted by it.
+		/// </summary>
+		protected bool OnIdleRenderFrame()
+		{
+			if (!this.viewportRenderer.IsInitialized)
+			{
+				return false;
+			}
+			else
+			{
+				this.viewportRenderer.RenderFrame();
+				return true;
+			}
 		}
 
 		/// <summary>
@@ -450,25 +615,6 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Handles changing the mip level that is being rendered in the viewport based
-		/// on the user selection.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		protected void OnSelectedMipLevelChanged(object sender, EventArgs e)
-		{
-			if (viewportRenderer.IsActive)
-			{
-				int qualityLevel = MipLevelComboBox.Active;
-
-				if (qualityLevel >= 0)
-				{
-					viewportRenderer.SetRequestedQualityLevel((uint)qualityLevel);
-				}
-			}
-		}
-
-		/// <summary>
 		/// Handles opening of files from the archive triggered by a context menu press.
 		/// </summary>
 		/// <param name="sender">Sender.</param>
@@ -564,32 +710,13 @@ namespace Everlook
 		/// </summary>
 		protected void ReloadRuntimeValues()
 		{
-			MainDrawingArea.OverrideBackgroundColor(StateFlags.Normal, Config.GetViewportBackgroundColour());
+			ViewportWidget.OverrideBackgroundColor(StateFlags.Normal, Config.GetViewportBackgroundColour());
 
 			if (explorerBuilder.HasPackageDirectoryChanged())
 			{
 				GameExplorerTreeStore.Clear();
 				explorerBuilder.Reload();
 			}
-		}
-
-		/// <summary>
-		/// Handles the Frame Rendered event. Takes the input frame from the rendering thread and
-		/// draws it in the viewport on the GUI thread.
-		/// </summary>
-		/// <param name="sender">Sending object (a viewport rendering thread).</param>
-		/// <param name="e">Frame renderer arguments, containing the frame and frame delta.</param>
-		protected void OnFrameRendered(object sender, FrameRendererEventArgs e)
-		{
-			Application.Invoke(delegate
-				{
-					if (MainDrawingArea.Pixbuf != null)
-					{
-						MainDrawingArea.Pixbuf.Dispose();
-					}
-
-					MainDrawingArea.Pixbuf = e.Frame;
-				});
 		}
 
 		/// <summary>
@@ -665,106 +792,86 @@ namespace Everlook
 				switch (fileReference.GetReferencedFileType())
 				{
 					case WarcraftFileType.AddonManifest:
-						{
-							break;
-						}
+					{
+						break;
+					}
 					case WarcraftFileType.AddonManifestSignature:
-						{
-							break;
-						}
+					{
+						break;
+					}
 					case WarcraftFileType.MoPaQArchive:
-						{
-							break;
-						}
+					{
+						break;
+					}
 					case WarcraftFileType.ConfigurationFile:
-						{
-							break;
-						}
+					{
+						break;
+					}
 					case WarcraftFileType.DatabaseContainer:
-						{
-							break;
-						}
+					{
+						break;
+					}
 					case WarcraftFileType.Shader:
-						{
-							break;
-						}
+					{
+						break;
+					}
 					case WarcraftFileType.TerrainWater:
-						{
-							break;
-						}
+					{
+						break;
+					}
 					case WarcraftFileType.TerrainLiquid:
-						{
-							break;
-						}
+					{
+						break;
+					}
 					case WarcraftFileType.TerrainLevel:
-						{
-							break;
-						}
+					{
+						break;
+					}
 					case WarcraftFileType.TerrainTable:
-						{
-							break;
-						}
+					{
+						break;
+					}
 					case WarcraftFileType.TerrainData:
-						{
-							break;
-						}
+					{
+						break;
+					}
 					case WarcraftFileType.BinaryImage:
+					{
+						byte[] fileData = fileReference.Extract();
+						if (fileData != null)
 						{
-							if (!viewportRenderer.IsActive)
+							try
 							{
-								viewportRenderer.Start();
+								BLP blp = new BLP(fileData);
+								RenderableBLP image = new RenderableBLP(blp);
+								viewportRenderer.SetRenderTarget(image);
+								EnableControlPage(ControlPage.Image);
 							}
-
-							byte[] fileData = fileReference.Extract();
-							if (fileData != null)
+							catch (FileLoadException fex)
 							{
-								try
-								{
-									BLP blp = new BLP(fileData);
-									RenderableBLP image = new RenderableBLP(blp);
-									viewportRenderer.SetRenderTarget(image);
-
-									MipLevelListStore.Clear();
-									foreach (string mipString in blp.GetMipMapLevelStrings())
-									{
-										MipLevelListStore.AppendValues(mipString);
-									}
-
-									viewportRenderer.SetRequestedQualityLevel(0);
-									MipLevelComboBox.Active = 0;
-
-									EnableControlPage(ControlPage.Image);
-								}
-								catch (FileLoadException fex)
-								{
-									Console.WriteLine("FileLoadException when opening BLP: " + fex.Message);
-								}
+								Console.WriteLine("FileLoadException when opening BLP: " + fex.Message);
 							}
-
-							break;
 						}
+
+						break;
+					}
 					case WarcraftFileType.Hashmap:
-						{
-							break;
-						}
+					{
+						break;
+					}
 					case WarcraftFileType.GameObjectModel:
-						{
-							break;
-						}
+					{
+						break;
+					}
 					case WarcraftFileType.WorldObjectModel:
-						{
-							break;
-						}
+					{
+						break;
+					}
 				}
 
 				// Try some "normal" files
 				if (fileName.EndsWith(".jpg") || fileName.EndsWith(".gif") || fileName.EndsWith(".png"))
 				{
-					if (!viewportRenderer.IsActive)
-					{
-						viewportRenderer.Start();
-					}
-
 					byte[] fileData = fileReference.Extract();
 					if (fileData != null)
 					{
@@ -964,7 +1071,6 @@ namespace Everlook
 			VirtualItemReference virtualGroupReference;
 			if (explorerBuilder.PackageGroupVirtualNodeMapping.TryGetValue(packageReference.Group, out virtualGroupReference))
 			{
-				// TODO: Investigate possible bug
 				explorerBuilder.AddVirtualMapping(packageReference, virtualGroupReference);
 			}
 		}
@@ -1003,7 +1109,6 @@ namespace Everlook
 				{
 
 					VirtualItemReference virtualChildReference = explorerBuilder.GetVirtualReference(childReference);
-					//explorerBuilder.VirtualReferenceMapping.TryGetValue(childReference, out virtualChildReference);
 
 					if (virtualChildReference != null)
 					{
@@ -1103,6 +1208,7 @@ namespace Everlook
 						if (!virtualParentReference.ChildReferences.Contains(virtualChildReference))
 						{
 							virtualParentReference.ChildReferences.Add(virtualChildReference);
+
 							// Create a new virtual reference and a node that maps to it.
 							if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(virtualChildReference))
 							{
@@ -1167,16 +1273,16 @@ namespace Everlook
 		/// <param name="a">The alpha component.</param>
 		protected void OnDeleteEvent(object sender, DeleteEventArgs a)
 		{
-			if (viewportRenderer.IsActive)
-			{
-				viewportRenderer.Stop();
-			}
+			Idle.Remove(OnIdleRenderFrame);
+			Timeout.Remove(OnGLibLoopIdle);
 
 			if (explorerBuilder.IsActive)
 			{
 				explorerBuilder.Stop();
 				explorerBuilder.Dispose();
 			}
+
+			this.viewportRenderer.Dispose();
 
 			Application.Quit();
 			a.RetVal = true;

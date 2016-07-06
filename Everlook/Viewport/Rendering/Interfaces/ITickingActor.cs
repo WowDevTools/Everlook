@@ -1,5 +1,5 @@
 ﻿//
-//  Program.cs
+//  ITickingActor.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -19,23 +19,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-using Gtk;
-using OpenTK;
 
-namespace Everlook
+namespace Everlook.Rendering.Interfaces
 {
-	internal class MainClass
+	/// <summary>
+	/// Interface defining a ticking actor, such as an animated mesh.
+	/// </summary>
+	public interface ITickingActor : IActor
 	{
-		public static void Main()
-		{
-			// OpenGL
-			Toolkit.Init();
-
-			// GTK
-			Application.Init();
-			MainWindow win = MainWindow.Create();
-			win.Show();
-			Application.Run();
-		}
+		/// <summary>
+		/// Ticks this actor, advancing or performing any time-based actions.
+		/// </summary>
+		void Tick(float deltaTime);
 	}
 }

@@ -64,6 +64,8 @@ namespace Everlook.Explorer
 		/// </summary>
 		public event ReferenceEnumeratedEventHandler EnumerationFinished;
 
+
+		private readonly object EnumeratedReferenceQueueLock = new object();
 		/// <summary>
 		/// A list of enumerated references. This list acts as an intermediate location where the UI can fetch results
 		/// when it's idle.
@@ -397,6 +399,7 @@ namespace Everlook.Explorer
 		/// <param name="hardReference">Hard reference.</param>
 		protected void EnumerateHardReference(ItemReference hardReference)
 		{
+			List<ItemReference> localEnumeratedReferences = new List<ItemReference>();
 			List<string> PackageListfile;
 			if (hardReference.Group.PackageListfiles.TryGetValue(hardReference.PackageName, out PackageListfile))
 			{
@@ -416,7 +419,7 @@ namespace Everlook.Explorer
 						{
 							hardReference.ChildReferences.Add(directoryReference);
 
-							EnumeratedReferences.Add(directoryReference);
+							localEnumeratedReferences.Add(directoryReference);
 						}
 					}
 					else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1)
@@ -428,13 +431,20 @@ namespace Everlook.Explorer
 							fileReference.IsEnumerated = true;
 							hardReference.ChildReferences.Add(fileReference);
 
-							EnumeratedReferences.Add(fileReference);
+							localEnumeratedReferences.Add(fileReference);
 						}
 					}
 					else
 					{
 						break;
 					}
+				}
+
+
+				lock (EnumeratedReferenceQueueLock)
+				{
+					// Add this directory's enumerated files in order as one block
+					this.EnumeratedReferences.AddRange(localEnumeratedReferences);
 				}
 
 				hardReference.IsEnumerated = true;
@@ -557,6 +567,13 @@ namespace Everlook.Explorer
 		/// <see cref="Everlook.Explorer.ExplorerBuilder"/> was occupying.</remarks>
 		public void Dispose()
 		{
+			bShouldProcessWork = false;
+
+			foreach (Thread t in ActiveEnumerationThreads)
+			{
+				t.Abort();
+			}
+
 			foreach (KeyValuePair<string, PackageGroup> Group in this.PackageGroups)
 			{
 				Group.Value.Dispose();

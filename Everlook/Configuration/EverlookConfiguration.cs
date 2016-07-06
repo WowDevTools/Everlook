@@ -116,9 +116,9 @@ namespace Everlook.Configuration
 					}
 				}
 				else
-				{	
+				{
 					/*
-						This section is for updating old configuration files 
+						This section is for updating old configuration files
 						with new sections introduced in updates.
 
 						It's good practice to wrap each updating section in a
@@ -492,21 +492,21 @@ namespace Everlook.Configuration
 		}
 
 		/// <summary>
-		/// Writes the config data to disk. This method is thread-blocking, and all write operations 
+		/// Writes the config data to disk. This method is thread-blocking, and all write operations
 		/// are synchronized via lock(WriteLock).
 		/// </summary>
 		/// <param name="Parser">The parser dealing with the current data.</param>
 		/// <param name="Data">The data which should be written to file.</param>
-		private void WriteConfig(FileIniDataParser Parser, IniData Data)
+		private static void WriteConfig(FileIniDataParser Parser, IniData Data)
 		{
-			Parser.WriteFile(GetConfigurationFilePath(), Data);			
+			Parser.WriteFile(GetConfigurationFilePath(), Data);
 		}
 
-		private string GetConfigurationFilePath()
+		private static string GetConfigurationFilePath()
 		{
-			return String.Format("{0}{1}Everlook{1}everlook.ini", 
-				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-				Path.DirectorySeparatorChar);
+			return
+				$"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{Path.DirectorySeparatorChar}" +
+				$"Everlook{Path.DirectorySeparatorChar}everlook.ini";
 		}
 	}
 }

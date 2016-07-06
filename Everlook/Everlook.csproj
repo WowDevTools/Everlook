@@ -31,6 +31,9 @@
     <DocumentationFile>bin\Release\Everlook.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="INIFileParser, Version=2.3.0.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c">
+      <HintPath>..\packages\ini-parser.2.3.0\lib\net20\INIFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>gtk-sharp-3.0</Package>
@@ -50,12 +53,13 @@
     <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>gtk-sharp-3.0</Package>
     </Reference>
-    <Reference Include="INIFileParser">
-      <HintPath>..\packages\ini-parser.2.2.4\lib\net20\INIFileParser.dll</HintPath>
-    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="cairo-sharp, Version=1.10.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <Package>gtk-sharp-3.0</Package>
+    </Reference>
+    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
+      <Package>opentk</Package>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -69,15 +73,18 @@
     <Compile Include="Export\Audio\AudioFormat.cs" />
     <Compile Include="Export\Model\ModelFormat.cs" />
     <Compile Include="EverlookPreferences.cs" />
+    <Compile Include="Viewport\Rendering\Core\Transform.cs" />
+    <Compile Include="Viewport\Rendering\Interfaces\IActor.cs" />
+    <Compile Include="Viewport\Rendering\Interfaces\IRenderable.cs" />
+    <Compile Include="Viewport\Rendering\Interfaces\ITickingActor.cs" />
+    <Compile Include="Viewport\Rendering\RenderableBitmap.cs" />
+    <Compile Include="Viewport\Rendering\RenderableBLP.cs" />
+    <Compile Include="Viewport\Rendering\RenderableGameModel.cs" />
+    <Compile Include="Viewport\Rendering\RenderableWorldModel.cs" />
     <Compile Include="Viewport\ViewportRenderer.cs" />
     <Compile Include="Utility\Utilities.cs" />
     <Compile Include="Audio\AudioPlayer.cs" />
-    <Compile Include="Renderables\IRenderable.cs" />
-    <Compile Include="Renderables\RenderableBLP.cs" />
-    <Compile Include="Renderables\RenderableMDX.cs" />
-    <Compile Include="Renderables\RenderableWMO.cs" />
     <Compile Include="Explorer\ExplorerBuilder.cs" />
-    <Compile Include="Renderables\RenderableBitmap.cs" />
     <Compile Include="Export\Image\EverlookImageExportDialog.cs" />
     <Compile Include="Package\PackageInteractionHandler.cs" />
     <Compile Include="Export\Directory\EverlookDirectoryExportDialog.cs" />
@@ -93,6 +100,8 @@
     <EmbeddedResource Include="interfaces\EverlookPreferences.glade" />
     <EmbeddedResource Include="interfaces\EverlookImageExport.glade" />
     <EmbeddedResource Include="interfaces\EverlookDirectoryExport.glade" />
+    <EmbeddedResource Include="Content\Shaders\Adapted\PlainImage\PlainImageFragment.glsl" />
+    <EmbeddedResource Include="Content\Shaders\Adapted\PlainImage\PlainImageVertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
@@ -107,10 +116,14 @@
     <Folder Include="Explorer\" />
     <Folder Include="Package\" />
     <Folder Include="Export\Directory\" />
+    <Folder Include="Content\" />
+    <Folder Include="Content\Shaders\" />
+    <Folder Include="Content\Shaders\Adapted\" />
+    <Folder Include="Content\Shaders\" />
+    <Folder Include="Viewport\Rendering\" />
+    <Folder Include="Viewport\Rendering\" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\libwarcraft\libwarcraft\libwarcraft.csproj">
       <Project>{DA06A44E-A67B-46C7-B07D-E90AEBED0502}</Project>
@@ -119,6 +132,10 @@
     <ProjectReference Include="..\..\liblistfile\liblistfile\liblistfile.csproj">
       <Project>{CE32160A-4A61-4813-93A5-D9DFDD7AB470}</Project>
       <Name>liblistfile</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GLWidgetGTK3\GLWidgetGTK3.csproj">
+      <Project>{47B57CB3-1885-462D-84DA-FBA0AE356F2A}</Project>
+      <Name>GLWidgetGTK3</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -215,5 +232,6 @@
     <Content Include="Content\Listfiles\wmo.olc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="packages.config" />
   </ItemGroup>
 </Project>

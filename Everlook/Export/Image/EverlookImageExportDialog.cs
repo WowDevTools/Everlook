@@ -96,7 +96,7 @@ namespace Everlook.Export.Image
 		private void LoadInformation()
 		{
 			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(Utilities.ConvertPathSeparatorsToCurrentNative(ExportTarget.ItemPath));
-			this.Title = "Export Image | " + ImageFilename;
+			this.Title = $"Export Image | {ImageFilename}";
 
 			byte[] file = ExportTarget.Extract();
 			Image = new BLP(file);

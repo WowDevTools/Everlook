@@ -19,23 +19,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-using Gtk;
-using OpenTK;
 
-namespace Everlook
+using System;
+using NUnit.Framework;
+
+namespace Everlook.Tests
 {
-	internal class MainClass
-	{
-		public static void Main()
-		{
-			// OpenGL
-			Toolkit.Init();
-
-			// GTK
-			Application.Init();
-			MainWindow win = MainWindow.Create();
-			win.Show();
-			Application.Run();
-		}
-	}
+    class Program
+    {
+        static void Main(string[] args)
+        {
+        }
+    }
 }

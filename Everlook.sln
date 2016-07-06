@@ -7,12 +7,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libwarcraft", "..\libwarcra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "liblistfile", "..\liblistfile\liblistfile\liblistfile.csproj", "{CE32160A-4A61-4813-93A5-D9DFDD7AB470}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GLWidgetGTK3", "GLWidgetGTK3\GLWidgetGTK3.csproj", "{47B57CB3-1885-462D-84DA-FBA0AE356F2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{47B57CB3-1885-462D-84DA-FBA0AE356F2A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{47B57CB3-1885-462D-84DA-FBA0AE356F2A}.Debug|x86.Build.0 = Debug|Any CPU
+		{47B57CB3-1885-462D-84DA-FBA0AE356F2A}.Release|x86.ActiveCfg = Release|Any CPU
+		{47B57CB3-1885-462D-84DA-FBA0AE356F2A}.Release|x86.Build.0 = Release|Any CPU
 		{64BD763C-024D-477A-B05C-57152FD612DF}.Debug|x86.ActiveCfg = Debug|x86
 		{64BD763C-024D-477A-B05C-57152FD612DF}.Debug|x86.Build.0 = Debug|x86
 		{64BD763C-024D-477A-B05C-57152FD612DF}.Release|x86.ActiveCfg = Release|x86

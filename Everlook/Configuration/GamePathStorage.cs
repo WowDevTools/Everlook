@@ -31,6 +31,8 @@ namespace Everlook.Configuration
 	/// A binary file format is used for maximal cross-platform compatibility - a null character
 	/// is, unfortunately, the only safe separator for multiple paths in current and future systems.
 	/// Yes, Linux allows tabs, newlines and carriage returns in paths.
+	///
+	/// Read <see cref="http://stackoverflow.com/a/1976172"/> for a good time.
 	/// </summary>
 	public sealed class GamePathStorage
 	{
@@ -153,9 +155,9 @@ namespace Everlook.Configuration
 		/// <returns>The path storage path.</returns>
 		private static string GetPathStoragePath()
 		{
-			return String.Format("{0}{1}Everlook{1}gamepaths.store",
-				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-				Path.DirectorySeparatorChar);
+			return
+				$"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{Path.DirectorySeparatorChar}" +
+				$"Everlook{Path.DirectorySeparatorChar}gamepaths.store";
 		}
 	}
 }

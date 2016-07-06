@@ -1,5 +1,5 @@
 ﻿//
-//  Program.cs
+//  IActor.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -19,23 +19,24 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-using Gtk;
-using OpenTK;
 
-namespace Everlook
+using Everlook.Renderables.Core;
+
+namespace Everlook.Rendering.Interfaces
 {
-	internal class MainClass
+	/// <summary>
+	/// Interface defining functionality for a renderable object with a position,
+	/// rotation and scale in the world.
+	/// </summary>
+	public interface IActor : IRenderable
 	{
-		public static void Main()
+		/// <summary>
+		/// The transform of the actor.
+		/// </summary>
+		Transform ActorTransform
 		{
-			// OpenGL
-			Toolkit.Init();
-
-			// GTK
-			Application.Init();
-			MainWindow win = MainWindow.Create();
-			win.Show();
-			Application.Run();
+			get;
+			set;
 		}
 	}
 }

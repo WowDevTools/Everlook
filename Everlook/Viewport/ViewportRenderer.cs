@@ -19,93 +19,296 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
 using System;
-using Gdk;
-using System.Threading;
 using System.Diagnostics;
-using Everlook.Renderables;
-using System.Drawing;
-using System.IO;
-using System.Drawing.Imaging;
+using Everlook.Configuration;
+using Everlook.Rendering.Interfaces;
+using OpenTK;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 
 namespace Everlook.Viewport
 {
 	/// <summary>
-	/// Viewport renderer for the main Everlook UI.
+	/// Viewport renderer for the main Everlook UI. This class manages an OpenGL rendering thread, which
+	/// uses rendering built into the different renderable objects
 	/// </summary>
-	public class ViewportRenderer
+	public class ViewportRenderer : IDisposable
 	{
 		/// <summary>
-		/// Occurs when a frame has been rendered.
+		/// The viewport widget displayed to the user in the main interface.
+		/// Used to get proper dimensions for the OpenGL viewport.
 		/// </summary>
-		public event FrameRenderedEventHandler FrameRendered;
+		private readonly GLWidget ViewportWidget;
+
+		/*
+			RenderTarget and related control flow data.
+		*/
 
 		/// <summary>
-		/// The frame rendered arguments. Contains the frame as a pixel buffer, as well as the frame delta.
+		/// A lock object used to enforce that the rendering target can finish its current
+		/// frame before a new one is assigned.
 		/// </summary>
-		public readonly FrameRendererEventArgs FrameRenderedArgs = new FrameRendererEventArgs();
+		private readonly object RenderTargetLock = new object();
 
-		private readonly Thread RenderThread;
-		private bool bShouldRender;
-
+		/// <summary>
+		/// The current rendering target. This is an object capable of being shown in an
+		/// OpenGL viewport.
+		/// </summary>
 		private IRenderable RenderTarget;
-		private object RenderTargetLock = new object();
-		private uint RenderQualityLevel;
-		private bool HasPendingQualityChange;
+
+		/// <summary>
+		/// The hash sum of the current rendering target. This is used when switching
+		/// render targets.
+		/// </summary>
 		private int RenderTargetHashSum;
 
-		private uint MaxFramesPerSecond;
+		/*
+			Runtime positional data for the observer.
+		*/
+
+		/// <summary>
+		/// The current position of the observer in world space.
+		/// </summary>
+		private Vector3 cameraPosition;
+
+		/// <summary>
+		/// A vector pointing in the direction the observer is currently looking.
+		/// </summary>
+		private Vector3 cameraLookDirection;
+
+		/// <summary>
+		/// The current vector that points directly to the right, relative to the
+		/// current orientation of the observer.
+		/// </summary>
+		private Vector3 cameraRightVector;
+
+		/// <summary>
+		/// The current vector that points directly upwards, relative to the current
+		/// orientation of the observer.
+		/// </summary>
+		private Vector3 cameraUpVector;
+
+		/// <summary>
+		/// The current horizontal view angle of the observer.
+		/// </summary>
+		private float horizontalViewAngle;
+
+		/// <summary>
+		/// The current vertical view angle of the observer. This angle is
+		/// limited to -90 and 90 (straight down and straight up, respectively).
+		/// </summary>
+		private float verticalViewAngle;
+
+		/// <summary>
+		/// Whether or not the user wants to move in world space. If set to true, the
+		/// rendering loop will recalculate the view and projection matrices every frame.
+		/// </summary>
+		public bool WantsToMove = false;
+
+		/// <summary>
+		/// The time taken to render the previous frame.
+		/// </summary>
+		private float DeltaTime;
+
+		/// <summary>
+		/// The X position of the mouse during the last frame, relative to the <see cref="ViewportWidget"/>.
+		/// </summary>
+		public int MouseXLastFrame;
+
+		/// <summary>
+		/// The Y position of the mouse during the last frame, relative to the <see cref="ViewportWidget"/>.
+		/// </summary>
+		public int MouseYLastFrame;
+
+		/// <summary>
+		/// The current desired movement direction of the right axis.
+		///
+		/// A positive value represents movement to the right at a speed matching <see cref="DefaultMovementSpeed"/>
+		/// multiplied by the axis value.
+		///
+		/// A negative value represents movement to the left at a speed matching <see cref="DefaultMovementSpeed"/>
+		/// multiplied by the axis value.
+		///
+		/// A value of <value>0</value> represents no movement.
+		/// </summary>
+		public float RightAxis;
+
+		/// <summary>
+		/// The current desired movement direction of the right axis.
+		///
+		/// A positive value represents forwards movement at a speed matching <see cref="DefaultMovementSpeed"/>
+		/// multiplied by the axis value.
+		///
+		/// A negative value represents backwards movement at a speed matching <see cref="DefaultMovementSpeed"/>
+		/// multiplied by the axis value.
+		///
+		/// A value of <value>0</value> represents no movement.
+		/// </summary>
+		public float ForwardAxis;
+
+
+		/*
+			Default camera and movement speeds.
+		*/
+
+		/// <summary>
+		/// The default field of view for perspective projections.
+		/// </summary>
+		private const float DefaultFieldOfView = 45.0f;
+
+		/// <summary>
+		/// The default movement speed of the observer within the viewport.
+		/// </summary>
+		private const float DefaultMovementSpeed = 5.0f;
+
+		/// <summary>
+		/// The default turning speed of the observer within the viewport.
+		/// </summary>
+		private const float DefaultTurningSpeed = 0.3f;
+
+
+		/*
+			Runtime transitional OpenGL data.
+		*/
+
+		/// <summary>
+		/// The OpenGL ID of the vertex array valid for the current context.
+		/// </summary>
+		private int VertexArrayID;
+
+		/// <summary>
+		/// Whether or not this instance has been initialized and is ready
+		/// to render objects.
+		/// </summary>
+		public bool IsInitialized
+		{
+			get;
+			set;
+		}
+
+		/*
+			Everlook caching and static data accessors.
+		*/
+
+		/// <summary>
+		/// Static reference to the configuration handler.
+		/// </summary>
+		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Viewport.ViewportRenderer"/> class.
 		/// </summary>
-		public ViewportRenderer()
-		{			
-			this.RenderThread = new Thread(RenderLoop);
-			this.bShouldRender = false;
+		public ViewportRenderer(GLWidget viewportWidget)
+		{
+			this.ViewportWidget = viewportWidget;
+			this.IsInitialized = false;
 		}
 
 		/// <summary>
-		/// Gets a value indicating whether this instance is actively rendering frames for the viewport.
+		/// Initializes
 		/// </summary>
-		/// <value><c>true</c> if this instance is active; otherwise, <c>false</c>.</value>
-		public bool IsActive
+		public void Initialize()
 		{
-			get
+			// Generate the vertex array
+			GL.GenVertexArrays(1, out this.VertexArrayID);
+			GL.BindVertexArray(this.VertexArrayID);
+
+			// Make sure we use the depth buffer when drawing
+			GL.Enable(EnableCap.DepthTest);
+			GL.DepthFunc(DepthFunction.Less);
+
+			// Enable backface culling for performance reasons
+			GL.Enable(EnableCap.CullFace);
+			GL.Enable(EnableCap.Blend);
+			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
+			// Initialize the viewport
+			int widgetWidth = this.ViewportWidget.AllocatedWidth;
+			int widgetHeight = this.ViewportWidget.AllocatedHeight;
+			GL.Viewport(0, 0, widgetWidth, widgetHeight);
+			GL.ClearColor(
+				(float)Config.GetViewportBackgroundColour().Red,
+				(float)Config.GetViewportBackgroundColour().Green,
+				(float)Config.GetViewportBackgroundColour().Blue,
+				(float)Config.GetViewportBackgroundColour().Alpha);
+
+			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+			ResetCamera();
+
+			this.IsInitialized = true;
+		}
+
+		/// <summary>
+		/// The primary rendering logic. Here, the current object is rendered using OpenGL.
+		/// </summary>
+		public void RenderFrame()
+		{
+			lock (RenderTargetLock)
 			{
-				return bShouldRender;
+				// Make sure the viewport is accurate for the current widget size on screen
+				int widgetWidth = this.ViewportWidget.AllocatedWidth;
+				int widgetHeight = this.ViewportWidget.AllocatedHeight;
+				GL.Viewport(0, 0, widgetWidth, widgetHeight);
+				GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+				if (RenderTarget != null)
+				{
+					// Calculate the current relative movement of the camera
+					if (WantsToMove)
+					{
+						CalulateRelativeMovementVectors();
+					}
+
+					// Calculate the relative viewpoint
+					Matrix4 projection;
+					if (RenderTarget.Projection == ProjectionType.Orthographic)
+					{
+						projection = Matrix4.CreateOrthographic(widgetWidth, widgetHeight, 0.01f, 1000.0f);
+					}
+					else
+					{
+						float aspectRatio = (float)widgetWidth / (float)widgetHeight;
+						projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(DefaultFieldOfView), aspectRatio, 0.01f, 1000.0f);
+					}
+
+					Matrix4 view = Matrix4.LookAt(
+						cameraPosition,
+						cameraPosition + cameraLookDirection,
+						cameraUpVector
+					);
+
+					// Render the current object
+					Stopwatch sw = Stopwatch.StartNew();
+					{
+						// Tick the actor, advancing any time-dependent behaviour
+						ITickingActor tickingRenderable = RenderTarget as ITickingActor;
+						if (tickingRenderable != null)
+						{
+							tickingRenderable.Tick(DeltaTime);
+						}
+
+						// Then render the visual component
+						RenderTarget.Render(view, projection);
+					}
+					sw.Stop();
+					DeltaTime = (float)sw.Elapsed.TotalMilliseconds;
+
+					GraphicsContext.CurrentContext.SwapBuffers();
+				}
 			}
 		}
 
 		/// <summary>
-		/// Starts the rendering thread in the background.
+		/// Determines whether or not movement is currently disabled for the rendered object.
 		/// </summary>
-		public void Start()
+		public bool IsMovementDisabled()
 		{
-			if (!RenderThread.IsAlive)
-			{
-				this.bShouldRender = true;
-				this.RenderThread.Start();
-			}
-			else
-			{
-				throw new ThreadStateException("The rendering thread has already been started.");
-			}
-		}
-
-		/// <summary>
-		/// Stops the rendering thread, allowing it to finish the current frame.
-		/// </summary>
-		public void Stop()
-		{
-			if (RenderThread.IsAlive)
-			{
-				this.bShouldRender = false;
-			}
-			else
-			{
-				throw new ThreadStateException("The rendering thread has not been started.");
-			}
+			return this.RenderTarget == null ||
+			       this.RenderTarget.IsStatic ||
+			       this.RenderTarget.IsInitialized;
 		}
 
 		/// <summary>
@@ -128,169 +331,95 @@ namespace Everlook.Viewport
 		}
 
 		/// <summary>
-		/// Sets the requested quality level. Removes certain shaders and FX from models, 
-		/// and selects the mipmap level for images. A lower number means a better quality, 
-		/// down to 0 which is the best possible quality for the render target.
-		///
-		/// Negative input numbers are reset to 0.
+		/// Resets the camera to the default position.
 		/// </summary>
-		/// <param name="QualityLevel">Quality level.</param>
-		public void SetRequestedQualityLevel(uint QualityLevel)
+		public void ResetCamera()
 		{
-			this.RenderQualityLevel = QualityLevel;
-			this.HasPendingQualityChange = true;
+			this.cameraPosition = new Vector3(0.0f, 0.0f, 1.0f);
+			this.horizontalViewAngle = MathHelper.DegreesToRadians(180.0f);
+			this.verticalViewAngle = MathHelper.DegreesToRadians(0.0f);
+
+			this.cameraLookDirection = new Vector3(
+				(float)(Math.Cos(this.verticalViewAngle) * Math.Sin(this.horizontalViewAngle)),
+				(float)Math.Sin(this.verticalViewAngle),
+				(float)(Math.Cos(this.verticalViewAngle) * Math.Cos(this.horizontalViewAngle)));
+
+			this.cameraRightVector = new Vector3(
+				(float)Math.Sin(horizontalViewAngle - MathHelper.PiOver2),
+				0,
+				(float)Math.Cos(horizontalViewAngle - MathHelper.PiOver2));
+
+			this.cameraUpVector = Vector3.Cross(cameraRightVector, cameraLookDirection);
 		}
 
 		/// <summary>
-		/// Sets the max frame count per second. A value of 0 is treated as infinite.
+		/// Calculates the relative position of the observer in world space, using
+		/// input relayed from the main interface.
 		/// </summary>
-		/// <param name="FramesPerSecond">Frames per second.</param>
-		public void SetMaxFrameCountPerSecond(uint FramesPerSecond)
+		private void CalulateRelativeMovementVectors()
 		{
-			this.MaxFramesPerSecond = FramesPerSecond;
-		}
+			int mouseX;
+			int mouseY;
+			this.ViewportWidget.GetPointer(out mouseX, out mouseY);
 
-		/// <summary>
-		/// The primary rendering loop. Here, the current object is rendered using OpenGL and gets
-		/// passed to the listeners via the FrameRendered event.
-		/// </summary>
-		private void RenderLoop()
-		{			
-			long previousFrameDelta = 0;
+			this.horizontalViewAngle += DefaultTurningSpeed * this.DeltaTime * (MouseXLastFrame - mouseX);
+			this.verticalViewAngle += DefaultTurningSpeed * this.DeltaTime * (MouseYLastFrame - mouseY);
 
-			while (bShouldRender)
+			if (verticalViewAngle > MathHelper.DegreesToRadians(90.0f))
 			{
-				lock (RenderTargetLock)
-				{
-					if (RenderTarget != null)
-					{
-						if (RenderTarget.IsStatic)
-						{
-							// Check if the render target has changed
-							// If it has, rerender a single frame and pass it on
+				verticalViewAngle = MathHelper.DegreesToRadians(90.0f);
+			}
+			else if (verticalViewAngle < MathHelper.DegreesToRadians(-90.0f))
+			{
+				verticalViewAngle = MathHelper.DegreesToRadians(-90.0f);
+			}
 
-							if (RenderTarget.GetHashCode() != RenderTargetHashSum || HasPendingQualityChange)
-							{
-								RenderTargetHashSum = RenderTarget.GetHashCode();
-								Stopwatch sw = new Stopwatch();
+			MouseXLastFrame = mouseX;
+			MouseYLastFrame = mouseY;
 
-								sw.Start();
-								FrameRenderedArgs.Frame = RenderFrame(previousFrameDelta);
-								sw.Stop();
+			// Compute the look direction
+			this.cameraLookDirection = new Vector3(
+				(float)(Math.Cos(this.verticalViewAngle) * Math.Sin(this.horizontalViewAngle)),
+				(float)Math.Sin(this.verticalViewAngle),
+				(float)(Math.Cos(this.verticalViewAngle) * Math.Cos(this.horizontalViewAngle)));
 
-								FrameRenderedArgs.FrameDelta = sw.ElapsedMilliseconds;
-								previousFrameDelta = sw.ElapsedMilliseconds;
-								RaiseFrameRendered();
-							}
-						}
-						else
-						{
-							Stopwatch sw = new Stopwatch();
+			this.cameraRightVector = new Vector3(
+				(float)Math.Sin(this.horizontalViewAngle - MathHelper.PiOver2),
+				0,
+				(float)Math.Cos(this.horizontalViewAngle - MathHelper.PiOver2));
 
-							sw.Start();
-							FrameRenderedArgs.Frame = RenderFrame(previousFrameDelta);
-							sw.Stop();
+			this.cameraUpVector = Vector3.Cross(this.cameraRightVector, this.cameraLookDirection);
 
-							FrameRenderedArgs.FrameDelta = sw.ElapsedMilliseconds;
-							previousFrameDelta = sw.ElapsedMilliseconds;
-							RaiseFrameRendered();
-						}
-					}
-				}
+			// Perform any movement
+			if (ForwardAxis > 0)
+			{
+				this.cameraPosition += this.cameraLookDirection * DeltaTime * DefaultMovementSpeed;
+			}
+
+			if (ForwardAxis < 0)
+			{
+				this.cameraPosition -= this.cameraLookDirection * DeltaTime * DefaultMovementSpeed;
+			}
+
+			if (RightAxis > 0)
+			{
+				this.cameraPosition += this.cameraRightVector * DeltaTime * DefaultMovementSpeed;
+			}
+
+			if (RightAxis < 0)
+			{
+				this.cameraPosition -= this.cameraRightVector * DeltaTime * DefaultMovementSpeed;
 			}
 		}
 
-		private Pixbuf RenderFrame(long FrameDelta)
-		{		
-			Pixbuf frame = null;
-					
-			if (RenderTarget is RenderableBLP)
+		public void Dispose()
+		{
+			if (this.RenderTarget != null)
 			{
-				RenderableBLP Renderable = RenderTarget as RenderableBLP;
-
-				Bitmap imageBitmap;
-				if (RenderQualityLevel >= Renderable.Image.GetMipMapCount())
-				{
-					int worstMipMapLevel = Renderable.Image.GetMipMapCount();
-					imageBitmap = Renderable.Image.GetMipMap((uint)worstMipMapLevel - 1);
-				}
-				else
-				{					
-					imageBitmap = Renderable.Image.GetMipMap(RenderQualityLevel);
-				}
-
-				// HACK: Find a better way
-				using (MemoryStream ms = new MemoryStream())
-				{					
-					imageBitmap.Save(ms, ImageFormat.Png);
-					imageBitmap.Dispose();
-
-					ms.Position = 0;
-
-					frame = new Pixbuf(ms);
-				}
-			}
-			else if (RenderTarget is RenderableBitmap)
-			{
-				RenderableBitmap Renderable = RenderTarget as RenderableBitmap;
-
-				// HACK: Find a better way
-				using (MemoryStream ms = new MemoryStream())
-				{					
-					Renderable.Image.Save(ms, ImageFormat.Png);
-
-					ms.Position = 0;
-
-					frame = new Pixbuf(ms);
-				}
+				this.RenderTarget.Dispose();
 			}
 
-			// At this point, any pending quality changes would have been implemented
-			HasPendingQualityChange = false;
-
-			return frame;
-		}
-
-		/// <summary>
-		/// Raises the frame rendered event.
-		/// </summary>
-		protected void RaiseFrameRendered()
-		{
-			if (FrameRendered != null)
-			{
-				FrameRendered(this, FrameRenderedArgs);
-			}
-		}
-	}
-
-	/// <summary>
-	/// Frame rendered event handler.
-	/// </summary>
-	public delegate void FrameRenderedEventHandler(object sender,FrameRendererEventArgs e);
-
-	/// <summary>
-	/// Frame renderer event arguments.
-	/// </summary>
-	public class FrameRendererEventArgs : EventArgs
-	{
-		/// <summary>
-		/// The pixel buffer containing the current frame data.
-		/// </summary>
-		/// <value>The frame.</value>
-		public Pixbuf Frame
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// The frame delta; i.e, the time taken to render the frame.
-		/// </summary>
-		/// <value>The frame delta.</value>
-		public long FrameDelta
-		{
-			get;
-			set;
+			GL.DeleteVertexArrays(1, ref this.VertexArrayID);
 		}
 	}
 }
