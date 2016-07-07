@@ -50,16 +50,6 @@ namespace Everlook.Explorer
 		public event ItemEnumeratedEventHandler PackageEnumerated;
 
 		/// <summary>
-		/// Occurs when a directory has been enumerated.
-		/// </summary>
-		public event ItemEnumeratedEventHandler DirectoryEnumerated;
-
-		/// <summary>
-		/// Occurs when a file has been enumerated.
-		/// </summary>
-		public event ItemEnumeratedEventHandler FileEnumerated;
-
-		/// <summary>
 		/// Occurs when a work order has been completed.
 		/// </summary>
 		public event ReferenceEnumeratedEventHandler EnumerationFinished;
@@ -74,8 +64,6 @@ namespace Everlook.Explorer
 
 		private ItemEnumeratedEventArgs PackageGroupAddedArgs;
 		private ItemEnumeratedEventArgs PackageEnumeratedArgs;
-		private ItemEnumeratedEventArgs DirectoryEnumeratedArgs;
-		private ItemEnumeratedEventArgs FileEnumeratedArgs;
 		private ItemEnumeratedEventArgs EnumerationFinishedArgs;
 
 		/// <summary>
@@ -114,7 +102,7 @@ namespace Everlook.Explorer
 
 		/// <summary>
 		/// The virtual reference mapping. Maps item references to their virtual counterparts.
-		/// Key: Group that hosts this virtual reference.
+		/// Key: PackageGroup that hosts this virtual reference.
 		/// Dictionary::Key: An item path in an arbitrary package.
 		/// Dictionary::Value: A virtual item reference that hosts the hard item references.
 		/// </summary>
@@ -400,11 +388,11 @@ namespace Everlook.Explorer
 		protected void EnumerateHardReference(ItemReference hardReference)
 		{
 			List<ItemReference> localEnumeratedReferences = new List<ItemReference>();
-			List<string> PackageListfile;
-			if (hardReference.Group.PackageListfiles.TryGetValue(hardReference.PackageName, out PackageListfile))
+			List<string> packageListFile;
+			if (hardReference.PackageGroup.PackageListfiles.TryGetValue(hardReference.PackageName, out packageListFile))
 			{
 				IEnumerable<string> strippedListfile =
-					PackageListfile.Where(s => s.StartsWith(hardReference.ItemPath, true, new CultureInfo("en-GB")));
+					packageListFile.Where(s => s.StartsWith(hardReference.ItemPath, true, new CultureInfo("en-GB")));
 				foreach (string FilePath in strippedListfile)
 				{
 					string childPath = Regex.Replace(FilePath, "^(?-i)" + Regex.Escape(hardReference.ItemPath), "");
@@ -414,7 +402,7 @@ namespace Everlook.Explorer
 
 					if (!String.IsNullOrEmpty(topDirectory))
 					{
-						ItemReference directoryReference = new ItemReference(hardReference.Group, hardReference, topDirectory);
+						ItemReference directoryReference = new ItemReference(hardReference.PackageGroup, hardReference, topDirectory);
 						if (!hardReference.ChildReferences.Contains(directoryReference))
 						{
 							hardReference.ChildReferences.Add(directoryReference);
@@ -424,7 +412,7 @@ namespace Everlook.Explorer
 					}
 					else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1)
 					{
-						ItemReference fileReference = new ItemReference(hardReference.Group, hardReference, childPath);
+						ItemReference fileReference = new ItemReference(hardReference.PackageGroup, hardReference, childPath);
 						if (!hardReference.ChildReferences.Contains(fileReference))
 						{
 							// Files can't have any children, so it will always be enumerated.
@@ -465,7 +453,7 @@ namespace Everlook.Explorer
 		/// <param name="virtualReference">Virtual reference.</param>
 		public void AddVirtualMapping(ItemReference hardReference, VirtualItemReference virtualReference)
 		{
-			PackageGroup referenceGroup = hardReference.Group;
+			PackageGroup referenceGroup = hardReference.PackageGroup;
 			if (VirtualReferenceMappings.ContainsKey(referenceGroup))
 			{
 				if (!VirtualReferenceMappings[referenceGroup].ContainsKey(hardReference.ItemPath))
@@ -489,7 +477,7 @@ namespace Everlook.Explorer
 		/// <param name="hardReference">Hard reference.</param>
 		public VirtualItemReference GetVirtualReference(ItemReference hardReference)
 		{
-			PackageGroup referenceGroup = hardReference.Group;
+			PackageGroup referenceGroup = hardReference.PackageGroup;
 			if (VirtualReferenceMappings.ContainsKey(referenceGroup))
 			{
 				VirtualItemReference virtualReference;
@@ -521,28 +509,6 @@ namespace Everlook.Explorer
 			if (PackageEnumerated != null)
 			{
 				PackageEnumerated(this, PackageEnumeratedArgs);
-			}
-		}
-
-		/// <summary>
-		/// Raises the directory enumerated event.
-		/// </summary>
-		protected void RaiseDirectoryEnumerated()
-		{
-			if (DirectoryEnumerated != null)
-			{
-				DirectoryEnumerated(this, DirectoryEnumeratedArgs);
-			}
-		}
-
-		/// <summary>
-		/// Raises the file enumerated event.
-		/// </summary>
-		protected void RaiseFileEnumerated()
-		{
-			if (FileEnumerated != null)
-			{
-				FileEnumerated(this, FileEnumeratedArgs);
 			}
 		}
 
@@ -586,6 +552,10 @@ namespace Everlook.Explorer
 	/// </summary>
 	public delegate void ItemEnumeratedEventHandler(object sender, ItemEnumeratedEventArgs e);
 
+	/// <summary>
+	/// Reference enumerated event handler. Bundles arguments for an event where a reference has been
+	/// enumerated.
+	/// </summary>
 	public delegate void ReferenceEnumeratedEventHandler(object sender, ItemEnumeratedEventArgs e);
 
 	/// <summary>

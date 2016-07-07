@@ -47,7 +47,7 @@ namespace Everlook.Configuration
 
 		private EverlookConfiguration()
 		{
-			FileIniDataParser Parser = new FileIniDataParser();
+			FileIniDataParser parser = new FileIniDataParser();
 
 			lock (ReadLock)
 			{
@@ -57,7 +57,7 @@ namespace Everlook.Configuration
 
 					Directory.CreateDirectory(Directory.GetParent(GetConfigurationFilePath()).FullName);
 					File.Create(GetConfigurationFilePath()).Close();
-					IniData data = Parser.ReadFile(GetConfigurationFilePath());
+					IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 					data.Sections.AddSection("General");
 					data.Sections.AddSection("Export");
@@ -68,43 +68,55 @@ namespace Everlook.Configuration
 
 					data["Export"].AddKey("DefaultExportDirectory", "./Export");
 
-					KeyData ModelExportKeyData = new KeyData("DefaultExportModelFormat");
-					ModelExportKeyData.Value = "0";
+					KeyData modelExportKeyData = new KeyData("DefaultExportModelFormat")
+					{
+						Value = "0"
+					};
 
-					List<string> ModelExportKeyComments = new List<string>();
-					ModelExportKeyComments.Add("Valid options: ");
-					ModelExportKeyComments.Add("0: Collada");
-					ModelExportKeyComments.Add("1: Wavefront OBJ");
-					ModelExportKeyData.Comments = ModelExportKeyComments;
+					List<string> modelExportKeyComments = new List<string>
+					{
+						"Valid options: ",
+						"0: Collada",
+						"1: Wavefront OBJ"
+					};
+					modelExportKeyData.Comments = modelExportKeyComments;
 
-					data["Export"].AddKey(ModelExportKeyData);
+					data["Export"].AddKey(modelExportKeyData);
 
-					KeyData ImageExportKeyData = new KeyData("DefaultExportImageFormat");
-					ImageExportKeyData.Value = "0";
+					KeyData imageExportKeyData = new KeyData("DefaultExportImageFormat")
+					{
+						Value = "0"
+					};
 
-					List<string> ImageExportKeyComments = new List<string>();
-					ImageExportKeyComments.Add("Valid options: ");
-					ImageExportKeyComments.Add("0: PNG");
-					ImageExportKeyComments.Add("1: JPG");
-					ImageExportKeyComments.Add("2: TGA");
-					ImageExportKeyComments.Add("3: TIF");
-					ImageExportKeyComments.Add("4: BMP");
-					ImageExportKeyData.Comments = ImageExportKeyComments;
+					List<string> imageExportKeyComments = new List<string>
+					{
+						"Valid options: ",
+						"0: PNG",
+						"1: JPG",
+						"2: TGA",
+						"3: TIF",
+						"4: BMP"
+					};
+					imageExportKeyData.Comments = imageExportKeyComments;
 
-					data["Export"].AddKey(ImageExportKeyData);
+					data["Export"].AddKey(imageExportKeyData);
 
-					KeyData AudioExportKeyData = new KeyData("DefaultExportAudioFormat");
-					AudioExportKeyData.Value = "0";
+					KeyData audioExportKeyData = new KeyData("DefaultExportAudioFormat")
+					{
+						Value = "0"
+					};
 
-					List<string> AudioExportKeyComments = new List<string>();
-					AudioExportKeyComments.Add("Valid options: ");
-					AudioExportKeyComments.Add("0: WAV");
-					AudioExportKeyComments.Add("1: MP3");
-					AudioExportKeyComments.Add("2: OGG");
-					AudioExportKeyComments.Add("3: FLAC");
-					AudioExportKeyData.Comments = AudioExportKeyComments;
+					List<string> audioExportKeyComments = new List<string>
+					{
+						"Valid options: ",
+						"0: WAV",
+						"1: MP3",
+						"2: OGG",
+						"3: FLAC"
+					};
+					audioExportKeyData.Comments = audioExportKeyComments;
 
-					data["Export"].AddKey(AudioExportKeyData);
+					data["Export"].AddKey(audioExportKeyData);
 
 					data["Export"].AddKey("KeepFileDirectoryStructure", "false");
 
@@ -112,7 +124,7 @@ namespace Everlook.Configuration
 
 					lock (WriteLock)
 					{
-						WriteConfig(Parser, data);
+						WriteConfig(parser, data);
 					}
 				}
 				else
@@ -126,7 +138,7 @@ namespace Everlook.Configuration
 					*/
 
 					// Uncomment this when needed
-					IniData data = Parser.ReadFile(GetConfigurationFilePath());
+					IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 					// May 4th, 2016 - Added option to show unknown file types in the tree view.
 					AddNewConfigurationOption(data, "General", "bShowUnknownFilesWhenFiltering", "true");
@@ -141,7 +153,7 @@ namespace Everlook.Configuration
 
 					lock (WriteLock)
 					{
-						WriteConfig(Parser, data);
+						WriteConfig(parser, data);
 					}
 				}
 			}
@@ -199,8 +211,8 @@ namespace Everlook.Configuration
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				RGBA viewportBackgroundColour = new RGBA();
 				if (viewportBackgroundColour.Parse(data["General"]["ViewportBackgroundColour"]))
@@ -223,14 +235,14 @@ namespace Everlook.Configuration
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				data["General"]["ViewportBackgroundColour"] = colour.ToString();
 
 				lock (WriteLock)
 				{
-					WriteConfig(Parser, data);
+					WriteConfig(parser, data);
 				}
 			}
 		}
@@ -243,8 +255,8 @@ namespace Everlook.Configuration
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				string path = data["Export"]["DefaultExportDirectory"];
 				if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
@@ -259,19 +271,19 @@ namespace Everlook.Configuration
 		/// <summary>
 		/// Sets the default export directory.
 		/// </summary>
-		/// <param name="ExportDirectory">Export directory.</param>
-		public void SetDefaultExportDirectory(string ExportDirectory)
+		/// <param name="exportDirectory">Export directory.</param>
+		public void SetDefaultExportDirectory(string exportDirectory)
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
-				data["Export"]["DefaultExportDirectory"] = ExportDirectory;
+				data["Export"]["DefaultExportDirectory"] = exportDirectory;
 
 				lock (WriteLock)
 				{
-					WriteConfig(Parser, data);
+					WriteConfig(parser, data);
 				}
 			}
 		}
@@ -284,8 +296,8 @@ namespace Everlook.Configuration
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				int modelFormat;
 				if (int.TryParse(data["Export"]["DefaultExportModelFormat"], out modelFormat))
@@ -307,14 +319,14 @@ namespace Everlook.Configuration
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				data["Export"]["DefaultExportModelFormat"] = ((int)modelFormat).ToString();
 
 				lock (WriteLock)
 				{
-					WriteConfig(Parser, data);
+					WriteConfig(parser, data);
 				}
 			}
 		}
@@ -327,8 +339,8 @@ namespace Everlook.Configuration
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				int imageFormat;
 				if (int.TryParse(data["Export"]["DefaultExportImageFormat"], out imageFormat))
@@ -350,14 +362,14 @@ namespace Everlook.Configuration
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				data["Export"]["DefaultExportImageFormat"] = ((int)imageFormat).ToString();
 
 				lock (WriteLock)
 				{
-					WriteConfig(Parser, data);
+					WriteConfig(parser, data);
 				}
 			}
 		}
@@ -370,8 +382,8 @@ namespace Everlook.Configuration
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				int audioFormat;
 				if (int.TryParse(data["Export"]["DefaultExportAudioFormat"], out audioFormat))
@@ -393,14 +405,14 @@ namespace Everlook.Configuration
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				data["Export"]["DefaultExportAudioFormat"] = ((int)audioFormat).ToString();
 
 				lock (WriteLock)
 				{
-					WriteConfig(Parser, data);
+					WriteConfig(parser, data);
 				}
 			}
 		}
@@ -413,8 +425,8 @@ namespace Everlook.Configuration
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				bool keepDirectoryStructure;
 				if (bool.TryParse(data["Export"]["KeepFileDirectoryStructure"], out keepDirectoryStructure))
@@ -436,14 +448,14 @@ namespace Everlook.Configuration
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				data["Export"]["KeepFileDirectoryStructure"] = keepStructure.ToString().ToLower();
 
 				lock (WriteLock)
 				{
-					WriteConfig(Parser, data);
+					WriteConfig(parser, data);
 				}
 			}
 		}
@@ -456,8 +468,8 @@ namespace Everlook.Configuration
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				bool allowSendAnonymousStats;
 				if (bool.TryParse(data["Privacy"]["AllowSendAnonymousStats"], out allowSendAnonymousStats))
@@ -479,14 +491,14 @@ namespace Everlook.Configuration
 		{
 			lock (ReadLock)
 			{
-				FileIniDataParser Parser = new FileIniDataParser();
-				IniData data = Parser.ReadFile(GetConfigurationFilePath());
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				data["Privacy"]["AllowSendAnonymousStats"] = allowSendAnonymousStats.ToString().ToLower();
 
 				lock (WriteLock)
 				{
-					WriteConfig(Parser, data);
+					WriteConfig(parser, data);
 				}
 			}
 		}
@@ -495,11 +507,11 @@ namespace Everlook.Configuration
 		/// Writes the config data to disk. This method is thread-blocking, and all write operations
 		/// are synchronized via lock(WriteLock).
 		/// </summary>
-		/// <param name="Parser">The parser dealing with the current data.</param>
-		/// <param name="Data">The data which should be written to file.</param>
-		private static void WriteConfig(FileIniDataParser Parser, IniData Data)
+		/// <param name="dataParser">The parser dealing with the current data.</param>
+		/// <param name="data">The data which should be written to file.</param>
+		private static void WriteConfig(FileIniDataParser dataParser, IniData data)
 		{
-			Parser.WriteFile(GetConfigurationFilePath(), Data);
+			dataParser.WriteFile(GetConfigurationFilePath(), data);
 		}
 
 		private static string GetConfigurationFilePath()

@@ -57,25 +57,24 @@ namespace Everlook.Package
 		}
 
 		private readonly MPQ Package;
-
 		private byte[] ArchiveHashTableHash;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Package.PackageInteractionHandler"/> class.
 		/// </summary>
-		/// <param name="InPackagePath">In package path.</param>
-		public PackageInteractionHandler(string InPackagePath)
+		/// <param name="inPackagePath">In package path.</param>
+		public PackageInteractionHandler(string inPackagePath)
 		{
-			if (File.Exists(InPackagePath))
+			if (File.Exists(inPackagePath))
 			{
-				this.Package = new MPQ(new FileStream(InPackagePath, FileMode.Open, FileAccess.Read, FileShare.Read));
+				this.Package = new MPQ(new FileStream(inPackagePath, FileMode.Open, FileAccess.Read, FileShare.Read));
 			}
 			else
 			{
 				throw new FileNotFoundException("No package could be found at the specified path.");
 			}
 
-			this.PackagePath = InPackagePath;
+			this.PackagePath = inPackagePath;
 		}
 
 		/// <summary>

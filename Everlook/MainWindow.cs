@@ -34,11 +34,10 @@ using Gtk;
 using Everlook.Export.Directory;
 using Everlook.Export.Image;
 using Everlook.Configuration;
-using Everlook.Renderables;
 using Everlook.Explorer;
-using Everlook.Rendering;
 using Everlook.Viewport;
 using Everlook.Utility;
+using Everlook.Viewport.Rendering;
 using OpenTK;
 using OpenTK.Graphics;
 using Warcraft.Core;
@@ -97,8 +96,6 @@ namespace Everlook
 		/*
 			Image control elements
 		*/
-		[UI] private readonly ComboBox MipLevelComboBox;
-		[UI] private readonly ListStore MipLevelListStore;
 		[UI] private readonly CheckButton RenderAlphaCheckButton;
 		[UI] private readonly CheckButton RenderRedCheckButton;
 		[UI] private readonly CheckButton RenderGreenCheckButton;
@@ -180,6 +177,7 @@ namespace Everlook
 
 			this.viewportRenderer = new ViewportRenderer(this.ViewportWidget);
 
+			// Add a staggered idle handler for adding enumerated items to the interface
 			Timeout.Add(10, OnGLibLoopIdle, Priority.DefaultIdle);
 
 			AboutButton.Clicked += OnAboutButtonClicked;
@@ -369,30 +367,29 @@ namespace Everlook
 		/// <summary>
 		/// Enables the specified control page and brings it to the front.
 		/// </summary>
-		/// <param name="Page">Page.</param>
-		protected void EnableControlPage(ControlPage Page)
+		/// <param name="controlPage">controlPage.</param>
+		protected void EnableControlPage(ControlPage controlPage)
 		{
-			if (Enum.IsDefined(typeof(ControlPage), Page))
+			if (Enum.IsDefined(typeof(ControlPage), controlPage))
 			{
-				ItemControlNotebook.Page = (int)Page;
+				ItemControlNotebook.Page = (int)controlPage;
 
-				if (Page == ControlPage.Image)
+				if (controlPage == ControlPage.Image)
 				{
-					MipLevelComboBox.Sensitive = true;
 					RenderAlphaCheckButton.Sensitive = true;
 					RenderRedCheckButton.Sensitive = true;
 					RenderGreenCheckButton.Sensitive = true;
 					RenderBlueCheckButton.Sensitive = true;
 				}
-				else if (Page == ControlPage.Model)
+				else if (controlPage == ControlPage.Model)
 				{
 
 				}
-				else if (Page == ControlPage.Animation)
+				else if (controlPage == ControlPage.Animation)
 				{
 
 				}
-				else if (Page == ControlPage.Audio)
+				else if (controlPage == ControlPage.Audio)
 				{
 
 				}
@@ -402,28 +399,27 @@ namespace Everlook
 		/// <summary>
 		/// Disables the specified control page.
 		/// </summary>
-		/// <param name="Page">Page.</param>
-		protected void DisableControlPage(ControlPage Page)
+		/// <param name="controlPage">controlPage.</param>
+		protected void DisableControlPage(ControlPage controlPage)
 		{
-			if (Enum.IsDefined(typeof(ControlPage), Page))
+			if (Enum.IsDefined(typeof(ControlPage), controlPage))
 			{
-				if (Page == ControlPage.Image)
+				if (controlPage == ControlPage.Image)
 				{
-					MipLevelComboBox.Sensitive = false;
 					RenderAlphaCheckButton.Sensitive = false;
 					RenderRedCheckButton.Sensitive = false;
 					RenderGreenCheckButton.Sensitive = false;
 					RenderBlueCheckButton.Sensitive = false;
 				}
-				else if (Page == ControlPage.Model)
+				else if (controlPage == ControlPage.Model)
 				{
 
 				}
-				else if (Page == ControlPage.Animation)
+				else if (controlPage == ControlPage.Animation)
 				{
 
 				}
-				else if (Page == ControlPage.Audio)
+				else if (controlPage == ControlPage.Audio)
 				{
 
 				}
@@ -468,11 +464,11 @@ namespace Everlook
 				return SORT_A_BEFORE_B;
 			}
 
-			string AComparisonString = (string)model.GetValue(iterA, 1);
+			string aComparisonString = (string)model.GetValue(iterA, 1);
 
-			string BComparisonString = (string)model.GetValue(iterB, 1);
+			string bComparisonString = (string)model.GetValue(iterB, 1);
 
-			int result = String.CompareOrdinal(AComparisonString, BComparisonString);
+			int result = String.CompareOrdinal(aComparisonString, bComparisonString);
 
 			if (result <= SORT_A_BEFORE_B)
 			{
@@ -537,7 +533,7 @@ namespace Everlook
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
 			ItemReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
-			if (fileReference != null && !String.IsNullOrEmpty(fileReference.ItemPath))
+			if (fileReference != null && !string.IsNullOrEmpty(fileReference.ItemPath))
 			{
 
 				WarcraftFileType fileType = fileReference.GetReferencedFileType();
@@ -547,13 +543,13 @@ namespace Everlook
 						{
 							if (fileReference.IsFullyEnumerated)
 							{
-								using (EverlookDirectoryExportDialog ExportDialog = EverlookDirectoryExportDialog.Create(fileReference))
+								using (EverlookDirectoryExportDialog exportDialog = EverlookDirectoryExportDialog.Create(fileReference))
 								{
-									if (ExportDialog.Run() == (int)ResponseType.Ok)
+									if (exportDialog.Run() == (int)ResponseType.Ok)
 									{
-										ExportDialog.RunExport();
+										exportDialog.RunExport();
 									}
-									ExportDialog.Destroy();
+									exportDialog.Destroy();
 								}
 							}
 							else
@@ -564,13 +560,13 @@ namespace Everlook
 						}
 					case WarcraftFileType.BinaryImage:
 						{
-							using (EverlookImageExportDialog ExportDialog = EverlookImageExportDialog.Create(fileReference))
+							using (EverlookImageExportDialog exportDialog = EverlookImageExportDialog.Create(fileReference))
 							{
-								if (ExportDialog.Run() == (int)ResponseType.Ok)
+								if (exportDialog.Run() == (int)ResponseType.Ok)
 								{
-									ExportDialog.RunExport();
+									exportDialog.RunExport();
 								}
-								ExportDialog.Destroy();
+								exportDialog.Destroy();
 							}
 							break;
 						}
@@ -594,7 +590,7 @@ namespace Everlook
 
 			ItemReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
 
-			string cleanFilepath = Utilities.ConvertPathSeparatorsToCurrentNative(fileReference.ItemPath);
+			string cleanFilepath = Utilities.ConvertPathSeparatorsToCurrentNativeSeparator(fileReference.ItemPath);
 			string exportpath;
 			if (Config.GetShouldKeepFileDirectoryStructure())
 			{
@@ -660,7 +656,7 @@ namespace Everlook
 
 			ItemReference itemReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
 
-			string cleanFilepath = Utilities.ConvertPathSeparatorsToCurrentNative(itemReference.ItemPath);
+			string cleanFilepath = Utilities.ConvertPathSeparatorsToCurrentNativeSeparator(itemReference.ItemPath);
 
 			if (String.IsNullOrEmpty(cleanFilepath))
 			{
@@ -692,15 +688,15 @@ namespace Everlook
 		/// <param name="e">E.</param>
 		protected void OnPreferencesButtonClicked(object sender, EventArgs e)
 		{
-			using (EverlookPreferences PreferencesDialog = EverlookPreferences.Create())
+			using (EverlookPreferences preferencesDialog = EverlookPreferences.Create())
 			{
-				if (PreferencesDialog.Run() == (int)ResponseType.Ok)
+				if (preferencesDialog.Run() == (int)ResponseType.Ok)
 				{
-					PreferencesDialog.SavePreferences();
+					preferencesDialog.SavePreferences();
 					ReloadRuntimeValues();
 				}
 
-				PreferencesDialog.Destroy();
+				preferencesDialog.Destroy();
 			}
 		}
 
@@ -788,7 +784,12 @@ namespace Everlook
 			ItemReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
 			if (fileReference != null && fileReference.IsFile)
 			{
-				string fileName = System.IO.Path.GetFileName(Utilities.ConvertPathSeparatorsToCurrentNative(fileReference.ItemPath));
+				string fileName = System.IO.Path.GetFileName(Utilities.ConvertPathSeparatorsToCurrentNativeSeparator(fileReference.ItemPath));
+				if (string.IsNullOrEmpty(fileName))
+				{
+					return;
+				}
+
 				switch (fileReference.GetReferencedFileType())
 				{
 					case WarcraftFileType.AddonManifest:
@@ -843,7 +844,7 @@ namespace Everlook
 							try
 							{
 								BLP blp = new BLP(fileData);
-								RenderableBLP image = new RenderableBLP(blp);
+								RenderableBLP image = new RenderableBLP(blp, fileReference.ItemPath);
 								viewportRenderer.SetRenderTarget(image);
 								EnableControlPage(ControlPage.Image);
 							}
@@ -877,14 +878,10 @@ namespace Everlook
 					{
 						using (MemoryStream ms = new MemoryStream(fileData))
 						{
-							Bitmap Image = new Bitmap(ms);
-							RenderableBitmap Renderable = new RenderableBitmap(Image);
-
-							viewportRenderer.SetRenderTarget(Renderable);
+							RenderableBitmap renderable = new RenderableBitmap(new Bitmap(ms));
+							viewportRenderer.SetRenderTarget(renderable);
 						}
 
-						// Normal image files don't have mipmap levels
-						MipLevelListStore.Clear();
 						EnableControlPage(ControlPage.Image);
 					}
 				}
@@ -911,7 +908,7 @@ namespace Everlook
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
 			{
-				if (currentItemReference == null || String.IsNullOrEmpty(currentItemReference.ItemPath))
+				if (currentItemReference == null || string.IsNullOrEmpty(currentItemReference.ItemPath))
 				{
 					ExtractItem.Sensitive = false;
 					ExportItem.Sensitive = false;
@@ -966,7 +963,7 @@ namespace Everlook
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
 			{
-				if (currentReference == null || String.IsNullOrEmpty(currentReference.ItemPath))
+				if (currentReference == null || string.IsNullOrEmpty(currentReference.ItemPath))
 				{
 					RemoveQueueItem.Sensitive = false;
 				}
@@ -1009,26 +1006,26 @@ namespace Everlook
 		/// <summary>
 		/// Adds a package group node to the game explorer view
 		/// </summary>
-		/// <param name="groupReference">Group reference.</param>
+		/// <param name="groupReference">PackageGroup reference.</param>
 		private void AddPackageGroupNode(ItemReference groupReference)
 		{
 			// Add the group node
-			TreeIter PackageGroupNode = GameExplorerTreeStore.AppendValues("user-home",
-				                            groupReference.Group.GroupName, "", "Virtual file tree", (int)NodeType.PackageGroup);
-			explorerBuilder.PackageItemNodeMapping.Add(groupReference, PackageGroupNode);
-			explorerBuilder.PackageNodeItemMapping.Add(PackageGroupNode, groupReference);
+			TreeIter packageGroupNode = GameExplorerTreeStore.AppendValues("user-home",
+				                            groupReference.PackageGroup.GroupName, "", "Virtual file tree", (int)NodeType.PackageGroup);
+			explorerBuilder.PackageItemNodeMapping.Add(groupReference, packageGroupNode);
+			explorerBuilder.PackageNodeItemMapping.Add(packageGroupNode, groupReference);
 
 			VirtualItemReference virtualGroupReference = groupReference as VirtualItemReference;
 			if (virtualGroupReference != null)
 			{
-				explorerBuilder.PackageGroupVirtualNodeMapping.Add(groupReference.Group, virtualGroupReference);
+				explorerBuilder.PackageGroupVirtualNodeMapping.Add(groupReference.PackageGroup, virtualGroupReference);
 			}
 
 			// Add the package folder subnode
-			TreeIter PackageFolderNode = GameExplorerTreeStore.AppendValues(PackageGroupNode,
+			TreeIter packageFolderNode = GameExplorerTreeStore.AppendValues(packageGroupNode,
 				                             "applications-other", "Packages", "", "Individual packages", (int)NodeType.PackageFolder);
-			explorerBuilder.PackageItemNodeMapping.Add(groupReference.ChildReferences.First(), PackageFolderNode);
-			explorerBuilder.PackageNodeItemMapping.Add(PackageFolderNode, groupReference.ChildReferences.First());
+			explorerBuilder.PackageItemNodeMapping.Add(groupReference.ChildReferences.First(), packageFolderNode);
+			explorerBuilder.PackageNodeItemMapping.Add(packageFolderNode, groupReference.ChildReferences.First());
 		}
 
 		/// <summary>
@@ -1060,16 +1057,16 @@ namespace Everlook
 				// Add myself to that node
 				if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(packageReference))
 				{
-					TreeIter PackageNode = GameExplorerTreeStore.AppendValues(parentNode,
+					TreeIter packageNode = GameExplorerTreeStore.AppendValues(parentNode,
 						                       "package-x-generic", packageReference.PackageName, "", "", (int)NodeType.Package);
-					explorerBuilder.PackageItemNodeMapping.Add(packageReference, PackageNode);
-					explorerBuilder.PackageNodeItemMapping.Add(PackageNode, packageReference);
+					explorerBuilder.PackageItemNodeMapping.Add(packageReference, packageNode);
+					explorerBuilder.PackageNodeItemMapping.Add(packageNode, packageReference);
 				}
 			}
 
 			// Map package nodes to virtual root nodes
 			VirtualItemReference virtualGroupReference;
-			if (explorerBuilder.PackageGroupVirtualNodeMapping.TryGetValue(packageReference.Group, out virtualGroupReference))
+			if (explorerBuilder.PackageGroupVirtualNodeMapping.TryGetValue(packageReference.PackageGroup, out virtualGroupReference))
 			{
 				explorerBuilder.AddVirtualMapping(packageReference, virtualGroupReference);
 			}
@@ -1121,7 +1118,7 @@ namespace Everlook
 						{
 							Console.WriteLine("");
 						}
-						virtualChildReference = new VirtualItemReference(virtualParentReference, childReference.Group, childReference);
+						virtualChildReference = new VirtualItemReference(virtualParentReference, childReference.PackageGroup, childReference);
 
 						if (!virtualParentReference.ChildReferences.Contains(virtualChildReference))
 						{
@@ -1203,7 +1200,7 @@ namespace Everlook
 					}
 					else
 					{
-						virtualChildReference = new VirtualItemReference(virtualParentReference, childReference.Group, childReference);
+						virtualChildReference = new VirtualItemReference(virtualParentReference, childReference.PackageGroup, childReference);
 
 						if (!virtualParentReference.ChildReferences.Contains(virtualChildReference))
 						{

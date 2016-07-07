@@ -21,10 +21,10 @@
 //
 using System;
 using System.Drawing;
-using Everlook.Rendering.Interfaces;
+using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
 
-namespace Everlook.Renderables
+namespace Everlook.Viewport.Rendering
 {
 	/// <summary>
 	/// Encapsulated a standard bitmap as a renderable object.
@@ -45,8 +45,15 @@ namespace Everlook.Renderables
 			}
 		}
 
+		/// <summary>
+		/// Returns a value which represents whether or not the current renderable has been initialized.
+		/// </summary>
 		public bool IsInitialized { get; set; }
 
+		/// <summary>
+		/// The projection method to use for this renderable object. Typically, this is Orthographic
+		/// or Perspective.
+		/// </summary>
 		public ProjectionType Projection
 		{
 			get
@@ -55,11 +62,17 @@ namespace Everlook.Renderables
 			}
 		}
 
+		/// <summary>
+		/// Initializes the required data for rendering.
+		/// </summary>
 		public void Initialize()
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <summary>
+		/// Renders the current object in the current OpenGL context.
+		/// </summary>
 		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix)
 		{
 			throw new NotImplementedException();
@@ -76,22 +89,22 @@ namespace Everlook.Renderables
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Renderables.RenderableBitmap"/> class.
+		/// Initializes a new instance of the <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> class.
 		/// </summary>
-		/// <param name="InImage">In image.</param>
-		public RenderableBitmap(Bitmap InImage)
+		/// <param name="inImage">In image.</param>
+		public RenderableBitmap(Bitmap inImage)
 		{
-			this.Image = InImage;
+			this.Image = inImage;
 		}
 
 		/// <summary>
-		/// Releases all resource used by the <see cref="Everlook.Renderables.RenderableBitmap"/> object.
+		/// Releases all resource used by the <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> object.
 		/// </summary>
-		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="Everlook.Renderables.RenderableBitmap"/>. The
-		/// <see cref="Dispose"/> method leaves the <see cref="Everlook.Renderables.RenderableBitmap"/> in an unusable state.
+		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/>. The
+		/// <see cref="Dispose"/> method leaves the <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> in an unusable state.
 		/// After calling <see cref="Dispose"/>, you must release all references to the
-		/// <see cref="Everlook.Renderables.RenderableBitmap"/> so the garbage collector can reclaim the memory that the
-		/// <see cref="Everlook.Renderables.RenderableBitmap"/> was occupying.</remarks>
+		/// <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> so the garbage collector can reclaim the memory that the
+		/// <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> was occupying.</remarks>
 		public void Dispose()
 		{
 			Image.Dispose();
@@ -99,7 +112,7 @@ namespace Everlook.Renderables
 		}
 
 		/// <summary>
-		/// Serves as a hash function for a <see cref="Everlook.Renderables.RenderableBitmap"/> object.
+		/// Serves as a hash function for a <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> object.
 		/// </summary>
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()

@@ -22,7 +22,7 @@
 using System;
 using OpenTK;
 
-namespace Everlook.Rendering.Interfaces
+namespace Everlook.Viewport.Rendering.Interfaces
 {
 	/// <summary>
 	/// Interface representing a renderable object that can be passed to the viewport renderer.
@@ -49,6 +49,10 @@ namespace Everlook.Rendering.Interfaces
 			set;
 		}
 
+		/// <summary>
+		/// The projection method to use for this renderable object. Typically, this is Orthographic
+		/// or Perspective.
+		/// </summary>
 		ProjectionType Projection
 		{
 			get;
@@ -65,9 +69,21 @@ namespace Everlook.Rendering.Interfaces
 		void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix);
 	}
 
+	/// <summary>
+	/// The type of projection used in OpenGL rendering.
+	/// </summary>
 	public enum ProjectionType
 	{
+		/// <summary>
+		/// Perspective rendering, or a 3D view with proper relational
+		/// scale and perspective.
+		/// </summary>
 		Perspective,
+
+		/// <summary>
+		/// Orthographic rendering, or a "flat" view with no relational
+		/// scale or perspective.
+		/// </summary>
 		Orthographic
 	}
 }

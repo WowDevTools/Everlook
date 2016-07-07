@@ -23,7 +23,7 @@
 using System;
 using System.Diagnostics;
 using Everlook.Configuration;
-using Everlook.Rendering.Interfaces;
+using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -57,12 +57,6 @@ namespace Everlook.Viewport
 		/// OpenGL viewport.
 		/// </summary>
 		private IRenderable RenderTarget;
-
-		/// <summary>
-		/// The hash sum of the current rendering target. This is used when switching
-		/// render targets.
-		/// </summary>
-		private int RenderTargetHashSum;
 
 		/*
 			Runtime positional data for the observer.
@@ -314,8 +308,8 @@ namespace Everlook.Viewport
 		/// <summary>
 		/// Sets the render target that is currently being rendered by the viewport renderer.
 		/// </summary>
-		/// <param name="Renderable">Renderable.</param>
-		public void SetRenderTarget(IRenderable Renderable)
+		/// <param name="inRenderable">inRenderable.</param>
+		public void SetRenderTarget(IRenderable inRenderable)
 		{
 			lock (RenderTargetLock)
 			{
@@ -326,7 +320,7 @@ namespace Everlook.Viewport
 				}
 
 				// Assign the new one
-				this.RenderTarget = Renderable;
+				this.RenderTarget = inRenderable;
 			}
 		}
 
@@ -412,6 +406,10 @@ namespace Everlook.Viewport
 			}
 		}
 
+		/// <summary>
+		/// Disposes the viewport renderer, releasing the current rendering target and current
+		/// OpenGL arrays and buffers.
+		/// </summary>
 		public void Dispose()
 		{
 			if (this.RenderTarget != null)

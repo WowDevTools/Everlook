@@ -32,7 +32,7 @@ namespace Everlook.Configuration
 	/// is, unfortunately, the only safe separator for multiple paths in current and future systems.
 	/// Yes, Linux allows tabs, newlines and carriage returns in paths.
 	///
-	/// Read <see cref="http://stackoverflow.com/a/1976172"/> for a good time.
+	/// Read <a href="http://stackoverflow.com/a/1976172"/> for a good time.
 	/// </summary>
 	public sealed class GamePathStorage
 	{

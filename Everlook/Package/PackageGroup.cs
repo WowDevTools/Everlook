@@ -64,51 +64,51 @@ namespace Everlook.Package
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Package.PackageGroup"/> class.
 		/// </summary>
-		public PackageGroup(string InGroupName, string InRootPackageDirectory)
+		public PackageGroup(string inGroupName, string inRootPackageDirectory)
 		{
-			if (String.IsNullOrEmpty(InGroupName))
+			if (String.IsNullOrEmpty(inGroupName))
 			{
-				throw new ArgumentNullException(InGroupName, "A package group must be provided with a name.");
+				throw new ArgumentNullException(inGroupName, "A package group must be provided with a name.");
 			}
 
-			this.RootPackageDirectory = InRootPackageDirectory;
+			this.RootPackageDirectory = inRootPackageDirectory;
 
-			this.GroupName = InGroupName;
+			this.GroupName = inGroupName;
 
 			// Grab all packages in the game directory
-			List<string> PackagePaths = Directory.EnumerateFiles(RootPackageDirectory, "*.*", SearchOption.AllDirectories)
+			List<string> packagePaths = Directory.EnumerateFiles(RootPackageDirectory, "*.*", SearchOption.AllDirectories)
 				.OrderBy(a => a)
 				.Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ"))
 				.ToList();
 
-			foreach (string PackagePath in PackagePaths)
+			foreach (string packagePath in packagePaths)
 			{
 				try
 				{
-					this.Packages.Add(new PackageInteractionHandler(PackagePath));
+					this.Packages.Add(new PackageInteractionHandler(packagePath));
 				}
 				catch (FileLoadException fex)
 				{
-					Console.WriteLine($"FileLoadException for package \"{PackagePath}\": {fex.Message}");
+					Console.WriteLine($"FileLoadException for package \"{packagePath}\": {fex.Message}");
 				}
 			}
 
-			foreach (PackageInteractionHandler Package in Packages)
+			foreach (PackageInteractionHandler package in Packages)
 			{
-				if (BundledListfiles.Instance.HasListfileForPackage(Package))
+				if (BundledListfiles.Instance.HasListfileForPackage(package))
 				{
-					this.PackageListfiles.Add(Package.PackageName, BundledListfiles.Instance.GetBundledListfile(Package));
+					this.PackageListfiles.Add(package.PackageName, BundledListfiles.Instance.GetBundledListfile(package));
 				}
 				else
 				{
 					// Try lazy loading the listfile, since we may be the first package to request it.
-					if (BundledListfiles.Instance.LoadListfileByPackage(Package))
+					if (BundledListfiles.Instance.LoadListfileByPackage(package))
 					{
-						this.PackageListfiles.Add(Package.PackageName, BundledListfiles.Instance.GetBundledListfile(Package));
+						this.PackageListfiles.Add(package.PackageName, BundledListfiles.Instance.GetBundledListfile(package));
 					}
 					else
 					{
-						this.PackageListfiles.Add(Package.PackageName, Package.GetFileList());
+						this.PackageListfiles.Add(package.PackageName, package.GetFileList());
 					}
 				}
 			}
@@ -141,10 +141,10 @@ namespace Everlook.Package
 		/// <param name="itemReference">Item reference.</param>
 		public MPQFileInfo GetUnversionedReferenceInfo(ItemReference itemReference)
 		{
-			PackageInteractionHandler Package = GetPackageByName(itemReference.PackageName);
-			if (Package != null)
+			PackageInteractionHandler package = GetPackageByName(itemReference.PackageName);
+			if (package != null)
 			{
-				return Package.GetReferenceInfo(itemReference);
+				return package.GetReferenceInfo(itemReference);
 			}
 
 			return null;
@@ -158,10 +158,10 @@ namespace Everlook.Package
 		/// <param name="fileReference">File reference.</param>
 		public byte[] ExtractUnversionedReference(ItemReference fileReference)
 		{
-			PackageInteractionHandler Package = GetPackageByName(fileReference.PackageName);
-			if (Package != null)
+			PackageInteractionHandler package = GetPackageByName(fileReference.PackageName);
+			if (package != null)
 			{
-				return Package.ExtractReference(fileReference);
+				return package.ExtractReference(fileReference);
 			}
 
 			return null;
@@ -210,14 +210,14 @@ namespace Everlook.Package
 		/// Gets a package handler by the name of the package.
 		/// </summary>
 		/// <returns>The package by name.</returns>
-		/// <param name="PackageName">Package name.</param>
-		private PackageInteractionHandler GetPackageByName(string PackageName)
+		/// <param name="packageName">Package name.</param>
+		private PackageInteractionHandler GetPackageByName(string packageName)
 		{
-			foreach (PackageInteractionHandler Package in Packages)
+			foreach (PackageInteractionHandler package in Packages)
 			{
-				if (Package.PackageName == PackageName)
+				if (package.PackageName == packageName)
 				{
-					return Package;
+					return package;
 				}
 			}
 
@@ -256,14 +256,14 @@ namespace Everlook.Package
 		{
 			// Merge all listfiles in the package lists.
 
-			List<List<string>> FileLists = new List<List<string>>();
+			List<List<string>> listFiles = new List<List<string>>();
 
-			foreach (KeyValuePair<string, List<string>> ListPair in PackageListfiles)
+			foreach (KeyValuePair<string, List<string>> listPair in PackageListfiles)
 			{
-				FileLists.Add(ListPair.Value);
+				listFiles.Add(listPair.Value);
 			}
 
-			return FileLists.SelectMany(t => t).Distinct().ToList();
+			return listFiles.SelectMany(t => t).Distinct().ToList();
 		}
 
 		/// <summary>
@@ -310,6 +310,9 @@ namespace Everlook.Package
 			}
 		}
 
+		/// <summary>
+		/// Returns a formatted string describing the current object.
+		/// </summary>
 		public override string ToString()
 		{
 			return this.GroupName;
@@ -335,9 +338,9 @@ namespace Everlook.Package
 		/// so the garbage collector can reclaim the memory that the <see cref="Everlook.Package.PackageGroup"/> was occupying.</remarks>
 		public void Dispose()
 		{
-			foreach (PackageInteractionHandler Package in Packages)
+			foreach (PackageInteractionHandler package in Packages)
 			{
-				Package.Dispose();
+				package.Dispose();
 			}
 		}
 	}

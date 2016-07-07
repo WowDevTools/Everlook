@@ -114,7 +114,7 @@ namespace Everlook.Explorer
 		{
 			this.OverriddenHardReferences = new List<ItemReference>();
 
-			this.Group = InGroup;
+			this.PackageGroup = InGroup;
 			this.HardReference = InHardReference;
 			this.ItemPath = this.HardReference.ItemPath;
 		}

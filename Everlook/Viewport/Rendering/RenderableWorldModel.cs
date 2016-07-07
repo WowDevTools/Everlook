@@ -20,11 +20,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
-using Everlook.Rendering.Interfaces;
+using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
 using Warcraft.WMO;
 
-namespace Everlook.Renderables
+namespace Everlook.Viewport.Rendering
 {
 	/// <summary>
 	/// Represents a renderable World Model Object
@@ -45,6 +45,11 @@ namespace Everlook.Renderables
 			}
 		}
 
+
+		/// <summary>
+		/// The projection method to use for this renderable object. Typically, this is Orthographic
+		/// or Perspective.
+		/// </summary>
 		public ProjectionType Projection
 		{
 			get
@@ -53,13 +58,22 @@ namespace Everlook.Renderables
 			}
 		}
 
+		/// <summary>
+		/// Returns a value which represents whether or not the current renderable has been initialized.
+		/// </summary>
 		public bool IsInitialized { get; set; }
 
+		/// <summary>
+		/// Initializes the required data for rendering.
+		/// </summary>
 		public void Initialize()
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <summary>
+		/// Renders the current object in the current OpenGL context.
+		/// </summary>
 		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix)
 		{
 			throw new NotImplementedException();
@@ -78,9 +92,9 @@ namespace Everlook.Renderables
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableWorldModel"/> class.
 		/// </summary>
-		public RenderableWorldModel(WMO InModel)
+		public RenderableWorldModel(WMO inModel)
 		{
-			this.Model = InModel;
+			this.Model = inModel;
 		}
 
 		/// <summary>

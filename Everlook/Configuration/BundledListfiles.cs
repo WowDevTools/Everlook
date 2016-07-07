@@ -40,15 +40,12 @@ namespace Everlook.Configuration
 
 		private readonly Dictionary<string, OptimizedListContainer> OptimizedLists = new Dictionary<string, OptimizedListContainer>();
 
-		private bool bHasLoadedAllLists = false;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Configuration.BundledListfiles"/> class.
 		/// </summary>
 		private BundledListfiles()
 		{
 		}
-
 
 		/// <summary>
 		/// Loads the listfile for the specifed package and adds it to the local list of packages.
@@ -57,7 +54,7 @@ namespace Everlook.Configuration
 		/// Returns <value>false</value> if the package didn't have a listfile or if the listfile couldn't be loaded,
 		/// <value>true</value> otherwise.
 		/// </returns>
-		public bool LoadListfileByPackage(PackageInteractionHandler PackageHandler)
+		public bool LoadListfileByPackage(PackageInteractionHandler inPackageHandler)
 		{
 			if (!HasBundledListfiles())
 			{
@@ -65,23 +62,23 @@ namespace Everlook.Configuration
 				return false;
 			}
 
-			if (OptimizedLists.ContainsKey(PackageHandler.PackageName))
+			if (OptimizedLists.ContainsKey(inPackageHandler.PackageName))
 			{
 				// The package listfile container has already been loaded.
 				// Thus, check if the container has a listfile for this package
-				return HasListfileForPackage(PackageHandler);
+				return HasListfileForPackage(inPackageHandler);
 			}
 
 			foreach (string bundledListfilePath in GetAvailableBundledListfilePaths())
 			{
-				if (Path.GetFileNameWithoutExtension(bundledListfilePath) == PackageHandler.PackageName)
+				if (Path.GetFileNameWithoutExtension(bundledListfilePath) == inPackageHandler.PackageName)
 				{
 					OptimizedListContainer bundledListfile = new OptimizedListContainer(File.ReadAllBytes(bundledListfilePath));
 
 					// Keep the listfile container around, in case we need it.
 					OptimizedLists.Add(bundledListfile.PackageName, bundledListfile);
 
-					if (bundledListfile.ContainsPackageListfile(PackageHandler.GetHashTableHash()))
+					if (bundledListfile.ContainsPackageListfile(inPackageHandler.GetHashTableHash()))
 					{
 						return true;
 					}
@@ -95,23 +92,23 @@ namespace Everlook.Configuration
 		/// Determines whether the provided package handler has a bundled listfile.
 		/// </summary>
 		/// <returns><c>true</c> if this instance has listfile for package the specified PackageHandler; otherwise, <c>false</c>.</returns>
-		/// <param name="PackageHandler">Package handler.</param>
-		public bool HasListfileForPackage(PackageInteractionHandler PackageHandler)
+		/// <param name="inPackageHandler">Package handler.</param>
+		public bool HasListfileForPackage(PackageInteractionHandler inPackageHandler)
 		{
-			return HasListfileForPackage(PackageHandler.PackageName, PackageHandler.GetHashTableHash());
+			return HasListfileForPackage(inPackageHandler.PackageName, inPackageHandler.GetHashTableHash());
 		}
 
 		/// <summary>
 		/// Determines whether the package with the specified name and table hash has a bundled listfile.
 		/// </summary>
 		/// <returns><c>true</c> if the package has a listfile; otherwise, <c>false</c>.</returns>
-		/// <param name="PackageName">Package name.</param>
-		/// <param name="PackageTableHash">Package table hash.</param>
-		public bool HasListfileForPackage(string PackageName, byte[] PackageTableHash)
+		/// <param name="packageName">Package name.</param>
+		/// <param name="packageTableHash">Package table hash.</param>
+		public bool HasListfileForPackage(string packageName, byte[] packageTableHash)
 		{
-			if (OptimizedLists.ContainsKey(PackageName))
+			if (OptimizedLists.ContainsKey(packageName))
 			{
-				return OptimizedLists[PackageName].ContainsPackageListfile(PackageTableHash);
+				return OptimizedLists[packageName].ContainsPackageListfile(packageTableHash);
 			}
 			else
 			{
@@ -123,21 +120,21 @@ namespace Everlook.Configuration
 		/// Gets the bundled listfile for the provided package handler.
 		/// </summary>
 		/// <returns>The bundled listfile.</returns>
-		/// <param name="PackageHandler">Package handler.</param>
-		public List<string> GetBundledListfile(PackageInteractionHandler PackageHandler)
+		/// <param name="inPackageHandler">Package handler.</param>
+		public List<string> GetBundledListfile(PackageInteractionHandler inPackageHandler)
 		{
-			return GetBundledListfile(PackageHandler.PackageName, PackageHandler.GetHashTableHash());
+			return GetBundledListfile(inPackageHandler.PackageName, inPackageHandler.GetHashTableHash());
 		}
 
 		/// <summary>
 		/// Gets the bundled listfile for the package with the specified name and table hash.
 		/// </summary>
 		/// <returns>The bundled listfile.</returns>
-		/// <param name="PackageName">Package name.</param>
-		/// <param name="PackageTableHash">Package table hash.</param>
-		public List<string> GetBundledListfile(string PackageName, byte[] PackageTableHash)
+		/// <param name="packageName">Package name.</param>
+		/// <param name="packageTableHash">Package table hash.</param>
+		public List<string> GetBundledListfile(string packageName, byte[] packageTableHash)
 		{
-			return OptimizedLists[PackageName].OptimizedLists[PackageTableHash].OptimizedPaths;
+			return OptimizedLists[packageName].OptimizedLists[packageTableHash].OptimizedPaths;
 		}
 
 		/// <summary>

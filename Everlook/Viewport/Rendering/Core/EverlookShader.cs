@@ -1,5 +1,5 @@
 ﻿//
-//  IActor.cs
+//  RenderCache.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -19,24 +19,19 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+using System;
 
-using Everlook.Viewport.Rendering.Core;
-
-namespace Everlook.Viewport.Rendering.Interfaces
+namespace Everlook.Viewport.Rendering.Core
 {
 	/// <summary>
-	/// Interface defining functionality for a renderable object with a position,
-	/// rotation and scale in the world.
+	/// A set of shaders available to Everlook at runtime.
 	/// </summary>
-	public interface IActor : IRenderable
+	public enum EverlookShader
 	{
 		/// <summary>
-		/// The transform of the actor.
+		/// A plain shader used for 2D images. This shader simply takes vertices, a single texture sampler
+		/// and UV coordinates for these vertices.
 		/// </summary>
-		Transform ActorTransform
-		{
-			get;
-			set;
-		}
+		Plain2D,
 	}
 }

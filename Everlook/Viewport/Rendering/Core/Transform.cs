@@ -22,38 +22,61 @@
 
 using OpenTK;
 
-namespace Everlook.Renderables.Core
+namespace Everlook.Viewport.Rendering.Core
 {
+	/// <summary>
+	/// A structure representing a set of transformation data in world space.
+	/// This is mainly used by OpenGL to render objects in different points in the world.
+	/// </summary>
 	public struct Transform
 	{
+		/// <summary>
+		/// The translation of the object in world space. One unit is arbitrary, but
+		/// can usually be considered one meter.
+		/// </summary>
 		public Vector3 Translation
 		{
 			get;
 			set;
 		}
 
-		public Quaternion Rotation
+		/// <summary>
+		/// The orientation of the object, using a quaternion.
+		/// </summary>
+		public Quaternion Orientation
 		{
 			get;
 			set;
 		}
 
+		/// <summary>
+		/// The scale of the object on three axes. A value of <value>1.0f</value> equates to a
+		/// 1:1 correspondence of vertex position to actual position. Increasing or decreasing this value
+		/// will increase or decrease the scale of the object on that axis.
+		/// </summary>
 		public Vector3 Scale
 		{
 			get;
 			set;
 		}
 
-		public Transform(Vector3 Translation)
-			: this(Translation, Quaternion.FromAxisAngle(Vector3.UnitX, 0.0f), Vector3.One)
+		/// <summary>
+		/// Creates a new <see cref="Transform"/> object from a single translation vector. The rotation and scale
+		/// are assumed to be 0,0,0 and 1,1,1, respectively.
+		/// </summary>
+		public Transform(Vector3 translation)
+			: this(translation, Quaternion.FromAxisAngle(Vector3.UnitX, 0.0f), Vector3.One)
 		{
 		}
 
-		public Transform(Vector3 Translation, Quaternion Rotation, Vector3 Scale)
+		/// <summary>
+		/// Creates a new <see cref="Transform"/> object from a translation vector, a quaternion and a scale vector.
+		/// </summary>
+		public Transform(Vector3 translation, Quaternion orientation, Vector3 scale)
 		{
-			this.Translation = Translation;
-			this.Rotation = Rotation;
-			this.Scale = Scale;
+			this.Translation = translation;
+			this.Orientation = orientation;
+			this.Scale = scale;
 		}
 	}
 }

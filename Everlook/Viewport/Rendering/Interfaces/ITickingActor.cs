@@ -20,7 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Everlook.Rendering.Interfaces
+namespace Everlook.Viewport.Rendering.Interfaces
 {
 	/// <summary>
 	/// Interface defining a ticking actor, such as an animated mesh.
