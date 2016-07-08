@@ -24,7 +24,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Drawing;
-
 using Application = Gtk.Application;
 using UI = Gtk.Builder.ObjectAttribute;
 using GLib;
@@ -42,8 +41,11 @@ using OpenTK;
 using OpenTK.Graphics;
 using Warcraft.Core;
 using Warcraft.BLP;
+using Warcraft.WMO;
+using Warcraft.WMO.GroupFile;
 using KeyPressEventArgs = Gtk.KeyPressEventArgs;
 
+using SysPath = System.IO.Path;
 
 namespace Everlook
 {
@@ -590,7 +592,7 @@ namespace Everlook
 
 			ItemReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
 
-			string cleanFilepath = Utilities.ConvertPathSeparatorsToCurrentNativeSeparator(fileReference.ItemPath);
+			string cleanFilepath = fileReference.ItemPath.ConvertPathSeparatorsToCurrentNativeSeparator();
 			string exportpath;
 			if (Config.GetShouldKeepFileDirectoryStructure())
 			{
@@ -656,7 +658,7 @@ namespace Everlook
 
 			ItemReference itemReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
 
-			string cleanFilepath = Utilities.ConvertPathSeparatorsToCurrentNativeSeparator(itemReference.ItemPath);
+			string cleanFilepath = itemReference.ItemPath.ConvertPathSeparatorsToCurrentNativeSeparator();
 
 			if (String.IsNullOrEmpty(cleanFilepath))
 			{
@@ -784,8 +786,7 @@ namespace Everlook
 			ItemReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
 			if (fileReference != null && fileReference.IsFile)
 			{
-				string fileName = System.IO.Path.GetFileName(Utilities.ConvertPathSeparatorsToCurrentNativeSeparator(fileReference.ItemPath));
-				if (string.IsNullOrEmpty(fileName))
+				if (string.IsNullOrEmpty(fileReference.ItemPath))
 				{
 					return;
 				}
@@ -866,12 +867,56 @@ namespace Everlook
 					}
 					case WarcraftFileType.WorldObjectModel:
 					{
+						byte[] fileData = fileReference.Extract();
+						if (fileData != null)
+						{
+							WMO worldModel = new WMO(fileData);
+
+							string modelPathWithoutExtension = SysPath.GetFileNameWithoutExtension(fileReference.ItemPath);
+							for (int i = 0; i < worldModel.GroupCount; ++i)
+							{
+								// Extract the groups as well
+								string modelGroupPath = $"{modelPathWithoutExtension}_{i:D3}.wmo";
+								byte[] modelGroupData = fileReference.PackageGroup.ExtractFile(modelGroupPath);
+
+								if (modelGroupData != null)
+								{
+									worldModel.AddModelGroup(new ModelGroup(modelGroupData));
+								}
+
+								RenderableWorldModel renderableWorldModel = new RenderableWorldModel(worldModel, fileReference.PackageGroup);
+								this.viewportRenderer.SetRenderTarget(renderableWorldModel);
+							}
+						}
+
+						break;
+					}
+					case WarcraftFileType.WorldObjectModelGroup:
+					{
+						// Get the file name of the root object
+						string modelRootPath = fileReference.ItemPath.Remove(fileReference.ItemPath.Length - 8, 4);
+
+						// Extract it and load just this model group
+						byte[] fileData = fileReference.PackageGroup.ExtractFile(modelRootPath);
+						if (fileData != null)
+						{
+							WMO worldModel = new WMO(fileData);
+							byte[] modelGroupData = fileReference.Extract();
+							if (modelGroupData != null)
+							{
+								worldModel.AddModelGroup(new ModelGroup(modelGroupData));
+							}
+
+							RenderableWorldModel renderableWorldModel = new RenderableWorldModel(worldModel, fileReference.PackageGroup);
+							this.viewportRenderer.SetRenderTarget(renderableWorldModel);
+						}
+
 						break;
 					}
 				}
 
 				// Try some "normal" files
-				if (fileName.EndsWith(".jpg") || fileName.EndsWith(".gif") || fileName.EndsWith(".png"))
+				if (fileReference.ItemPath.EndsWith(".jpg") || fileReference.ItemPath.EndsWith(".gif") || fileReference.ItemPath.EndsWith(".png"))
 				{
 					byte[] fileData = fileReference.Extract();
 					if (fileData != null)

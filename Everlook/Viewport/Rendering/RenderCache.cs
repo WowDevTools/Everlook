@@ -25,12 +25,13 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
+using Everlook.Utility;
 using Everlook.Viewport.Rendering.Core;
 using OpenTK.Graphics.OpenGL;
 using Warcraft.BLP;
 using Warcraft.Core;
 using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
-using SyPixelFormat = System.Drawing.Imaging.PixelFormat;
+using SysPixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Everlook.Viewport.Rendering
 {
@@ -66,7 +67,7 @@ namespace Everlook.Viewport.Rendering
 				throw new ArgumentNullException(nameof(texturePath));
 			}
 
-			return this.GLTextureCache.ContainsKey(texturePath);
+			return this.GLTextureCache.ContainsKey(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator());
 		}
 
 		/// <summary>
@@ -77,7 +78,7 @@ namespace Everlook.Viewport.Rendering
 		{
 			if (!Enum.IsDefined(typeof(EverlookShader), shader))
 			{
-				throw new ArgumentException(nameof(shader), "An unknown shader was passed to the rendering cache.");
+				throw new ArgumentException("An unknown shader was passed to the rendering cache.", nameof(shader));
 			}
 
 			return this.GLShaderCache.ContainsKey(shader);
@@ -88,7 +89,7 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public int GetCachedTexture(string texturePath)
 		{
-			return this.GLTextureCache[texturePath];
+			return this.GLTextureCache[texturePath.ConvertPathSeparatorsToCurrentNativeSeparator()];
 		}
 
 		/// <summary>
@@ -117,7 +118,10 @@ namespace Everlook.Viewport.Rendering
 			}
 			else
 			{
-				LoadBitmapTexture(textureID, texture.GetMipMap(0));
+				using (Bitmap mipZero = texture.GetMipMap(0))
+				{
+					LoadBitmapTexture(textureID, mipZero);
+				}
 			}
 
 			// Use linear mipmapped filtering
@@ -131,7 +135,7 @@ namespace Everlook.Viewport.Rendering
 			GL.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMaxLevel, ref maximalMipLevel);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureBaseLevel, 0);
 
-			this.GLTextureCache.Add(texturePath, textureID);
+			this.GLTextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator(), textureID);
 			return textureID;
 		}
 
@@ -157,7 +161,7 @@ namespace Everlook.Viewport.Rendering
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
 
-			this.GLTextureCache.Add(texturePath, textureID);
+			this.GLTextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator(), textureID);
 			return textureID;
 		}
 
@@ -169,7 +173,7 @@ namespace Everlook.Viewport.Rendering
 		{
 			if (!Enum.IsDefined(typeof(EverlookShader), shader))
 			{
-				throw new ArgumentException(nameof(shader), "An unknown shader was passed to the rendering cache.");
+				throw new ArgumentException("An unknown shader was passed to the rendering cache.", nameof(shader));
 			}
 
 			int vertexShaderID = GL.CreateShader(ShaderType.VertexShader);
@@ -281,6 +285,7 @@ namespace Everlook.Viewport.Rendering
 		private static void LoadDXTTexture(int textureID, BLP compressedImage)
 		{
 			GL.BindTexture(TextureTarget.Texture2D, textureID);
+
 			// Load the set of raw compressed mipmaps
 			for (uint i = 0; i < compressedImage.GetMipMapCount(); ++i)
 			{
@@ -328,7 +333,7 @@ namespace Everlook.Viewport.Rendering
 
 			// Extract raw RGB data from the largest bitmap
 			BitmapData pixels = texture.LockBits(new Rectangle(0, 0, texture.Width, texture.Height),
-			ImageLockMode.ReadOnly, SyPixelFormat.Format32bppArgb);
+			ImageLockMode.ReadOnly, SysPixelFormat.Format32bppArgb);
 
 			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, pixels.Width, pixels.Height, 0, GLPixelFormat.Bgra, PixelType.UnsignedByte, pixels.Scan0);
 			GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);

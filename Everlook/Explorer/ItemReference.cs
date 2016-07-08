@@ -24,6 +24,7 @@ using System;
 using Warcraft.Core;
 using System.IO;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Everlook.Package;
 using Warcraft.MPQ.FileInfo;
 
@@ -317,7 +318,16 @@ namespace Everlook.Explorer
 					}
 					case "wmo":
 					{
-						return WarcraftFileType.WorldObjectModel;
+						Regex groupDetectRegex = new Regex("(.+_[0-9]{3}.wmo)", RegexOptions.Multiline);
+
+						if (groupDetectRegex.IsMatch(itemPath))
+						{
+							return WarcraftFileType.WorldObjectModelGroup;
+						}
+						else
+						{
+							return WarcraftFileType.WorldObjectModel;
+						}
 					}
 					default:
 					{

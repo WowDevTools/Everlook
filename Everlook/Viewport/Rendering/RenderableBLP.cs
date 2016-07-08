@@ -84,6 +84,8 @@ namespace Everlook.Viewport.Rendering
 
 		private readonly string TexturePath;
 
+		private readonly RenderCache Cache = RenderCache.Instance;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Viewport.Rendering.RenderableBLP"/> class.
 		/// </summary>
@@ -109,23 +111,23 @@ namespace Everlook.Viewport.Rendering
 			this.UVBufferID = GenerateTextureCoordinates();
 
 			// Use cached textures whenever possible
-			if (RenderCache.Instance.HasCachedTextureForPath(this.TexturePath))
+			if (Cache.HasCachedTextureForPath(this.TexturePath))
 			{
-				this.GLTextureID = RenderCache.Instance.GetCachedTexture(this.TexturePath);
+				this.GLTextureID = Cache.GetCachedTexture(this.TexturePath);
 			}
 			else
 			{
-				this.GLTextureID = RenderCache.Instance.CreateCachedTexture(this.Image, this.TexturePath);
+				this.GLTextureID = Cache.CreateCachedTexture(this.Image, this.TexturePath);
 			}
 
 			// Use cached shaders whenever possible
-			if (RenderCache.Instance.HasCachedShader(EverlookShader.Plain2D))
+			if (Cache.HasCachedShader(EverlookShader.Plain2D))
 			{
-				this.ImageShaderID = RenderCache.Instance.GetCachedShader(EverlookShader.Plain2D);
+				this.ImageShaderID = Cache.GetCachedShader(EverlookShader.Plain2D);
 			}
 			else
 			{
-				this.ImageShaderID = RenderCache.Instance.CreateCachedShader(EverlookShader.Plain2D);
+				this.ImageShaderID = Cache.CreateCachedShader(EverlookShader.Plain2D);
 			}
 
 			IsInitialized = true;

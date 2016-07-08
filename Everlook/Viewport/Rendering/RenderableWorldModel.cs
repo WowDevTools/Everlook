@@ -20,8 +20,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
+using System.Collections.Generic;
+using Everlook.Package;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
+using Warcraft.BLP;
 using Warcraft.WMO;
 
 namespace Everlook.Viewport.Rendering
@@ -59,27 +62,6 @@ namespace Everlook.Viewport.Rendering
 		}
 
 		/// <summary>
-		/// Returns a value which represents whether or not the current renderable has been initialized.
-		/// </summary>
-		public bool IsInitialized { get; set; }
-
-		/// <summary>
-		/// Initializes the required data for rendering.
-		/// </summary>
-		public void Initialize()
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Renders the current object in the current OpenGL context.
-		/// </summary>
-		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
 		/// The model contained by this renderable world object.
 		/// </summary>
 		/// <value>The model.</value>
@@ -89,12 +71,76 @@ namespace Everlook.Viewport.Rendering
 			private set;
 		}
 
+		private readonly PackageGroup ModelPackageGroup;
+		private readonly RenderCache Cache = RenderCache.Instance;
+
+		/// <summary>
+		/// Dictionary that maps texture paths to OpenGL texture IDs.
+		/// </summary>
+		private readonly Dictionary<string, int> textureLookup = new Dictionary<string, int>();
+
+		/// <summary>
+		/// Returns a value which represents whether or not the current renderable has been initialized.
+		/// </summary>
+		public bool IsInitialized { get; set; }
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableWorldModel"/> class.
 		/// </summary>
-		public RenderableWorldModel(WMO inModel)
+		public RenderableWorldModel(WMO inModel, PackageGroup inPackageGroup)
 		{
 			this.Model = inModel;
+			this.ModelPackageGroup = inPackageGroup;
+
+			this.IsInitialized = false;
+
+			Initialize();
+		}
+
+		/// <summary>
+		/// Initializes the required data for rendering.
+		/// </summary>
+		public void Initialize()
+		{
+			// Load and cache the textures used in this model
+			foreach (string texturePath in Model.GetUsedTextures())
+			{
+				if (Cache.HasCachedTextureForPath(texturePath))
+				{
+					this.textureLookup.Add(texturePath, Cache.GetCachedTexture(texturePath));
+				}
+				else
+				{
+					BLP texture = new BLP(ModelPackageGroup.ExtractFile(texturePath));
+					this.textureLookup.Add(texturePath, Cache.CreateCachedTexture(texture, texturePath));
+				}
+			}
+
+			// TODO: Load and cache doodads in their respective sets
+
+			// TODO: Load and cache sound emitters
+
+			// TODO: Upload visible block vertices
+
+			// TODO: Upload portal vertices for debug rendering
+
+			// TODO: Load lights into some sort of reasonable structure
+
+			// TODO: Load fog as OpenGL fog
+
+			// TODO: Implement antiportal handling. For now, skip them
+
+			// TODO: Upload convex planes for debug rendering
+
+			// TODO: Upload vertices, UVs and normals of groups in parallel buffers
+		}
+
+		/// <summary>
+		/// Renders the current object in the current OpenGL context.
+		/// </summary>
+		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix)
+		{
+
 		}
 
 		/// <summary>
