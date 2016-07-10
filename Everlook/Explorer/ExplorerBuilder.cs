@@ -117,10 +117,21 @@ namespace Everlook.Explorer
 		private readonly List<ItemReference> WorkQueue = new List<ItemReference>();
 
 		/// <summary>
+		/// A queue of references that have not yet been fully enumerated, yet have been submitted to the
+		/// work queue. These wait here until they are enumerated, at which point they are resubmitted to the work queue.
+		/// </summary>
+		private readonly List<ItemReference> WaitQueue = new List<ItemReference>();
+
+		/// <summary>
 		/// The main enumeration loop thread. Accepts work from the work queue and distributes it
 		/// to the available threads.
 		/// </summary>
 		private readonly Thread EnumerationLoopThread;
+
+		/// <summary>
+		/// The main resubmission loop thread. Takes waiting references and adds them back to the work queue.
+		/// </summary>
+		private readonly Thread ResubmissionLoopThread;
 
 		/// <summary>
 		/// A collection of threads that are currently enumerating a directory.
@@ -161,6 +172,7 @@ namespace Everlook.Explorer
 			this.MaxEnumerationThreadCount = Environment.ProcessorCount * 250;
 
 			this.EnumerationLoopThread = new Thread(EnumerationLoop);
+			this.ResubmissionLoopThread = new Thread(ResubmissionLoop);
 			Reload();
 		}
 
@@ -181,6 +193,8 @@ namespace Everlook.Explorer
 			if (!EnumerationLoopThread.IsAlive)
 			{
 				this.bShouldProcessWork = true;
+
+				this.ResubmissionLoopThread.Start();
 				this.EnumerationLoopThread.Start();
 			}
 			else
@@ -254,6 +268,7 @@ namespace Everlook.Explorer
 						// Create a virtual item reference that points to the package group
 						VirtualItemReference packageGroupReference = new VirtualItemReference(Group,
 							new ItemReference(Group));
+						packageGroupReference.State = ReferenceState.Enumerated;
 
 						// Create a virtual package folder for the individual packages under the package group
 						ItemReference packageGroupPackagesFolderReference = new ItemReference(Group, packageGroupReference, "");
@@ -348,9 +363,14 @@ namespace Everlook.Explorer
 		/// <param name="reference">Reference.</param>
 		public void SubmitWork(ItemReference reference)
 		{
-			if (!WorkQueue.Contains(reference))
+			if (!WorkQueue.Contains(reference) && reference.State == ReferenceState.NotEnumerated)
 			{
+				reference.State = ReferenceState.Enumerating;
 				WorkQueue.Add(reference);
+			}
+			else if (reference.State == ReferenceState.Enumerating)
+			{
+				WaitQueue.Add(reference);
 			}
 		}
 
@@ -369,10 +389,12 @@ namespace Everlook.Explorer
 				{
 					EnumerateHardReference(virtualParentReference.HardReference);
 
-					foreach (ItemReference hardReference in virtualParentReference.OverriddenHardReferences)
+					for (int i = 0; i < virtualParentReference.OverriddenHardReferences.Count; ++i)
 					{
-						EnumerateHardReference(hardReference);
+						EnumerateHardReference(virtualParentReference.OverriddenHardReferences[i]);
 					}
+
+					virtualParentReference.State = ReferenceState.Enumerated;
 				}
 				else
 				{
@@ -416,7 +438,7 @@ namespace Everlook.Explorer
 						if (!hardReference.ChildReferences.Contains(fileReference))
 						{
 							// Files can't have any children, so it will always be enumerated.
-							fileReference.IsEnumerated = true;
+							hardReference.State = ReferenceState.Enumerated;
 							hardReference.ChildReferences.Add(fileReference);
 
 							localEnumeratedReferences.Add(fileReference);
@@ -435,7 +457,7 @@ namespace Everlook.Explorer
 					this.EnumeratedReferences.AddRange(localEnumeratedReferences);
 				}
 
-				hardReference.IsEnumerated = true;
+				hardReference.State = ReferenceState.Enumerated;
 
 				EnumerationFinishedArgs = new ItemEnumeratedEventArgs(hardReference);
 				RaiseEnumerationFinished();
@@ -443,6 +465,31 @@ namespace Everlook.Explorer
 			else
 			{
 				throw new InvalidDataException("No listfile was found for the package referenced by this item reference.");
+			}
+		}
+
+		/// <summary>
+		/// The resubmission loop handles waiting references whose parents are currently enumerating. When the parents
+		/// are finished, they are readded to the work queue.
+		/// </summary>
+		private void ResubmissionLoop()
+		{
+			while (bShouldProcessWork)
+			{
+				List<ItemReference> readyReferences = new List<ItemReference>();
+				for (int i = 0; i < this.WaitQueue.Count; ++i)
+				{
+					if (this.WaitQueue[i].ParentReference.State == ReferenceState.Enumerated)
+					{
+						readyReferences.Add(this.WaitQueue[i]);
+					}
+				}
+
+				foreach (ItemReference readyReference in readyReferences)
+				{
+					this.WaitQueue.Remove(readyReference);
+					SubmitWork(readyReference);
+				}
 			}
 		}
 

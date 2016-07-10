@@ -65,6 +65,12 @@ namespace Everlook.Explorer
 		/// <value>The file path.</value>
 		public virtual string ItemPath { get; set; } = "";
 
+		public ReferenceState State
+		{
+			get;
+			set;
+		} = ReferenceState.NotEnumerated;
+
 		/// <summary>
 		/// Gets the file info of this reference.
 		/// </summary>
@@ -85,12 +91,6 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Gets or sets a value indicating whether this reference has had its children enumerated.
-		/// </summary>
-		/// <value><c>true</c> if this instance is enumerated; otherwise, <c>false</c>.</value>
-		public bool IsEnumerated { get; set; }
-
-		/// <summary>
 		/// Walks through this reference's children and checks whether or not all of them have had their
 		/// children enumerated. Depending on the depth of the item, this may be an expensive operation.
 		/// </summary>
@@ -104,7 +104,7 @@ namespace Everlook.Explorer
 				{
 					if (childReference.IsDirectory)
 					{
-						if (!childReference.IsEnumerated)
+						if (childReference.State != ReferenceState.Enumerated)
 						{
 							return false;
 						}

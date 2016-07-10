@@ -160,7 +160,7 @@ namespace Everlook.Viewport
 		/// <summary>
 		/// The default turning speed of the observer within the viewport.
 		/// </summary>
-		private const float DefaultTurningSpeed = 0.3f;
+		private const float DefaultTurningSpeed = 0.05f;
 
 
 		/*
@@ -302,7 +302,7 @@ namespace Everlook.Viewport
 		{
 			return this.RenderTarget == null ||
 			       this.RenderTarget.IsStatic ||
-			       this.RenderTarget.IsInitialized;
+			       !this.RenderTarget.IsInitialized;
 		}
 
 		/// <summary>
@@ -322,6 +322,8 @@ namespace Everlook.Viewport
 				// Assign the new one
 				this.RenderTarget = inRenderable;
 			}
+
+			ResetCamera();
 		}
 
 		/// <summary>

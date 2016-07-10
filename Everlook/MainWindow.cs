@@ -729,7 +729,7 @@ namespace Everlook
 			ItemReference parentReference = GetItemReferenceFromStoreIter(GetStoreIterFromVisiblePath(e.Path));
 			foreach (ItemReference childReference in parentReference.ChildReferences)
 			{
-				if (childReference.IsDirectory && !childReference.IsEnumerated)
+				if (childReference.IsDirectory && childReference.State != ReferenceState.Enumerated)
 				{
 					explorerBuilder.SubmitWork(childReference);
 				}
@@ -1133,6 +1133,13 @@ namespace Everlook
 				// Add myself to that node
 				if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(childReference))
 				{
+					if (parentReference.State == ReferenceState.Enumerating && childReference.State == ReferenceState.NotEnumerated)
+					{
+						// This references was added to the UI after the user had opened the previous folder.
+						// Therefore, it should be submitted back to the UI for enumeration.
+						this.explorerBuilder.SubmitWork(childReference);
+					}
+
 					TreeIter node = CreateDirectoryTreeNode(parentNode, childReference);
 					explorerBuilder.PackageItemNodeMapping.Add(childReference, node);
 					explorerBuilder.PackageNodeItemMapping.Add(node, childReference);
@@ -1156,6 +1163,12 @@ namespace Everlook
 					{
 						// Append this directory reference as an additional overridden hard reference
 						virtualChildReference.OverriddenHardReferences.Add(childReference);
+
+						if (virtualChildReference.State == ReferenceState.Enumerating)
+						{
+							// If it's currently enumerating, add it to the waiting queue
+							this.explorerBuilder.SubmitWork(childReference);
+						}
 					}
 					else
 					{

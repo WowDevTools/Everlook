@@ -27,6 +27,7 @@ using System.IO;
 using System.Reflection;
 using Everlook.Utility;
 using Everlook.Viewport.Rendering.Core;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Warcraft.BLP;
 using Warcraft.Core;
@@ -67,7 +68,7 @@ namespace Everlook.Viewport.Rendering
 				throw new ArgumentNullException(nameof(texturePath));
 			}
 
-			return this.GLTextureCache.ContainsKey(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator());
+			return this.GLTextureCache.ContainsKey(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant());
 		}
 
 		/// <summary>
@@ -89,7 +90,7 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public int GetCachedTexture(string texturePath)
 		{
-			return this.GLTextureCache[texturePath.ConvertPathSeparatorsToCurrentNativeSeparator()];
+			return this.GLTextureCache[texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant()];
 		}
 
 		/// <summary>
@@ -114,7 +115,23 @@ namespace Everlook.Viewport.Rendering
 			int textureID = GL.GenTexture();
 			if (texture.GetCompressionType() == TextureCompressionType.DXTC)
 			{
-				LoadDXTTexture(textureID, texture);
+				try
+				{
+					LoadDXTTexture(textureID, texture);
+				}
+				catch (GraphicsErrorException gex)
+				{
+					Console.WriteLine($"GraphicsErrorException in CreateCachedTexture (failed to create DXT texture): {gex.Message}");
+				}
+				finally
+				{
+					// Load a fallback bitmap instead
+					using (Bitmap mipZero = texture.GetMipMap(0))
+					{
+						LoadBitmapTexture(textureID, mipZero);
+					}
+				}
+
 			}
 			else
 			{
@@ -128,14 +145,17 @@ namespace Everlook.Viewport.Rendering
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
 
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
 
 			int maximalMipLevel = texture.GetMipMapCount() == 0 ? 0 : texture.GetMipMapCount() - 1;
 			GL.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMaxLevel, ref maximalMipLevel);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureBaseLevel, 0);
 
-			this.GLTextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator(), textureID);
+			this.GLTextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), textureID);
 			return textureID;
 		}
 
@@ -161,7 +181,7 @@ namespace Everlook.Viewport.Rendering
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
 
-			this.GLTextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator(), textureID);
+			this.GLTextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), textureID);
 			return textureID;
 		}
 
@@ -188,6 +208,12 @@ namespace Everlook.Viewport.Rendering
 				{
 					vertexShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.PlainImage.PlainImageVertex.glsl");
 					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.PlainImage.PlainImageFragment.glsl");
+					break;
+				}
+				case EverlookShader.UnlitWorldModel:
+				{
+					vertexShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelVertex.glsl");
+					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelFragment.glsl");
 					break;
 				}
 				default:

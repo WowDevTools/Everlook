@@ -108,14 +108,14 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Explorer.VirtualItemReference"/> class.
 		/// </summary>
-		/// <param name="InHardReference">The primary hard reference this virtual reference points to.</param>
-		/// <param name="InGroup">The package group this reference is a part of.</param>
-		public VirtualItemReference(PackageGroup InGroup, ItemReference InHardReference)
+		/// <param name="inHardReference">The primary hard reference this virtual reference points to.</param>
+		/// <param name="inPackageGroup">The package group this reference is a part of.</param>
+		public VirtualItemReference(PackageGroup inPackageGroup, ItemReference inHardReference)
 		{
 			this.OverriddenHardReferences = new List<ItemReference>();
 
-			this.PackageGroup = InGroup;
-			this.HardReference = InHardReference;
+			this.PackageGroup = inPackageGroup;
+			this.HardReference = inHardReference;
 			this.ItemPath = this.HardReference.ItemPath;
 		}
 
@@ -123,13 +123,13 @@ namespace Everlook.Explorer
 		/// Initializes a new instance of the <see cref="Everlook.Explorer.VirtualItemReference"/> class,
 		/// where the reference has a parent <see cref="Everlook.Explorer.VirtualItemReference"/>.
 		/// </summary>
-		/// <param name="ParentVirtualReference">Parent virtual reference.</param>
-		/// <param name="InGroup">In group.</param>
-		/// <param name="InHardReference">In hard reference.</param>
-		public VirtualItemReference(VirtualItemReference ParentVirtualReference, PackageGroup InGroup, ItemReference InHardReference)
-			: this(InGroup, InHardReference)
+		/// <param name="parentVirtualReference">Parent virtual reference.</param>
+		/// <param name="inPackageGroup">In group.</param>
+		/// <param name="inHardReference">In hard reference.</param>
+		public VirtualItemReference(VirtualItemReference parentVirtualReference, PackageGroup inPackageGroup, ItemReference inHardReference)
+			: this(inPackageGroup, inHardReference)
 		{
-			this.ParentReference = ParentVirtualReference;
+			this.ParentReference = parentVirtualReference;
 		}
 
 		/// <summary>

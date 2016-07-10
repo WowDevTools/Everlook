@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Explorer\ItemReference.cs" />
+    <Compile Include="Explorer\ReferenceState.cs" />
     <Compile Include="Explorer\VirtualItemReference.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="MainWindow.cs" />
@@ -104,9 +105,12 @@
     <EmbeddedResource Include="interfaces\EverlookDirectoryExport.glade" />
     <EmbeddedResource Include="Content\Shaders\Adapted\PlainImage\PlainImageFragment.glsl" />
     <EmbeddedResource Include="Content\Shaders\Adapted\PlainImage\PlainImageVertex.glsl" />
+    <EmbeddedResource Include="Content\Shaders\Adapted\WorldModel\WorldModelFragment.glsl" />
+    <EmbeddedResource Include="Content\Shaders\Adapted\WorldModel\WorldModelVertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
+    <Folder Include="Content\Shaders\Adapted\WorldModel" />
     <Folder Include="Export\" />
     <Folder Include="Export\Audio\" />
     <Folder Include="Export\Model\" />

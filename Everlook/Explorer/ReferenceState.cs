@@ -1,5 +1,5 @@
 ﻿//
-//  RenderCache.cs
+//  ReferenceState.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -19,35 +19,27 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-using System;
 
-namespace Everlook.Viewport.Rendering.Core
+namespace Everlook.Explorer
 {
 	/// <summary>
-	/// A set of shaders available to Everlook at runtime.
+	/// The state an <see cref="ItemReference"/> is currently in.
 	/// </summary>
-	public enum EverlookShader
+	public enum ReferenceState
 	{
 		/// <summary>
-		/// A plain shader used for 2D images. This shader simply takes vertices, a single texture sampler
-		/// and UV coordinates for these vertices.
+		/// The reference is not enumerated at all.
 		/// </summary>
-		Plain2D,
+		NotEnumerated,
 
 		/// <summary>
-		/// A shader capable of rendering a group inside a World Model. This shader does not support
-		/// any animation.
+		/// The reference is currently being enumerated.
 		/// </summary>
-		UnlitWorldModel,
+		Enumerating,
 
 		/// <summary>
-		/// A shader capable of rendering an animated model.
+		/// The reference has been enumerated.
 		/// </summary>
-		Model,
-
-		/// <summary>
-		/// A shader capable of rendering a particle system.
-		/// </summary>
-		ParticleSystem,
+		Enumerated
 	}
 }
