@@ -1,5 +1,5 @@
 ﻿//
-//  ViewportRenderer.cs
+//  ViewportCamera.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -24,41 +24,79 @@ using System;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
 
-namespace Everlook.Viewport.Rendering
+namespace Everlook.Viewport.Camera
 {
 	public class ViewportCamera
 	{
 		/// <summary>
 		/// The current position of the observer in world space.
 		/// </summary>
-		private Vector3 cameraPosition;
+		public Vector3 Position;
 
 		/// <summary>
 		/// A vector pointing in the direction the observer is currently looking.
 		/// </summary>
-		private Vector3 cameraLookDirection;
+		public Vector3 LookDirectionVector
+		{
+			get;
+			private set;
+		}
 
 		/// <summary>
 		/// The current vector that points directly to the right, relative to the
 		/// current orientation of the observer.
 		/// </summary>
-		private Vector3 cameraRightVector;
+		public Vector3 RightVector
+		{
+			get;
+			private set;
+		}
 
 		/// <summary>
 		/// The current vector that points directly upwards, relative to the current
 		/// orientation of the observer.
 		/// </summary>
-		private Vector3 cameraUpVector;
+		public Vector3 UpVector
+		{
+			get;
+			private set;
+		}
 
 		/// <summary>
 		/// The current horizontal view angle of the observer.
 		/// </summary>
+		public float HorizontalViewAngle
+		{
+			get
+			{
+				return horizontalViewAngle;
+			}
+			set
+			{
+				horizontalViewAngle = value;
+				RecalculateVectors();
+			}
+		}
+
 		private float horizontalViewAngle;
 
 		/// <summary>
 		/// The current vertical view angle of the observer. This angle is
 		/// limited to -90 and 90 (straight down and straight up, respectively).
 		/// </summary>
+		public float VerticalViewAngle
+		{
+			get
+			{
+				return verticalViewAngle;
+			}
+			set
+			{
+				verticalViewAngle = value;
+				RecalculateVectors();
+			}
+		}
+
 		private float verticalViewAngle;
 
 		/*
@@ -69,16 +107,6 @@ namespace Everlook.Viewport.Rendering
 		/// The default field of view for perspective projections.
 		/// </summary>
 		public const float DefaultFieldOfView = 45.0f;
-
-		/// <summary>
-		/// The default movement speed of the observer within the viewport.
-		/// </summary>
-		public const float DefaultMovementSpeed = 10.0f;
-
-		/// <summary>
-		/// The default turning speed of the observer within the viewport.
-		/// </summary>
-		public const float DefaultTurningSpeed = 1.0f;
 
 		/// <summary>
 		/// The default near clipping distance.
@@ -100,74 +128,37 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void ResetPosition()
 		{
-			this.cameraPosition = new Vector3(0.0f, 0.0f, 1.0f);
-			this.horizontalViewAngle = MathHelper.DegreesToRadians(180.0f);
-			this.verticalViewAngle = MathHelper.DegreesToRadians(0.0f);
+			this.Position = new Vector3(0.0f, 0.0f, 1.0f);
+			this.HorizontalViewAngle = MathHelper.DegreesToRadians(180.0f);
+			this.VerticalViewAngle = MathHelper.DegreesToRadians(0.0f);
 
-			this.cameraLookDirection = new Vector3(
-				(float) (Math.Cos(this.verticalViewAngle) * Math.Sin(this.horizontalViewAngle)),
-				(float) Math.Sin(this.verticalViewAngle),
-				(float) (Math.Cos(this.verticalViewAngle) * Math.Cos(this.horizontalViewAngle)));
+			this.LookDirectionVector = new Vector3(
+				(float) (Math.Cos(this.VerticalViewAngle) * Math.Sin(this.HorizontalViewAngle)),
+				(float) Math.Sin(this.VerticalViewAngle),
+				(float) (Math.Cos(this.VerticalViewAngle) * Math.Cos(this.HorizontalViewAngle)));
 
-			this.cameraRightVector = new Vector3(
-				(float) Math.Sin(horizontalViewAngle - MathHelper.PiOver2),
+			this.RightVector = new Vector3(
+				(float) Math.Sin(HorizontalViewAngle - MathHelper.PiOver2),
 				0,
-				(float) Math.Cos(horizontalViewAngle - MathHelper.PiOver2));
+				(float) Math.Cos(HorizontalViewAngle - MathHelper.PiOver2));
 
-			this.cameraUpVector = Vector3.Cross(cameraRightVector, cameraLookDirection);
+			this.UpVector = Vector3.Cross(RightVector, LookDirectionVector);
 		}
 
-		/// <summary>
-		/// Calculates the relative position of the observer in world space, using
-		/// input relayed from the main interface.
-		/// </summary>
-		public void CalculateMovement(float deltaMouseX, float deltaMouseY, float deltaTime, float ForwardAxis, float RightAxis)
+		private void RecalculateVectors()
 		{
-			this.horizontalViewAngle += deltaMouseX * DefaultTurningSpeed * deltaTime;
-			this.verticalViewAngle += deltaMouseY * DefaultTurningSpeed * deltaTime;
-
-			if (verticalViewAngle > MathHelper.DegreesToRadians(90.0f))
-			{
-				verticalViewAngle = MathHelper.DegreesToRadians(90.0f);
-			}
-			else if (verticalViewAngle < MathHelper.DegreesToRadians(-90.0f))
-			{
-				verticalViewAngle = MathHelper.DegreesToRadians(-90.0f);
-			}
-
 			// Compute the look direction
-			this.cameraLookDirection = new Vector3(
-				(float) (Math.Cos(this.verticalViewAngle) * Math.Sin(this.horizontalViewAngle)),
-				(float) Math.Sin(this.verticalViewAngle),
-				(float) (Math.Cos(this.verticalViewAngle) * Math.Cos(this.horizontalViewAngle)));
+			this.LookDirectionVector = new Vector3(
+				(float) (Math.Cos(this.VerticalViewAngle) * Math.Sin(this.HorizontalViewAngle)),
+				(float) Math.Sin(this.VerticalViewAngle),
+				(float) (Math.Cos(this.VerticalViewAngle) * Math.Cos(this.HorizontalViewAngle)));
 
-			this.cameraRightVector = new Vector3(
-				(float) Math.Sin(this.horizontalViewAngle - MathHelper.PiOver2),
+			this.RightVector = new Vector3(
+				(float) Math.Sin(this.HorizontalViewAngle - MathHelper.PiOver2),
 				0,
-				(float) Math.Cos(this.horizontalViewAngle - MathHelper.PiOver2));
+				(float) Math.Cos(this.HorizontalViewAngle - MathHelper.PiOver2));
 
-			this.cameraUpVector = Vector3.Cross(this.cameraRightVector, this.cameraLookDirection);
-
-			// Perform any movement
-			if (ForwardAxis > 0)
-			{
-				this.cameraPosition += this.cameraLookDirection * (deltaTime * DefaultMovementSpeed);
-			}
-
-			if (ForwardAxis < 0)
-			{
-				this.cameraPosition -= this.cameraLookDirection * (deltaTime * DefaultMovementSpeed);
-			}
-
-			if (RightAxis > 0)
-			{
-				this.cameraPosition += this.cameraRightVector * (deltaTime * DefaultMovementSpeed);
-			}
-
-			if (RightAxis < 0)
-			{
-				this.cameraPosition -= this.cameraRightVector * (deltaTime * DefaultMovementSpeed);
-			}
+			this.UpVector = Vector3.Cross(this.RightVector, this.LookDirectionVector);
 		}
 
 		public Matrix4 GetProjectionMatrix(ProjectionType projectionType, int viewportWidth, int viewportHeight)
@@ -191,9 +182,9 @@ namespace Everlook.Viewport.Rendering
 		public Matrix4 GetViewMatrix()
 		{
 			return Matrix4.LookAt(
-				cameraPosition,
-				cameraPosition + cameraLookDirection,
-				cameraUpVector
+				Position,
+				Position + LookDirectionVector,
+				UpVector
 			);
 		}
 	}

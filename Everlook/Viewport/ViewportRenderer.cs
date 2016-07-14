@@ -23,6 +23,7 @@
 using System;
 using System.Diagnostics;
 using Everlook.Configuration;
+using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
 using OpenTK.Graphics;
@@ -58,53 +59,26 @@ namespace Everlook.Viewport
 		/// </summary>
 		private IRenderable RenderTarget;
 
-		/*
-			Runtime positional data for the observer.
-		*/
+		/// <summary>
+		/// The camera viewpoint of the observer.
+		/// </summary>
+		public ViewportCamera Camera;
 
 		/// <summary>
-		/// The current position of the observer in world space.
+		/// The movement component for the camera.
 		/// </summary>
-		private Vector3 cameraPosition;
+		private CameraMovement Movement;
 
 		/// <summary>
-		/// A vector pointing in the direction the observer is currently looking.
+		/// The time taken to render the previous frame.
 		/// </summary>
-		private Vector3 cameraLookDirection;
-
-		/// <summary>
-		/// The current vector that points directly to the right, relative to the
-		/// current orientation of the observer.
-		/// </summary>
-		private Vector3 cameraRightVector;
-
-		/// <summary>
-		/// The current vector that points directly upwards, relative to the current
-		/// orientation of the observer.
-		/// </summary>
-		private Vector3 cameraUpVector;
-
-		/// <summary>
-		/// The current horizontal view angle of the observer.
-		/// </summary>
-		private float horizontalViewAngle;
-
-		/// <summary>
-		/// The current vertical view angle of the observer. This angle is
-		/// limited to -90 and 90 (straight down and straight up, respectively).
-		/// </summary>
-		private float verticalViewAngle;
+		private float deltaTime;
 
 		/// <summary>
 		/// Whether or not the user wants to move in world space. If set to true, the
 		/// rendering loop will recalculate the view and projection matrices every frame.
 		/// </summary>
 		public bool WantsToMove = false;
-
-		/// <summary>
-		/// The time taken to render the previous frame.
-		/// </summary>
-		private float DeltaTime;
 
 		/// <summary>
 		/// The X position of the mouse during the last frame, relative to the <see cref="ViewportWidget"/>.
@@ -119,10 +93,10 @@ namespace Everlook.Viewport
 		/// <summary>
 		/// The current desired movement direction of the right axis.
 		///
-		/// A positive value represents movement to the right at a speed matching <see cref="DefaultMovementSpeed"/>
+		/// A positive value represents movement to the right at a speed matching <see cref="CameraMovement.DefaultMovementSpeed"/>
 		/// multiplied by the axis value.
 		///
-		/// A negative value represents movement to the left at a speed matching <see cref="DefaultMovementSpeed"/>
+		/// A negative value represents movement to the left at a speed matching <see cref="CameraMovement.DefaultMovementSpeed"/>
 		/// multiplied by the axis value.
 		///
 		/// A value of <value>0</value> represents no movement.
@@ -132,35 +106,28 @@ namespace Everlook.Viewport
 		/// <summary>
 		/// The current desired movement direction of the right axis.
 		///
-		/// A positive value represents forwards movement at a speed matching <see cref="DefaultMovementSpeed"/>
+		/// A positive value represents forwards movement at a speed matching <see cref="CameraMovement.DefaultMovementSpeed"/>
 		/// multiplied by the axis value.
 		///
-		/// A negative value represents backwards movement at a speed matching <see cref="DefaultMovementSpeed"/>
+		/// A negative value represents backwards movement at a speed matching <see cref="CameraMovement.DefaultMovementSpeed"/>
 		/// multiplied by the axis value.
 		///
 		/// A value of <value>0</value> represents no movement.
 		/// </summary>
 		public float ForwardAxis;
 
-
-		/*
-			Default camera and movement speeds.
-		*/
-
 		/// <summary>
-		/// The default field of view for perspective projections.
+		/// The current desired movement direction of the up axis.
+		///
+		/// A positive value represents upwards movement at a speed matching <see cref="CameraMovement.DefaultMovementSpeed"/>
+		/// multiplied by the axis value.
+		///
+		/// A negative value represents downwards movement at a speed matching <see cref="CameraMovement.DefaultMovementSpeed"/>
+		/// multiplied by the axis value.
+		///
+		/// A value of <value>0</value> represents no movement.
 		/// </summary>
-		private const float DefaultFieldOfView = 45.0f;
-
-		/// <summary>
-		/// The default movement speed of the observer within the viewport.
-		/// </summary>
-		private const float DefaultMovementSpeed = 5.0f;
-
-		/// <summary>
-		/// The default turning speed of the observer within the viewport.
-		/// </summary>
-		private const float DefaultTurningSpeed = 0.05f;
+		public float UpAxis;
 
 
 		/*
@@ -197,6 +164,9 @@ namespace Everlook.Viewport
 		public ViewportRenderer(GLWidget viewportWidget)
 		{
 			this.ViewportWidget = viewportWidget;
+			this.Camera = new ViewportCamera();
+			this.Movement = new CameraMovement(this.Camera);
+
 			this.IsInitialized = false;
 		}
 
@@ -215,7 +185,10 @@ namespace Everlook.Viewport
 
 			// Enable backface culling for performance reasons
 			GL.Enable(EnableCap.CullFace);
+
+			// Set a simple default blending function
 			GL.Enable(EnableCap.Blend);
+			GL.BlendEquation(BlendEquationMode.FuncAdd);
 			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
 			// Initialize the viewport
@@ -229,8 +202,6 @@ namespace Everlook.Viewport
 				(float)Config.GetViewportBackgroundColour().Alpha);
 
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-			ResetCamera();
 
 			this.IsInitialized = true;
 		}
@@ -250,47 +221,40 @@ namespace Everlook.Viewport
 
 				if (RenderTarget != null)
 				{
+					Stopwatch sw = Stopwatch.StartNew();
+
 					// Calculate the current relative movement of the camera
 					if (WantsToMove)
 					{
-						CalulateRelativeMovementVectors();
-					}
+						int mouseX;
+						int mouseY;
+						this.ViewportWidget.GetPointer(out mouseX, out mouseY);
 
-					// Calculate the relative viewpoint
-					Matrix4 projection;
-					if (RenderTarget.Projection == ProjectionType.Orthographic)
-					{
-						projection = Matrix4.CreateOrthographic(widgetWidth, widgetHeight, 0.01f, 1000.0f);
-					}
-					else
-					{
-						float aspectRatio = (float)widgetWidth / (float)widgetHeight;
-						projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(DefaultFieldOfView), aspectRatio, 0.01f, 1000.0f);
-					}
+						float deltaMouseX = MouseXLastFrame - mouseX;
+						float deltaMouseY = MouseYLastFrame - mouseY;
 
-					Matrix4 view = Matrix4.LookAt(
-						cameraPosition,
-						cameraPosition + cameraLookDirection,
-						cameraUpVector
-					);
+						this.Movement.CalculateMovement(deltaMouseX, deltaMouseY, this.deltaTime, this.ForwardAxis, this.RightAxis, this.UpAxis);
+
+						MouseXLastFrame = mouseX;
+						MouseYLastFrame = mouseY;
+					}
 
 					// Render the current object
-					Stopwatch sw = Stopwatch.StartNew();
+					// Tick the actor, advancing any time-dependent behaviour
+					ITickingActor tickingRenderable = RenderTarget as ITickingActor;
+					if (tickingRenderable != null)
 					{
-						// Tick the actor, advancing any time-dependent behaviour
-						ITickingActor tickingRenderable = RenderTarget as ITickingActor;
-						if (tickingRenderable != null)
-						{
-							tickingRenderable.Tick(DeltaTime);
-						}
-
-						// Then render the visual component
-						RenderTarget.Render(view, projection);
+						tickingRenderable.Tick(deltaTime);
 					}
-					sw.Stop();
-					DeltaTime = (float)sw.Elapsed.TotalMilliseconds;
+
+					// Then render the visual component
+					Matrix4 view = this.Camera.GetViewMatrix();
+					Matrix4 projection = this.Camera.GetProjectionMatrix(this.RenderTarget.Projection, widgetWidth, widgetHeight);
+					RenderTarget.Render(view, projection);
 
 					GraphicsContext.CurrentContext.SwapBuffers();
+					sw.Stop();
+					deltaTime = (float) sw.Elapsed.TotalMilliseconds / 1000;
 				}
 			}
 		}
@@ -323,89 +287,7 @@ namespace Everlook.Viewport
 				this.RenderTarget = inRenderable;
 			}
 
-			ResetCamera();
-		}
-
-		/// <summary>
-		/// Resets the camera to the default position.
-		/// </summary>
-		public void ResetCamera()
-		{
-			this.cameraPosition = new Vector3(0.0f, 0.0f, 1.0f);
-			this.horizontalViewAngle = MathHelper.DegreesToRadians(180.0f);
-			this.verticalViewAngle = MathHelper.DegreesToRadians(0.0f);
-
-			this.cameraLookDirection = new Vector3(
-				(float)(Math.Cos(this.verticalViewAngle) * Math.Sin(this.horizontalViewAngle)),
-				(float)Math.Sin(this.verticalViewAngle),
-				(float)(Math.Cos(this.verticalViewAngle) * Math.Cos(this.horizontalViewAngle)));
-
-			this.cameraRightVector = new Vector3(
-				(float)Math.Sin(horizontalViewAngle - MathHelper.PiOver2),
-				0,
-				(float)Math.Cos(horizontalViewAngle - MathHelper.PiOver2));
-
-			this.cameraUpVector = Vector3.Cross(cameraRightVector, cameraLookDirection);
-		}
-
-		/// <summary>
-		/// Calculates the relative position of the observer in world space, using
-		/// input relayed from the main interface.
-		/// </summary>
-		private void CalulateRelativeMovementVectors()
-		{
-			int mouseX;
-			int mouseY;
-			this.ViewportWidget.GetPointer(out mouseX, out mouseY);
-
-			this.horizontalViewAngle += DefaultTurningSpeed * this.DeltaTime * (MouseXLastFrame - mouseX);
-			this.verticalViewAngle += DefaultTurningSpeed * this.DeltaTime * (MouseYLastFrame - mouseY);
-
-			if (verticalViewAngle > MathHelper.DegreesToRadians(90.0f))
-			{
-				verticalViewAngle = MathHelper.DegreesToRadians(90.0f);
-			}
-			else if (verticalViewAngle < MathHelper.DegreesToRadians(-90.0f))
-			{
-				verticalViewAngle = MathHelper.DegreesToRadians(-90.0f);
-			}
-
-			MouseXLastFrame = mouseX;
-			MouseYLastFrame = mouseY;
-
-			// Compute the look direction
-			this.cameraLookDirection = new Vector3(
-				(float)(Math.Cos(this.verticalViewAngle) * Math.Sin(this.horizontalViewAngle)),
-				(float)Math.Sin(this.verticalViewAngle),
-				(float)(Math.Cos(this.verticalViewAngle) * Math.Cos(this.horizontalViewAngle)));
-
-			this.cameraRightVector = new Vector3(
-				(float)Math.Sin(this.horizontalViewAngle - MathHelper.PiOver2),
-				0,
-				(float)Math.Cos(this.horizontalViewAngle - MathHelper.PiOver2));
-
-			this.cameraUpVector = Vector3.Cross(this.cameraRightVector, this.cameraLookDirection);
-
-			// Perform any movement
-			if (ForwardAxis > 0)
-			{
-				this.cameraPosition += this.cameraLookDirection * DeltaTime * DefaultMovementSpeed;
-			}
-
-			if (ForwardAxis < 0)
-			{
-				this.cameraPosition -= this.cameraLookDirection * DeltaTime * DefaultMovementSpeed;
-			}
-
-			if (RightAxis > 0)
-			{
-				this.cameraPosition += this.cameraRightVector * DeltaTime * DefaultMovementSpeed;
-			}
-
-			if (RightAxis < 0)
-			{
-				this.cameraPosition -= this.cameraRightVector * DeltaTime * DefaultMovementSpeed;
-			}
+			this.Camera.ResetPosition();
 		}
 
 		/// <summary>

@@ -41,7 +41,7 @@ namespace Everlook.Viewport.Rendering
 	/// <summary>
 	/// Represents a renderable World Model Object
 	/// </summary>
-	public sealed class RenderableWorldModel : IRenderable
+	public sealed class RenderableWorldModel : ITickingActor
 	{
 		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is,
@@ -69,6 +69,8 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		/// <value>The model.</value>
 		public WMO Model { get; private set; }
+
+		public Transform ActorTransform { get; set; }
 
 		private readonly PackageGroup ModelPackageGroup;
 		private readonly RenderCache Cache = RenderCache.Instance;
@@ -98,6 +100,13 @@ namespace Everlook.Viewport.Rendering
 			this.Model = inModel;
 			this.ModelPackageGroup = inPackageGroup;
 
+			this.ActorTransform = new Transform
+			(
+				new Vector3(0.0f, 0.0f, 0.0f),
+				Quaternion.FromAxisAngle(Vector3.UnitX, MathHelper.Pi),
+				new Vector3(1.0f, 1.0f, 1.0f)
+			);
+
 			this.IsInitialized = false;
 
 			Initialize();
@@ -108,23 +117,6 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Initialize()
 		{
-			// Load and cache the textures used in this model
-			foreach (string texturePath in Model.GetUsedTextures())
-			{
-				if (Cache.HasCachedTextureForPath(texturePath))
-				{
-					if (!this.textureLookup.ContainsKey(texturePath))
-					{
-						this.textureLookup.Add(texturePath, Cache.GetCachedTexture(texturePath));
-					}
-				}
-				else
-				{
-					BLP texture = new BLP(ModelPackageGroup.ExtractFile(texturePath));
-					this.textureLookup.Add(texturePath, Cache.CreateCachedTexture(texture, texturePath));
-				}
-			}
-
 			// Load and cache a simple, unlit shader
 			if (Cache.HasCachedShader(EverlookShader.UnlitWorldModel))
 			{
@@ -230,31 +222,15 @@ namespace Everlook.Viewport.Rendering
 					groupVertexIndexValuesArray, BufferUsageHint.StaticDraw);
 
 				this.vertexIndexBufferLookup.Add(modelGroup, vertexIndicesID);
-
-				/*
-				foreach (RenderBatch renderBatch in modelGroup.GetRenderBatches())
-				{
-					int indexBufferID;
-					GL.GenBuffers(1, out indexBufferID);
-
-					List<ushort> vertexIndices = new List<ushort>();
-
-					for (uint i = renderBatch.FirstPolygonIndex; i < renderBatch.PolygonIndexCount; ++i)
-					{
-						vertexIndices.Add(modelGroup.GetVertexIndices()[(int)i]);
-					}
-
-					GL.BindBuffer(BufferTarget.ElementArrayBuffer, indexBufferID);
-					GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr) (vertexIndices.Count * sizeof(ushort)),
-						vertexIndices.ToArray(), BufferUsageHint.StaticDraw);
-
-					this.vertexIndexBufferLookup.Add(renderBatch, indexBufferID);
-				}
-
-				*/
 			}
 
 			this.IsInitialized = true;
+		}
+
+		public void Tick(float deltaTime)
+		{
+			// TODO: Tick the animations of all referenced doodads.
+			// Doodads that are not rendered should still have their states advanced.
 		}
 
 		/// <summary>
@@ -278,8 +254,6 @@ namespace Everlook.Viewport.Rendering
 			// TODO: Render each block of batches with the same material ID
 
 			// TODO: Shade light effects and vertex colours
-
-			// TODO: Tick the animations of all referenced doodads
 
 			// TODO: Render each doodad in the currently selected doodad set
 
@@ -331,22 +305,19 @@ namespace Everlook.Viewport.Rendering
 			int indexBufferID = this.vertexIndexBufferLookup[modelGroup];
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, indexBufferID);
 
-			// Set the model view matrix
-			Matrix4 modelTranslation = Matrix4.CreateTranslation(new Vector3(0.0f, 0.0f, 0.0f));
-			Matrix4 modelScale = Matrix4.Scale(new Vector3(1.0f, 1.0f, 1.0f));
-			Matrix4 modelRotation = Matrix4.Rotate(Quaternion.FromAxisAngle(Vector3.UnitX, MathHelper.Pi));
-
 			// Send the model matrix to the shader
-			Matrix4 modelViewProjection = modelScale * modelRotation* modelTranslation * viewMatrix * projectionMatrix;
+			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 			int projectionShaderVariableHandle = GL.GetUniformLocation(this.SimpleShaderID, "ModelViewProjection");
 			GL.UniformMatrix4(projectionShaderVariableHandle, false, ref modelViewProjection);
 
-			// Render all the different materials
-			foreach (RenderBatch renderBatch in modelGroup.GetRenderBatches())
+			// Render all the different materials (opaque first, transparent after)
+			foreach (RenderBatch renderBatch in modelGroup.GetRenderBatches().OrderBy(batch => this.Model.GetMaterial(batch.MaterialIndex).BlendMode))
 			{
 				// TODO: Render based on the shader. For now, simple rendering of diffuse texture
-				ModelMaterial material = this.Model.GetMaterial(renderBatch.MaterialIndex);
-				int textureID = Cache.GetCachedTexture(material.Texture0);
+				ModelMaterial modelMaterial = this.Model.GetMaterial(renderBatch.MaterialIndex);
+				EnableMaterial(modelMaterial);
+
+				int textureID = Cache.GetCachedTexture(modelMaterial.Texture0);
 
 				// Set the texture ID as a uniform sampler in unit 0
 				GL.ActiveTexture(TextureUnit.Texture0);
@@ -365,6 +336,81 @@ namespace Everlook.Viewport.Rendering
 			GL.DisableVertexAttribArray(0);
 			GL.DisableVertexAttribArray(1);
 			GL.DisableVertexAttribArray(2);
+		}
+
+		private void EnableMaterial(ModelMaterial modelMaterial)
+		{
+			// Load the textures used in this material
+			if (!string.IsNullOrEmpty(modelMaterial.Texture0))
+			{
+				if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
+				{
+					CacheTexture(modelMaterial.Texture0, TextureWrapMode.ClampToBorder);
+				}
+				else
+				{
+					CacheTexture(modelMaterial.Texture0);
+				}
+			}
+
+			if (!string.IsNullOrEmpty(modelMaterial.Texture1))
+			{
+				if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
+				{
+					CacheTexture(modelMaterial.Texture1, TextureWrapMode.ClampToBorder);
+				}
+				else
+				{
+					CacheTexture(modelMaterial.Texture1);
+				}
+			}
+
+			if (!string.IsNullOrEmpty(modelMaterial.Texture2))
+			{
+				if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
+				{
+					CacheTexture(modelMaterial.Texture2, TextureWrapMode.ClampToBorder);
+				}
+				else
+				{
+					CacheTexture(modelMaterial.Texture2);
+				}
+			}
+
+			// Set two-sided rendering
+			if (modelMaterial.Flags.HasFlag(MaterialFlags.TwoSided))
+			{
+				GL.Disable(EnableCap.CullFace);
+			}
+			else
+			{
+				GL.Enable(EnableCap.CullFace);
+			}
+
+			if (modelMaterial.BlendMode == BlendingMode.Transparent)
+			{
+				GL.Enable(EnableCap.Blend);
+			}
+			else
+			{
+				GL.Disable(EnableCap.Blend);
+			}
+		}
+
+		private void CacheTexture(string texturePath, TextureWrapMode textureWrapMode = TextureWrapMode.Repeat)
+		{
+			if (Cache.HasCachedTextureForPath(texturePath))
+			{
+				if (!this.textureLookup.ContainsKey(texturePath))
+				{
+					this.textureLookup.Add(texturePath, Cache.GetCachedTexture(texturePath));
+				}
+			}
+			else
+			{
+				BLP texture = new BLP(ModelPackageGroup.ExtractFile(texturePath));
+				this.textureLookup.Add(texturePath, Cache.CreateCachedTexture(texture, texturePath, textureWrapMode));
+			}
 		}
 
 		/// <summary>

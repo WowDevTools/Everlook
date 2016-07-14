@@ -105,7 +105,7 @@ namespace Everlook.Viewport.Rendering
 		/// Creates a cached texture for the specifed texture, using the specified path
 		/// as a lookup key.
 		/// </summary>
-		public int CreateCachedTexture(BLP texture, string texturePath)
+		public int CreateCachedTexture(BLP texture, string texturePath, TextureWrapMode textureWrapMode = TextureWrapMode.Repeat)
 		{
 			if (texture == null)
 			{
@@ -131,7 +131,6 @@ namespace Everlook.Viewport.Rendering
 						LoadBitmapTexture(textureID, mipZero);
 					}
 				}
-
 			}
 			else
 			{
@@ -145,11 +144,8 @@ namespace Everlook.Viewport.Rendering
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
 
-			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
-
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)textureWrapMode);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)textureWrapMode);
 
 			int maximalMipLevel = texture.GetMipMapCount() == 0 ? 0 : texture.GetMipMapCount() - 1;
 			GL.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMaxLevel, ref maximalMipLevel);

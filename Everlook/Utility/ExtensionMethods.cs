@@ -1,5 +1,5 @@
 ﻿//
-//  Utilities.cs
+//  ExtensionMethods.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -21,13 +21,15 @@
 //
 using System;
 using Gtk;
+using OpenTK;
+using Warcraft.Core;
 
 namespace Everlook.Utility
 {
 	/// <summary>
 	/// Collection of small utility functions that make life easier.
 	/// </summary>
-	public static class Utilities
+	public static class ExtensionMethods
 	{
 		/// <summary>
 		/// Converts any non-native path separators to the current native path separator,
@@ -138,6 +140,22 @@ namespace Everlook.Utility
 			}
 
 			return fileIcon;
+		}
+
+		/// <summary>
+		/// Converts the current OpenGL vector to a Warcraft vector structure.
+		/// </summary>
+		public static Vector3f ToWarcraftVector(this Vector3 vector3)
+		{
+			return new Vector3f(vector3.X, vector3.Y, vector3.Z);
+		}
+
+		/// <summary>
+		/// Converts the current Warcraft vector to an OpenGL vector structure.
+		/// </summary>
+		public static Vector3 ToOpenGLVector(this Vector3f vector3f)
+		{
+			return new Vector3(vector3f.X, vector3f.Y, vector3f.Z);
 		}
 	}
 }

@@ -74,7 +74,10 @@
     <Compile Include="Export\Audio\AudioFormat.cs" />
     <Compile Include="Export\Model\ModelFormat.cs" />
     <Compile Include="EverlookPreferences.cs" />
+    <Compile Include="Viewport\Camera\CameraMovement.cs" />
+    <Compile Include="Viewport\Camera\ViewportCamera.cs" />
     <Compile Include="Viewport\Rendering\Core\EverlookShader.cs" />
+    <Compile Include="Viewport\Rendering\Core\Plane.cs" />
     <Compile Include="Viewport\Rendering\Core\Transform.cs" />
     <Compile Include="Viewport\Rendering\Interfaces\IActor.cs" />
     <Compile Include="Viewport\Rendering\Interfaces\IRenderable.cs" />
@@ -85,7 +88,7 @@
     <Compile Include="Viewport\Rendering\RenderableWorldModel.cs" />
     <Compile Include="Viewport\Rendering\RenderCache.cs" />
     <Compile Include="Viewport\ViewportRenderer.cs" />
-    <Compile Include="Utility\Utilities.cs" />
+    <Compile Include="Utility\ExtensionMethods.cs" />
     <Compile Include="Audio\AudioPlayer.cs" />
     <Compile Include="Explorer\ExplorerBuilder.cs" />
     <Compile Include="Export\Image\EverlookImageExportDialog.cs" />
@@ -125,6 +128,7 @@
     <Folder Include="Content\Shaders\" />
     <Folder Include="Content\Shaders\Adapted\" />
     <Folder Include="Content\Shaders\" />
+    <Folder Include="Viewport\Camera" />
     <Folder Include="Viewport\Rendering\" />
     <Folder Include="Viewport\Rendering\" />
   </ItemGroup>

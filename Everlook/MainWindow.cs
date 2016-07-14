@@ -43,9 +43,9 @@ using Warcraft.Core;
 using Warcraft.BLP;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
+using ExtensionMethods = Everlook.Utility.ExtensionMethods;
 using KeyPressEventArgs = Gtk.KeyPressEventArgs;
-
-using SysPath = System.IO.Path;
+using IOPath = System.IO.Path;
 
 namespace Everlook
 {
@@ -250,6 +250,15 @@ namespace Everlook
 				{
 					this.viewportRenderer.RightAxis = 0.0f;
 				}
+
+				if (args.Event.Key == Gdk.Key.q || args.Event.Key == Gdk.Key.Q)
+				{
+					this.viewportRenderer.UpAxis = 0.0f;
+				}
+				else if (args.Event.Key == Gdk.Key.e || args.Event.Key == Gdk.Key.E)
+				{
+					this.viewportRenderer.UpAxis = 0.0f;
+				}
 			}
 		}
 
@@ -262,6 +271,7 @@ namespace Everlook
 		{
 			if (args.Event.Type == EventType.KeyPress)
 			{
+				// W & S keys, forwards and backwards movement
 				if( args.Event.Key == Gdk.Key.w || args.Event.Key == Gdk.Key.W)
 				{
 					this.viewportRenderer.ForwardAxis = 1.0f;
@@ -271,6 +281,7 @@ namespace Everlook
 					this.viewportRenderer.ForwardAxis = -1.0f;
 				}
 
+				// D & A keys, right & left movement
 				if( args.Event.Key == Gdk.Key.d || args.Event.Key == Gdk.Key.D)
 				{
 					this.viewportRenderer.RightAxis = 1.0f;
@@ -280,9 +291,20 @@ namespace Everlook
 					this.viewportRenderer.RightAxis = -1.0f;
 				}
 
+				// Q & E keys, upwards and downwards movement
+				if (args.Event.Key == Gdk.Key.q || args.Event.Key == Gdk.Key.Q)
+				{
+					this.viewportRenderer.UpAxis = 1.0f;
+				}
+				else if (args.Event.Key == Gdk.Key.e || args.Event.Key == Gdk.Key.E)
+				{
+					this.viewportRenderer.UpAxis = -1.0f;
+				}
+
+				// R key, reset camera position
 				if( args.Event.Key == Gdk.Key.r || args.Event.Key == Gdk.Key.R)
 				{
-					this.viewportRenderer.ResetCamera();
+					this.viewportRenderer.Camera.ResetPosition();
 				}
 
 				if (args.Event.Key == Gdk.Key.Escape)
@@ -345,7 +367,7 @@ namespace Everlook
 		{
 			// Initialize all OpenGL rendering parameters
 			this.viewportRenderer.Initialize();
-			GLib.Idle.Add(OnIdleRenderFrame);
+			Idle.Add(OnIdleRenderFrame);
 		}
 
 		/// <summary>
@@ -601,7 +623,7 @@ namespace Everlook
 			}
 			else
 			{
-				string filename = System.IO.Path.GetFileName(cleanFilepath);
+				string filename = IOPath.GetFileName(cleanFilepath);
 				exportpath = Config.GetDefaultExportDirectory() + filename;
 			}
 
@@ -664,7 +686,7 @@ namespace Everlook
 			{
 				cleanFilepath = itemReference.PackageName;
 			}
-			else if (String.IsNullOrEmpty(System.IO.Path.GetFileName(cleanFilepath)))
+			else if (String.IsNullOrEmpty(IOPath.GetFileName(cleanFilepath)))
 			{
 				cleanFilepath = Directory.GetParent(cleanFilepath).FullName.Replace(Directory.GetCurrentDirectory(), "");
 			}
@@ -872,7 +894,7 @@ namespace Everlook
 						{
 							WMO worldModel = new WMO(fileData);
 
-							string modelPathWithoutExtension = SysPath.GetFileNameWithoutExtension(fileReference.ItemPath);
+							string modelPathWithoutExtension = IOPath.GetFileNameWithoutExtension(fileReference.ItemPath);
 							for (int i = 0; i < worldModel.GroupCount; ++i)
 							{
 								// Extract the groups as well
@@ -1289,7 +1311,7 @@ namespace Everlook
 		/// <returns>A <see cref="TreeIter"/> pointing to the new directory node.</returns>
 		private TreeIter CreateFileTreeNode(TreeIter parentNode, ItemReference file)
 		{
-			return GameExplorerTreeStore.AppendValues(parentNode, Utilities.GetIconForFiletype(file.ItemPath),
+			return GameExplorerTreeStore.AppendValues(parentNode, ExtensionMethods.GetIconForFiletype(file.ItemPath),
 				file.GetReferencedItemName(), "", "", (int)NodeType.File);
 		}
 

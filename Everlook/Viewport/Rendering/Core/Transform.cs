@@ -78,5 +78,17 @@ namespace Everlook.Viewport.Rendering.Core
 			this.Orientation = orientation;
 			this.Scale = scale;
 		}
+
+		/// <summary>
+		/// Gets the <see cref="Matrix4"/> object representing the model matrix of this transform.
+		/// </summary>
+		public Matrix4 GetModelMatrix()
+		{
+			Matrix4 modelScale = Matrix4.Scale(this.Scale);
+			Matrix4 modelOrientation = Matrix4.Rotate(this.Orientation);
+			Matrix4 modelTranslation = Matrix4.CreateTranslation(this.Translation);
+
+			return modelScale * modelOrientation * modelTranslation;
+		}
 	}
 }

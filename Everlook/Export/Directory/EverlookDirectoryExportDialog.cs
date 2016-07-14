@@ -129,7 +129,7 @@ namespace Everlook.Export.Directory
 					if (Config.GetShouldKeepFileDirectoryStructure())
 					{
 						string parentDirectoryOfFile =
-							Utilities.ConvertPathSeparatorsToCurrentNativeSeparator(ExportTarget.ItemPath);
+							ExtensionMethods.ConvertPathSeparatorsToCurrentNativeSeparator(ExportTarget.ItemPath);
 
 						ExportPath =
 							$"{ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{parentDirectoryOfFile}{System.IO.Path.DirectorySeparatorChar}{referenceToExport.GetReferencedItemName()}";
