@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="36.124443mm"
+   height="36.124443mm"
+   viewBox="0 0 128 127.99999"
+   id="svg16364"
+   version="1.1"
+   inkscape:version="0.91 r"
+   sodipodi:docname="Blender-Armature-Icon.svg">
+  <defs
+     id="defs16366">
+    <linearGradient
+       id="linearGradient10069">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop10071" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop10073" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient319">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop320" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="1"
+         id="stop321" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient40983">
+      <stop
+         style="stop-color:#6a9ae0;stop-opacity:1;"
+         offset="0"
+         id="stop40985" />
+      <stop
+         style="stop-color:#5189db;stop-opacity:0;"
+         offset="1"
+         id="stop40987" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient319"
+       id="linearGradient27767"
+       gradientUnits="userSpaceOnUse"
+       x1="125.99933"
+       y1="111.2683"
+       x2="134.91479"
+       y2="122.36016" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient319"
+       id="linearGradient27769"
+       gradientUnits="userSpaceOnUse"
+       x1="126.72586"
+       y1="112.53999"
+       x2="134.91479"
+       y2="122.36016" />
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:collect="always"
+       id="filter13996"
+       x="-0.23644176"
+       width="1.4728835"
+       y="-0.24368355"
+       height="1.4873672">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.29550651"
+         id="feGaussianBlur13998" />
+    </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13973"
+       id="linearGradient27771"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(19.367382,0)"
+       x1="112.18942"
+       y1="114.71685"
+       x2="99.628899"
+       y2="99.029617" />
+    <linearGradient
+       id="linearGradient13973">
+      <stop
+         style="stop-color:#3c4c18;stop-opacity:1;"
+         offset="0"
+         id="stop13975" />
+      <stop
+         style="stop-color:#9aff31;stop-opacity:0;"
+         offset="1"
+         id="stop13977" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient319"
+       id="linearGradient27773"
+       gradientUnits="userSpaceOnUse"
+       x1="127.63637"
+       y1="114.2303"
+       x2="143.69765"
+       y2="131.03783" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.959798"
+     inkscape:cx="28.071693"
+     inkscape:cy="60.578328"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1440"
+     inkscape:window-height="873"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       position="116.42009,116.16754"
+       orientation="-0.70710678,0.70710678"
+       id="guide16466" />
+    <sodipodi:guide
+       position="112.88455,63.387071"
+       orientation="0,1"
+       id="guide16468" />
+    <sodipodi:guide
+       position="67.175148,82.832507"
+       orientation="1,0"
+       id="guide16470" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata16369">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-1.3124,3.097)">
+    <g
+       style="display:inline;enable-background:new"
+       transform="matrix(8.0000005,0,0,8.0000005,-376.01422,-2919.7771)"
+       id="g27744">
+      <rect
+         style="display:inline;overflow:visible;visibility:visible;opacity:0;fill:#b3b3b3;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.79999995;marker:none;enable-background:accumulate"
+         id="rect27746"
+         width="16"
+         height="16"
+         x="47.165825"
+         y="364.58499" />
+      <g
+         id="g27748"
+         transform="matrix(1.032664,0,0,1.043556,-79.760429,254.38542)"
+         inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\Kopia blender\.blender\icons\jendrzych's iconset.png"
+         inkscape:export-xdpi="90"
+         inkscape:export-ydpi="90">
+        <circle
+           r="8"
+           cy="118"
+           cx="132"
+           style="display:inline;overflow:visible;visibility:visible;fill:#4169a5;fill-opacity:1;fill-rule:nonzero;stroke:#0b1728;stroke-width:1.22966909;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
+           id="path27750"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\Kopia blender\.blender\icons\blender's iconset.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           transform="matrix(0.787566,0,0,0.779223,26.709197,21.3179)" />
+        <circle
+           r="8"
+           cy="118"
+           cx="132"
+           id="path27752"
+           style="fill:url(#linearGradient27767);fill-opacity:1;fill-rule:nonzero;stroke:none"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\Kopia blender\.blender\icons\blender's iconset.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           transform="matrix(0.666432,0,0,0.659342,42.69924,35.46375)" />
+        <circle
+           r="8"
+           cy="118"
+           cx="132"
+           transform="matrix(0.3631382,0,0,0.3593485,81.755824,69.904768)"
+           inkscape:export-ydpi="90"
+           inkscape:export-xdpi="90"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\Kopia blender\.blender\icons\blender's iconset.png"
+           style="opacity:0.7;fill:url(#linearGradient27769);fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path27755" />
+        <path
+           sodipodi:nodetypes="cc"
+           id="path27757"
+           d="m 274.98515,70.995347 c 0,0.953349 -1,1.906699 -2,1.906699"
+           style="display:inline;opacity:0.5;fill:none;stroke:#ffe680;stroke-width:1.00161445px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;filter:url(#filter13996)"
+           transform="matrix(0.9688184,0,0,0.9547322,-131.63668,47.640696)"
+           inkscape:connector-curvature="0" />
+        <path
+           sodipodi:nodetypes="ccccccccccccssscsscccscccccccccccccccsccccc"
+           id="path27761"
+           d="m 130.67404,112.3079 c 0.0244,0.78706 -0.15754,1.63085 0.59269,2.02213 0.71197,-0.0434 1.49133,0.64122 1.35667,1.40517 -0.26776,0.77861 0.14071,1.12325 0.95576,1.36401 0.57868,-0.0716 0.79053,-0.93546 0.87357,-1.36401 0.0948,-1.27121 0.51542,-1.09421 0.82108,-1.98991 -0.45733,-0.91502 -0.003,-1.04443 -0.72629,-1.43739 m -1.00945,-3.89288 c -0.4426,0.34378 -0.24372,1.04314 -0.66162,1.39841 -0.45372,0.13628 -0.78226,-0.0605 -1.16771,0.43164 -0.30841,1.10457 0.35004,1.22306 0.90205,1.10457 0.49538,-0.0502 0.61419,-0.94321 0.97928,-0.37853 0.0831,0.10976 0.71917,-0.0403 0.86266,0.18898 0.0669,0.10682 -0.11785,0.0255 -0.14729,0.18955 -0.0428,0.23847 0.27734,0.37341 0.372,0.3824 0.32089,0.0305 0.60005,0.92548 0.83846,1.05499 0,0.46738 0.0924,-0.6774 0.3515,-0.78703 0.22948,-0.0971 0.47929,0.10731 0.5,0 0.29928,-1.55081 -1.26113,-3.00604 -2.82933,-3.58498 z M 128.96474,107.5 c -0.6111,1.01384 0.85343,1.46103 1.73001,1.21329 0.57897,-0.37879 1.00716,-0.92331 0.55665,-1.21329 -0.20614,-0.1415 -2.07706,0.0431 -2.28666,0 l 0,0 0,0 0,0 z m -1.372,1.37253 c -0.49575,-0.14959 0.44952,-0.11945 0.45733,0.45751 0.1696,0.54756 -0.42801,0.23756 0,0.45752 0.70893,0.1644 0.35328,1.70031 -0.28114,1.56208 -0.56042,0.10119 -0.43915,0.95826 -1.64865,0.88279 -0.0836,0.0755 -1.04512,0.61593 -0.81421,1.21521 1.12968,0.30162 -0.36816,1.26478 -0.43867,0.55236 -0.15441,-0.49797 -0.62853,-1.11348 -0.43994,-1.68674 0.11734,-0.63627 0.5689,-1.12263 0.82646,-1.69865 0.36225,-0.61946 0.89084,-1.17688 1.57758,-1.42595 0.21411,-0.16799 0.46159,-0.41691 0.76124,-0.31613 l 0,0 0,0 0,0 z m -0.91467,5.03262 c -0.55163,-0.27585 -0.72934,0.28829 -0.60377,0.7984 0.15577,0.47138 0.52607,0.97695 0.72628,1.43739 0.40435,0.49619 1.512,1.34081 2.17883,1.67696 0.31768,0.16015 0.48418,0 0.24209,-0.23956 -0.31367,-0.6375 -1.14073,-1.94893 -0.48418,-2.15609 0.59647,-0.60342 0.34203,-1.58773 -0.48419,-1.43739 -0.54779,-0.25818 -0.75551,-0.39899 -1.38855,-0.0752 -0.0558,0.0743 -0.12403,0.006 -0.18651,-0.004 l 0,-5.1e-4 0,0 0,0 z"
+           style="fill:url(#linearGradient27771);fill-opacity:1;fill-rule:evenodd;stroke:none"
+           inkscape:connector-curvature="0" />
+        <circle
+           r="8"
+           cy="118"
+           cx="132"
+           inkscape:export-ydpi="90"
+           inkscape:export-xdpi="90"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\Kopia blender\.blender\icons\blender's iconset.png"
+           id="path27763"
+           style="display:inline;opacity:0.8;fill:none;stroke:url(#linearGradient27773);stroke-width:1.45454657;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           transform="matrix(0.6657538,0,0,0.6588051,42.794535,35.527157)" />
+        <circle
+           r="8"
+           cy="118"
+           cx="132"
+           id="path27765"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\Kopia blender\.blender\icons\blender's iconset.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           transform="matrix(0.06052282,0,0,0.05989117,121.21686,103.80334)" />
+      </g>
+    </g>
+  </g>
+</svg>

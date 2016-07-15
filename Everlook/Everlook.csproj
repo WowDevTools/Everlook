@@ -110,9 +110,14 @@
     <EmbeddedResource Include="Content\Shaders\Adapted\PlainImage\PlainImageVertex.glsl" />
     <EmbeddedResource Include="Content\Shaders\Adapted\WorldModel\WorldModelFragment.glsl" />
     <EmbeddedResource Include="Content\Shaders\Adapted\WorldModel\WorldModelVertex.glsl" />
+    <EmbeddedResource Include="Content\Icons\Blender-Armature-Icon.svg" />
+    <EmbeddedResource Include="Content\Icons\Blender-Object-Icon.svg" />
+    <EmbeddedResource Include="Content\Icons\Blender-Planet-Icon.svg" />
+    <EmbeddedResource Include="Content\Icons\Blender-Wave-Icon.svg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
+    <Folder Include="Content\Icons" />
     <Folder Include="Content\Shaders\Adapted\WorldModel" />
     <Folder Include="Export\" />
     <Folder Include="Export\Audio\" />

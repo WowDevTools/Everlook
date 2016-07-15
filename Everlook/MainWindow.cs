@@ -1077,7 +1077,8 @@ namespace Everlook
 		private void AddPackageGroupNode(ItemReference groupReference)
 		{
 			// Add the group node
-			TreeIter packageGroupNode = GameExplorerTreeStore.AppendValues("user-home",
+			Pixbuf packageGroupIcon = IconTheme.Default.LoadIcon("user-home", 16, 0);
+			TreeIter packageGroupNode = GameExplorerTreeStore.AppendValues(packageGroupIcon,
 				                            groupReference.PackageGroup.GroupName, "", "Virtual file tree", (int)NodeType.PackageGroup);
 			explorerBuilder.PackageItemNodeMapping.Add(groupReference, packageGroupNode);
 			explorerBuilder.PackageNodeItemMapping.Add(packageGroupNode, groupReference);
@@ -1089,8 +1090,9 @@ namespace Everlook
 			}
 
 			// Add the package folder subnode
+			Pixbuf packageFolderIcon = IconTheme.Default.LoadIcon("applications-other", 16, 0);
 			TreeIter packageFolderNode = GameExplorerTreeStore.AppendValues(packageGroupNode,
-				                             "applications-other", "Packages", "", "Individual packages", (int)NodeType.PackageFolder);
+				                             packageFolderIcon, "Packages", "", "Individual packages", (int)NodeType.PackageFolder);
 			explorerBuilder.PackageItemNodeMapping.Add(groupReference.ChildReferences.First(), packageFolderNode);
 			explorerBuilder.PackageNodeItemMapping.Add(packageFolderNode, groupReference.ChildReferences.First());
 		}
@@ -1125,7 +1127,7 @@ namespace Everlook
 				if (!explorerBuilder.PackageItemNodeMapping.ContainsKey(packageReference))
 				{
 					TreeIter packageNode = GameExplorerTreeStore.AppendValues(parentNode,
-						                       "package-x-generic", packageReference.PackageName, "", "", (int)NodeType.Package);
+						                       new Gtk.Image("package-x-generic", IconSize.Button), packageReference.PackageName, "", "", (int)NodeType.Package);
 					explorerBuilder.PackageItemNodeMapping.Add(packageReference, packageNode);
 					explorerBuilder.PackageNodeItemMapping.Add(packageNode, packageReference);
 				}
@@ -1231,8 +1233,9 @@ namespace Everlook
 		/// <returns>A <see cref="TreeIter"/> pointing to the new directory node.</returns>
 		private TreeIter CreateDirectoryTreeNode(TreeIter parentNode, ItemReference directory)
 		{
+			Pixbuf directoryIcon = IconTheme.Default.LoadIcon(Stock.Directory, 16, 0);
 			return GameExplorerTreeStore.AppendValues(parentNode,
-				Stock.Directory, directory.GetReferencedItemName(), "", "", (int)NodeType.Directory);
+				directoryIcon, directory.GetReferencedItemName(), "", "", (int)NodeType.Directory);
 		}
 
 		/// <summary>

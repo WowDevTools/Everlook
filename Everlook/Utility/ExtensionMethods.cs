@@ -20,6 +20,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
+using System.IO;
+using System.Reflection;
+using Gdk;
 using Gtk;
 using OpenTK;
 using Warcraft.Core;
@@ -72,74 +75,96 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <returns>The icon for the filetype.</returns>
 		/// <param name="file">File.</param>
-		public static string GetIconForFiletype(string file)
+		public static Pixbuf GetIconForFiletype(string file)
 		{
-			string fileIcon = Stock.File;
-
+			Pixbuf icon = IconTheme.Default.LoadIcon(Stock.File, 16, 0);
 			file = file.ToLower();
 
 			if (file.EndsWith(".m2"))
 			{
-				// Blender armature icon?
+				icon = LoadEmbeddedVector("Blender-Armature-Icon");
 			}
 			else if (file.EndsWith(".wmo"))
 			{
-				// Blender object icon?
+				icon = LoadEmbeddedVector("Blender-Object-Icon");
+			}
+			else if (file.EndsWith(".adt"))
+			{
+				icon = LoadEmbeddedVector("Blender-Planet-Icon");
+			}
+			else if (file.EndsWith(".wlw") || file.EndsWith(".wlq") || file.EndsWith(".wlm"))
+			{
+				icon = LoadEmbeddedVector("Blender-Wave-Icon");
 			}
 			else if (file.EndsWith(".blp") || file.EndsWith(".jpg") || file.EndsWith(".gif") || file.EndsWith(".png"))
 			{
-				fileIcon = "image-x-generic";
+				icon = IconTheme.Default.LoadIcon("image-x-generic", 16, 0);
 			}
 			else if (file.EndsWith(".wav") || file.EndsWith(".mp3") || file.EndsWith(".ogg"))
 			{
-				fileIcon = "audio-x-generic";
+				icon = IconTheme.Default.LoadIcon("audio-x-generic", 16, 0);
 			}
 			else if (file.EndsWith(".txt"))
 			{
-				fileIcon = "text-x-generic";
+				icon = IconTheme.Default.LoadIcon("text-x-generic", 16, 0);
 			}
 			else if (file.EndsWith(".dbc") || file.EndsWith(".wdt"))
 			{
-				fileIcon = "x-office-spreadsheet";
+				icon = IconTheme.Default.LoadIcon("x-office-spreadsheet", 16, 0);
 			}
-			else if (file.EndsWith(".exe"))
+			else if (file.EndsWith(".exe") || file.EndsWith(".dll"))
 			{
-				fileIcon = "application-x-executable";
-			}
-			else if (file.EndsWith(".dll"))
-			{
-				fileIcon = "application-x-executable";
+				icon = IconTheme.Default.LoadIcon("application-x-executable", 16, 0);
 			}
 			else if (file.EndsWith(".wtf") || file.EndsWith(".ini"))
 			{
-				fileIcon = "text-x-script";
+				icon = IconTheme.Default.LoadIcon("text-x-script", 16, 0);
 			}
 			else if (file.EndsWith(".html") || file.EndsWith(".url"))
 			{
-				fileIcon = "text-html";
+				icon = IconTheme.Default.LoadIcon("text-html", 16, 0);
 			}
 			else if (file.EndsWith(".pdf"))
 			{
-				fileIcon = "x-office-address-book";
+				icon = IconTheme.Default.LoadIcon("x-office-address-book", 16, 0);
 			}
 			else if (file.EndsWith(".ttf"))
 			{
-				fileIcon = "font-x-generic";
+				icon = IconTheme.Default.LoadIcon("font-x-generic", 16, 0);
 			}
 			else if (file.EndsWith(".wdl"))
 			{
-				fileIcon = "text-x-generic-template";
+				icon = IconTheme.Default.LoadIcon("text-x-generic-template", 16, 0);
 			}
 			else if (file.EndsWith(".sbt"))
 			{
-				fileIcon = "text-x-generic";
+				icon = IconTheme.Default.LoadIcon("text-x-generic", 16, 0);
 			}
 			else if (file.EndsWith(".zmp"))
 			{
-				fileIcon = "application-x-executable";
+				icon = IconTheme.Default.LoadIcon("application-x-executable", 16, 0);
 			}
 
-			return fileIcon;
+			return icon;
+		}
+
+		private static Pixbuf LoadEmbeddedVector(string vectorName)
+		{
+			using (Stream shaderStream =
+				Assembly.GetExecutingAssembly().GetManifestResourceStream($"Everlook.Content.Icons.{vectorName}.svg"))
+			{
+				if (shaderStream == null)
+				{
+					return null;
+				}
+
+				using (MemoryStream ms = new MemoryStream())
+				{
+					shaderStream.CopyTo(ms);
+
+					return new Pixbuf(ms.ToArray(), 16, 16);
+				}
+			}
 		}
 
 		/// <summary>

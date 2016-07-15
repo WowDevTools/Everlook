@@ -45,8 +45,8 @@
   </object>
   <object class="GtkTreeStore" id="GameExplorerTreeStore">
     <columns>
-      <!-- column-name itemStockIcon -->
-      <column type="gchararray"/>
+      <!-- column-name itemIcon -->
+      <column type="GdkPixbuf"/>
       <!-- column-name itemName -->
       <column type="gchararray"/>
       <!-- column-name itemPackage -->
@@ -250,7 +250,7 @@
                                                     <child>
                                                       <object class="GtkCellRendererPixbuf" id="iconRenderer"/>
                                                       <attributes>
-                                                        <attribute name="icon-name">0</attribute>
+                                                        <attribute name="pixbuf">0</attribute>
                                                       </attributes>
                                                     </child>
                                                     <child>
