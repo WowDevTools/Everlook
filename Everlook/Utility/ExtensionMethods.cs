@@ -22,6 +22,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using Everlook.Explorer;
 using Gdk;
 using Gtk;
 using OpenTK;
@@ -67,6 +68,11 @@ namespace Everlook.Utility
 			{
 				return false;
 			}
+		}
+
+		public static Pixbuf GetIcon(this ItemReference itemReference)
+		{
+			return GetIconForFiletype(itemReference.ItemPath);
 		}
 
 		/// <summary>
