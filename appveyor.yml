@@ -4,9 +4,11 @@ configuration:
 init:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 before_build:
+  - curl -fsS -o gtk-sharp-3.msi https://download.gnome.org/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi
+  - msiexec \package gtk-sharp-3.msi \quiet
   - nuget restore
-  - git clone https://github.com/Nihlus/libwarcraft.git
-  - git clone https://github.com/Nihlus/liblistfile
+  - git clone https://github.com/Nihlus/libwarcraft ..\libwarcraft
+  - git clone https://github.com/Nihlus/liblistfile ..\liblistfile
 build:
   parallel: true
   project: Everlook.sln
