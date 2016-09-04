@@ -23,7 +23,16 @@ Currently, Everlook is in early development and may not be usable in your day-to
 * Models are not rendered in the viewport.
 
 ### Compiling
-In order to compile Everlook, you will need a Nuget-capable IDE that supports the C# language. The most commonly used ones are Visual Studio, MonoDevelop and more recently Project Rider. Additionally, you need a recent copy of libwarcraft, which can be cloned from here: https://github.com/Nihlus/libwarcraft
+In order to compile Everlook, you will need a Nuget-capable IDE that supports the C# language. The most commonly used ones are Visual Studio, MonoDevelop and more recently Project Rider. Additionally, you need recent copies of the following projects: 
+
+* [libwarcraft](https://github.com/Nihlus/libwarcraft9)
+* [liblistfile](https://github.com/Nihlus/liblistfile)
+
+If you're running Windows, you also need the GTK# 3 libraries, which are available here:
+* [GTK# 3 for Windows](https://download.gnome.org/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi)
+
+For Debian-based Linux distributions, the following package should suffice:
+* mono-complete (>= 4.4.2.11-0xamarin1)
 
 Beyond that, it's pretty straightforward - hit compile, run, and develop.
 
