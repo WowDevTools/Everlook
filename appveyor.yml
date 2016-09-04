@@ -11,7 +11,7 @@ before_build:
   - nuget restore ..\libwarcraft\
   - git clone https://github.com/Nihlus/liblistfile ..\liblistfile
   - nuget restore ..\liblistfile\
-platforn: x86
+platform: x86
 build:
   parallel: true
   project: Everlook.sln
