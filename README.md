@@ -25,7 +25,7 @@ Currently, Everlook is in early development and may not be usable in your day-to
 ### Compiling
 In order to compile Everlook, you will need a Nuget-capable IDE that supports the C# language. The most commonly used ones are Visual Studio, MonoDevelop and more recently Project Rider. Additionally, you need recent copies of the following projects: 
 
-* [libwarcraft](https://github.com/Nihlus/libwarcraft9)
+* [libwarcraft](https://github.com/Nihlus/libwarcraft)
 * [liblistfile](https://github.com/Nihlus/liblistfile)
 
 If you're running Windows, you also need the GTK# 3 libraries, which are available here:

@@ -300,7 +300,7 @@ namespace OpenTK
 
 		#region Windows Specific initalization
 
-		IWindowInfo InitializeWindows()
+		private IWindowInfo InitializeWindows()
 		{
 			//IntPtr windowHandle = gdk_win32_drawable_get_handle(this.Window.Handle);
 			return Utilities.CreateWindowsWindowInfo(this.Window.Handle);
@@ -313,7 +313,7 @@ namespace OpenTK
 
 		#region OSX Specific Initialization
 
-		IWindowInfo InitializeOSX()
+		private IWindowInfo InitializeOSX()
 		{
 			IntPtr windowHandle = gdk_quartz_window_get_nswindow(this.Window.Handle);
 			//IntPtr viewHandle = gdk_quartz_window_get_nsview(this.GdkWindow.Handle);
@@ -321,39 +321,39 @@ namespace OpenTK
 		}
 
 		[SuppressUnmanagedCodeSecurity, DllImport("libgdk-quartz-2.0.0.dylib")]
-		static extern IntPtr gdk_quartz_window_get_nswindow(IntPtr handle);
+		private static extern IntPtr gdk_quartz_window_get_nswindow(IntPtr handle);
 
 		[SuppressUnmanagedCodeSecurity, DllImport("libgdk-quartz-2.0.0.dylib")]
-		static extern IntPtr gdk_quartz_window_get_nsview(IntPtr handle);
+		private static extern IntPtr gdk_quartz_window_get_nsview(IntPtr handle);
 
 		#endregion
 
 		#region X Specific Initialization
 
-		const string UnixLibGdkName = "libgdk-3.so.0";
+		private const string UnixLibGdkName = "libgdk-3.so.0";
 
 
-		const string UnixLibX11Name = "libX11.so.6";
-		const string UnixLibGLName = "libGL.so.1";
+		private const string UnixLibX11Name = "libX11.so.6";
+		private const string UnixLibGLName = "libGL.so.1";
 
-		const int GLX_NONE = 0;
-		const int GLX_USE_GL = 1;
-		const int GLX_BUFFER_SIZE = 2;
-		const int GLX_LEVEL = 3;
-		const int GLX_RGBA = 4;
-		const int GLX_DOUBLEBUFFER = 5;
-		const int GLX_STEREO = 6;
-		const int GLX_AUX_BUFFERS = 7;
-		const int GLX_RED_SIZE = 8;
-		const int GLX_GREEN_SIZE = 9;
-		const int GLX_BLUE_SIZE = 10;
-		const int GLX_ALPHA_SIZE = 11;
-		const int GLX_DEPTH_SIZE = 12;
-		const int GLX_STENCIL_SIZE = 13;
-		const int GLX_ACCUM_RED_SIZE = 14;
-		const int GLX_ACCUM_GREEN_SIZE = 15;
-		const int GLX_ACCUM_BLUE_SIZE = 16;
-		const int GLX_ACCUM_ALPHA_SIZE = 17;
+		private const int GLX_NONE = 0;
+		private const int GLX_USE_GL = 1;
+		private const int GLX_BUFFER_SIZE = 2;
+		private const int GLX_LEVEL = 3;
+		private const int GLX_RGBA = 4;
+		private const int GLX_DOUBLEBUFFER = 5;
+		private const int GLX_STEREO = 6;
+		private const int GLX_AUX_BUFFERS = 7;
+		private const int GLX_RED_SIZE = 8;
+		private const int GLX_GREEN_SIZE = 9;
+		private const int GLX_BLUE_SIZE = 10;
+		private const int GLX_ALPHA_SIZE = 11;
+		private const int GLX_DEPTH_SIZE = 12;
+		private const int GLX_STENCIL_SIZE = 13;
+		private const int GLX_ACCUM_RED_SIZE = 14;
+		private const int GLX_ACCUM_GREEN_SIZE = 15;
+		private const int GLX_ACCUM_BLUE_SIZE = 16;
+		private const int GLX_ACCUM_ALPHA_SIZE = 17;
 
 		public enum XVisualClass
 		{
@@ -366,7 +366,7 @@ namespace OpenTK
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		struct XVisualInfo
+		private struct XVisualInfo
 		{
 			public IntPtr Visual;
 			public IntPtr VisualID;
