@@ -5,7 +5,7 @@ init:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 before_build:
   - curl -fsS -o gtk-sharp-3.msi https://download.gnome.org/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi
-  - msiexec /i C:\projects\everlook\gtk-sharp-3.msi /qn
+  - msiexec /quiet /package C:\projects\everlook\gtk-sharp-3.msi
   - nuget restore
   - git clone https://github.com/Nihlus/libwarcraft ..\libwarcraft
   - git clone https://github.com/Nihlus/liblistfile ..\liblistfile
