@@ -8,7 +8,9 @@ before_build:
   - msiexec /i C:\projects\everlook\gtk-sharp-3.msi /qn
   - nuget restore
   - git clone https://github.com/Nihlus/libwarcraft ..\libwarcraft
+  - nuget restore ..\libwarcraft\
   - git clone https://github.com/Nihlus/liblistfile ..\liblistfile
+  - nuget restore ..\liblistfile\
 build:
   parallel: true
   project: Everlook.sln
