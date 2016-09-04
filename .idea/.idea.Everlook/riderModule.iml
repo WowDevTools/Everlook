@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../GLWidgetGTK3" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/../../Everlook/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../Everlook/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../GLWidgetGTK3/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../GLWidgetGTK3/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../packages" />
     </content>
