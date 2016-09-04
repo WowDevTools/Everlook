@@ -177,7 +177,7 @@ namespace Everlook.Viewport.Rendering
 
 			// Set the model view matrix
 			Matrix4 modelTranslation = Matrix4.CreateTranslation(new Vector3(0.0f, 0.0f, 0.0f));
-			Matrix4 modelScale = Matrix4.Scale(new Vector3(1.0f, 1.0f, 1.0f));
+			Matrix4 modelScale = Matrix4.CreateScale(new Vector3(1.0f, 1.0f, 1.0f));
 			Matrix4 modelViewProjection = modelScale * modelTranslation * viewMatrix * projectionMatrix;
 
 			// Send the model matrix to the shader

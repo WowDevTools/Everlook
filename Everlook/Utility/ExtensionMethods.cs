@@ -70,6 +70,11 @@ namespace Everlook.Utility
 			}
 		}
 
+		/// <summary>
+		/// Gets the icon best representing this <see cref="ItemReference"/>, based on its file extension.
+		/// </summary>
+		/// <param name="itemReference">The item reference for which the icon should be retrieved.</param>
+		/// <returns></returns>
 		public static Pixbuf GetIcon(this ItemReference itemReference)
 		{
 			return GetIconForFiletype(itemReference.ItemPath);

@@ -26,6 +26,9 @@ using OpenTK;
 
 namespace Everlook.Viewport.Camera
 {
+	/// <summary>
+	/// A camera in the world, represented by a position and a set of viewing angles.
+	///</summary>
 	public class ViewportCamera
 	{
 		/// <summary>
@@ -118,6 +121,10 @@ namespace Everlook.Viewport.Camera
 		/// </summary>
 		public const float DefaultFarClippingDistance = 10000.0f;
 
+		/// <summary>
+		/// Creates a new instance of the <see cref="ViewportCamera"/> class, and sets its position
+		/// to the default values.
+		/// </summary>
 		public ViewportCamera()
 		{
 			ResetPosition();
@@ -161,6 +168,13 @@ namespace Everlook.Viewport.Camera
 			this.UpVector = Vector3.Cross(this.RightVector, this.LookDirectionVector);
 		}
 
+		/// <summary>
+		/// Gets the calculated projection matrix for this camera, using the values contained inside it.
+		/// </summary>
+		/// <param name="projectionType">The type of project to calculate for.</param>
+		/// <param name="viewportWidth">The current width of the viewport.</param>
+		/// <param name="viewportHeight">The current height of the viewport.</param>
+		/// <returns>A <see cref="Matrix4"/> projection matrix.</returns>
 		public Matrix4 GetProjectionMatrix(ProjectionType projectionType, int viewportWidth, int viewportHeight)
 		{
 			Matrix4 projection;
@@ -179,6 +193,10 @@ namespace Everlook.Viewport.Camera
 			return projection;
 		}
 
+		/// <summary>
+		/// Gets the view matrix of this camera (i.e, where it is looking)
+		/// </summary>
+		/// <returns>A <see cref="Matrix4"/> view matrix.</returns>
 		public Matrix4 GetViewMatrix()
 		{
 			return Matrix4.LookAt(

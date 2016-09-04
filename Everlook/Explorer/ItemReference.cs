@@ -65,6 +65,9 @@ namespace Everlook.Explorer
 		/// <value>The file path.</value>
 		public virtual string ItemPath { get; set; } = "";
 
+		/// <summary>
+		/// The current state of the item reference.
+		///</summary>
 		public ReferenceState State
 		{
 			get;

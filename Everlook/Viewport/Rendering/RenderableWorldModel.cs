@@ -70,6 +70,9 @@ namespace Everlook.Viewport.Rendering
 		/// <value>The model.</value>
 		public WMO Model { get; private set; }
 
+		/// <summary>
+		/// The transform of the actor.
+		/// </summary>
 		public Transform ActorTransform { get; set; }
 
 		private readonly PackageGroup ModelPackageGroup;
@@ -227,6 +230,9 @@ namespace Everlook.Viewport.Rendering
 			this.IsInitialized = true;
 		}
 
+		/// <summary>
+		/// Ticks this actor, advancing or performing any time-based actions.
+		/// </summary>
 		public void Tick(float deltaTime)
 		{
 			// TODO: Tick the animations of all referenced doodads.

@@ -304,15 +304,11 @@ namespace OpenTK
 		private IWindowInfo InitializeWindows()
 		{
 			//IntPtr windowHandle = gdk_win32_drawable_get_handle(this.Window.Handle);
-			IntPtr windowHandle = gdk_win32_window_get_handle(this.Window);
-			return Utilities.CreateWindowsWindowInfo(windowHandle);
+			return Utilities.CreateWindowsWindowInfo(this.Window.Handle);
 		}
 
 		[SuppressUnmanagedCodeSecurity, DllImport("libgdk-win32-2.0-0.dll")]
 		public static extern IntPtr gdk_win32_drawable_get_handle(IntPtr d);
-
-		[SuppressUnmanagedCodeSecurity, DllImport("libgdk-3-0.dll")]
-		public static extern IntPtr gdk_win32_window_get_handle(Window w);
 
 		#endregion
 
