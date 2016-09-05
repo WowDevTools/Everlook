@@ -1,4 +1,14 @@
 # Everlook
+[![Latest Download](https://img.shields.io/badge/Latest-Download-blue.svg)](https://ci.appveyor.com/api/projects/majorcyto/everlook/artifacts/) [![DoxygenDoc](https://img.shields.io/badge/Docs-Doxygen-red.svg)](http://everlookdocs.wowdev.info/)
+[![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=34637447)](https://www.bountysource.com/trackers/34637447-wowdevtools-everlook?utm_source=44433103&utm_medium=shield&utm_campaign=TRACKER_BADGE)
+
+## Build Status
+
+Build | Defects
+:------------: | :------------:
+[![Build status](https://ci.appveyor.com/api/projects/status/lf5swhbglpcuni33/branch/master?svg=true)](https://ci.appveyor.com/project/majorcyto/everlook/branch/master) | Coverity Badge Soon
+
+# About #
 Everlook is a cross-platform, open-source World of Warcraft model viewer, created to showcase the capabilities of libwarcraft.
 
 Everlook is capable of browsing, exporting and converting most World of Warcraft formats up until 
