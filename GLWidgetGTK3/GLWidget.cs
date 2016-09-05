@@ -304,11 +304,15 @@ namespace OpenTK
 		private IWindowInfo InitializeWindows()
 		{
 			//IntPtr windowHandle = gdk_win32_drawable_get_handle(this.Window.Handle);
-			return Utilities.CreateWindowsWindowInfo(this.Window.Handle);
+			IntPtr windowHandle = gdk_win32_window_get_handle(RootWindow);
+			return Utilities.CreateWindowsWindowInfo(windowHandle);
 		}
 
 		[SuppressUnmanagedCodeSecurity, DllImport("libgdk-win32-2.0-0.dll")]
 		public static extern IntPtr gdk_win32_drawable_get_handle(IntPtr d);
+
+		[SuppressUnmanagedCodeSecurity, DllImport("libgdk-3-0.dll")]
+		public static extern IntPtr gdk_win32_window_get_handle(Window w);
 
 		#endregion
 
@@ -399,7 +403,7 @@ namespace OpenTK
 			Blue = 0x40,
 			ColormapSize = 0x80,
 			BitsPerRGB = 0x100,
-			All = 0x1FF,
+			All = 0x1FF
 		}
 
 		private IWindowInfo InitializeX(GraphicsMode mode)
