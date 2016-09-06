@@ -336,7 +336,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="-1" width="1920" height="1050" extended-state="6" />
+    <frame x="0" y="-1" width="1920" height="1050" extended-state="7" />
     <editor active="false" />
     <layout>
       <window_info id="Change Signature" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />

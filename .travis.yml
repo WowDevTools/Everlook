@@ -3,6 +3,7 @@ solution: Everlook.sln
 sudo: required
 dist: trusty
 before_install:
+    - sudo apt-get install mono-complete
     - git clone https://github.com/WowDevTools/libwarcraft.git WowDevTools/libwarcraft
     - git clone https://github.com/Nihlus/liblistfile.git WowDevTools/liblistfile
     - nuget restore WowDevTools/libwarcraft
