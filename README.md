@@ -4,9 +4,10 @@
 
 ## Build Status
 
-Build | Defects
-:------------: | :------------:
-[![Build status](https://ci.appveyor.com/api/projects/status/lf5swhbglpcuni33/branch/master?svg=true)](https://ci.appveyor.com/project/majorcyto/everlook/branch/master) | Coverity Badge Soon
+CI | Build | Defects
+:------------: | :------------: | :------------:
+AppVeyor | [![Build status](https://ci.appveyor.com/api/projects/status/lf5swhbglpcuni33/branch/master?svg=true)](https://ci.appveyor.com/project/majorcyto/everlook/branch/master) | Coverity Badge Soon
+Travis | [![Build Status](https://travis-ci.org/WowDevTools/Everlook.svg?branch=master)](https://travis-ci.org/WowDevTools/Everlook) | 
 
 # About #
 Everlook is a cross-platform, open-source World of Warcraft model viewer, created to showcase the capabilities of libwarcraft.
