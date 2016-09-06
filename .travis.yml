@@ -3,7 +3,7 @@ solution: Everlook.sln
 sudo: required
 dist: trusty
 before_install:
-    - git clone https://github.com/WowDevTools/libwarcraft.git ../libwarcraft
-    - git clone https://github.com/Nihlus/liblistfile.git ../liblistfile
+    - git clone https://github.com/WowDevTools/libwarcraft.git WowDevTools/libwarcraft
+    - git clone https://github.com/Nihlus/liblistfile.git WowDevTools/liblistfile
     - nuget restore WowDevTools/libwarcraft
     - nuget restore WowDevTools/liblistfile
