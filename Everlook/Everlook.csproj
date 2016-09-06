@@ -248,5 +248,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="packages.config" />
+    <Content Include="Content\GSettings\gschemas.compiled"/>
   </ItemGroup>
+  <PropertyGroup>
+    <PrepareForRunDependsOn>$(PrepareForRunDependsOn);CopyGSettingsSchemas</PrepareForRunDependsOn>
+  </PropertyGroup>
+  <Target Name="CopyGSettingsSchemas">
+    <Copy SourceFiles="Content\GSettings\gschemas.compiled" DestinationFolder="$(OutDir)\share\glib-2.0\schemas\" />
+  </Target>
 </Project>
