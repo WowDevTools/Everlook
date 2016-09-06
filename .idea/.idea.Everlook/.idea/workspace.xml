@@ -21,7 +21,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MainWindow.cs" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MainWindow.cs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../Everlook/MainWindow.cs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="461">
@@ -129,6 +129,34 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="EverlookPreferences.cs" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../../Everlook/EverlookPreferences.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="708">
+              <caret line="89" column="62" selection-start-line="89" selection-start-column="62" selection-end-line="89" selection-end-column="62" />
+              <folding>
+                <marker date="1473150169677" expanded="true" signature="0:795" ph="/* ... */" />
+                <marker date="1473150169677" expanded="true" signature="802:994" ph="..." />
+                <marker date="1473150169677" expanded="true" signature="1014:6001" ph="{...}" />
+                <marker date="1473150169677" expanded="true" signature="1018:1243" ph="/// ..." />
+                <marker date="1473150169677" expanded="true" signature="1294:5999" ph="{...}" />
+                <marker date="1473150169677" expanded="true" signature="1986:2098" ph="/// ..." />
+                <marker date="1473150169677" expanded="true" signature="2143:2337" ph="{...}" />
+                <marker date="1473150169677" expanded="true" signature="2341:2549" ph="/// ..." />
+                <marker date="1473150169677" expanded="true" signature="2631:2803" ph="{...}" />
+                <marker date="1473150169677" expanded="true" signature="2807:2962" ph="/// ..." />
+                <marker date="1473150169677" expanded="true" signature="3030:3503" ph="{...}" />
+                <marker date="1473150169677" expanded="true" signature="3507:3665" ph="/// ..." />
+                <marker date="1473150169677" expanded="true" signature="3736:4083" ph="{...}" />
+                <marker date="1473150169677" expanded="true" signature="4087:4188" ph="/// ..." />
+                <marker date="1473150169677" expanded="true" signature="4221:5063" ph="{...}" />
+                <marker date="1473150169677" expanded="true" signature="5067:5164" ph="/// ..." />
+                <marker date="1473150169677" expanded="true" signature="5196:5996" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="IdeDocumentHistory">
@@ -145,6 +173,7 @@
         <option value="$PROJECT_DIR$/../../Everlook/Viewport/Rendering/Core/Transform.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/Viewport/Rendering/RenderableBLP.cs" />
         <option value="$PROJECT_DIR$/../../GLWidgetGTK3/GLWidget.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/EverlookPreferences.cs" />
       </list>
     </option>
   </component>
@@ -284,12 +313,12 @@
       <workItem from="1472981482092" duration="10243000" />
       <workItem from="1473086267176" duration="30000" />
       <workItem from="1473107088284" duration="2749000" />
-      <workItem from="1473143135146" duration="3615000" />
+      <workItem from="1473143135146" duration="4128000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="21593000" />
+    <option name="totallyTimeSpent" value="22106000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -317,7 +346,7 @@
       <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26940134" sideWeight="0.49786553" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3991131" sideWeight="0.49786553" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3991131" sideWeight="0.49786553" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -337,13 +366,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../../../liblistfile/liblistfile/ListfileDictionary.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="28" column="16" selection-start-line="28" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/MPQ/Crypto/MPQCrypt.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4005">
@@ -833,6 +855,32 @@
             <marker date="1469805124996" expanded="true" signature="44036:44165" ph="/// ..." />
             <marker date="1469805124996" expanded="true" signature="44182:44288" ph="/// ..." />
             <marker date="1469805124996" expanded="true" signature="44309:44392" ph="/// ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/EverlookPreferences.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="708">
+          <caret line="89" column="62" selection-start-line="89" selection-start-column="62" selection-end-line="89" selection-end-column="62" />
+          <folding>
+            <marker date="1473150169677" expanded="true" signature="0:795" ph="/* ... */" />
+            <marker date="1473150169677" expanded="true" signature="802:994" ph="..." />
+            <marker date="1473150169677" expanded="true" signature="1014:6001" ph="{...}" />
+            <marker date="1473150169677" expanded="true" signature="1018:1243" ph="/// ..." />
+            <marker date="1473150169677" expanded="true" signature="1294:5999" ph="{...}" />
+            <marker date="1473150169677" expanded="true" signature="1986:2098" ph="/// ..." />
+            <marker date="1473150169677" expanded="true" signature="2143:2337" ph="{...}" />
+            <marker date="1473150169677" expanded="true" signature="2341:2549" ph="/// ..." />
+            <marker date="1473150169677" expanded="true" signature="2631:2803" ph="{...}" />
+            <marker date="1473150169677" expanded="true" signature="2807:2962" ph="/// ..." />
+            <marker date="1473150169677" expanded="true" signature="3030:3503" ph="{...}" />
+            <marker date="1473150169677" expanded="true" signature="3507:3665" ph="/// ..." />
+            <marker date="1473150169677" expanded="true" signature="3736:4083" ph="{...}" />
+            <marker date="1473150169677" expanded="true" signature="4087:4188" ph="/// ..." />
+            <marker date="1473150169677" expanded="true" signature="4221:5063" ph="{...}" />
+            <marker date="1473150169677" expanded="true" signature="5067:5164" ph="/// ..." />
+            <marker date="1473150169677" expanded="true" signature="5196:5996" ph="{...}" />
           </folding>
         </state>
       </provider>

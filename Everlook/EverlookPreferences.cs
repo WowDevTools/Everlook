@@ -87,7 +87,7 @@ namespace Everlook
 		/// <param name="e">E.</param>
 		protected void OnAddPathButtonClicked(object sender, EventArgs e)
 		{
-			GameSelectionFileChooserDialog.SetCurrentFolder(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+			GameSelectionFileChooserDialog.SetCurrentFolderUri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
 			if (GameSelectionFileChooserDialog.Run() == (int)ResponseType.Ok)
 			{
 				string pathToStore = GameSelectionFileChooserDialog.Filename;
@@ -136,7 +136,7 @@ namespace Everlook
 
 			if (!String.IsNullOrEmpty(Config.GetDefaultExportDirectory()))
 			{
-				DefaultExportDirectoryFileChooserButton.SetFilename(Config.GetDefaultExportDirectory());
+				DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(Config.GetDefaultExportDirectory());
 			}
 
 			DefaultModelExportFormatComboBox.Active = (int)Config.GetDefaultModelFormat();
