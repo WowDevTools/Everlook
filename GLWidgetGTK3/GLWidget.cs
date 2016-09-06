@@ -307,7 +307,7 @@ namespace OpenTK
 			return Utilities.CreateWindowsWindowInfo(windowHandle);
 		}
 
-		[SuppressUnmanagedCodeSecurity, DllImport("libgdk-3-0.dll")]
+		[SuppressUnmanagedCodeSecurity, DllImport("libgdk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr gdk_win32_window_get_handle(IntPtr w);
 
 		#endregion
