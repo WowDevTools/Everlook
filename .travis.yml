@@ -4,6 +4,6 @@ sudo: required
 dist: trusty
 before_install:
     - git clone https://github.com/WowDevTools/libwarcraft.git ../libwarcraft
-    - git clone https://github.com:Nihlus/liblistfile.git ../liblistfile
-    - nuget restore ../libwarcraft
-    - nuget restore ../liblistfile
+    - git clone https://github.com/Nihlus/liblistfile.git ../liblistfile
+    - nuget restore WowDevTools/libwarcraft
+    - nuget restore WowDevTools/liblistfile
