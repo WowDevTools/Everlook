@@ -4,7 +4,7 @@ sudo: required
 dist: trusty
 before_install:
     - sudo apt-get install mono-complete
-    - git clone https://github.com/WowDevTools/libwarcraft.git WowDevTools/libwarcraft
-    - git clone https://github.com/Nihlus/liblistfile.git WowDevTools/liblistfile
-    - nuget restore WowDevTools/libwarcraft
-    - nuget restore WowDevTools/liblistfile
+    - git clone https://github.com/WowDevTools/libwarcraft.git ../libwarcraft
+    - git clone https://github.com/Nihlus/liblistfile.git ../liblistfile
+    - nuget restore ../libwarcraft
+    - nuget restore ../liblistfile
