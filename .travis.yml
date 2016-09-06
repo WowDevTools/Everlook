@@ -1,0 +1,9 @@
+language: csharp
+solution: Everlook.sln
+sudo: required
+dist: trusty
+before_install:
+    - git clone git@github.com:WowDevTools/libwarcraft.git ../libwarcraft
+    - git clone git@github.com:Nihlus/liblistfile.git ../liblistfile
+    - nuget restore ../libwarcraft
+    - nuget restore ../liblistfile
