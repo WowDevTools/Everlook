@@ -64,6 +64,7 @@ namespace Everlook
 
 		[UI] private readonly Alignment ViewportAlignment;
 		private readonly GLWidget ViewportWidget;
+		private bool viewportHasPendingRedraw;
 
 		/*
 			Export queue elements
@@ -173,6 +174,7 @@ namespace Everlook
 			this.ViewportWidget.ButtonReleaseEvent += OnViewportButtonReleased;
 			this.ViewportWidget.KeyPressEvent += OnViewportKeyPressed;
 			this.ViewportWidget.KeyReleaseEvent += OnViewportKeyReleased;
+			this.ViewportWidget.ConfigureEvent += OnViewportConfigured;
 
 			this.ViewportAlignment.Add(this.ViewportWidget);
 			this.ViewportAlignment.ShowAll();
@@ -383,13 +385,23 @@ namespace Everlook
 			}
 			else
 			{
-				if (this.viewportRenderer.HasRenderTarget)
+				if (this.viewportRenderer.HasRenderTarget || this.viewportHasPendingRedraw)
 				{
 					this.viewportRenderer.RenderFrame();
 				}
 
 				return true;
 			}
+		}
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="o">The sending object.</param>
+		/// <param name="args">The configuration arguments.</param>
+		private void OnViewportConfigured(object o, ConfigureEventArgs args)
+		{
+			viewportHasPendingRedraw = true;
 		}
 
 		/// <summary>
