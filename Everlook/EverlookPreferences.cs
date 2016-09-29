@@ -87,14 +87,16 @@ namespace Everlook
 		/// <param name="e">E.</param>
 		protected void OnAddPathButtonClicked(object sender, EventArgs e)
 		{
-			GameSelectionFileChooserDialog.SetCurrentFolderUri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+			Uri defaultLocation = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+			GameSelectionFileChooserDialog.SetCurrentFolderUri(defaultLocation.ToString());
 			if (GameSelectionFileChooserDialog.Run() == (int)ResponseType.Ok)
 			{
-				string pathToStore = GameSelectionFileChooserDialog.CurrentFolderUri;
-				if (Directory.Exists(pathToStore))
+				Uri uriToStore = new Uri(GameSelectionFileChooserDialog.CurrentFolderUri);
+
+				if (Directory.Exists(uriToStore.LocalPath))
 				{
-					this.GamePathListStore.AppendValues(pathToStore);
-					GamePathStorage.Instance.StorePath(pathToStore);
+					this.GamePathListStore.AppendValues(uriToStore.LocalPath);
+					GamePathStorage.Instance.StorePath(uriToStore.LocalPath);
 				}
 			}
 
