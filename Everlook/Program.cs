@@ -29,7 +29,11 @@ namespace Everlook
 		public static void Main()
 		{
 			// OpenGL
-			Toolkit.Init();
+			Toolkit.Init(new ToolkitOptions
+			{
+				Backend = PlatformBackend.PreferNative,
+				EnableHighResolution = true
+			});
 
 			// GTK
 			Application.Init();

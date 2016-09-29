@@ -31,12 +31,10 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using OpenTK.Graphics;
 using OpenTK.Platform;
 
 using Gtk;
-using Window = Gdk.Window;
 
 namespace OpenTK
 {
@@ -419,7 +417,9 @@ namespace OpenTK
 				visualInfo = XGetVisualInfo(display, XVisualInfoMask.ID, ref info, out dummy);
 			}
 			else
+			{
 				visualInfo = GetVisualInfo(display);
+			}
 
 			IWindowInfo retval = Utilities.CreateX11WindowInfo(display, screen, windowHandle, rootWindow, visualInfo);
 			XFree(visualInfo);

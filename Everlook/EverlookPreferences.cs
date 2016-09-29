@@ -90,7 +90,7 @@ namespace Everlook
 			GameSelectionFileChooserDialog.SetCurrentFolderUri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
 			if (GameSelectionFileChooserDialog.Run() == (int)ResponseType.Ok)
 			{
-				string pathToStore = GameSelectionFileChooserDialog.Filename;
+				string pathToStore = GameSelectionFileChooserDialog.CurrentFolderUri;
 				if (Directory.Exists(pathToStore))
 				{
 					this.GamePathListStore.AppendValues(pathToStore);

@@ -53,6 +53,11 @@ namespace Everlook.Viewport
 		/// </summary>
 		private readonly object RenderTargetLock = new object();
 
+		public bool HasRenderTarget
+		{
+			get { return this.RenderTarget != null; }
+		}
+
 		/// <summary>
 		/// The current rendering target. This is an object capable of being shown in an
 		/// OpenGL viewport.

@@ -383,7 +383,11 @@ namespace Everlook
 			}
 			else
 			{
-				this.viewportRenderer.RenderFrame();
+				if (this.viewportRenderer.HasRenderTarget)
+				{
+					this.viewportRenderer.RenderFrame();
+				}
+
 				return true;
 			}
 		}
