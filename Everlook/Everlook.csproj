@@ -247,7 +247,9 @@
     <Content Include="Content\Listfiles\wmo.olc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="OpenTK.dll.config" />
+    <Content Include="OpenTK.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="packages.config" />
     <Content Include="Content\GSettings\gschemas.compiled" />
   </ItemGroup>

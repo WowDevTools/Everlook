@@ -207,7 +207,7 @@ namespace Everlook
 
 			explorerBuilder.PackageGroupAdded += OnPackageGroupAdded;
 			explorerBuilder.PackageEnumerated += OnPackageEnumerated;
-			explorerBuilder.Start();
+			explorerBuilder.Start(); // TODO: This is a performance hog (and the whole damn thing should be rewritten)
 
 			/*
 				Set up item control sections
