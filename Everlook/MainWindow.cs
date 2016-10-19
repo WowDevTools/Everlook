@@ -155,7 +155,7 @@ namespace Everlook
 			{
 				CanFocus = true,
 				SingleBuffer = false,
-				ColorBPP = 32,
+				ColorBPP = 24,
 				DepthBPP = 16,
 				Samples = 4,
 				GLVersionMajor = 3,
