@@ -67,6 +67,11 @@ namespace Everlook.UI
 		private readonly ExplorerBuilder explorerBuilder = new ExplorerBuilder();
 
 		/// <summary>
+		/// Whether or not the program is shutting down. This is used to remove callbacks and events.
+		/// </summary>
+		private bool shuttingDown;
+
+		/// <summary>
 		/// Creates an instance of the MainWindow class, loading the glade XML UI as needed.
 		/// </summary>
 		public static MainWindow Create()
@@ -220,19 +225,25 @@ namespace Everlook.UI
 		/// </summary>
 		private bool OnIdleRenderFrame()
 		{
+			const bool keepCalling = true;
+			const bool stopCalling = false;
+
+			if (shuttingDown)
+			{
+				return stopCalling;
+			}
+
 			if (!this.viewportRenderer.IsInitialized)
 			{
-				return false;
+				return stopCalling;
 			}
-			else
-			{
-				if (this.viewportRenderer.HasRenderTarget || this.viewportHasPendingRedraw)
-				{
-					this.viewportRenderer.RenderFrame();
-				}
 
-				return true;
+			if (this.viewportRenderer.HasRenderTarget || this.viewportHasPendingRedraw)
+			{
+				this.viewportRenderer.RenderFrame();
 			}
+
+			return keepCalling;
 		}
 
 		/// <summary>
@@ -361,6 +372,12 @@ namespace Everlook.UI
 		private bool OnGLibLoopIdle()
 		{
 			const bool keepCalling = true;
+			const bool stopCalling = false;
+
+			if (shuttingDown)
+			{
+				return stopCalling;
+			}
 
 			if (explorerBuilder.EnumeratedReferences.Count > 0)
 			{
@@ -1188,8 +1205,7 @@ namespace Everlook.UI
 		/// <param name="a">The alpha component.</param>
 		private void OnDeleteEvent(object sender, DeleteEventArgs a)
 		{
-			Idle.Remove(OnIdleRenderFrame);
-			Timeout.Remove(OnGLibLoopIdle);
+			shuttingDown = true;
 
 			if (explorerBuilder.IsActive)
 			{
@@ -1199,6 +1215,7 @@ namespace Everlook.UI
 
 			this.viewportRenderer.SetRenderTarget(null);
 			this.viewportRenderer.Dispose();
+			this.ViewportWidget.Destroy();
 
 			Application.Quit();
 			a.RetVal = true;
