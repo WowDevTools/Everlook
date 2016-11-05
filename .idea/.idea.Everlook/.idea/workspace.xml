@@ -21,266 +21,192 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Program.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../Everlook/Program.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="34" column="43" selection-start-line="34" selection-start-column="43" selection-end-line="34" selection-end-column="43" />
-              <folding>
-                <marker date="1476901407439" expanded="true" signature="0:783" ph="/* ... */" />
-                <marker date="1476901407439" expanded="true" signature="790:808" ph="..." />
-                <marker date="1476901407439" expanded="true" signature="828:1148" ph="{...}" />
-                <marker date="1476901407439" expanded="true" signature="856:1146" ph="{...}" />
-                <marker date="1476901407439" expanded="true" signature="887:1143" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GLWidget.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../GLWidgetGTK3/GLWidget.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1254">
-              <caret line="314" column="37" selection-start-line="314" selection-start-column="37" selection-end-line="314" selection-end-column="37" />
-              <folding>
-                <marker date="1476902546483" expanded="true" signature="0:1224" ph="License" />
-                <marker date="1476902546483" expanded="true" signature="16:1213" ph="/* ... */" />
-                <marker date="1476902546483" expanded="true" signature="1232:1445" ph="..." />
-                <marker date="1476902546483" expanded="true" signature="1463:15393" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="1522:15390" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="1529:1642" ph="Static attrs." />
-                <marker date="1476902546483" expanded="true" signature="1646:1764" ph="Attributes" />
-                <marker date="1476902546483" expanded="true" signature="1768:2777" ph="Properties" />
-                <marker date="1476902546483" expanded="true" signature="2781:4304" ph="Construction/Destruction" />
-                <marker date="1476902546483" expanded="true" signature="2918:2926" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="3110:3118" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="3298:3763" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="3778:3805" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="3839:3914" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="3965:4290" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="4308:5663" ph="New Events" />
-                <marker date="1476902546483" expanded="true" signature="4552:4658" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="4894:5002" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="5145:5221" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="5360:5436" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="5571:5649" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="5667:5875" ph="/* ... */" />
-                <marker date="1476902546483" expanded="true" signature="5927:6147" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="6238:6387" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="6416:8023" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="8027:8441" ph="Windows Specific initalization" />
-                <marker date="1476902546483" expanded="true" signature="8108:8249" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="8445:9075" ph="OSX Specific Initialization" />
-                <marker date="1476902546483" expanded="true" signature="8519:8757" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="9079:15386" ph="X Specific Initialization" />
-                <marker date="1476902546483" expanded="true" signature="10036:10159" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="10229:10623" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="10525:10619" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="10666:10859" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="10913:11599" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="11725:11827" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="11875:12251" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="13057:13128" ph="/* ... */" />
-                <marker date="1476902546483" expanded="true" signature="13950:14242" ph="/// ..." />
-                <marker date="1476902546483" expanded="true" signature="14383:14675" ph="/// ..." />
-                <marker date="1476902546483" expanded="true" signature="14814:15082" ph="/// ..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Utilities.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/C918ACB2-CD87-4ABB-BDEB-12704C1A774F/ff/a5fc8195/Utilities.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="292">
-              <caret line="181" column="27" selection-start-line="181" selection-start-column="27" selection-end-line="181" selection-end-column="27" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="MainWindow.cs" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/../../Everlook/MainWindow.cs">
+        <entry file="file://$PROJECT_DIR$/../../Everlook/UI/MainWindow.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="383">
+              <caret line="189" column="59" selection-start-line="189" selection-start-column="59" selection-end-line="189" selection-end-column="59" />
+              <folding>
+                <marker date="1478348363675" expanded="true" signature="0:786" ph="/* MainWindow.cs ... */" />
+                <marker date="1478348363675" expanded="true" signature="794:1357" ph="..." />
+                <marker date="1478348363675" expanded="true" signature="1380:39400" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="1384:1608" ph="/// Main UI class for Everlook. The &quot;partial&quot; qualifier is not strictly needed, but prevents the compiler from ... " />
+                <marker date="1478348363675" expanded="true" signature="1660:38800" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="1666:1749" ph="/// Static reference to the configuration handler. ... " />
+                <marker date="1478348363675" expanded="true" signature="1835:1940" ph="/// Background viewport renderer. Handles all rendering in the viewport. ... " />
+                <marker date="1478348363675" expanded="true" signature="1998:2119" ph="/// Background file explorer tree builder. Handles enumeration of files in the archives. ... " />
+                <marker date="1478348363675" expanded="true" signature="2199:2316" ph="/// Creates an instance of the MainWindow class, loading the glade XML UI as needed. ... " />
+                <marker date="1478348363675" expanded="true" signature="2352:2519" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="2523:2713" ph="/// Initializes a new instance of the &lt;see cref=&quot;MainWindow&quot;/&gt; class. ... " />
+                <marker date="1478348363675" expanded="false" signature="2784:5295" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="2916:3128" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="5017:5058" ph="/* Set up item control sections ... */" />
+                <marker date="1478348363675" expanded="true" signature="5253:5291" ph="/* Model ... */" />
+                <marker date="1478348363675" expanded="true" signature="5299:5502" ph="/// Handles input inside the OpenGL viewport for mouse button presses. ... " />
+                <marker date="1478348363675" expanded="true" signature="5596:6058" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="6062:6279" ph="/// Handles input inside the OpenGL viewport for mouse button releases. ... " />
+                <marker date="1478348363675" expanded="true" signature="6376:6611" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="6615:6835" ph="/// Handles OpenGL initialization post-context creation. This function ... " />
+                <marker date="1478348363675" expanded="false" signature="6900:7028" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="7032:7263" ph="/// This function lazily renders frames of the currently focused object. ... " />
+                <marker date="1478348363675" expanded="false" signature="7298:7549" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="7553:7701" ph="/// ... " />
+                <marker date="1478348363675" expanded="true" signature="7772:7816" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="7820:7972" ph="/// Enables the specified control page and brings it to the front. ... " />
+                <marker date="1478348363675" expanded="false" signature="8030:8574" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="8578:8704" ph="/// Disables the specified control page. ... " />
+                <marker date="1478348363675" expanded="false" signature="8763:9261" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="9265:9701" ph="/// Sorts the game explorer row. If &lt;paramref name=&quot;iterA&quot;/&gt; should be sorted before ... " />
+                <marker date="1478348363675" expanded="false" signature="9792:10524" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="10528:10704" ph="/// Idle functionality. This code is called as a way of lazily loading rows into the UI ... " />
+                <marker date="1478348363675" expanded="false" signature="10736:11511" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="10840:10923" ph="/* There's content to be added to the UI ... */" />
+                <marker date="1478348363675" expanded="true" signature="11515:11681" ph="/// Handles the export item context item activated event. ... " />
+                <marker date="1478348363675" expanded="false" signature="11757:12917" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="12921:13113" ph="/// Handles extraction of files from the archive triggered by a context menu press. ... " />
+                <marker date="1478348363675" expanded="false" signature="13186:13832" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="13836:14025" ph="/// Handles opening of files from the archive triggered by a context menu press. ... " />
+                <marker date="1478348363675" expanded="false" signature="14095:14380" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="14384:14605" ph="/// Handles copying of the file path of a selected item in the archive, triggered by a ... " />
+                <marker date="1478348363675" expanded="false" signature="14675:14951" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="14955:15160" ph="/// Handles queueing of a selected file in the archive, triggered by a context ... " />
+                <marker date="1478348363675" expanded="false" signature="15231:15765" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="15769:15920" ph="/// Displays the About dialog to the user. ... " />
+                <marker date="1478348363675" expanded="false" signature="15984:16037" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="16041:16198" ph="/// Displays the preferences dialog to the user. ... " />
+                <marker date="1478348363675" expanded="false" signature="16268:16539" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="16543:16685" ph="/// Gets the current &lt;see cref=&quot;ItemReference&quot;/&gt; that is selected in the tree view. ... " />
+                <marker date="1478348363675" expanded="false" signature="16732:16915" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="16919:17096" ph="/// Reloads visible runtime values that the user can change in the preferences, such as the colour ... " />
+                <marker date="1478348363675" expanded="false" signature="17133:17370" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="17374:17601" ph="/// Handles expansion of rows in the game explorer, enumerating any subfolders and ... " />
+                <marker date="1478348363675" expanded="false" signature="17676:18096" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="18100:18388" ph="/// Gets a &lt;see cref=&quot;TreeIter&quot;/&gt; that's valid for the &lt;see cref=&quot;GameExplorerTreeStore&quot;/&gt; from a ... " />
+                <marker date="1478348363675" expanded="false" signature="18450:18589" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="18593:18913" ph="/// Gets a &lt;see cref=&quot;TreeIter&quot;/&gt; that's valid for the &lt;see cref=&quot;GameExplorerTreeStore&quot;/&gt; from a TreeIter ... " />
+                <marker date="1478348363675" expanded="false" signature="18980:19122" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="19126:19446" ph="/// Gets a &lt;see cref=&quot;TreeIter&quot;/&gt; that's valid for the &lt;see cref=&quot;GameExplorerTreeStore&quot;/&gt; from a TreeIter ... " />
+                <marker date="1478348363675" expanded="false" signature="19513:19590" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="19594:19866" ph="/// Handles selection of files in the game explorer, displaying them to the user and routing ... " />
+                <marker date="1478348363675" expanded="false" signature="19940:24001" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="24005:24170" ph="/// Handles context menu spawning for the game explorer. ... " />
+                <marker date="1478348363675" expanded="false" signature="24270:25432" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="25436:25600" ph="/// Handles context menu spawning for the export queue. ... " />
+                <marker date="1478348363675" expanded="false" signature="25699:26396" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="26400:26595" ph="/// Handles removal of items from the export queue, triggered by a context menu press. ... " />
+                <marker date="1478348363675" expanded="false" signature="26672:26821" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="26825:27002" ph="/// Handles the package group added event from the explorer builder. ... " />
+                <marker date="1478348363675" expanded="false" signature="27079:27166" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="27170:27325" ph="/// Adds a package group node to the game explorer view ... " />
+                <marker date="1478348363675" expanded="false" signature="27390:28659" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="28663:28839" ph="/// Handles the package enumerated event from the explorer builder. ... " />
+                <marker date="1478348363675" expanded="false" signature="28916:29022" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="29026:29290" ph="/// Adds a package node to the game explorer view. ... " />
+                <marker date="1478348363675" expanded="false" signature="29383:30404" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="30408:30744" ph="/// Adds a directory node to the game explorer view, attachedt to the provided parent ... " />
+                <marker date="1478348363675" expanded="false" signature="30837:33646" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="31259:31419" ph="/* This references was added to the UI after the user had opened the previous folder. ... */" />
+                <marker date="1478348363675" expanded="true" signature="33650:34108" ph="/// Creates a node in the &lt;see cref=&quot;GameExplorerTreeView&quot;/&gt; for the specified directory reference, as ... " />
+                <marker date="1478348363675" expanded="false" signature="34197:34428" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="34432:34704" ph="/// Adds a file node to the game explorer view, attached to the provided parent ... " />
+                <marker date="1478348363675" expanded="false" signature="34792:36932" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="36936:37379" ph="/// Creates a node in the &lt;see cref=&quot;GameExplorerTreeView&quot;/&gt; for the specified file reference, as ... " />
+                <marker date="1478348363675" expanded="false" signature="37458:37638" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="37642:37955" ph="/// Converts a &lt;see cref=&quot;TreeIter&quot;/&gt; into an &lt;see cref=&quot;ItemReference&quot;/&gt;. The reference object is queried ... " />
+                <marker date="1478348363675" expanded="false" signature="38024:38189" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="38193:38424" ph="/// Handles application shutdown procedures - terminating render threads, cleaning ... " />
+                <marker date="1478348363675" expanded="false" signature="38487:38797" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="38803:38881" ph="/// Available control pages in the Everlook UI. ... " />
+                <marker date="1478348363675" expanded="false" signature="38906:39398" ph="{...}" />
+                <marker date="1478348363675" expanded="true" signature="38912:39010" ph="/// Image control page. Handles mip levels and rendered channels. ... " />
+                <marker date="1478348363675" expanded="true" signature="39027:39156" ph="/// Model control page. Handles vertex joining, geoset rendering and other model ... " />
+                <marker date="1478348363675" expanded="true" signature="39173:39279" ph="/// Animation control page. Handles active animations and their settings. ... " />
+                <marker date="1478348363675" expanded="true" signature="39300:39383" ph="/// Audio control page. Handles playback of audio. ... " />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ViewportRenderer.cs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/ViewportRenderer.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="315">
+              <caret line="186" column="38" selection-start-line="186" selection-start-column="38" selection-end-line="186" selection-end-column="38" />
+              <folding>
+                <marker date="1478348363723" expanded="true" signature="0:792" ph="/* ViewportRenderer.cs ... */" />
+                <marker date="1478348363723" expanded="true" signature="800:1028" ph="..." />
+                <marker date="1478348363723" expanded="true" signature="1057:7729" ph="{...}" />
+                <marker date="1478348363723" expanded="true" signature="1061:1256" ph="/// Viewport renderer for the main Everlook UI. This class manages an OpenGL rendering thread, which ... " />
+                <marker date="1478348363723" expanded="true" signature="1301:7727" ph="{...}" />
+                <marker date="1478348363723" expanded="true" signature="1307:1469" ph="/// The viewport widget displayed to the user in the main interface. ... " />
+                <marker date="1478348363723" expanded="true" signature="1517:1571" ph="/* RenderTarget and related control flow data. ... */" />
+                <marker date="1478348363723" expanded="true" signature="1575:1732" ph="/// A lock object used to enforce that the rendering target can finish its current ... " />
+                <marker date="1478348363723" expanded="true" signature="1879:2015" ph="/// The current rendering target. This is an object capable of being shown in an ... " />
+                <marker date="1478348363723" expanded="true" signature="2055:2129" ph="/// The camera viewpoint of the observer. ... " />
+                <marker date="1478348363723" expanded="true" signature="2165:2240" ph="/// The movement component for the camera. ... " />
+                <marker date="1478348363723" expanded="true" signature="2279:2360" ph="/// The time taken to render the previous frame. ... " />
+                <marker date="1478348363723" expanded="true" signature="2391:2524" ph="/// The X position of the mouse during the last frame, relative to the &lt;see cref=&quot;ViewportWidget&quot;/&gt;. ... " />
+                <marker date="1478348363723" expanded="true" signature="2556:2689" ph="/// The Y position of the mouse during the last frame, relative to the &lt;see cref=&quot;ViewportWidget&quot;/&gt;. ... " />
+                <marker date="1478348363723" expanded="true" signature="2721:2765" ph="/* Runtime transitional OpenGL data. ... */" />
+                <marker date="1478348363723" expanded="true" signature="2769:2870" ph="/// The OpenGL ID of the vertex array valid for the current context. ... " />
+                <marker date="1478348363723" expanded="true" signature="2903:3027" ph="/// Whether or not this instance has been initialized and is ready ... " />
+                <marker date="1478348363723" expanded="true" signature="3083:3137" ph="/* Everlook caching and static data accessors. ... */" />
+                <marker date="1478348363723" expanded="true" signature="3141:3224" ph="/// Static reference to the configuration handler. ... " />
+                <marker date="1478348363723" expanded="true" signature="3310:3436" ph="/// Initializes a new instance of the &lt;see cref=&quot;Everlook.Viewport.ViewportRenderer&quot;/&gt; class. ... " />
+                <marker date="1478348363723" expanded="true" signature="3487:3659" ph="{...}" />
+                <marker date="1478348363723" expanded="true" signature="3663:3711" ph="/// Initializes ... " />
+                <marker date="1478348363723" expanded="true" signature="3738:4835" ph="{...}" />
+                <marker date="1478348363723" expanded="true" signature="4839:4955" ph="/// The primary rendering logic. Here, the current object is rendered using OpenGL. ... " />
+                <marker date="1478348363723" expanded="true" signature="4983:6620" ph="{...}" />
+                <marker date="1478348363723" expanded="true" signature="5432:5512" ph="/* Calculate the current relative movement of the camera ... */" />
+                <marker date="1478348363723" expanded="true" signature="5972:6063" ph="/* Render the current object ... */" />
+                <marker date="1478348363723" expanded="true" signature="6624:6742" ph="/// Determines whether or not movement is currently disabled for the rendered object. ... " />
+                <marker date="1478348363723" expanded="true" signature="6777:6908" ph="{...}" />
+                <marker date="1478348363723" expanded="true" signature="6912:7085" ph="/// Sets the render target that is currently being rendered by the viewport renderer. ... " />
+                <marker date="1478348363723" expanded="true" signature="7141:7405" ph="{...}" />
+                <marker date="1478348363723" expanded="true" signature="7409:7561" ph="/// Disposes the viewport renderer, releasing the current rendering target and current ... " />
+                <marker date="1478348363723" expanded="true" signature="7585:7724" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CameraMovement.cs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/Camera/CameraMovement.cs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
-              <caret line="1096" column="35" selection-start-line="1096" selection-start-column="35" selection-end-line="1096" selection-end-column="35" />
+              <caret line="103" column="9" selection-start-line="103" selection-start-column="9" selection-end-line="103" selection-end-column="9" />
               <folding>
-                <marker date="1476902903175" expanded="true" signature="0:786" ph="/* ... */" />
-                <marker date="1476902903175" expanded="true" signature="794:1440" ph="..." />
-                <marker date="1476902903175" expanded="true" signature="1460:44956" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="1464:1688" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="1733:44356" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="3365:3448" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="3534:3639" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="3697:3818" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="3898:4015" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="4051:4218" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="4222:4421" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="4494:7195" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="7153:7191" ph="/* ... */" />
-                <marker date="1476902903175" expanded="true" signature="7199:7372" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="7465:8296" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="8300:8475" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="8565:9787" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="9791:10008" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="10107:10389" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="10393:10596" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="10692:11185" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="11189:11409" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="11476:11604" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="11608:11839" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="11876:12127" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="12131:12279" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="12350:12394" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="12398:12550" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="12610:13154" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="13158:13284" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="13345:13843" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="13847:14114" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="14186:14210" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="14214:14650" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="14736:15468" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="15472:15648" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="15682:16577" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="15903:15987" ph="/* ... */" />
-                <marker date="1476902903175" expanded="true" signature="16581:16747" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="16825:18158" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="18162:18354" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="18429:19216" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="19220:19409" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="19481:19816" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="19820:20041" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="20113:20389" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="20393:20598" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="20671:21346" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="21350:21501" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="21567:21620" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="21624:21781" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="21853:22124" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="22128:22305" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="22344:22581" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="22585:22812" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="22889:23309" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="23313:23601" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="23663:23802" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="23806:24126" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="24193:24335" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="24339:24659" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="24726:24803" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="24807:25079" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="25155:29216" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="29220:29385" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="29487:30649" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="30653:30817" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="30918:31615" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="31619:31814" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="31893:32042" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="32046:32223" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="32302:32389" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="32393:32548" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="32613:33882" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="33886:34062" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="34141:34247" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="34251:34515" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="34608:35629" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="35633:35969" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="36062:38871" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="36484:36644" ph="/* ... */" />
-                <marker date="1476902903175" expanded="true" signature="38875:39333" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="39422:39653" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="39657:39929" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="40017:42157" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="42161:42604" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="42683:42863" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="42867:43150" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="43231:43240" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="43244:43557" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="43626:43791" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="43795:44026" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="44091:44353" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="44359:44437" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="44462:44954" ph="{...}" />
-                <marker date="1476902903175" expanded="true" signature="44468:44566" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="44583:44712" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="44729:44835" ph="/// ..." />
-                <marker date="1476902903175" expanded="true" signature="44856:44939" ph="/// ..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ExplorerBuilder.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../Everlook/Explorer/ExplorerBuilder.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-697">
-              <caret line="190" column="20" selection-start-line="190" selection-start-column="20" selection-end-line="190" selection-end-column="20" />
-              <folding>
-                <marker date="1476901407435" expanded="true" signature="0:791" ph="/* ... */" />
-                <marker date="1476901407435" expanded="true" signature="799:1031" ph="..." />
-                <marker date="1476901407435" expanded="true" signature="1060:20878" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="1064:1213" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="1257:19915" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="1263:1343" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="1408:1638" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="1703:1784" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="1928:2093" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="2359:2495" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="2569:2797" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="2908:3035" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="3194:3382" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="3511:3697" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="3826:4152" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="4347:4550" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="4632:4878" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="4960:5114" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="5167:5301" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="5355:5459" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="5542:5788" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="5842:6012" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="6051:6231" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="6275:6484" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="6518:6643" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="6670:6886" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="6890:7093" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="7166:7251" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="7273:7554" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="7558:7670" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="7691:7886" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="7890:8000" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="8023:8191" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="8195:8396" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="8437:10865" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="10869:11055" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="11098:11225" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="11229:11345" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="11378:12325" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="12329:12562" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="12612:12899" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="12903:13141" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="13213:13861" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="13865:13988" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="14057:16143" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="16147:16346" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="16380:16851" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="16855:17037" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="17137:17733" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="17737:17905" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="17984:18334" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="18338:18412" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="18454:18558" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="18562:18635" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="18677:18781" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="18785:18860" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="18904:19014" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="19018:19659" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="19683:19912" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="19918:19986" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="20081:20226" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="20326:20393" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="20443:20876" ph="{...}" />
-                <marker date="1476901407435" expanded="true" signature="20449:20556" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="20610:20787" ph="/// ..." />
-                <marker date="1476901407435" expanded="true" signature="20842:20873" ph="{...}" />
+                <marker date="1478347335896" expanded="true" signature="0:790" ph="/* CameraMovement.cs ... */" />
+                <marker date="1478347335896" expanded="true" signature="798:839" ph="..." />
+                <marker date="1478347335896" expanded="true" signature="875:5999" ph="{...}" />
+                <marker date="1478347335896" expanded="true" signature="879:1151" ph="/// Camera movement component. This class is bound to a single camera instance, and handles ... " />
+                <marker date="1478347335896" expanded="true" signature="1180:5997" ph="{...}" />
+                <marker date="1478347335896" expanded="true" signature="1229:1310" ph="/// The current orientation of the bound camera. ... " />
+                <marker date="1478347335896" expanded="true" signature="1669:1747" ph="/// The current position of the bound camera. ... " />
+                <marker date="1478347335896" expanded="true" signature="1876:2038" ph="/// Whether or not to constrain the vertical view angle to -/+ 90 degrees. This ... " />
+                <marker date="1478347335896" expanded="true" signature="2102:2202" ph="/// The default movement speed of the observer within the viewport. ... " />
+                <marker date="1478347335896" expanded="true" signature="2258:2357" ph="/// The default turning speed of the observer within the viewport. ... " />
+                <marker date="1478347335896" expanded="true" signature="2412:2528" ph="/// Creates a new &lt;see cref=&quot;CameraMovement&quot;/&gt; instance, bound to the input camera. ... " />
+                <marker date="1478347335896" expanded="true" signature="2577:2650" ph="{...}" />
+                <marker date="1478347335896" expanded="true" signature="2654:2806" ph="/// Calculates the relative position of the observer in world space, using ... " />
+                <marker date="1478347335896" expanded="true" signature="2893:4153" ph="{...}" />
+                <marker date="1478347335896" expanded="true" signature="4157:4270" ph="/// Rotates the camera on the horizontal axis by the provided amount of degrees. ... " />
+                <marker date="1478347335896" expanded="true" signature="4316:4366" ph="{...}" />
+                <marker date="1478347335896" expanded="true" signature="4370:4481" ph="/// Rotates the camera on the vertical axis by the provided amount of degrees. ... " />
+                <marker date="1478347335896" expanded="true" signature="4525:4573" ph="{...}" />
+                <marker date="1478347335896" expanded="true" signature="4577:4694" ph="/// Moves the camera up along its local Y axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
+                <marker date="1478347335896" expanded="true" signature="4731:4799" ph="{...}" />
+                <marker date="1478347335896" expanded="true" signature="4803:4922" ph="/// Moves the camera down along its local Y axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
+                <marker date="1478347335896" expanded="true" signature="4961:5029" ph="{...}" />
+                <marker date="1478347335896" expanded="true" signature="5033:5155" ph="/// Moves the camera forward along its local Z axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
+                <marker date="1478347335896" expanded="true" signature="5197:5276" ph="{...}" />
+                <marker date="1478347335896" expanded="true" signature="5280:5404" ph="/// Moves the camera backwards along its local Z axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
+                <marker date="1478347335896" expanded="true" signature="5447:5526" ph="{...}" />
+                <marker date="1478347335896" expanded="true" signature="5530:5649" ph="/// Moves the camera left along its local X axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
+                <marker date="1478347335896" expanded="true" signature="5688:5759" ph="{...}" />
+                <marker date="1478347335896" expanded="true" signature="5763:5883" ph="/// Moves the camera right along its local X axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
+                <marker date="1478347335896" expanded="true" signature="5923:5994" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -294,19 +220,28 @@
         <option value="$PROJECT_DIR$/../../../libwarcraft/libwarcraft/MPQ/Crypto/MPQCrypt.cs" />
         <option value="$PROJECT_DIR$/../../../liblistfile/liblistfile/ListfileDictionary.cs" />
         <option value="$PROJECT_DIR$/../../../liblistfile/liblistfile/OptimizedListContainer.cs" />
-        <option value="$PROJECT_DIR$/../../Everlook/Explorer/ItemReference.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/Viewport/Camera/ViewportCamera.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/Utility/ExtensionMethods.cs" />
-        <option value="$PROJECT_DIR$/../../Everlook/Viewport/Rendering/RenderableWorldModel.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/Viewport/Rendering/Core/Plane.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/Viewport/Rendering/Core/Transform.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/Viewport/Rendering/RenderableBLP.cs" />
-        <option value="$PROJECT_DIR$/../../Everlook/Viewport/ViewportRenderer.cs" />
-        <option value="$PROJECT_DIR$/../../Everlook/EverlookPreferences.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/Explorer/ExplorerBuilder.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/Program.cs" />
         <option value="$PROJECT_DIR$/../../GLWidgetGTK3/GLWidget.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/MainWindow.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/EverlookPreferences.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/UI/MainWindowElements.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/UI/EverlookPreferencesElements.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/UI/EverlookPreferences.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/UI/EverlookImageExportDialog.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/UI/EverlookImageExportDialogElements.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/UI/EverlookDirectoryExportDialogElements.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/UI/EverlookDirectoryExportDialog.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/Explorer/ItemReference.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/Viewport/Rendering/RenderableWorldModel.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/Viewport/Camera/CameraMovement.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/Viewport/ViewportRenderer.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/UI/MainWindow.cs" />
       </list>
     </option>
   </component>
@@ -352,13 +287,107 @@
               <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook (4 projects)" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook (4 projects)" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Viewport" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook (4 projects)" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Viewport" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Rendering" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook (4 projects)" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Viewport" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Camera" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook (4 projects)" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="UI" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
         <option name="show-file-system" value="false" />
       </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../WDBXEditor/WDBXEditor.sln" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../Launchpad/Launchpad.sln" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
@@ -366,7 +395,7 @@
     <configuration default="true" type="CompoundRunConfigurationType" factoryName="Compound Run Configuration">
       <method />
     </configuration>
-    <configuration default="true" type="ConnectRemote" factoryName="Mono remote" show_console_on_std_err="false" show_console_on_std_out="false" a="50000" b="50000">
+    <configuration default="true" type="ConnectRemote" factoryName="Mono remote" show_console_on_std_err="false" show_console_on_std_out="false" b="50000" a="50000">
       <option name="address" value="50000" />
       <option name="port" value="50000" />
       <method />
@@ -377,6 +406,8 @@
       <option name="EXE_PATH" value="$PROJECT_DIR$/../../Everlook/bin/Debug/Everlook.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../Everlook/bin/Debug" />
+      <option name="USE_MONO" value="0" />
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="RunExe" factoryName=".NET Executable">
@@ -391,6 +422,8 @@
       <option name="EXE_PATH" value="$PROJECT_DIR$/../../Everlook/bin/Debug/Everlook.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../Everlook/bin/Debug" />
+      <option name="USE_MONO" value="0" />
+      <envs />
       <method />
     </configuration>
     <list size="1">
@@ -433,11 +466,21 @@
       <workItem from="1476901179914" duration="15000" />
       <workItem from="1476901414552" duration="548000" />
       <workItem from="1476902355528" duration="1179000" />
+      <workItem from="1477059059634" duration="215000" />
+      <workItem from="1478006811783" duration="23000" />
+      <workItem from="1478110307309" duration="202000" />
+      <workItem from="1478176837285" duration="942000" />
+      <workItem from="1478274170058" duration="137000" />
+      <workItem from="1478274364719" duration="6000" />
+      <workItem from="1478285562969" duration="1183000" />
+      <workItem from="1478286757646" duration="458000" />
+      <workItem from="1478287244329" duration="420000" />
+      <workItem from="1478287845917" duration="5408000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="34177000" />
+    <option name="totallyTimeSpent" value="43171000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -450,29 +493,29 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1439" y="0" width="1922" height="1055" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="SvgViewer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Errors in solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Errors in solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15368196" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32819384" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="UnitTesting" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="NuGet" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3986711" sideWeight="0.50641024" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Change Signature" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.11792956" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15421557" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26872247" sideWeight="0.49786553" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3975771" sideWeight="0.49358973" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32929516" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20864461" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18942732" sideWeight="0.49358973" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -482,115 +525,21 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoint">
-          <url>file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/C918ACB2-CD87-4ABB-BDEB-12704C1A774F/f9/6e75f40c/GraphicsContext.cs</url>
-          <line>245</line>
-          <properties />
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoint">
-          <url>file://$PROJECT_DIR$/../../Everlook/MainWindow.cs</url>
-          <line>1095</line>
-          <properties startOffset="32646" endOffset="32719" documentPath="$PROJECT_DIR$/../../Everlook/MainWindow.cs" />
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
+        <breakpoint enabled="true" log-message="true" type="DotNet Exception Breakpoints">
+          <properties exception="System.Exception">
+            <option name="exception" value="System.Exception" />
+          </properties>
+          <option name="timeStamp" value="25" />
+        </breakpoint>
       </breakpoints>
-      <option name="time" value="21" />
+      <breakpoints-dialog>
+        <breakpoints-dialog />
+      </breakpoints-dialog>
+      <option name="time" value="26" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/ADT/Chunks/TerrainLiquid.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/BLP/BLP.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/MPQ/MPQ.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/MPQ/Crypto/MPQCrypt.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4005">
-          <caret line="267" column="19" selection-start-line="267" selection-start-column="19" selection-end-line="267" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/ADT/Chunks/Subchunks/MapChunkAlphaMaps.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/ADT/Chunks/TerrainLiquid.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/BLP/BLP.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/MPQ/MPQ.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/MPQ/Crypto/MPQCrypt.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4005">
-          <caret line="267" column="19" selection-start-line="267" selection-start-column="19" selection-end-line="267" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/ADT/Chunks/Subchunks/MapChunkAlphaMaps.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/ADT/Chunks/TerrainLiquid.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/BLP/BLP.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/MPQ/MPQ.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/MPQ/Crypto/MPQCrypt.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -662,20 +611,15 @@
     <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/3AD4925E-382C-4010-90D7-D3E1CBCF9726/82/123ba597/IPlatformFactory.cs" />
     <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/3AD4925E-382C-4010-90D7-D3E1CBCF9726/6e/9517b409/IGraphicsContext.cs" />
     <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/5D30AA78-6671-4E14-8774-4C851412CB95/f6/3715068b/Widget.cs" />
-    <entry file="file://$PROJECT_DIR$/../../Everlook/Explorer/ItemReference.cs" />
-    <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/Camera/ViewportCamera.cs" />
     <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/Rendering/Core/Plane.cs" />
     <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/Rendering/Core/Transform.cs" />
     <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/Rendering/RenderableBLP.cs" />
     <entry file="file://$PROJECT_DIR$/../../Everlook/Utility/ExtensionMethods.cs" />
-    <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/Rendering/RenderableWorldModel.cs" />
     <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/6B18DC2E-94C6-4FAA-9DDB-A710AD41AAA1/13/dee59d0b/Object.cs" />
     <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/3AD4925E-382C-4010-90D7-D3E1CBCF9726/90/a6544bde/Utilities.cs" />
-    <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/ViewportRenderer.cs" />
     <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/4BD38221-5A9A-4A26-B2E5-C43C475B6BE8/7c/c71405c4/Thread.cs" />
     <entry file="file://$PROJECT_DIR$/../../Everlook/Configuration/EverlookConfiguration.cs" />
     <entry file="file://$PROJECT_DIR$/../../Everlook/Configuration/GamePathStorage.cs" />
-    <entry file="file://$PROJECT_DIR$/../../Everlook/EverlookPreferences.cs" />
     <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/C918ACB2-CD87-4ABB-BDEB-12704C1A774F/2c/15c238fe/IGraphicsContext.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="203">
@@ -683,69 +627,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/C918ACB2-CD87-4ABB-BDEB-12704C1A774F/ff/a5fc8195/Utilities.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="292">
-          <caret line="181" column="27" selection-start-line="181" selection-start-column="27" selection-end-line="181" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/C918ACB2-CD87-4ABB-BDEB-12704C1A774F/f9/6e75f40c/GraphicsContext.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-998">
           <caret line="243" column="11" selection-start-line="243" selection-start-column="11" selection-end-line="243" selection-end-column="11" />
-          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/C918ACB2-CD87-4ABB-BDEB-12704C1A774F/ff/a5fc8195/Utilities.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="292">
+          <caret line="181" column="27" selection-start-line="181" selection-start-column="27" selection-end-line="181" selection-end-column="27" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../GLWidgetGTK3/GLWidget.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1254">
+        <state relative-caret-position="849">
           <caret line="314" column="37" selection-start-line="314" selection-start-column="37" selection-end-line="314" selection-end-column="37" />
-          <folding>
-            <marker date="1476902546483" expanded="true" signature="0:1224" ph="License" />
-            <marker date="1476902546483" expanded="true" signature="16:1213" ph="/* ... */" />
-            <marker date="1476902546483" expanded="true" signature="1232:1445" ph="..." />
-            <marker date="1476902546483" expanded="true" signature="1463:15393" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="1522:15390" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="1529:1642" ph="Static attrs." />
-            <marker date="1476902546483" expanded="true" signature="1646:1764" ph="Attributes" />
-            <marker date="1476902546483" expanded="true" signature="1768:2777" ph="Properties" />
-            <marker date="1476902546483" expanded="true" signature="2781:4304" ph="Construction/Destruction" />
-            <marker date="1476902546483" expanded="true" signature="2918:2926" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="3110:3118" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="3298:3763" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="3778:3805" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="3839:3914" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="3965:4290" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="4308:5663" ph="New Events" />
-            <marker date="1476902546483" expanded="true" signature="4552:4658" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="4894:5002" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="5145:5221" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="5360:5436" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="5571:5649" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="5667:5875" ph="/* ... */" />
-            <marker date="1476902546483" expanded="true" signature="5927:6147" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="6238:6387" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="6416:8023" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="8027:8441" ph="Windows Specific initalization" />
-            <marker date="1476902546483" expanded="true" signature="8108:8249" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="8445:9075" ph="OSX Specific Initialization" />
-            <marker date="1476902546483" expanded="true" signature="8519:8757" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="9079:15386" ph="X Specific Initialization" />
-            <marker date="1476902546483" expanded="true" signature="10036:10159" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="10229:10623" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="10525:10619" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="10666:10859" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="10913:11599" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="11725:11827" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="11875:12251" ph="{...}" />
-            <marker date="1476902546483" expanded="true" signature="13057:13128" ph="/* ... */" />
-            <marker date="1476902546483" expanded="true" signature="13950:14242" ph="/// ..." />
-            <marker date="1476902546483" expanded="true" signature="14383:14675" ph="/// ..." />
-            <marker date="1476902546483" expanded="true" signature="14814:15082" ph="/// ..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -753,195 +652,418 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="510">
           <caret line="34" column="43" selection-start-line="34" selection-start-column="43" selection-end-line="34" selection-end-column="43" />
-          <folding>
-            <marker date="1476901407439" expanded="true" signature="0:783" ph="/* ... */" />
-            <marker date="1476901407439" expanded="true" signature="790:808" ph="..." />
-            <marker date="1476901407439" expanded="true" signature="828:1148" ph="{...}" />
-            <marker date="1476901407439" expanded="true" signature="856:1146" ph="{...}" />
-            <marker date="1476901407439" expanded="true" signature="887:1143" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../Everlook/Explorer/ExplorerBuilder.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-697">
-          <caret line="190" column="20" selection-start-line="190" selection-start-column="20" selection-end-line="190" selection-end-column="20" />
+        <state relative-caret-position="855">
+          <caret line="57" column="54" selection-start-line="57" selection-start-column="54" selection-end-line="57" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/Explorer/FilterType.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/Explorer/NodeType.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/Explorer/ReferenceState.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/UI/EverlookPreferencesElements.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="27" column="43" selection-start-line="27" selection-start-column="43" selection-end-line="27" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/UI/EverlookPreferences.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="765">
+          <caret line="51" column="69" selection-start-line="51" selection-start-column="69" selection-end-line="51" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/UI/MainWindowElements.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="24" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/UI/EverlookImageExportDialog.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="20" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/UI/EverlookImageExportDialogElements.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="23" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/UI/EverlookDirectoryExportDialogElements.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="62" selection-start-line="19" selection-start-column="62" selection-end-line="19" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/UI/EverlookDirectoryExportDialog.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="28" column="10" selection-start-line="28" selection-start-column="9" selection-end-line="28" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/Explorer/ItemReference.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="293">
+          <caret line="418" column="13" selection-start-line="418" selection-start-column="13" selection-end-line="418" selection-end-column="13" />
           <folding>
-            <marker date="1476901407435" expanded="true" signature="0:791" ph="/* ... */" />
-            <marker date="1476901407435" expanded="true" signature="799:1031" ph="..." />
-            <marker date="1476901407435" expanded="true" signature="1060:20878" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="1064:1213" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="1257:19915" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="1263:1343" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="1408:1638" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="1703:1784" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="1928:2093" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="2359:2495" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="2569:2797" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="2908:3035" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="3194:3382" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="3511:3697" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="3826:4152" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="4347:4550" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="4632:4878" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="4960:5114" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="5167:5301" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="5355:5459" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="5542:5788" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="5842:6012" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="6051:6231" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="6275:6484" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="6518:6643" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="6670:6886" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="6890:7093" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="7166:7251" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="7273:7554" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="7558:7670" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="7691:7886" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="7890:8000" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="8023:8191" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="8195:8396" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="8437:10865" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="10869:11055" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="11098:11225" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="11229:11345" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="11378:12325" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="12329:12562" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="12612:12899" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="12903:13141" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="13213:13861" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="13865:13988" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="14057:16143" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="16147:16346" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="16380:16851" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="16855:17037" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="17137:17733" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="17737:17905" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="17984:18334" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="18338:18412" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="18454:18558" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="18562:18635" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="18677:18781" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="18785:18860" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="18904:19014" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="19018:19659" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="19683:19912" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="19918:19986" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="20081:20226" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="20326:20393" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="20443:20876" ph="{...}" />
-            <marker date="1476901407435" expanded="true" signature="20449:20556" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="20610:20787" ph="/// ..." />
-            <marker date="1476901407435" expanded="true" signature="20842:20873" ph="{...}" />
+            <marker date="1478288134587" expanded="true" signature="0:789" ph="/* FileReference.cs ... */" />
+            <marker date="1478288134587" expanded="true" signature="797:967" ph="..." />
+            <marker date="1478288134587" expanded="true" signature="996:12471" ph="{...}" />
+            <marker date="1478288134587" expanded="true" signature="1000:1147" ph="/// Represents a file stored in a game package. Holds the package name and path of the file ... " />
+            <marker date="1478288134587" expanded="true" signature="1203:12469" ph="{...}" />
+            <marker date="1478288134587" expanded="true" signature="1209:1323" ph="/// Gets or sets the parent reference. ... " />
+            <marker date="1478288134587" expanded="true" signature="1380:1484" ph="/// Contains a list of references that have this reference as a parent. ... " />
+            <marker date="1478288134587" expanded="true" signature="1562:1680" ph="/// Gets or sets the group this reference belongs to. ... " />
+            <marker date="1478288134587" expanded="true" signature="1733:1878" ph="/// Gets or sets the name of the package where the file is stored. ... " />
+            <marker date="1478288134587" expanded="true" signature="1938:2069" ph="/// Gets or sets the file path of the file inside the package. ... " />
+            <marker date="1478288134587" expanded="true" signature="2126:2202" ph="/// The current state of the item reference. ... " />
+            <marker date="1478288134587" expanded="true" signature="2292:2402" ph="/// Gets the file info of this reference. ... " />
+            <marker date="1478288134587" expanded="true" signature="2600:2924" ph="/// Walks through this reference's children and checks whether or not all of them have had their ... " />
+            <marker date="1478288134587" expanded="true" signature="3371:3591" ph="/// Gets a value indicating whether this reference is deleted in package it is stored in. ... " />
+            <marker date="1478288134587" expanded="true" signature="3847:4056" ph="/// Gets a value indicating whether this or not this reference is a package reference. ... " />
+            <marker date="1478288134587" expanded="true" signature="4188:4376" ph="/// Gets a value indicating whether this reference is a directory. ... " />
+            <marker date="1478288134587" expanded="true" signature="4522:4700" ph="/// Gets a value indicating whether this reference is a file. ... " />
+            <marker date="1478288134587" expanded="true" signature="4843:5014" ph="/// Initializes a new instance of the &lt;see cref=&quot;Everlook.Explorer.ItemReference&quot;/&gt; class. ... " />
+            <marker date="1478288134587" expanded="true" signature="5042:5050" ph="{...}" />
+            <marker date="1478288134587" expanded="true" signature="5054:5527" ph="/// Initializes a new instance of the &lt;see cref=&quot;Everlook.Explorer.ItemReference&quot;/&gt; class. ... " />
+            <marker date="1478288134587" expanded="true" signature="5679:5800" ph="{...}" />
+            <marker date="1478288134587" expanded="true" signature="5804:6206" ph="/// Initializes a new instance of the &lt;see cref=&quot;Everlook.Explorer.ItemReference&quot;/&gt; class by ... " />
+            <marker date="1478288134587" expanded="true" signature="6333:6496" ph="{...}" />
+            <marker date="1478288134587" expanded="true" signature="6500:6680" ph="/// Initializes a new instance of the &lt;see cref=&quot;Everlook.Explorer.ItemReference&quot;/&gt; class. ... " />
+            <marker date="1478288134587" expanded="true" signature="6732:6779" ph="{...}" />
+            <marker date="1478288134587" expanded="true" signature="6783:6888" ph="/// Extracts this instance from the package group it is associated with. ... " />
+            <marker date="1478288134587" expanded="true" signature="6922:6993" ph="{...}" />
+            <marker date="1478288134587" expanded="true" signature="6997:7122" ph="/// Gets the name of the referenced item. ... " />
+            <marker date="1478288134587" expanded="true" signature="7170:7633" ph="{...}" />
+            <marker date="1478288134587" expanded="true" signature="7637:7762" ph="/// Gets the type of the referenced file. ... " />
+            <marker date="1478288134587" expanded="true" signature="7812:9531" ph="{...}" />
+            <marker date="1478288134587" expanded="true" signature="9535:11368" ph="IEquatable implementation" />
+            <marker date="1478288134587" expanded="true" signature="9572:10081" ph="/// Determines whether the specified &lt;see cref=&quot;System.Object&quot;/&gt; is equal to the current &lt;see cref=&quot;Everlook.Expl ... " />
+            <marker date="1478288134587" expanded="true" signature="10123:10220" ph="{...}" />
+            <marker date="1478288134587" expanded="true" signature="10224:10771" ph="/// Determines whether the specified &lt;see cref=&quot;Everlook.Explorer.ItemReference&quot;/&gt; is equal to the current &lt;see c ... " />
+            <marker date="1478288134587" expanded="true" signature="10813:11354" ph="{...}" />
+            <marker date="1478288134587" expanded="true" signature="11372:11651" ph="/// Returns a &lt;see cref=&quot;System.String&quot;/&gt; that represents the current &lt;see cref=&quot;Everlook.Explorer.ItemReference&quot; ... " />
+            <marker date="1478288134587" expanded="true" signature="11687:11734" ph="{...}" />
+            <marker date="1478288134587" expanded="true" signature="11738:12004" ph="/// Serves as a hash function for a &lt;see cref=&quot;Everlook.Explorer.ItemReference&quot;/&gt; object. ... " />
+            <marker date="1478288134587" expanded="true" signature="12040:12466" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../Everlook/MainWindow.cs">
+    <entry file="file://$PROJECT_DIR$/../../../libwarcraft/libwarcraft/WMO/RootFile/Chunks/ModelMaterials.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2925">
+          <caret line="195" column="9" selection-start-line="195" selection-start-column="9" selection-end-line="195" selection-end-column="9" />
+          <folding>
+            <marker date="1468155216452" expanded="true" signature="0:790" ph="/* ModelMaterials.cs ... */" />
+            <marker date="1468155216452" expanded="true" signature="798:972" ph="..." />
+            <marker date="1468155216452" expanded="true" signature="1012:5420" ph="{...}" />
+            <marker date="1468155216452" expanded="true" signature="1077:2258" ph="{...}" />
+            <marker date="1468155216452" expanded="true" signature="1227:1236" ph="{...}" />
+            <marker date="1468155216452" expanded="true" signature="1276:1311" ph="{...}" />
+            <marker date="1468155216452" expanded="true" signature="1356:1778" ph="{...}" />
+            <marker date="1468155216452" expanded="true" signature="1816:1863" ph="{...}" />
+            <marker date="1468155216452" expanded="true" signature="1892:2255" ph="{...}" />
+            <marker date="1468155216452" expanded="true" signature="2309:5017" ph="{...}" />
+            <marker date="1468155216452" expanded="true" signature="2823:2862" ph="/* Nonserialized utility fields ... */" />
+            <marker date="1468155216452" expanded="true" signature="3051:3976" ph="{...}" />
+            <marker date="1468155216452" expanded="true" signature="4007:4029" ph="{...}" />
+            <marker date="1468155216452" expanded="true" signature="4058:5014" ph="{...}" />
+            <marker date="1468155216452" expanded="true" signature="5061:5346" ph="{...}" />
+            <marker date="1468155216452" expanded="true" signature="5380:5418" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/CE879B74-6658-4974-AB35-A6DF9C74C1BC/fa/043c6b7b/Display.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-305">
+          <caret line="2708" column="16" selection-start-line="2708" selection-start-column="16" selection-end-line="2708" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/Camera/ViewportCamera.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="317">
+          <caret line="80" column="13" selection-start-line="80" selection-start-column="13" selection-end-line="80" selection-end-column="13" />
+          <folding>
+            <marker date="1476901407439" expanded="true" signature="0:790" ph="/* ViewportCamera.cs ... */" />
+            <marker date="1476901407439" expanded="true" signature="798:865" ph="..." />
+            <marker date="1476901407439" expanded="true" signature="901:5891" ph="{...}" />
+            <marker date="1476901407439" expanded="true" signature="905:1016" ph="/// A camera in the world, represented by a position and a set of viewing angles. ... " />
+            <marker date="1476901407439" expanded="true" signature="1045:5889" ph="{...}" />
+            <marker date="1476901407439" expanded="true" signature="1051:1140" ph="/// The current position of the observer in world space. ... " />
+            <marker date="1476901407439" expanded="true" signature="1171:1277" ph="/// A vector pointing in the direction the observer is currently looking. ... " />
+            <marker date="1476901407439" expanded="true" signature="1350:1499" ph="/// The current vector that points directly to the right, relative to the ... " />
+            <marker date="1476901407439" expanded="true" signature="1564:1708" ph="/// The current vector that points directly upwards, relative to the current ... " />
+            <marker date="1476901407439" expanded="true" signature="1770:1857" ph="/// The current horizontal view angle of the observer. ... " />
+            <marker date="1476901407439" expanded="true" signature="2067:2241" ph="/// The current vertical view angle of the observer. This angle is ... " />
+            <marker date="1476901407439" expanded="true" signature="2443:2489" ph="/* Default camera and movement speeds. ... */" />
+            <marker date="1476901407439" expanded="true" signature="2493:2584" ph="/// The default field of view for perspective projections. ... " />
+            <marker date="1476901407439" expanded="true" signature="2637:2709" ph="/// The default near clipping distance. ... " />
+            <marker date="1476901407439" expanded="true" signature="2771:2842" ph="/// The default far clipping distance. ... " />
+            <marker date="1476901407439" expanded="true" signature="2906:3059" ph="/// Creates a new instance of the &lt;see cref=&quot;ViewportCamera&quot;/&gt; class, and sets its position ... " />
+            <marker date="1476901407439" expanded="true" signature="3085:3113" ph="{...}" />
+            <marker date="1476901407439" expanded="true" signature="3117:3196" ph="/// Resets the camera to the default position. ... " />
+            <marker date="1476901407439" expanded="true" signature="3226:3916" ph="{...}" />
+            <marker date="1476901407439" expanded="true" signature="3953:4515" ph="{...}" />
+            <marker date="1476901407439" expanded="true" signature="4519:4953" ph="/// Gets the calculated projection matrix for this camera, using the values contained inside it. ... " />
+            <marker date="1476901407439" expanded="true" signature="5060:5585" ph="{...}" />
+            <marker date="1476901407439" expanded="true" signature="5589:5750" ph="/// Gets the view matrix of this camera (i.e, where it is looking) ... " />
+            <marker date="1476901407439" expanded="true" signature="5783:5886" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/Rendering/RenderableWorldModel.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="35" column="35" selection-start-line="35" selection-start-column="35" selection-end-line="35" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/Explorer/VirtualItemReference.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="235">
+          <caret line="34" column="17" selection-start-line="34" selection-start-column="17" selection-end-line="34" selection-end-column="17" />
+          <folding>
+            <marker date="1476901407435" expanded="true" signature="0:796" ph="/* VirtualItemReference.cs ... */" />
+            <marker date="1476901407435" expanded="true" signature="803:897" ph="..." />
+            <marker date="1476901407435" expanded="true" signature="926:5147" ph="{...}" />
+            <marker date="1476901407435" expanded="true" signature="930:1318" ph="/// A virtual item reference. This type of item reference does not point to a specific file in a package, but ... " />
+            <marker date="1476901407435" expanded="true" signature="1369:5145" ph="{...}" />
+            <marker date="1476901407435" expanded="true" signature="1375:1595" ph="/// Gets the hard reference. The hard reference is the primary underlying package-specific ... " />
+            <marker date="1476901407435" expanded="true" signature="1652:1904" ph="/// Gets the overridden hard references. This is a list of hard references that are overridden by ... " />
+            <marker date="1476901407435" expanded="true" signature="1994:2139" ph="/// Gets or sets the name of the package where the file is stored. ... " />
+            <marker date="1476901407435" expanded="true" signature="2337:2468" ph="/// Gets or sets the file path of the file inside the package. ... " />
+            <marker date="1476901407435" expanded="true" signature="2806:2970" ph="/// Gets a value indicating whether this or not this reference is a package reference. ... " />
+            <marker date="1476901407435" expanded="true" signature="3050:3375" ph="/// Initializes a new instance of the &lt;see cref=&quot;Everlook.Explorer.VirtualItemReference&quot;/&gt; class. ... " />
+            <marker date="1476901407435" expanded="true" signature="3465:3664" ph="{...}" />
+            <marker date="1476901407435" expanded="true" signature="3668:4084" ph="/// Initializes a new instance of the &lt;see cref=&quot;Everlook.Explorer.VirtualItemReference&quot;/&gt; class, ... " />
+            <marker date="1476901407435" expanded="true" signature="4262:4320" ph="{...}" />
+            <marker date="1476901407435" expanded="true" signature="4324:4434" ph="/// Gets the file info of this reference. ... " />
+            <marker date="1476901407435" expanded="true" signature="4552:4657" ph="/// Extracts this instance from the package group it is associated with. ... " />
+            <marker date="1476901407435" expanded="true" signature="4692:4740" ph="{...}" />
+            <marker date="1476901407435" expanded="true" signature="4744:5017" ph="/// Serves as a hash function for a &lt;see cref=&quot;Everlook.Explorer.VirtualItemReference&quot;/&gt; object. ... " />
+            <marker date="1476901407435" expanded="true" signature="5053:5142" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/Camera/CameraMovement.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
-          <caret line="1096" column="35" selection-start-line="1096" selection-start-column="35" selection-end-line="1096" selection-end-column="35" />
+          <caret line="103" column="9" selection-start-line="103" selection-start-column="9" selection-end-line="103" selection-end-column="9" />
           <folding>
-            <marker date="1476902903175" expanded="true" signature="0:786" ph="/* ... */" />
-            <marker date="1476902903175" expanded="true" signature="794:1440" ph="..." />
-            <marker date="1476902903175" expanded="true" signature="1460:44956" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="1464:1688" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="1733:44356" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="3365:3448" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="3534:3639" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="3697:3818" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="3898:4015" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="4051:4218" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="4222:4421" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="4494:7195" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="7153:7191" ph="/* ... */" />
-            <marker date="1476902903175" expanded="true" signature="7199:7372" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="7465:8296" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="8300:8475" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="8565:9787" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="9791:10008" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="10107:10389" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="10393:10596" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="10692:11185" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="11189:11409" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="11476:11604" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="11608:11839" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="11876:12127" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="12131:12279" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="12350:12394" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="12398:12550" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="12610:13154" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="13158:13284" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="13345:13843" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="13847:14114" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="14186:14210" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="14214:14650" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="14736:15468" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="15472:15648" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="15682:16577" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="15903:15987" ph="/* ... */" />
-            <marker date="1476902903175" expanded="true" signature="16581:16747" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="16825:18158" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="18162:18354" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="18429:19216" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="19220:19409" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="19481:19816" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="19820:20041" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="20113:20389" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="20393:20598" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="20671:21346" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="21350:21501" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="21567:21620" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="21624:21781" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="21853:22124" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="22128:22305" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="22344:22581" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="22585:22812" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="22889:23309" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="23313:23601" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="23663:23802" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="23806:24126" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="24193:24335" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="24339:24659" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="24726:24803" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="24807:25079" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="25155:29216" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="29220:29385" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="29487:30649" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="30653:30817" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="30918:31615" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="31619:31814" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="31893:32042" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="32046:32223" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="32302:32389" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="32393:32548" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="32613:33882" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="33886:34062" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="34141:34247" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="34251:34515" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="34608:35629" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="35633:35969" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="36062:38871" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="36484:36644" ph="/* ... */" />
-            <marker date="1476902903175" expanded="true" signature="38875:39333" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="39422:39653" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="39657:39929" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="40017:42157" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="42161:42604" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="42683:42863" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="42867:43150" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="43231:43240" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="43244:43557" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="43626:43791" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="43795:44026" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="44091:44353" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="44359:44437" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="44462:44954" ph="{...}" />
-            <marker date="1476902903175" expanded="true" signature="44468:44566" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="44583:44712" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="44729:44835" ph="/// ..." />
-            <marker date="1476902903175" expanded="true" signature="44856:44939" ph="/// ..." />
+            <marker date="1478347335896" expanded="true" signature="0:790" ph="/* CameraMovement.cs ... */" />
+            <marker date="1478347335896" expanded="true" signature="798:839" ph="..." />
+            <marker date="1478347335896" expanded="true" signature="875:5999" ph="{...}" />
+            <marker date="1478347335896" expanded="true" signature="879:1151" ph="/// Camera movement component. This class is bound to a single camera instance, and handles ... " />
+            <marker date="1478347335896" expanded="true" signature="1180:5997" ph="{...}" />
+            <marker date="1478347335896" expanded="true" signature="1229:1310" ph="/// The current orientation of the bound camera. ... " />
+            <marker date="1478347335896" expanded="true" signature="1669:1747" ph="/// The current position of the bound camera. ... " />
+            <marker date="1478347335896" expanded="true" signature="1876:2038" ph="/// Whether or not to constrain the vertical view angle to -/+ 90 degrees. This ... " />
+            <marker date="1478347335896" expanded="true" signature="2102:2202" ph="/// The default movement speed of the observer within the viewport. ... " />
+            <marker date="1478347335896" expanded="true" signature="2258:2357" ph="/// The default turning speed of the observer within the viewport. ... " />
+            <marker date="1478347335896" expanded="true" signature="2412:2528" ph="/// Creates a new &lt;see cref=&quot;CameraMovement&quot;/&gt; instance, bound to the input camera. ... " />
+            <marker date="1478347335896" expanded="true" signature="2577:2650" ph="{...}" />
+            <marker date="1478347335896" expanded="true" signature="2654:2806" ph="/// Calculates the relative position of the observer in world space, using ... " />
+            <marker date="1478347335896" expanded="true" signature="2893:4153" ph="{...}" />
+            <marker date="1478347335896" expanded="true" signature="4157:4270" ph="/// Rotates the camera on the horizontal axis by the provided amount of degrees. ... " />
+            <marker date="1478347335896" expanded="true" signature="4316:4366" ph="{...}" />
+            <marker date="1478347335896" expanded="true" signature="4370:4481" ph="/// Rotates the camera on the vertical axis by the provided amount of degrees. ... " />
+            <marker date="1478347335896" expanded="true" signature="4525:4573" ph="{...}" />
+            <marker date="1478347335896" expanded="true" signature="4577:4694" ph="/// Moves the camera up along its local Y axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
+            <marker date="1478347335896" expanded="true" signature="4731:4799" ph="{...}" />
+            <marker date="1478347335896" expanded="true" signature="4803:4922" ph="/// Moves the camera down along its local Y axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
+            <marker date="1478347335896" expanded="true" signature="4961:5029" ph="{...}" />
+            <marker date="1478347335896" expanded="true" signature="5033:5155" ph="/// Moves the camera forward along its local Z axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
+            <marker date="1478347335896" expanded="true" signature="5197:5276" ph="{...}" />
+            <marker date="1478347335896" expanded="true" signature="5280:5404" ph="/// Moves the camera backwards along its local Z axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
+            <marker date="1478347335896" expanded="true" signature="5447:5526" ph="{...}" />
+            <marker date="1478347335896" expanded="true" signature="5530:5649" ph="/// Moves the camera left along its local X axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
+            <marker date="1478347335896" expanded="true" signature="5688:5759" ph="{...}" />
+            <marker date="1478347335896" expanded="true" signature="5763:5883" ph="/// Moves the camera right along its local X axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
+            <marker date="1478347335896" expanded="true" signature="5923:5994" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/ViewportRenderer.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="186" column="38" selection-start-line="186" selection-start-column="38" selection-end-line="186" selection-end-column="38" />
+          <folding>
+            <marker date="1478348363723" expanded="true" signature="0:792" ph="/* ViewportRenderer.cs ... */" />
+            <marker date="1478348363723" expanded="true" signature="800:1028" ph="..." />
+            <marker date="1478348363723" expanded="true" signature="1057:7729" ph="{...}" />
+            <marker date="1478348363723" expanded="true" signature="1061:1256" ph="/// Viewport renderer for the main Everlook UI. This class manages an OpenGL rendering thread, which ... " />
+            <marker date="1478348363723" expanded="true" signature="1301:7727" ph="{...}" />
+            <marker date="1478348363723" expanded="true" signature="1307:1469" ph="/// The viewport widget displayed to the user in the main interface. ... " />
+            <marker date="1478348363723" expanded="true" signature="1517:1571" ph="/* RenderTarget and related control flow data. ... */" />
+            <marker date="1478348363723" expanded="true" signature="1575:1732" ph="/// A lock object used to enforce that the rendering target can finish its current ... " />
+            <marker date="1478348363723" expanded="true" signature="1879:2015" ph="/// The current rendering target. This is an object capable of being shown in an ... " />
+            <marker date="1478348363723" expanded="true" signature="2055:2129" ph="/// The camera viewpoint of the observer. ... " />
+            <marker date="1478348363723" expanded="true" signature="2165:2240" ph="/// The movement component for the camera. ... " />
+            <marker date="1478348363723" expanded="true" signature="2279:2360" ph="/// The time taken to render the previous frame. ... " />
+            <marker date="1478348363723" expanded="true" signature="2391:2524" ph="/// The X position of the mouse during the last frame, relative to the &lt;see cref=&quot;ViewportWidget&quot;/&gt;. ... " />
+            <marker date="1478348363723" expanded="true" signature="2556:2689" ph="/// The Y position of the mouse during the last frame, relative to the &lt;see cref=&quot;ViewportWidget&quot;/&gt;. ... " />
+            <marker date="1478348363723" expanded="true" signature="2721:2765" ph="/* Runtime transitional OpenGL data. ... */" />
+            <marker date="1478348363723" expanded="true" signature="2769:2870" ph="/// The OpenGL ID of the vertex array valid for the current context. ... " />
+            <marker date="1478348363723" expanded="true" signature="2903:3027" ph="/// Whether or not this instance has been initialized and is ready ... " />
+            <marker date="1478348363723" expanded="true" signature="3083:3137" ph="/* Everlook caching and static data accessors. ... */" />
+            <marker date="1478348363723" expanded="true" signature="3141:3224" ph="/// Static reference to the configuration handler. ... " />
+            <marker date="1478348363723" expanded="true" signature="3310:3436" ph="/// Initializes a new instance of the &lt;see cref=&quot;Everlook.Viewport.ViewportRenderer&quot;/&gt; class. ... " />
+            <marker date="1478348363723" expanded="true" signature="3487:3659" ph="{...}" />
+            <marker date="1478348363723" expanded="true" signature="3663:3711" ph="/// Initializes ... " />
+            <marker date="1478348363723" expanded="true" signature="3738:4835" ph="{...}" />
+            <marker date="1478348363723" expanded="true" signature="4839:4955" ph="/// The primary rendering logic. Here, the current object is rendered using OpenGL. ... " />
+            <marker date="1478348363723" expanded="true" signature="4983:6620" ph="{...}" />
+            <marker date="1478348363723" expanded="true" signature="5432:5512" ph="/* Calculate the current relative movement of the camera ... */" />
+            <marker date="1478348363723" expanded="true" signature="5972:6063" ph="/* Render the current object ... */" />
+            <marker date="1478348363723" expanded="true" signature="6624:6742" ph="/// Determines whether or not movement is currently disabled for the rendered object. ... " />
+            <marker date="1478348363723" expanded="true" signature="6777:6908" ph="{...}" />
+            <marker date="1478348363723" expanded="true" signature="6912:7085" ph="/// Sets the render target that is currently being rendered by the viewport renderer. ... " />
+            <marker date="1478348363723" expanded="true" signature="7141:7405" ph="{...}" />
+            <marker date="1478348363723" expanded="true" signature="7409:7561" ph="/// Disposes the viewport renderer, releasing the current rendering target and current ... " />
+            <marker date="1478348363723" expanded="true" signature="7585:7724" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/UI/MainWindow.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="383">
+          <caret line="189" column="59" selection-start-line="189" selection-start-column="59" selection-end-line="189" selection-end-column="59" />
+          <folding>
+            <marker date="1478348363675" expanded="true" signature="0:786" ph="/* MainWindow.cs ... */" />
+            <marker date="1478348363675" expanded="true" signature="794:1357" ph="..." />
+            <marker date="1478348363675" expanded="true" signature="1380:39400" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="1384:1608" ph="/// Main UI class for Everlook. The &quot;partial&quot; qualifier is not strictly needed, but prevents the compiler from ... " />
+            <marker date="1478348363675" expanded="true" signature="1660:38800" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="1666:1749" ph="/// Static reference to the configuration handler. ... " />
+            <marker date="1478348363675" expanded="true" signature="1835:1940" ph="/// Background viewport renderer. Handles all rendering in the viewport. ... " />
+            <marker date="1478348363675" expanded="true" signature="1998:2119" ph="/// Background file explorer tree builder. Handles enumeration of files in the archives. ... " />
+            <marker date="1478348363675" expanded="true" signature="2199:2316" ph="/// Creates an instance of the MainWindow class, loading the glade XML UI as needed. ... " />
+            <marker date="1478348363675" expanded="true" signature="2352:2519" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="2523:2713" ph="/// Initializes a new instance of the &lt;see cref=&quot;MainWindow&quot;/&gt; class. ... " />
+            <marker date="1478348363675" expanded="false" signature="2784:5295" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="2916:3128" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="5017:5058" ph="/* Set up item control sections ... */" />
+            <marker date="1478348363675" expanded="true" signature="5253:5291" ph="/* Model ... */" />
+            <marker date="1478348363675" expanded="true" signature="5299:5502" ph="/// Handles input inside the OpenGL viewport for mouse button presses. ... " />
+            <marker date="1478348363675" expanded="true" signature="5596:6058" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="6062:6279" ph="/// Handles input inside the OpenGL viewport for mouse button releases. ... " />
+            <marker date="1478348363675" expanded="true" signature="6376:6611" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="6615:6835" ph="/// Handles OpenGL initialization post-context creation. This function ... " />
+            <marker date="1478348363675" expanded="false" signature="6900:7028" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="7032:7263" ph="/// This function lazily renders frames of the currently focused object. ... " />
+            <marker date="1478348363675" expanded="false" signature="7298:7549" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="7553:7701" ph="/// ... " />
+            <marker date="1478348363675" expanded="true" signature="7772:7816" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="7820:7972" ph="/// Enables the specified control page and brings it to the front. ... " />
+            <marker date="1478348363675" expanded="false" signature="8030:8574" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="8578:8704" ph="/// Disables the specified control page. ... " />
+            <marker date="1478348363675" expanded="false" signature="8763:9261" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="9265:9701" ph="/// Sorts the game explorer row. If &lt;paramref name=&quot;iterA&quot;/&gt; should be sorted before ... " />
+            <marker date="1478348363675" expanded="false" signature="9792:10524" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="10528:10704" ph="/// Idle functionality. This code is called as a way of lazily loading rows into the UI ... " />
+            <marker date="1478348363675" expanded="false" signature="10736:11511" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="10840:10923" ph="/* There's content to be added to the UI ... */" />
+            <marker date="1478348363675" expanded="true" signature="11515:11681" ph="/// Handles the export item context item activated event. ... " />
+            <marker date="1478348363675" expanded="false" signature="11757:12917" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="12921:13113" ph="/// Handles extraction of files from the archive triggered by a context menu press. ... " />
+            <marker date="1478348363675" expanded="false" signature="13186:13832" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="13836:14025" ph="/// Handles opening of files from the archive triggered by a context menu press. ... " />
+            <marker date="1478348363675" expanded="false" signature="14095:14380" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="14384:14605" ph="/// Handles copying of the file path of a selected item in the archive, triggered by a ... " />
+            <marker date="1478348363675" expanded="false" signature="14675:14951" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="14955:15160" ph="/// Handles queueing of a selected file in the archive, triggered by a context ... " />
+            <marker date="1478348363675" expanded="false" signature="15231:15765" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="15769:15920" ph="/// Displays the About dialog to the user. ... " />
+            <marker date="1478348363675" expanded="false" signature="15984:16037" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="16041:16198" ph="/// Displays the preferences dialog to the user. ... " />
+            <marker date="1478348363675" expanded="false" signature="16268:16539" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="16543:16685" ph="/// Gets the current &lt;see cref=&quot;ItemReference&quot;/&gt; that is selected in the tree view. ... " />
+            <marker date="1478348363675" expanded="false" signature="16732:16915" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="16919:17096" ph="/// Reloads visible runtime values that the user can change in the preferences, such as the colour ... " />
+            <marker date="1478348363675" expanded="false" signature="17133:17370" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="17374:17601" ph="/// Handles expansion of rows in the game explorer, enumerating any subfolders and ... " />
+            <marker date="1478348363675" expanded="false" signature="17676:18096" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="18100:18388" ph="/// Gets a &lt;see cref=&quot;TreeIter&quot;/&gt; that's valid for the &lt;see cref=&quot;GameExplorerTreeStore&quot;/&gt; from a ... " />
+            <marker date="1478348363675" expanded="false" signature="18450:18589" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="18593:18913" ph="/// Gets a &lt;see cref=&quot;TreeIter&quot;/&gt; that's valid for the &lt;see cref=&quot;GameExplorerTreeStore&quot;/&gt; from a TreeIter ... " />
+            <marker date="1478348363675" expanded="false" signature="18980:19122" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="19126:19446" ph="/// Gets a &lt;see cref=&quot;TreeIter&quot;/&gt; that's valid for the &lt;see cref=&quot;GameExplorerTreeStore&quot;/&gt; from a TreeIter ... " />
+            <marker date="1478348363675" expanded="false" signature="19513:19590" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="19594:19866" ph="/// Handles selection of files in the game explorer, displaying them to the user and routing ... " />
+            <marker date="1478348363675" expanded="false" signature="19940:24001" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="24005:24170" ph="/// Handles context menu spawning for the game explorer. ... " />
+            <marker date="1478348363675" expanded="false" signature="24270:25432" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="25436:25600" ph="/// Handles context menu spawning for the export queue. ... " />
+            <marker date="1478348363675" expanded="false" signature="25699:26396" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="26400:26595" ph="/// Handles removal of items from the export queue, triggered by a context menu press. ... " />
+            <marker date="1478348363675" expanded="false" signature="26672:26821" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="26825:27002" ph="/// Handles the package group added event from the explorer builder. ... " />
+            <marker date="1478348363675" expanded="false" signature="27079:27166" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="27170:27325" ph="/// Adds a package group node to the game explorer view ... " />
+            <marker date="1478348363675" expanded="false" signature="27390:28659" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="28663:28839" ph="/// Handles the package enumerated event from the explorer builder. ... " />
+            <marker date="1478348363675" expanded="false" signature="28916:29022" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="29026:29290" ph="/// Adds a package node to the game explorer view. ... " />
+            <marker date="1478348363675" expanded="false" signature="29383:30404" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="30408:30744" ph="/// Adds a directory node to the game explorer view, attachedt to the provided parent ... " />
+            <marker date="1478348363675" expanded="false" signature="30837:33646" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="31259:31419" ph="/* This references was added to the UI after the user had opened the previous folder. ... */" />
+            <marker date="1478348363675" expanded="true" signature="33650:34108" ph="/// Creates a node in the &lt;see cref=&quot;GameExplorerTreeView&quot;/&gt; for the specified directory reference, as ... " />
+            <marker date="1478348363675" expanded="false" signature="34197:34428" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="34432:34704" ph="/// Adds a file node to the game explorer view, attached to the provided parent ... " />
+            <marker date="1478348363675" expanded="false" signature="34792:36932" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="36936:37379" ph="/// Creates a node in the &lt;see cref=&quot;GameExplorerTreeView&quot;/&gt; for the specified file reference, as ... " />
+            <marker date="1478348363675" expanded="false" signature="37458:37638" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="37642:37955" ph="/// Converts a &lt;see cref=&quot;TreeIter&quot;/&gt; into an &lt;see cref=&quot;ItemReference&quot;/&gt;. The reference object is queried ... " />
+            <marker date="1478348363675" expanded="false" signature="38024:38189" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="38193:38424" ph="/// Handles application shutdown procedures - terminating render threads, cleaning ... " />
+            <marker date="1478348363675" expanded="false" signature="38487:38797" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="38803:38881" ph="/// Available control pages in the Everlook UI. ... " />
+            <marker date="1478348363675" expanded="false" signature="38906:39398" ph="{...}" />
+            <marker date="1478348363675" expanded="true" signature="38912:39010" ph="/// Image control page. Handles mip levels and rendered channels. ... " />
+            <marker date="1478348363675" expanded="true" signature="39027:39156" ph="/// Model control page. Handles vertex joining, geoset rendering and other model ... " />
+            <marker date="1478348363675" expanded="true" signature="39173:39279" ph="/// Animation control page. Handles active animations and their settings. ... " />
+            <marker date="1478348363675" expanded="true" signature="39300:39383" ph="/// Audio control page. Handles playback of audio. ... " />
           </folding>
         </state>
       </provider>

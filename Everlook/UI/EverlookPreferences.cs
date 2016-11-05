@@ -19,16 +19,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
 using System;
 using Gtk;
-using UI = Gtk.Builder.ObjectAttribute;
+using UIElement = Gtk.Builder.ObjectAttribute;
 using Everlook.Configuration;
 using Everlook.Export.Model;
 using Everlook.Export.Image;
 using Everlook.Export.Audio;
 using System.IO;
 
-namespace Everlook
+namespace Everlook.UI
 {
 	/// <summary>
 	/// Everlook preferences dialog. The "partial" qualifier is not strictly needed, but prevents the compiler from
@@ -36,23 +37,6 @@ namespace Everlook
 	/// </summary>
 	public partial class EverlookPreferences : Dialog
 	{
-		[UI] FileChooserDialog GameSelectionFileChooserDialog;
-		[UI] TreeView GamePathSelectionTreeView;
-		[UI] ListStore GamePathListStore;
-		[UI] Button AddPathButton;
-		[UI] Button RemovePathButton;
-
-		[UI] ColorButton ViewportColourButton;
-		//[UI] CheckButton ShowUnknownFilesCheckButton;
-
-		[UI] FileChooserButton DefaultExportDirectoryFileChooserButton;
-		[UI] ComboBox DefaultModelExportFormatComboBox;
-		[UI] ComboBox DefaultImageExportFormatComboBox;
-		[UI] ComboBox DefaultAudioExportFormatComboBox;
-		[UI] CheckButton KeepDirectoryStructureCheckButton;
-
-		[UI] CheckButton SendStatsCheckButton;
-
 		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
 
 		/// <summary>
@@ -65,7 +49,7 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.EverlookPreferences"/> class.
+		/// Initializes a new instance of the <see cref="Everlook.UI.EverlookPreferences"/> class.
 		/// </summary>
 		/// <param name="builder">Builder.</param>
 		/// <param name="handle">Handle.</param>

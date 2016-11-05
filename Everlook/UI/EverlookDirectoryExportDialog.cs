@@ -22,15 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Atk;
 using Everlook.Configuration;
 using Everlook.Explorer;
 using Everlook.Utility;
 using Gdk;
 using Gtk;
-using UI = Gtk.Builder.ObjectAttribute;
 
-namespace Everlook.Export.Directory
+namespace Everlook.UI
 {
 	/// <summary>
 	/// Everlook directory export dialog. The "partial" qualifier is not strictly needed, but prevents the compiler from
@@ -38,16 +36,6 @@ namespace Everlook.Export.Directory
 	/// </summary>
 	public partial class EverlookDirectoryExportDialog : Dialog
 	{
-		[UI] ListStore ItemExportListStore;
-		[UI] TreeView ItemListingTreeView;
-		[UI] CellRendererToggle ExportItemToggleRenderer;
-
-		[UI] Menu ExportPopupMenu;
-		[UI] ImageMenuItem SelectAllItem;
-		[UI] ImageMenuItem SelectNoneItem;
-
-		[UI] FileChooserButton ExportDirectoryFileChooserButton;
-
 		/// <summary>
 		/// The reference to the file in the package that is to be exported.
 		/// </summary>
@@ -60,25 +48,25 @@ namespace Everlook.Export.Directory
 		/// <summary>
 		/// Creates an instance of the Image Export dialog, using the glade XML UI file.
 		/// </summary>
-		public static EverlookDirectoryExportDialog Create(ItemReference InExportTarget)
+		public static EverlookDirectoryExportDialog Create(ItemReference inExportTarget)
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookDirectoryExport.glade", null);
 			return new EverlookDirectoryExportDialog(builder, builder.GetObject("EverlookDirectoryExportDialog").Handle,
-				InExportTarget);
+				inExportTarget);
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Export.Image.EverlookImageExportDialog"/> class.
+		/// Initializes a new instance of the <see cref="Everlook.UI.EverlookImageExportDialog"/> class.
 		/// </summary>
 		/// <param name="builder">Builder.</param>
 		/// <param name="handle">Handle.</param>
-		/// <param name="InExportTarget">In export target.</param>
-		protected EverlookDirectoryExportDialog(Builder builder, IntPtr handle, ItemReference InExportTarget)
+		/// <param name="inExportTarget">In export target.</param>
+		private EverlookDirectoryExportDialog(Builder builder, IntPtr handle, ItemReference inExportTarget)
 			: base(handle)
 		{
 			builder.Autoconnect(this);
 
-			this.ExportTarget = InExportTarget;
+			this.ExportTarget = inExportTarget;
 
 			/*
 				 UI Setup
@@ -125,26 +113,26 @@ namespace Everlook.Export.Directory
 				{
 					ItemReference referenceToExport = this.ReferenceMapping[(string)ItemExportListStore.GetValue(iter, 1)];
 
-					string ExportPath = "";
+					string exportPath = "";
 					if (Config.GetShouldKeepFileDirectoryStructure())
 					{
 						string parentDirectoryOfFile =
-							ExtensionMethods.ConvertPathSeparatorsToCurrentNativeSeparator(ExportTarget.ItemPath);
+							ExportTarget.ItemPath.ConvertPathSeparatorsToCurrentNativeSeparator();
 
-						ExportPath =
+						exportPath =
 							$"{ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{parentDirectoryOfFile}{System.IO.Path.DirectorySeparatorChar}{referenceToExport.GetReferencedItemName()}";
 					}
 					else
 					{
-						ExportPath = $"{ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{referenceToExport.GetReferencedItemName()}";
+						exportPath = $"{ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{referenceToExport.GetReferencedItemName()}";
 					}
 
-					System.IO.Directory.CreateDirectory(System.IO.Directory.GetParent(ExportPath).FullName);
+					System.IO.Directory.CreateDirectory(System.IO.Directory.GetParent(exportPath).FullName);
 
 					byte[] fileData = referenceToExport.Extract();
 					if (fileData != null)
 					{
-						File.WriteAllBytes(ExportPath, fileData);
+						File.WriteAllBytes(exportPath, fileData);
 					}
 				}
 
@@ -158,7 +146,7 @@ namespace Everlook.Export.Directory
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
 		[GLib.ConnectBefore]
-		protected void OnItemListingButtonPressed(object sender, ButtonPressEventArgs e)
+		private void OnItemListingButtonPressed(object sender, ButtonPressEventArgs e)
 		{
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
 			{
@@ -172,7 +160,7 @@ namespace Everlook.Export.Directory
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnSelectAllItemActivated(object sender, EventArgs e)
+		private void OnSelectAllItemActivated(object sender, EventArgs e)
 		{
 			ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
 			{
@@ -186,7 +174,7 @@ namespace Everlook.Export.Directory
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnSelectNoneItemActivated(object sender, EventArgs e)
+		private void OnSelectNoneItemActivated(object sender, EventArgs e)
 		{
 			ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
 			{
@@ -200,7 +188,7 @@ namespace Everlook.Export.Directory
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnExportItemToggleClicked(object sender, ToggledArgs e)
+		private void OnExportItemToggleClicked(object sender, ToggledArgs e)
 		{
 			TreeIter Iter;
 			ItemExportListStore.GetIterFromString(out Iter, e.Path);
@@ -215,7 +203,7 @@ namespace Everlook.Export.Directory
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnOKButtonClicked(object sender, EventArgs e)
+		private void OnOKButtonClicked(object sender, EventArgs e)
 		{
 			RunExport();
 		}

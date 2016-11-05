@@ -68,7 +68,7 @@ namespace Everlook.Viewport.Rendering
 		/// The model contained by this renderable world object.
 		/// </summary>
 		/// <value>The model.</value>
-		public WMO Model { get; private set; }
+		private readonly WMO Model;
 
 		/// <summary>
 		/// The transform of the actor.
@@ -333,7 +333,7 @@ namespace Everlook.Viewport.Rendering
 				GL.Uniform1(textureVariableHandle, 1, ref textureUnit);
 
 				// Finally, draw the model
-				GL.DrawRangeElements(BeginMode.Triangles, renderBatch.FirstPolygonIndex,
+				GL.DrawRangeElements(PrimitiveType.Triangles, renderBatch.FirstPolygonIndex,
 					renderBatch.FirstPolygonIndex + renderBatch.PolygonIndexCount, renderBatch.PolygonIndexCount,
 					DrawElementsType.UnsignedShort, new IntPtr(renderBatch.FirstPolygonIndex * 2));
 			}
@@ -430,7 +430,6 @@ namespace Everlook.Viewport.Rendering
 		public void Dispose()
 		{
 			Model.Dispose();
-			Model = null;
 
 			foreach (var vertexBuffer in this.vertexBufferLookup)
 			{

@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
 using System;
 using Everlook.Configuration;
 using Everlook.Explorer;
@@ -27,9 +28,8 @@ using Everlook.Utility;
 using Gdk;
 using Gtk;
 using Warcraft.BLP;
-using UI = Gtk.Builder.ObjectAttribute;
 
-namespace Everlook.Export.Image
+namespace Everlook.UI
 {
 	/// <summary>
 	/// Everlook image export dialog. The "partial" qualifier is not strictly needed, but prevents the compiler from
@@ -37,17 +37,6 @@ namespace Everlook.Export.Image
 	/// </summary>
 	public partial class EverlookImageExportDialog : Dialog
 	{
-		[UI] ListStore MipLevelListStore;
-		[UI] TreeView MipLevelListingTreeView;
-		[UI] CellRendererToggle ExportMipToggleRenderer;
-
-		[UI] Menu ExportPopupMenu;
-		[UI] ImageMenuItem SelectAllItem;
-		[UI] ImageMenuItem SelectNoneItem;
-
-		[UI] ComboBox ExportFormatComboBox;
-		[UI] FileChooserButton ExportDirectoryFileChooserButton;
-
 		/// <summary>
 		/// The reference to the file in the package that is to be exported.
 		/// </summary>

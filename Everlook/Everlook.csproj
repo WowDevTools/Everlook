@@ -9,7 +9,7 @@
     <AssemblyName>Everlook</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <LangVersion>6</LangVersion>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -68,13 +68,21 @@
     <Compile Include="Explorer\ReferenceState.cs" />
     <Compile Include="Explorer\VirtualItemReference.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="MainWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\EverlookConfiguration.cs" />
     <Compile Include="Export\Image\ImageFormat.cs" />
     <Compile Include="Export\Audio\AudioFormat.cs" />
     <Compile Include="Export\Model\ModelFormat.cs" />
-    <Compile Include="EverlookPreferences.cs" />
+    <Compile Include="UI\EverlookDirectoryExportDialog.cs" />
+    <Compile Include="UI\EverlookDirectoryExportDialogElements.cs" />
+    <Compile Include="UI\EverlookImageExportDialog.cs" />
+    <Compile Include="UI\EverlookImageExportDialogElements.cs" />
+    <Compile Include="UI\EverlookPreferences.cs" />
+    <Compile Include="UI\EverlookPreferencesElements.cs" />
+    <Compile Include="UI\MainWindow.cs" />
+    <Compile Include="UI\MainWindowElements.cs">
+      <DependentUpon>"MainWindow.cs"</DependentUpon>
+    </Compile>
     <Compile Include="Viewport\Camera\CameraMovement.cs" />
     <Compile Include="Viewport\Camera\ViewportCamera.cs" />
     <Compile Include="Viewport\Rendering\Core\EverlookShader.cs" />
@@ -92,9 +100,7 @@
     <Compile Include="Utility\ExtensionMethods.cs" />
     <Compile Include="Audio\AudioPlayer.cs" />
     <Compile Include="Explorer\ExplorerBuilder.cs" />
-    <Compile Include="Export\Image\EverlookImageExportDialog.cs" />
     <Compile Include="Package\PackageInteractionHandler.cs" />
-    <Compile Include="Export\Directory\EverlookDirectoryExportDialog.cs" />
     <Compile Include="Package\PackageGroup.cs" />
     <Compile Include="Explorer\NodeType.cs" />
     <Compile Include="Explorer\FilterType.cs" />
@@ -120,8 +126,10 @@
     <Folder Include="Configuration\" />
     <Folder Include="Content\Icons" />
     <Folder Include="Content\Shaders\Adapted\WorldModel" />
+    <Folder Include="Export" />
     <Folder Include="Export\" />
     <Folder Include="Export\Audio\" />
+    <Folder Include="Export\Image" />
     <Folder Include="Export\Model\" />
     <Folder Include="Export\Image\" />
     <Folder Include="Viewport\" />
@@ -129,7 +137,6 @@
     <Folder Include="Audio\" />
     <Folder Include="Explorer\" />
     <Folder Include="Package\" />
-    <Folder Include="Export\Directory\" />
     <Folder Include="Content\" />
     <Folder Include="Content\Shaders\" />
     <Folder Include="Content\Shaders\Adapted\" />

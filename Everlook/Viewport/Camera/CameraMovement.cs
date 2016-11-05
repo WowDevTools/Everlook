@@ -22,6 +22,7 @@
 
 using System;
 using OpenTK;
+using OpenTK.Input;
 
 namespace Everlook.Viewport.Camera
 {
@@ -79,12 +80,12 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// The default movement speed of the observer within the viewport.
 		/// </summary>
-		public const float DefaultMovementSpeed = 10.0f;
+		private const float DefaultMovementSpeed = 10.0f;
 
 		/// <summary>
 		/// The default turning speed of the observer within the viewport.
 		/// </summary>
-		public const float DefaultTurningSpeed = 1.0f;
+		private const float DefaultTurningSpeed = 10.0f;
 
 		/// <summary>
 		/// Creates a new <see cref="CameraMovement"/> instance, bound to the input camera.
@@ -99,8 +100,7 @@ namespace Everlook.Viewport.Camera
 		/// Calculates the relative position of the observer in world space, using
 		/// input relayed from the main interface.
 		/// </summary>
-		public void CalculateMovement(float deltaMouseX, float deltaMouseY, float deltaTime, float forwardAxis,
-			float rightAxis, float upAxis)
+		public void CalculateMovement(float deltaMouseX, float deltaMouseY, float deltaTime)
 		{
 			// Perform radial movement
 			RotateHorizontal(deltaMouseX * DefaultTurningSpeed * deltaTime);
@@ -120,34 +120,34 @@ namespace Everlook.Viewport.Camera
 			}
 
 			// Perform axial movement
-			if (forwardAxis > 0)
+			if (Keyboard.GetState().IsKeyDown(Key.W))
 			{
-				MoveForward(deltaTime * DefaultMovementSpeed * Math.Abs(forwardAxis));
+				MoveForward(deltaTime * DefaultMovementSpeed);
 			}
 
-			if (forwardAxis < 0)
+			if (Keyboard.GetState().IsKeyDown(Key.S))
 			{
-				MoveBackward(deltaTime * DefaultMovementSpeed * Math.Abs(forwardAxis));
+				MoveBackward(deltaTime * DefaultMovementSpeed);
 			}
 
-			if (rightAxis > 0)
+			if (Keyboard.GetState().IsKeyDown(Key.A))
 			{
-				MoveRight(deltaTime * DefaultMovementSpeed * Math.Abs(rightAxis));
+				MoveLeft(deltaTime * DefaultMovementSpeed);
+			}
+			if (Keyboard.GetState().IsKeyDown(Key.D))
+			{
+				MoveRight(deltaTime * DefaultMovementSpeed);
 			}
 
-			if (rightAxis < 0)
+
+			if (Keyboard.GetState().IsKeyDown(Key.E))
 			{
-				MoveLeft(deltaTime * DefaultMovementSpeed * Math.Abs(rightAxis));
+				MoveUp(deltaTime * DefaultMovementSpeed);
 			}
 
-			if (upAxis > 0)
+			if (Keyboard.GetState().IsKeyDown(Key.Q))
 			{
-				MoveUp(deltaTime * DefaultMovementSpeed * Math.Abs(upAxis));
-			}
-
-			if (upAxis < 0)
-			{
-				MoveDown(deltaTime * DefaultMovementSpeed * Math.Abs(upAxis));
+				MoveDown(deltaTime * DefaultMovementSpeed);
 			}
 		}
 

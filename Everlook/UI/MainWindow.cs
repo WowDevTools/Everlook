@@ -21,101 +21,37 @@
 //
 
 using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Drawing;
-using Application = Gtk.Application;
-using UI = Gtk.Builder.ObjectAttribute;
-using GLib;
-using Gdk;
-using Gtk;
-
-using Everlook.Export.Directory;
-using Everlook.Export.Image;
 using Everlook.Configuration;
 using Everlook.Explorer;
-using Everlook.Viewport;
 using Everlook.Utility;
+using Everlook.Viewport;
 using Everlook.Viewport.Rendering;
+using Gdk;
+using GLib;
+using Gtk;
 using OpenTK;
 using OpenTK.Graphics;
-using Warcraft.Core;
+using OpenTK.Input;
 using Warcraft.BLP;
+using Warcraft.Core;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
+using Application = Gtk.Application;
 using ExtensionMethods = Everlook.Utility.ExtensionMethods;
 using KeyPressEventArgs = Gtk.KeyPressEventArgs;
 using IOPath = System.IO.Path;
 
-namespace Everlook
+namespace Everlook.UI
 {
 	/// <summary>
 	/// Main UI class for Everlook. The "partial" qualifier is not strictly needed, but prevents the compiler from
 	/// generating errors about the autoconnected members that relate to UI elements.
 	/// </summary>
-	public partial class MainWindow: Gtk.Window
+	public sealed partial class MainWindow: Gtk.Window
 	{
-		/*
-			Main UI elements
-		*/
-		[UI] private readonly ToolButton AboutButton;
-		[UI] private readonly AboutDialog AboutDialog;
-		[UI] private readonly ToolButton PreferencesButton;
-
-		[UI] private readonly Alignment ViewportAlignment;
-		private readonly GLWidget ViewportWidget;
-		private bool viewportHasPendingRedraw;
-
-		/*
-			Export queue elements
-		*/
-		[UI] private readonly TreeView ExportQueueTreeView;
-		[UI] private readonly ListStore ExportQueueListStore;
-
-		[UI] private readonly Menu QueueContextMenu;
-		[UI] private readonly ImageMenuItem RemoveQueueItem;
-
-		/*
-			Game explorer elements
-		*/
-		[UI] private readonly TreeView GameExplorerTreeView;
-		[UI] private readonly TreeStore GameExplorerTreeStore;
-		[UI] private readonly TreeModelFilter GameExplorerTreeFilter;
-		[UI] private readonly TreeModelSort GameExplorerTreeSorter;
-
-		[UI] private readonly Menu FileContextMenu;
-		[UI] private readonly ImageMenuItem ExtractItem;
-		[UI] private readonly ImageMenuItem ExportItem;
-		[UI] private readonly ImageMenuItem OpenItem;
-		[UI] private readonly ImageMenuItem CopyItem;
-		[UI] private readonly ImageMenuItem QueueItem;
-
-		/*
-			General item control elements
-		*/
-
-		[UI] private readonly Notebook ItemControlNotebook;
-
-		/*
-			Image control elements
-		*/
-		[UI] private readonly CheckButton RenderAlphaCheckButton;
-		[UI] private readonly CheckButton RenderRedCheckButton;
-		[UI] private readonly CheckButton RenderGreenCheckButton;
-		[UI] private readonly CheckButton RenderBlueCheckButton;
-
-		/*
-			Model control elements
-		*/
-
-		/*
-			Animation control elements
-		*/
-
-		/*
-			Audio control elements
-		*/
-
 		/// <summary>
 		/// Static reference to the configuration handler.
 		/// </summary>
@@ -141,11 +77,11 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.MainWindow"/> class.
+		/// Initializes a new instance of the <see cref="MainWindow"/> class.
 		/// </summary>
 		/// <param name="builder">Builder.</param>
 		/// <param name="handle">Handle.</param>
-		protected MainWindow(Builder builder, IntPtr handle)
+		private MainWindow(Builder builder, IntPtr handle)
 			: base(handle)
 		{
 			builder.Autoconnect(this);
@@ -172,8 +108,6 @@ namespace Everlook
 			this.ViewportWidget.Initialized += OnViewportInitialized;
 			this.ViewportWidget.ButtonPressEvent += OnViewportButtonPressed;
 			this.ViewportWidget.ButtonReleaseEvent += OnViewportButtonReleased;
-			this.ViewportWidget.KeyPressEvent += OnViewportKeyPressed;
-			this.ViewportWidget.KeyReleaseEvent += OnViewportKeyReleased;
 			this.ViewportWidget.ConfigureEvent += OnViewportConfigured;
 
 			this.ViewportAlignment.Add(this.ViewportWidget);
@@ -191,7 +125,6 @@ namespace Everlook
 			GameExplorerTreeView.Selection.Changed += OnGameExplorerSelectionChanged;
 			GameExplorerTreeView.ButtonPressEvent += OnGameExplorerButtonPressed;
 
-			GameExplorerTreeFilter.VisibleFunc = FilterGameExplorerRow;
 			GameExplorerTreeSorter.SetSortFunc(1, SortGameExplorerRow);
 			GameExplorerTreeSorter.SetSortColumnId(1, SortType.Descending);
 
@@ -227,121 +160,12 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Handles input inside the OpenGL viewport for key releases. Mainly, it
-		/// sets the different movement axes to zero, stopping movement.
-		/// </summary>
-		[ConnectBefore]
-		protected void OnViewportKeyReleased(object o, KeyReleaseEventArgs args)
-		{
-			if (args.Event.Type == EventType.KeyRelease)
-			{
-				if( args.Event.Key == Gdk.Key.w || args.Event.Key == Gdk.Key.W)
-				{
-					this.viewportRenderer.ForwardAxis = 0.0f;
-				}
-				else if( args.Event.Key == Gdk.Key.s || args.Event.Key == Gdk.Key.S)
-				{
-					this.viewportRenderer.ForwardAxis = 0.0f;
-				}
-
-				if( args.Event.Key == Gdk.Key.d || args.Event.Key == Gdk.Key.D)
-				{
-					this.viewportRenderer.RightAxis = 0.0f;
-				}
-				else if( args.Event.Key == Gdk.Key.a || args.Event.Key == Gdk.Key.A)
-				{
-					this.viewportRenderer.RightAxis = 0.0f;
-				}
-
-				if (args.Event.Key == Gdk.Key.q || args.Event.Key == Gdk.Key.Q)
-				{
-					this.viewportRenderer.UpAxis = 0.0f;
-				}
-				else if (args.Event.Key == Gdk.Key.e || args.Event.Key == Gdk.Key.E)
-				{
-					this.viewportRenderer.UpAxis = 0.0f;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Handles input inside the OpenGL viewport for key presses. Mainly, it
-		/// sets the different movement axes to nonzero, starting movement.
-		/// </summary>
-		[ConnectBefore]
-		protected void OnViewportKeyPressed(object o, KeyPressEventArgs args)
-		{
-			if (args.Event.Type == EventType.KeyPress)
-			{
-				// W & S keys, forwards and backwards movement
-				if( args.Event.Key == Gdk.Key.w || args.Event.Key == Gdk.Key.W)
-				{
-					this.viewportRenderer.ForwardAxis = 1.0f;
-				}
-				else if( args.Event.Key == Gdk.Key.s || args.Event.Key == Gdk.Key.S)
-				{
-					this.viewportRenderer.ForwardAxis = -1.0f;
-				}
-
-				// D & A keys, right & left movement
-				if( args.Event.Key == Gdk.Key.d || args.Event.Key == Gdk.Key.D)
-				{
-					this.viewportRenderer.RightAxis = 1.0f;
-				}
-				else if( args.Event.Key == Gdk.Key.a || args.Event.Key == Gdk.Key.A)
-				{
-					this.viewportRenderer.RightAxis = -1.0f;
-				}
-
-				// Q & E keys, upwards and downwards movement
-				if (args.Event.Key == Gdk.Key.q || args.Event.Key == Gdk.Key.Q)
-				{
-					this.viewportRenderer.UpAxis = 1.0f;
-				}
-				else if (args.Event.Key == Gdk.Key.e || args.Event.Key == Gdk.Key.E)
-				{
-					this.viewportRenderer.UpAxis = -1.0f;
-				}
-
-				// R key, reset camera position
-				if( args.Event.Key == Gdk.Key.r || args.Event.Key == Gdk.Key.R)
-				{
-					this.viewportRenderer.Camera.ResetPosition();
-				}
-
-				if (args.Event.Key == Gdk.Key.Escape)
-				{
-					Application.Quit();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Handles input inside the OpenGL viewport for mouse button releases.
-		/// This function restores input focus to the main UI and returns the
-		/// cursor to its original appearance.
-		/// </summary>
-		[ConnectBefore]
-		protected void OnViewportButtonReleased(object o, ButtonReleaseEventArgs args)
-		{
-			// Right click is released
-			if (args.Event.Type == EventType.ButtonRelease && args.Event.Button == 3)
-			{
-				// Return the mouse pointer
-				this.Window.Cursor = new Cursor(CursorType.Arrow);
-
-				this.GrabFocus();
-				this.viewportRenderer.WantsToMove = false;
-			}
-		}
-
-		/// <summary>
 		/// Handles input inside the OpenGL viewport for mouse button presses.
 		/// This function grabs focus for the viewport, and hides the mouse
 		/// cursor during movement.
 		/// </summary>
 		[ConnectBefore]
-		protected void OnViewportButtonPressed(object o, ButtonPressEventArgs args)
+		private void OnViewportButtonPressed(object o, ButtonPressEventArgs args)
 		{
 			if (this.viewportRenderer.IsMovementDisabled())
 			{
@@ -355,8 +179,27 @@ namespace Everlook
 				this.Window.Cursor = new Cursor(CursorType.BlankCursor);
 
 				this.ViewportWidget.GrabFocus();
-				this.viewportRenderer.WantsToMove = true;
-				this.ViewportWidget.GetPointer(out this.viewportRenderer.MouseXLastFrame, out this.viewportRenderer.MouseYLastFrame);
+
+				this.viewportRenderer.InitialMouseX = Mouse.GetCursorState().X;
+				this.viewportRenderer.InitialMouseY = Mouse.GetCursorState().Y;
+			}
+		}
+
+		/// <summary>
+		/// Handles input inside the OpenGL viewport for mouse button releases.
+		/// This function restores input focus to the main UI and returns the
+		/// cursor to its original appearance.
+		/// </summary>
+		[ConnectBefore]
+		private void OnViewportButtonReleased(object o, ButtonReleaseEventArgs args)
+		{
+			// Right click is released
+			if (args.Event.Type == EventType.ButtonRelease && args.Event.Button == 3)
+			{
+				// Return the mouse pointer
+				this.Window.Cursor = new Cursor(CursorType.Arrow);
+
+				this.GrabFocus();
 			}
 		}
 
@@ -365,7 +208,7 @@ namespace Everlook
 		/// passes the main OpenGL initialization to the viewport renderer, and
 		/// adds an idle function for rendering.
 		/// </summary>
-		protected void OnViewportInitialized(object sender, EventArgs e)
+		private void OnViewportInitialized(object sender, EventArgs e)
 		{
 			// Initialize all OpenGL rendering parameters
 			this.viewportRenderer.Initialize();
@@ -377,7 +220,7 @@ namespace Everlook
 		/// All rendering functionality is either in the viewport renderer, or in a
 		/// renderable object currently hosted by it.
 		/// </summary>
-		protected bool OnIdleRenderFrame()
+		private bool OnIdleRenderFrame()
 		{
 			if (!this.viewportRenderer.IsInitialized)
 			{
@@ -408,7 +251,7 @@ namespace Everlook
 		/// Enables the specified control page and brings it to the front.
 		/// </summary>
 		/// <param name="controlPage">controlPage.</param>
-		protected void EnableControlPage(ControlPage controlPage)
+		private void EnableControlPage(ControlPage controlPage)
 		{
 			if (Enum.IsDefined(typeof(ControlPage), controlPage))
 			{
@@ -440,7 +283,7 @@ namespace Everlook
 		/// Disables the specified control page.
 		/// </summary>
 		/// <param name="controlPage">controlPage.</param>
-		protected void DisableControlPage(ControlPage controlPage)
+		private void DisableControlPage(ControlPage controlPage)
 		{
 			if (Enum.IsDefined(typeof(ControlPage), controlPage))
 			{
@@ -467,17 +310,6 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Filters the provided game explorer row.
-		/// </summary>
-		/// <returns><c>true</c>, if the row should be shown in the explorer view, <c>false</c> otherwise.</returns>
-		/// <param name="model">Model.</param>
-		/// <param name="iter">Iter.</param>
-		protected bool FilterGameExplorerRow(ITreeModel model, TreeIter iter)
-		{
-			return true;
-		}
-
-		/// <summary>
 		/// Sorts the game explorer row. If <paramref name="iterA"/> should be sorted before
 		/// <paramref name="iterB"/>
 		/// </summary>
@@ -486,7 +318,7 @@ namespace Everlook
 		/// <param name="model">Model.</param>
 		/// <param name="iterA">Iter a.</param>
 		/// <param name="iterB">Iter b.</param>
-		protected int SortGameExplorerRow(ITreeModel model, TreeIter iterA, TreeIter iterB)
+		private static int SortGameExplorerRow(ITreeModel model, TreeIter iterA, TreeIter iterB)
 		{
 			const int SORT_A_BEFORE_B = -1;
 			const int SORT_A_WITH_B = 0;
@@ -528,23 +360,20 @@ namespace Everlook
 		/// Idle functionality. This code is called as a way of lazily loading rows into the UI
 		/// without causing lockups due to sheer data volume.
 		/// </summary>
-		protected bool OnGLibLoopIdle()
+		private bool OnGLibLoopIdle()
 		{
-			const bool KEEP_CALLING = true;
-			const bool STOP_CALLING = false;
+			const bool keepCalling = true;
 
-			//if (explorerBuilder.EnumeratedReferences.Count > 0 && bAllowedToAddNewRow)
 			if (explorerBuilder.EnumeratedReferences.Count > 0)
 			{
 				// There's content to be added to the UI
-
 				// Get the last reference in the list.
 				ItemReference newContent = explorerBuilder.EnumeratedReferences[explorerBuilder.EnumeratedReferences.Count - 1];
 
 				if (newContent == null)
 				{
 					explorerBuilder.EnumeratedReferences.RemoveAt(explorerBuilder.EnumeratedReferences.Count - 1);
-					return KEEP_CALLING;
+					return keepCalling;
 				}
 
 				if (newContent.IsFile)
@@ -559,7 +388,7 @@ namespace Everlook
 				explorerBuilder.EnumeratedReferences.Remove(newContent);
 			}
 
-			return KEEP_CALLING;
+			return keepCalling;
 		}
 
 		/// <summary>
@@ -567,12 +396,9 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnExportItemContextItemActivated(object sender, EventArgs e)
+		private void OnExportItemContextItemActivated(object sender, EventArgs e)
 		{
-			TreeIter selectedIter;
-			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
-
-			ItemReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
+			ItemReference fileReference = GetSelectedReference();
 			if (fileReference != null && !string.IsNullOrEmpty(fileReference.ItemPath))
 			{
 
@@ -580,27 +406,10 @@ namespace Everlook
 				switch (fileType)
 				{
 					case WarcraftFileType.Directory:
+					{
+						if (fileReference.IsFullyEnumerated)
 						{
-							if (fileReference.IsFullyEnumerated)
-							{
-								using (EverlookDirectoryExportDialog exportDialog = EverlookDirectoryExportDialog.Create(fileReference))
-								{
-									if (exportDialog.Run() == (int)ResponseType.Ok)
-									{
-										exportDialog.RunExport();
-									}
-									exportDialog.Destroy();
-								}
-							}
-							else
-							{
-								// TODO: Implement wait message when the directory and its subdirectories have not yet been enumerated.
-							}
-							break;
-						}
-					case WarcraftFileType.BinaryImage:
-						{
-							using (EverlookImageExportDialog exportDialog = EverlookImageExportDialog.Create(fileReference))
+							using (EverlookDirectoryExportDialog exportDialog = EverlookDirectoryExportDialog.Create(fileReference))
 							{
 								if (exportDialog.Run() == (int)ResponseType.Ok)
 								{
@@ -608,12 +417,29 @@ namespace Everlook
 								}
 								exportDialog.Destroy();
 							}
-							break;
 						}
-					default:
+						else
 						{
-							break;
+							// TODO: Implement wait message when the directory and its subdirectories have not yet been enumerated.
 						}
+						break;
+					}
+					case WarcraftFileType.BinaryImage:
+					{
+						using (EverlookImageExportDialog exportDialog = EverlookImageExportDialog.Create(fileReference))
+						{
+							if (exportDialog.Run() == (int)ResponseType.Ok)
+							{
+								exportDialog.RunExport();
+							}
+							exportDialog.Destroy();
+						}
+						break;
+					}
+					default:
+					{
+						break;
+					}
 				}
 			}
 		}
@@ -623,12 +449,9 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnExtractContextItemActivated(object sender, EventArgs e)
+		private void OnExtractContextItemActivated(object sender, EventArgs e)
 		{
-			TreeIter selectedIter;
-			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
-
-			ItemReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
+			ItemReference fileReference = GetSelectedReference();
 
 			string cleanFilepath = fileReference.ItemPath.ConvertPathSeparatorsToCurrentNativeSeparator();
 			string exportpath;
@@ -655,12 +478,11 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnOpenContextItemActivated(object sender, EventArgs e)
+		private void OnOpenContextItemActivated(object sender, EventArgs e)
 		{
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
-
-			ItemReference itemReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
+			ItemReference itemReference = GetSelectedReference();
 			if (!itemReference.IsFile)
 			{
 				GameExplorerTreeView.ExpandRow(GameExplorerTreeSorter.GetPath(selectedIter), false);
@@ -673,7 +495,7 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnCopyContextItemActivated(object sender, EventArgs e)
+		private void OnCopyContextItemActivated(object sender, EventArgs e)
 		{
 			Clipboard clipboard = Clipboard.Get(Atom.Intern("CLIPBOARD", false));
 
@@ -689,12 +511,9 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnQueueContextItemActivated(object sender, EventArgs e)
+		private void OnQueueContextItemActivated(object sender, EventArgs e)
 		{
-			TreeIter selectedIter;
-			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
-
-			ItemReference itemReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
+			ItemReference itemReference = GetSelectedReference();
 
 			string cleanFilepath = itemReference.ItemPath.ConvertPathSeparatorsToCurrentNativeSeparator();
 
@@ -715,7 +534,7 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnAboutButtonClicked(object sender, EventArgs e)
+		private void OnAboutButtonClicked(object sender, EventArgs e)
 		{
 			AboutDialog.Run();
 			AboutDialog.Hide();
@@ -726,7 +545,7 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnPreferencesButtonClicked(object sender, EventArgs e)
+		private void OnPreferencesButtonClicked(object sender, EventArgs e)
 		{
 			using (EverlookPreferences preferencesDialog = EverlookPreferences.Create())
 			{
@@ -741,10 +560,22 @@ namespace Everlook
 		}
 
 		/// <summary>
+		/// Gets the current <see cref="ItemReference"/> that is selected in the tree view.
+		/// </summary>
+		/// <returns></returns>
+		private ItemReference GetSelectedReference()
+		{
+			TreeIter selectedIter;
+			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
+
+			return GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
+		}
+
+		/// <summary>
 		/// Reloads visible runtime values that the user can change in the preferences, such as the colour
 		/// of the viewport or the loaded packages.
 		/// </summary>
-		protected void ReloadRuntimeValues()
+		private void ReloadRuntimeValues()
 		{
 			ViewportWidget.OverrideBackgroundColor(StateFlags.Normal, Config.GetViewportBackgroundColour());
 
@@ -761,7 +592,7 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnGameExplorerRowExpanded(object sender, RowExpandedArgs e)
+		private void OnGameExplorerRowExpanded(object sender, RowExpandedArgs e)
 		{
 			// Whenever a row is expanded, enumerate the subfolders of that row.
 			ItemReference parentReference = GetItemReferenceFromStoreIter(GetStoreIterFromVisiblePath(e.Path));
@@ -816,7 +647,7 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnGameExplorerSelectionChanged(object sender, EventArgs e)
+		private void OnGameExplorerSelectionChanged(object sender, EventArgs e)
 		{
 			TreeIter selectedIter;
 			GameExplorerTreeView.Selection.GetSelected(out selectedIter);
@@ -977,7 +808,7 @@ namespace Everlook
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
 		[ConnectBefore]
-		protected void OnGameExplorerButtonPressed(object sender, ButtonPressEventArgs e)
+		private void OnGameExplorerButtonPressed(object sender, ButtonPressEventArgs e)
 		{
 			TreePath path;
 			GameExplorerTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out path);
@@ -1031,7 +862,7 @@ namespace Everlook
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
 		[ConnectBefore]
-		protected void OnExportQueueButtonPressed(object sender, ButtonPressEventArgs e)
+		private void OnExportQueueButtonPressed(object sender, ButtonPressEventArgs e)
 		{
 			TreePath path;
 			ExportQueueTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out path);
@@ -1065,7 +896,7 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnQueueRemoveContextItemActivated(object sender, EventArgs e)
+		private void OnQueueRemoveContextItemActivated(object sender, EventArgs e)
 		{
 			TreeIter selectedIter;
 			ExportQueueTreeView.Selection.GetSelected(out selectedIter);
@@ -1078,7 +909,7 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnPackageGroupAdded(object sender, ItemEnumeratedEventArgs e)
+		private void OnPackageGroupAdded(object sender, ItemEnumeratedEventArgs e)
 		{
 			Application.Invoke(delegate
 				{
@@ -1118,7 +949,7 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnPackageEnumerated(object sender, ItemEnumeratedEventArgs e)
+		private void OnPackageEnumerated(object sender, ItemEnumeratedEventArgs e)
 		{
 			Application.Invoke(delegate
 				{
@@ -1335,16 +1166,6 @@ namespace Everlook
 		}
 
 		/// <summary>
-		/// Unlocks a folder reference for exploration once it's been completely enumerated at the top level.
-		/// </summary>
-		/// <param name="sender">The sending object.</param>
-		/// <param name="e">The event arguments containing the list of enumeration results.</param>
-		protected void OnReferenceEnumerated(object sender, ItemEnumeratedEventArgs e)
-		{
-
-		}
-
-		/// <summary>
 		/// Converts a <see cref="TreeIter"/> into an <see cref="ItemReference"/>. The reference object is queried
 		/// from the explorerBuilder's internal store.
 		/// </summary>
@@ -1367,7 +1188,7 @@ namespace Everlook
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="a">The alpha component.</param>
-		protected void OnDeleteEvent(object sender, DeleteEventArgs a)
+		private void OnDeleteEvent(object sender, DeleteEventArgs a)
 		{
 			Idle.Remove(OnIdleRenderFrame);
 			Timeout.Remove(OnGLibLoopIdle);
@@ -1378,6 +1199,7 @@ namespace Everlook
 				explorerBuilder.Dispose();
 			}
 
+			this.viewportRenderer.SetRenderTarget(null);
 			this.viewportRenderer.Dispose();
 
 			Application.Quit();

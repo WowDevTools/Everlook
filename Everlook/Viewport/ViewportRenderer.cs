@@ -28,6 +28,7 @@ using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Input;
 
 namespace Everlook.Viewport
 {
@@ -80,60 +81,14 @@ namespace Everlook.Viewport
 		private float deltaTime;
 
 		/// <summary>
-		/// Whether or not the user wants to move in world space. If set to true, the
-		/// rendering loop will recalculate the view and projection matrices every frame.
-		/// </summary>
-		public bool WantsToMove = false;
-
-		/// <summary>
 		/// The X position of the mouse during the last frame, relative to the <see cref="ViewportWidget"/>.
 		/// </summary>
-		public int MouseXLastFrame;
+		public int InitialMouseX;
 
 		/// <summary>
 		/// The Y position of the mouse during the last frame, relative to the <see cref="ViewportWidget"/>.
 		/// </summary>
-		public int MouseYLastFrame;
-
-		/// <summary>
-		/// The current desired movement direction of the right axis.
-		///
-		/// A positive value represents movement to the right at a speed matching <see cref="CameraMovement.DefaultMovementSpeed"/>
-		/// multiplied by the axis value.
-		///
-		/// A negative value represents movement to the left at a speed matching <see cref="CameraMovement.DefaultMovementSpeed"/>
-		/// multiplied by the axis value.
-		///
-		/// A value of <value>0</value> represents no movement.
-		/// </summary>
-		public float RightAxis;
-
-		/// <summary>
-		/// The current desired movement direction of the right axis.
-		///
-		/// A positive value represents forwards movement at a speed matching <see cref="CameraMovement.DefaultMovementSpeed"/>
-		/// multiplied by the axis value.
-		///
-		/// A negative value represents backwards movement at a speed matching <see cref="CameraMovement.DefaultMovementSpeed"/>
-		/// multiplied by the axis value.
-		///
-		/// A value of <value>0</value> represents no movement.
-		/// </summary>
-		public float ForwardAxis;
-
-		/// <summary>
-		/// The current desired movement direction of the up axis.
-		///
-		/// A positive value represents upwards movement at a speed matching <see cref="CameraMovement.DefaultMovementSpeed"/>
-		/// multiplied by the axis value.
-		///
-		/// A negative value represents downwards movement at a speed matching <see cref="CameraMovement.DefaultMovementSpeed"/>
-		/// multiplied by the axis value.
-		///
-		/// A value of <value>0</value> represents no movement.
-		/// </summary>
-		public float UpAxis;
-
+		public int InitialMouseY;
 
 		/*
 			Runtime transitional OpenGL data.
@@ -229,19 +184,19 @@ namespace Everlook.Viewport
 					Stopwatch sw = Stopwatch.StartNew();
 
 					// Calculate the current relative movement of the camera
-					if (WantsToMove)
+					//if (WantsToMove)
+					if (Mouse.GetState().IsButtonDown(MouseButton.Right))
 					{
-						int mouseX;
-						int mouseY;
-						this.ViewportWidget.GetPointer(out mouseX, out mouseY);
+						int mouseX = Mouse.GetCursorState().X;
+						int mouseY = Mouse.GetCursorState().Y;
 
-						float deltaMouseX = MouseXLastFrame - mouseX;
-						float deltaMouseY = MouseYLastFrame - mouseY;
+						float deltaMouseX = InitialMouseX - mouseX;
+						float deltaMouseY = InitialMouseY - mouseY;
 
-						this.Movement.CalculateMovement(deltaMouseX, deltaMouseY, this.deltaTime, this.ForwardAxis, this.RightAxis, this.UpAxis);
+						this.Movement.CalculateMovement(deltaMouseX, deltaMouseY, this.deltaTime);
 
-						MouseXLastFrame = mouseX;
-						MouseYLastFrame = mouseY;
+						// Return the mouse to its original position
+						Mouse.SetPosition(InitialMouseX, InitialMouseY);
 					}
 
 					// Render the current object

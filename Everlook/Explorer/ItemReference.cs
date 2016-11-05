@@ -410,18 +410,18 @@ namespace Everlook.Explorer
 			if (this.ParentReference != null)
 			{
 				return (this.PackageName.GetHashCode() +
-				        this.ItemPath.GetHashCode() +
-				        this.ParentReference.GetHashCode() +
-				        this.PackageGroup.GroupName.GetHashCode()
-				       ).GetHashCode();
+						this.ItemPath.GetHashCode() +
+						this.ParentReference.GetHashCode() +
+						this.PackageGroup.GroupName.GetHashCode()
+				).GetHashCode();
 			}
 			else
 			{
 				return (this.PackageName.GetHashCode() +
-				        this.ItemPath.GetHashCode() +
-				        0 +
-				        this.PackageGroup.GroupName.GetHashCode()
-				       ).GetHashCode();
+						this.ItemPath.GetHashCode() +
+						0 +
+						this.PackageGroup.GroupName.GetHashCode()
+				).GetHashCode();
 			}
 		}
 	}

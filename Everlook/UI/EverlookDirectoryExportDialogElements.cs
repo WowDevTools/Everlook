@@ -1,5 +1,5 @@
 ﻿//
-//  Program.cs
+//  EverlookDirectoryExportDialogElements.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -20,28 +20,21 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Everlook.UI;
 using Gtk;
-using OpenTK;
+using UIElement = Gtk.Builder.ObjectAttribute;
 
-namespace Everlook
+namespace Everlook.UI
 {
-	internal class MainClass
+	public sealed partial class EverlookDirectoryExportDialog
 	{
-		public static void Main()
-		{
-			// OpenGL
-			Toolkit.Init(new ToolkitOptions
-			{
-				Backend = PlatformBackend.PreferNative,
-				EnableHighResolution = true
-			});
+		[UIElement] ListStore ItemExportListStore;
+		[UIElement] TreeView ItemListingTreeView;
+		[UIElement] CellRendererToggle ExportItemToggleRenderer;
 
-			// GTK
-			Application.Init();
-			MainWindow win = MainWindow.Create();
-			win.Show();
-			Application.Run();
-		}
+		[UIElement] Menu ExportPopupMenu;
+		[UIElement] ImageMenuItem SelectAllItem;
+		[UIElement] ImageMenuItem SelectNoneItem;
+
+		[UIElement] FileChooserButton ExportDirectoryFileChooserButton;
 	}
 }
