@@ -24,8 +24,8 @@
       <file leaf-file-name="MainWindow.cs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../../Everlook/UI/MainWindow.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
-              <caret line="33" column="10" selection-start-line="33" selection-start-column="10" selection-end-line="33" selection-end-column="10" />
+            <state relative-caret-position="-390">
+              <caret line="160" column="21" selection-start-line="160" selection-start-column="21" selection-end-line="160" selection-end-column="21" />
               <folding>
                 <marker date="1478349529994" expanded="true" signature="0:786" ph="/* MainWindow.cs ... */" />
                 <marker date="1478349529994" expanded="true" signature="794:1308" ph="..." />
@@ -127,358 +127,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OptimizedListContainer.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../lib/liblistfile/liblistfile/OptimizedListContainer.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="22" column="33" selection-start-line="22" selection-start-column="33" selection-end-line="22" selection-end-column="33" />
-              <folding>
-                <marker date="1478349013884" expanded="true" signature="0:783" ph="/* MyClass.cs ... */" />
-                <marker date="1478349013884" expanded="true" signature="790:907" ph="..." />
-                <marker date="1478349013884" expanded="true" signature="930:13301" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="934:1509" ph="/// A container for OptimizedList objects. ... " />
-                <marker date="1478349013884" expanded="true" signature="1546:6464" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="1552:1682" ph="/// The binary file signature. Used when serializing this object into an RIFF-style ... " />
-                <marker date="1478349013884" expanded="true" signature="1728:1820" ph="/// The file extension used for serialized list containers. ... " />
-                <marker date="1478349013884" expanded="true" signature="1865:1926" ph="/// The file format version. ... " />
-                <marker date="1478349013884" expanded="true" signature="1963:2053" ph="/// The name of the archive this container has lists for. ... " />
-                <marker date="1478349013884" expanded="true" signature="2095:2180" ph="/// The optimized lists contained in this container. ... " />
-                <marker date="1478349013884" expanded="true" signature="2317:2562" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.OptimizedListContainer&quot;/&gt; class. ... " />
-                <marker date="1478349013884" expanded="true" signature="2616:2661" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="2665:2916" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.OptimizedListContainer&quot;/&gt; class. ... " />
-                <marker date="1478349013884" expanded="true" signature="2961:4015" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="4019:4282" ph="/// Determines whether the specifed package hash has any lists stored in the container. ... " />
-                <marker date="1478349013884" expanded="true" signature="4340:4404" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="4408:4727" ph="/// Determines whether the specifed list is the same as the one which is stored in the container. ... " />
-                <marker date="1478349013884" expanded="true" signature="4780:5096" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="5100:5281" ph="/// Adds the optimized list to the container. If the list is already in the container, ... " />
-                <marker date="1478349013884" expanded="true" signature="5332:5462" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="5466:5647" ph="/// Replaces the optimized list stored in the container (under the same package hash) with the provided list. ... " />
-                <marker date="1478349013884" expanded="true" signature="5702:5828" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="5832:5945" ph="/// Serializes the object into a byte array. ... " />
-                <marker date="1478349013884" expanded="true" signature="5972:6461" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="6467:6658" ph="/// Equality comparator for byte arrays used in the optimized lists. ... " />
-                <marker date="1478349013884" expanded="true" signature="6720:7539" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="6726:6887" ph="/// Determines whether the two arrays are equal. ... " />
-                <marker date="1478349013884" expanded="true" signature="6935:7055" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="7059:7353" ph="/// Gets the hash code. ... " />
-                <marker date="1478349013884" expanded="true" signature="7390:7536" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="7542:8068" ph="/// An optimized list of file paths. ... " />
-                <marker date="1478349013884" expanded="true" signature="8124:13299" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="8130:8260" ph="/// The binary file signature. Used when serializing this object into an RIFF-style ... " />
-                <marker date="1478349013884" expanded="true" signature="8306:8399" ph="/// A 126-bit MD5 hash of the archive this list is made for. ... " />
-                <marker date="1478349013884" expanded="true" signature="8456:8540" ph="/// A 126-bit MD5 hash of the compressed list data. ... " />
-                <marker date="1478349013884" expanded="true" signature="8594:8674" ph="/// The optimized paths contained in this list. ... " />
-                <marker date="1478349013884" expanded="true" signature="8746:9051" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.OptimizedList&quot;/&gt; class. ... " />
-                <marker date="1478349013884" expanded="true" signature="9127:9281" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="9285:9515" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.OptimizedList&quot;/&gt; class. ... " />
-                <marker date="1478349013884" expanded="true" signature="9551:10701" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="10705:10818" ph="/// Serializes the object into a byte array. ... " />
-                <marker date="1478349013884" expanded="true" signature="10845:11456" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="11460:13296" ph="IEquatable implementation" />
-                <marker date="1478349013884" expanded="true" signature="11497:11970" ph="/// Determines whether the specified &lt;see cref=&quot;System.Object&quot;/&gt; is equal to the current &lt;see cref=&quot;liblistfile.O ... " />
-                <marker date="1478349013884" expanded="true" signature="12012:12161" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="12165:12676" ph="/// Determines whether the specified &lt;see cref=&quot;liblistfile.OptimizedList&quot;/&gt; is equal to the current &lt;see cref=&quot;l ... " />
-                <marker date="1478349013884" expanded="true" signature="12718:12880" ph="{...}" />
-                <marker date="1478349013884" expanded="true" signature="12884:13144" ph="/// Serves as a hash function for a &lt;see cref=&quot;liblistfile.OptimizedList&quot;/&gt; object. ... " />
-                <marker date="1478349013884" expanded="true" signature="13180:13282" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ListfileDictionary.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../lib/liblistfile/liblistfile/ListfileDictionary.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="32" column="1" selection-start-line="32" selection-start-column="1" selection-end-line="32" selection-end-column="1" />
-              <folding>
-                <marker date="1478348559762" expanded="true" signature="0:794" ph="/* ListfileDictionary.cs ... */" />
-                <marker date="1478348559762" expanded="true" signature="801:1000" ph="..." />
-                <marker date="1478348559762" expanded="true" signature="1023:18691" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="1027:1484" ph="/// Dictionary file for listtool. Contains a dictionary of terms used in ... " />
-                <marker date="1478348559762" expanded="true" signature="1517:16328" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="1523:1653" ph="/// The binary file signature. Used when serializing this object into an RIFF-style ... " />
-                <marker date="1478348559762" expanded="true" signature="1699:1791" ph="/// The file extension used for serialized list containers. ... " />
-                <marker date="1478348559762" expanded="true" signature="1836:1897" ph="/// The file format version. ... " />
-                <marker date="1478348559762" expanded="true" signature="1934:2145" ph="/// Gets or sets the low entry score tolerance. This value is used when determining what values are ... " />
-                <marker date="1478348559762" expanded="true" signature="2211:2423" ph="/// Gets or sets the high entry score tolerance. This value is used when determining what values are ... " />
-                <marker date="1478348559762" expanded="true" signature="2490:2736" ph="/// The dictionary entries. ... " />
-                <marker date="1478348559762" expanded="true" signature="2878:3006" ph="/// Gets the entries which have a low score. ... " />
-                <marker date="1478348559762" expanded="true" signature="3207:3336" ph="/// Gets the entries which have a high score. ... " />
-                <marker date="1478348559762" expanded="true" signature="3539:3638" ph="/// The dictionary words, extracted from the high-scoring entries. ... " />
-                <marker date="1478348559762" expanded="true" signature="3711:3889" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.ListfileDictionary&quot;/&gt; class. ... " />
-                <marker date="1478348559762" expanded="true" signature="3919:4006" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="4010:4242" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.ListfileDictionary&quot;/&gt; class. ... " />
-                <marker date="1478348559762" expanded="true" signature="4295:6748" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="6752:6979" ph="/// Adds new words from a new term. ... " />
-                <marker date="1478348559762" expanded="true" signature="7051:7337" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="7341:7501" ph="/// Guess the correct format of the specified term based on the words in the dictionary. ... " />
-                <marker date="1478348559762" expanded="true" signature="7536:8866" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="8871:9253" ph="/// Guesses the correct casing of the term using assisted scoring. First, the casing is guessed using ... " />
-                <marker date="1478348559762" expanded="true" signature="9294:9515" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="9519:9719" ph="/// Optimizes the provided list using the loaded dictionary. ... " />
-                <marker date="1478348559762" expanded="true" signature="9784:10408" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="10412:10559" ph="/// Gets the words from term. ... " />
-                <marker date="1478348559762" expanded="true" signature="10618:10943" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="10947:11180" ph="/// Checks if the dictionary contains the specified term. ... " />
-                <marker date="1478348559762" expanded="true" signature="11226:11310" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="11314:11532" ph="/// Gets the entry for the specified term, containing the current best value and the score of that value. ... " />
-                <marker date="1478348559762" expanded="true" signature="11591:11884" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="11888:12038" ph="/// Adds an entry for the provided term if it's not already in the dictionary. ... " />
-                <marker date="1478348559762" expanded="true" signature="12078:12460" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="12464:12784" ph="/// Updates the dictionary entry for the provided term. If the list doesn't contain the term, it is added. ... " />
-                <marker date="1478348559762" expanded="true" signature="12827:13131" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="13135:13297" ph="/// Forcibly sets the score of the provided term. ... " />
-                <marker date="1478348559762" expanded="true" signature="13350:13900" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="13904:14214" ph="/// Compares the words by their length. ... " />
-                <marker date="1478348559762" expanded="true" signature="14276:15166" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="14334:14387" ph="/* If x is null and y is null, they're ... */" />
-                <marker date="1478348559762" expanded="true" signature="14429:14485" ph="/* If x is null and y is not null, y ... */" />
-                <marker date="1478348559762" expanded="true" signature="14530:14559" ph="/* If x is not null... ... */" />
-                <marker date="1478348559762" expanded="true" signature="14677:14757" ph="/* ...and y is not null, compare the ... */" />
-                <marker date="1478348559762" expanded="true" signature="14842:14932" ph="/* If the strings are not of equal length, ... */" />
-                <marker date="1478348559762" expanded="true" signature="14984:15083" ph="/* If the strings are of equal length, ... */" />
-                <marker date="1478348559762" expanded="true" signature="15170:15283" ph="/// Serializes the object into a byte array. ... " />
-                <marker date="1478348559762" expanded="true" signature="15310:16325" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="16331:16581" ph="/// Listfile dictionary entry. ... " />
-                <marker date="1478348559762" expanded="true" signature="16619:18689" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="16625:16720" ph="/// Gets the current best term. ... " />
-                <marker date="1478348559762" expanded="true" signature="16777:16881" ph="/// Gets the score of the current term. ... " />
-                <marker date="1478348559762" expanded="true" signature="16938:17162" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.ListfileDictionaryEntry&quot;/&gt; class. ... " />
-                <marker date="1478348559762" expanded="true" signature="17225:17281" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="17285:17541" ph="/// Updates the term contained in this entry if the new term has a better score than the old one. ... " />
-                <marker date="1478348559762" expanded="true" signature="17579:17789" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="17793:17887" ph="/// Forcibly sets the term. ... " />
-                <marker date="1478348559762" expanded="true" signature="17922:17951" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="17955:18063" ph="/// Forcibly sets the score of the term. ... " />
-                <marker date="1478348559762" expanded="true" signature="18099:18130" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="18134:18206" ph="/// Recalculates the score of the term. ... " />
-                <marker date="1478348559762" expanded="true" signature="18239:18295" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="18299:18412" ph="/// Serializes the object into a byte array. ... " />
-                <marker date="1478348559762" expanded="true" signature="18439:18686" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GLWidget.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../lib/GLWidgetGTK3/GLWidget.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="24" column="2" selection-start-line="24" selection-start-column="2" selection-end-line="24" selection-end-column="2" />
-              <folding>
-                <marker date="1476902546483" expanded="true" signature="0:1224" ph="License" />
-                <marker date="1476902546483" expanded="true" signature="16:1213" ph="/* The Open Toolkit Library License ... */" />
-                <marker date="1476902546483" expanded="true" signature="1232:1445" ph="..." />
-                <marker date="1476902546483" expanded="true" signature="1463:15393" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="1522:15390" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="1529:1642" ph="Static attrs." />
-                <marker date="1476902546483" expanded="true" signature="1646:1764" ph="Attributes" />
-                <marker date="1476902546483" expanded="true" signature="1768:2777" ph="Properties" />
-                <marker date="1476902546483" expanded="true" signature="2781:4304" ph="Construction/Destruction" />
-                <marker date="1476902546483" expanded="true" signature="2918:2926" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="3110:3118" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="3298:3763" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="3778:3805" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="3839:3914" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="3965:4290" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="4308:5663" ph="New Events" />
-                <marker date="1476902546483" expanded="true" signature="4552:4658" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="4894:5002" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="5145:5221" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="5360:5436" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="5571:5649" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="5667:5875" ph="/* Called when a widget is realized. (window handles and such are valid) ... */" />
-                <marker date="1476902546483" expanded="true" signature="5927:6147" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="6238:6387" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="6416:8023" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="8027:8441" ph="Windows Specific initalization" />
-                <marker date="1476902546483" expanded="true" signature="8108:8249" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="8445:9075" ph="OSX Specific Initialization" />
-                <marker date="1476902546483" expanded="true" signature="8519:8757" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="9079:15386" ph="X Specific Initialization" />
-                <marker date="1476902546483" expanded="true" signature="10036:10159" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="10229:10623" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="10525:10619" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="10666:10859" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="10913:11599" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="11725:11827" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="11875:12251" ph="{...}" />
-                <marker date="1476902546483" expanded="true" signature="13057:13128" ph="/* attributeList.Add(GLX_AUX_BUFFERS); ... */" />
-                <marker date="1476902546483" expanded="true" signature="13950:14242" ph="///Returns the X resource (window or pixmap) belonging to a GdkDrawable. ... " />
-                <marker date="1476902546483" expanded="true" signature="14383:14675" ph="///Returns the X resource (window or pixmap) belonging to a GdkDrawable. ... " />
-                <marker date="1476902546483" expanded="true" signature="14814:15082" ph="///Returns the X display of a GdkDisplay. ... " />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ExtensionMethods.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../lib/liblistfile/liblistfile/ExtensionMethods.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <marker date="1478348559762" expanded="true" signature="0:792" ph="/* ExtensionMethods.cs ... */" />
-                <marker date="1478348559762" expanded="true" signature="799:957" ph="..." />
-                <marker date="1478348559762" expanded="true" signature="980:4003" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="984:1069" ph="/// A set of extension methods used for serialization. ... " />
-                <marker date="1478348559762" expanded="true" signature="1107:4001" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="1113:1277" ph="/// Computes the MD5 hash for this byte array. ... " />
-                <marker date="1478348559762" expanded="true" signature="1335:1426" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="1430:1584" ph="/// Compresses this byte array using a BZip2 algorithm. ... " />
-                <marker date="1478348559762" expanded="true" signature="1647:2091" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="2095:2311" ph="/// Compresses this string list using a BZip2 algorithm. ... " />
-                <marker date="1478348559762" expanded="true" signature="2372:2424" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="2428:2775" ph="/// Replaces an instance of a string with another inside this string. This replacement ... " />
-                <marker date="1478348559762" expanded="true" signature="2875:3124" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="3128:3252" ph="/// Serialize the specified stringList. ... " />
-                <marker date="1478348559762" expanded="true" signature="3315:3599" ph="{...}" />
-                <marker date="1478348559762" expanded="true" signature="3603:3796" ph="/// Gets the size of the stringlist when it's been serialized. ... " />
-                <marker date="1478348559762" expanded="true" signature="3864:3998" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Compression.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../lib/liblistfile/lib/libwarcraft/libwarcraft/Core/Compression/Compression.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="22" column="13" selection-start-line="22" selection-start-column="13" selection-end-line="22" selection-end-column="13" />
-              <folding>
-                <marker date="1478348783417" expanded="true" signature="0:787" ph="/* Compression.cs ... */" />
-                <marker date="1478348783417" expanded="true" signature="795:889" ph="..." />
-                <marker date="1478348783417" expanded="true" signature="926:5073" ph="{...}" />
-                <marker date="1478348783417" expanded="true" signature="961:5071" ph="{...}" />
-                <marker date="1478348783417" expanded="true" signature="1044:3156" ph="{...}" />
-                <marker date="1478348783417" expanded="true" signature="1113:1250" ph="/* The sector is compressed using a combination of techniques. ... */" />
-                <marker date="1478348783417" expanded="true" signature="2956:3061" ph="/* This file or sector uses a single-pass PKWARE Implode algorithm. ... */" />
-                <marker date="1478348783417" expanded="true" signature="3233:3333" ph="{...}" />
-                <marker date="1478348783417" expanded="true" signature="3392:3512" ph="{...}" />
-                <marker date="1478348783417" expanded="true" signature="3573:3693" ph="{...}" />
-                <marker date="1478348783417" expanded="true" signature="3750:3870" ph="{...}" />
-                <marker date="1478348783417" expanded="true" signature="3927:4210" ph="{...}" />
-                <marker date="1478348783417" expanded="true" signature="4273:4551" ph="{...}" />
-                <marker date="1478348783417" expanded="true" signature="4606:4916" ph="{...}" />
-                <marker date="1478348783417" expanded="true" signature="4970:5068" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GamePathStorage.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../Everlook/Configuration/GamePathStorage.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="22" column="16" selection-start-line="22" selection-start-column="16" selection-end-line="22" selection-end-column="16" />
-              <folding>
-                <marker date="1476901407415" expanded="true" signature="0:791" ph="/* GamePathStorage.cs ... */" />
-                <marker date="1476901407415" expanded="true" signature="798:877" ph="..." />
-                <marker date="1476901407415" expanded="true" signature="911:4276" ph="{...}" />
-                <marker date="1476901407415" expanded="true" signature="915:1373" ph="/// Game path storage. This class handles storing a set of game paths in a binary file. ... " />
-                <marker date="1476901407415" expanded="true" signature="1410:4274" ph="{...}" />
-                <marker date="1476901407415" expanded="true" signature="1471:1552" ph="/// A static instance of the path storage class. ... " />
-                <marker date="1476901407415" expanded="true" signature="1622:1723" ph="/// Gets the stored game paths. ... " />
-                <marker date="1476901407415" expanded="true" signature="1839:2140" ph="{...}" />
-                <marker date="1476901407415" expanded="true" signature="2144:2279" ph="/// Stores a provided path in the path storage. ... " />
-                <marker date="1476901407415" expanded="true" signature="2323:2647" ph="{...}" />
-                <marker date="1476901407415" expanded="true" signature="2651:2779" ph="/// Removes a path that's been stored. ... " />
-                <marker date="1476901407415" expanded="true" signature="2831:3325" ph="{...}" />
-                <marker date="1476901407415" expanded="true" signature="3367:3755" ph="{...}" />
-                <marker date="1476901407415" expanded="true" signature="3784:3910" ph="{...}" />
-                <marker date="1476901407415" expanded="true" signature="3914:4038" ph="/// Gets the path to the game path storage. ... " />
-                <marker date="1476901407415" expanded="true" signature="4083:4271" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ViewportRenderer.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/ViewportRenderer.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2790">
-              <caret line="186" column="38" selection-start-line="186" selection-start-column="38" selection-end-line="186" selection-end-column="38" />
-              <folding>
-                <marker date="1478348363723" expanded="true" signature="0:792" ph="/* ViewportRenderer.cs ... */" />
-                <marker date="1478348363723" expanded="true" signature="800:1028" ph="..." />
-                <marker date="1478348363723" expanded="true" signature="1057:7729" ph="{...}" />
-                <marker date="1478348363723" expanded="true" signature="1061:1256" ph="/// Viewport renderer for the main Everlook UI. This class manages an OpenGL rendering thread, which ... " />
-                <marker date="1478348363723" expanded="true" signature="1301:7727" ph="{...}" />
-                <marker date="1478348363723" expanded="true" signature="1307:1469" ph="/// The viewport widget displayed to the user in the main interface. ... " />
-                <marker date="1478348363723" expanded="true" signature="1517:1571" ph="/* RenderTarget and related control flow data. ... */" />
-                <marker date="1478348363723" expanded="true" signature="1575:1732" ph="/// A lock object used to enforce that the rendering target can finish its current ... " />
-                <marker date="1478348363723" expanded="true" signature="1879:2015" ph="/// The current rendering target. This is an object capable of being shown in an ... " />
-                <marker date="1478348363723" expanded="true" signature="2055:2129" ph="/// The camera viewpoint of the observer. ... " />
-                <marker date="1478348363723" expanded="true" signature="2165:2240" ph="/// The movement component for the camera. ... " />
-                <marker date="1478348363723" expanded="true" signature="2279:2360" ph="/// The time taken to render the previous frame. ... " />
-                <marker date="1478348363723" expanded="true" signature="2391:2524" ph="/// The X position of the mouse during the last frame, relative to the &lt;see cref=&quot;ViewportWidget&quot;/&gt;. ... " />
-                <marker date="1478348363723" expanded="true" signature="2556:2689" ph="/// The Y position of the mouse during the last frame, relative to the &lt;see cref=&quot;ViewportWidget&quot;/&gt;. ... " />
-                <marker date="1478348363723" expanded="true" signature="2721:2765" ph="/* Runtime transitional OpenGL data. ... */" />
-                <marker date="1478348363723" expanded="true" signature="2769:2870" ph="/// The OpenGL ID of the vertex array valid for the current context. ... " />
-                <marker date="1478348363723" expanded="true" signature="2903:3027" ph="/// Whether or not this instance has been initialized and is ready ... " />
-                <marker date="1478348363723" expanded="true" signature="3083:3137" ph="/* Everlook caching and static data accessors. ... */" />
-                <marker date="1478348363723" expanded="true" signature="3141:3224" ph="/// Static reference to the configuration handler. ... " />
-                <marker date="1478348363723" expanded="true" signature="3310:3436" ph="/// Initializes a new instance of the &lt;see cref=&quot;Everlook.Viewport.ViewportRenderer&quot;/&gt; class. ... " />
-                <marker date="1478348363723" expanded="true" signature="3487:3659" ph="{...}" />
-                <marker date="1478348363723" expanded="true" signature="3663:3711" ph="/// Initializes ... " />
-                <marker date="1478348363723" expanded="true" signature="3738:4835" ph="{...}" />
-                <marker date="1478348363723" expanded="true" signature="4839:4955" ph="/// The primary rendering logic. Here, the current object is rendered using OpenGL. ... " />
-                <marker date="1478348363723" expanded="true" signature="4983:6620" ph="{...}" />
-                <marker date="1478348363723" expanded="true" signature="5432:5512" ph="/* Calculate the current relative movement of the camera ... */" />
-                <marker date="1478348363723" expanded="true" signature="5972:6063" ph="/* Render the current object ... */" />
-                <marker date="1478348363723" expanded="true" signature="6624:6742" ph="/// Determines whether or not movement is currently disabled for the rendered object. ... " />
-                <marker date="1478348363723" expanded="true" signature="6777:6908" ph="{...}" />
-                <marker date="1478348363723" expanded="true" signature="6912:7085" ph="/// Sets the render target that is currently being rendered by the viewport renderer. ... " />
-                <marker date="1478348363723" expanded="true" signature="7141:7405" ph="{...}" />
-                <marker date="1478348363723" expanded="true" signature="7409:7561" ph="/// Disposes the viewport renderer, releasing the current rendering target and current ... " />
-                <marker date="1478348363723" expanded="true" signature="7585:7724" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CameraMovement.cs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../Everlook/Viewport/Camera/CameraMovement.cs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1545">
-              <caret line="103" column="9" selection-start-line="103" selection-start-column="9" selection-end-line="103" selection-end-column="9" />
-              <folding>
-                <marker date="1478347335896" expanded="true" signature="0:790" ph="/* CameraMovement.cs ... */" />
-                <marker date="1478347335896" expanded="true" signature="798:839" ph="..." />
-                <marker date="1478347335896" expanded="true" signature="879:1151" ph="/// Camera movement component. This class is bound to a single camera instance, and handles ... " />
-                <marker date="1478347335896" expanded="true" signature="1180:5997" ph="{...}" />
-                <marker date="1478347335896" expanded="true" signature="1229:1310" ph="/// The current orientation of the bound camera. ... " />
-                <marker date="1478347335896" expanded="true" signature="1669:1747" ph="/// The current position of the bound camera. ... " />
-                <marker date="1478347335896" expanded="true" signature="1876:2038" ph="/// Whether or not to constrain the vertical view angle to -/+ 90 degrees. This ... " />
-                <marker date="1478347335896" expanded="true" signature="2102:2202" ph="/// The default movement speed of the observer within the viewport. ... " />
-                <marker date="1478347335896" expanded="true" signature="2258:2357" ph="/// The default turning speed of the observer within the viewport. ... " />
-                <marker date="1478347335896" expanded="true" signature="2412:2528" ph="/// Creates a new &lt;see cref=&quot;CameraMovement&quot;/&gt; instance, bound to the input camera. ... " />
-                <marker date="1478347335896" expanded="true" signature="2577:2650" ph="{...}" />
-                <marker date="1478347335896" expanded="true" signature="2654:2806" ph="/// Calculates the relative position of the observer in world space, using ... " />
-                <marker date="1478347335896" expanded="true" signature="2893:4153" ph="{...}" />
-                <marker date="1478347335896" expanded="true" signature="4157:4270" ph="/// Rotates the camera on the horizontal axis by the provided amount of degrees. ... " />
-                <marker date="1478347335896" expanded="true" signature="4316:4366" ph="{...}" />
-                <marker date="1478347335896" expanded="true" signature="4370:4481" ph="/// Rotates the camera on the vertical axis by the provided amount of degrees. ... " />
-                <marker date="1478347335896" expanded="true" signature="4525:4573" ph="{...}" />
-                <marker date="1478347335896" expanded="true" signature="4577:4694" ph="/// Moves the camera up along its local Y axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
-                <marker date="1478347335896" expanded="true" signature="4731:4799" ph="{...}" />
-                <marker date="1478347335896" expanded="true" signature="4803:4922" ph="/// Moves the camera down along its local Y axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
-                <marker date="1478347335896" expanded="true" signature="4961:5029" ph="{...}" />
-                <marker date="1478347335896" expanded="true" signature="5033:5155" ph="/// Moves the camera forward along its local Z axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
-                <marker date="1478347335896" expanded="true" signature="5197:5276" ph="{...}" />
-                <marker date="1478347335896" expanded="true" signature="5280:5404" ph="/// Moves the camera backwards along its local Z axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
-                <marker date="1478347335896" expanded="true" signature="5447:5526" ph="{...}" />
-                <marker date="1478347335896" expanded="true" signature="5530:5649" ph="/// Moves the camera left along its local X axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
-                <marker date="1478347335896" expanded="true" signature="5688:5759" ph="{...}" />
-                <marker date="1478347335896" expanded="true" signature="5763:5883" ph="/// Moves the camera right along its local X axis by &lt;paramref name=&quot;distance&quot;/&gt; units. ... " />
-                <marker date="1478347335896" expanded="true" signature="5923:5994" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="IdeDocumentHistory">
@@ -493,7 +141,6 @@
         <option value="$PROJECT_DIR$/../../Everlook/Viewport/Rendering/Core/Transform.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/Viewport/Rendering/RenderableBLP.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/Explorer/ExplorerBuilder.cs" />
-        <option value="$PROJECT_DIR$/../../Everlook/Program.cs" />
         <option value="$PROJECT_DIR$/../../GLWidgetGTK3/GLWidget.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/MainWindow.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/EverlookPreferences.cs" />
@@ -510,6 +157,7 @@
         <option value="$PROJECT_DIR$/../../Everlook/Viewport/ViewportRenderer.cs" />
         <option value="$PROJECT_DIR$/../../lib/liblistfile/liblistfile/OptimizedListContainer.cs" />
         <option value="$PROJECT_DIR$/../../Everlook/UI/MainWindow.cs" />
+        <option value="$PROJECT_DIR$/../../Everlook/Program.cs" />
       </list>
     </option>
   </component>
@@ -552,6 +200,38 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="Everlook (4 projects)" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook (4 projects)" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook (4 projects)" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="UI" />
               <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
             </PATH_ELEMENT>
           </PATH>
@@ -650,12 +330,12 @@
       <workItem from="1478286757646" duration="458000" />
       <workItem from="1478287244329" duration="420000" />
       <workItem from="1478287845917" duration="5777000" />
-      <workItem from="1478349012790" duration="518000" />
+      <workItem from="1478349012790" duration="707000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="44058000" />
+    <option name="totallyTimeSpent" value="44247000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -668,7 +348,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1439" y="0" width="1922" height="1055" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="SvgViewer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -680,7 +360,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="NuGet" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4493392" sideWeight="0.63767344" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Change Signature" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15421557" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15421557" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26872247" sideWeight="0.49573106" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20864461" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -787,13 +467,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../GLWidgetGTK3/GLWidget.cs" />
-    <entry file="file://$PROJECT_DIR$/../../Everlook/Program.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="34" column="43" selection-start-line="34" selection-start-column="43" selection-end-line="34" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../Everlook/Explorer/ExplorerBuilder.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="855">
@@ -989,64 +662,6 @@
             <marker date="1478348363723" expanded="true" signature="7141:7405" ph="{...}" />
             <marker date="1478348363723" expanded="true" signature="7409:7561" ph="/// Disposes the viewport renderer, releasing the current rendering target and current ... " />
             <marker date="1478348363723" expanded="true" signature="7585:7724" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../lib/liblistfile/liblistfile/OptimizedListContainer.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="22" column="33" selection-start-line="22" selection-start-column="33" selection-end-line="22" selection-end-column="33" />
-          <folding>
-            <marker date="1478349013884" expanded="true" signature="0:783" ph="/* MyClass.cs ... */" />
-            <marker date="1478349013884" expanded="true" signature="790:907" ph="..." />
-            <marker date="1478349013884" expanded="true" signature="930:13301" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="934:1509" ph="/// A container for OptimizedList objects. ... " />
-            <marker date="1478349013884" expanded="true" signature="1546:6464" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="1552:1682" ph="/// The binary file signature. Used when serializing this object into an RIFF-style ... " />
-            <marker date="1478349013884" expanded="true" signature="1728:1820" ph="/// The file extension used for serialized list containers. ... " />
-            <marker date="1478349013884" expanded="true" signature="1865:1926" ph="/// The file format version. ... " />
-            <marker date="1478349013884" expanded="true" signature="1963:2053" ph="/// The name of the archive this container has lists for. ... " />
-            <marker date="1478349013884" expanded="true" signature="2095:2180" ph="/// The optimized lists contained in this container. ... " />
-            <marker date="1478349013884" expanded="true" signature="2317:2562" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.OptimizedListContainer&quot;/&gt; class. ... " />
-            <marker date="1478349013884" expanded="true" signature="2616:2661" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="2665:2916" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.OptimizedListContainer&quot;/&gt; class. ... " />
-            <marker date="1478349013884" expanded="true" signature="2961:4015" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="4019:4282" ph="/// Determines whether the specifed package hash has any lists stored in the container. ... " />
-            <marker date="1478349013884" expanded="true" signature="4340:4404" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="4408:4727" ph="/// Determines whether the specifed list is the same as the one which is stored in the container. ... " />
-            <marker date="1478349013884" expanded="true" signature="4780:5096" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="5100:5281" ph="/// Adds the optimized list to the container. If the list is already in the container, ... " />
-            <marker date="1478349013884" expanded="true" signature="5332:5462" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="5466:5647" ph="/// Replaces the optimized list stored in the container (under the same package hash) with the provided list. ... " />
-            <marker date="1478349013884" expanded="true" signature="5702:5828" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="5832:5945" ph="/// Serializes the object into a byte array. ... " />
-            <marker date="1478349013884" expanded="true" signature="5972:6461" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="6467:6658" ph="/// Equality comparator for byte arrays used in the optimized lists. ... " />
-            <marker date="1478349013884" expanded="true" signature="6720:7539" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="6726:6887" ph="/// Determines whether the two arrays are equal. ... " />
-            <marker date="1478349013884" expanded="true" signature="6935:7055" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="7059:7353" ph="/// Gets the hash code. ... " />
-            <marker date="1478349013884" expanded="true" signature="7390:7536" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="7542:8068" ph="/// An optimized list of file paths. ... " />
-            <marker date="1478349013884" expanded="true" signature="8124:13299" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="8130:8260" ph="/// The binary file signature. Used when serializing this object into an RIFF-style ... " />
-            <marker date="1478349013884" expanded="true" signature="8306:8399" ph="/// A 126-bit MD5 hash of the archive this list is made for. ... " />
-            <marker date="1478349013884" expanded="true" signature="8456:8540" ph="/// A 126-bit MD5 hash of the compressed list data. ... " />
-            <marker date="1478349013884" expanded="true" signature="8594:8674" ph="/// The optimized paths contained in this list. ... " />
-            <marker date="1478349013884" expanded="true" signature="8746:9051" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.OptimizedList&quot;/&gt; class. ... " />
-            <marker date="1478349013884" expanded="true" signature="9127:9281" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="9285:9515" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.OptimizedList&quot;/&gt; class. ... " />
-            <marker date="1478349013884" expanded="true" signature="9551:10701" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="10705:10818" ph="/// Serializes the object into a byte array. ... " />
-            <marker date="1478349013884" expanded="true" signature="10845:11456" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="11460:13296" ph="IEquatable implementation" />
-            <marker date="1478349013884" expanded="true" signature="11497:11970" ph="/// Determines whether the specified &lt;see cref=&quot;System.Object&quot;/&gt; is equal to the current &lt;see cref=&quot;liblistfile.O ... " />
-            <marker date="1478349013884" expanded="true" signature="12012:12161" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="12165:12676" ph="/// Determines whether the specified &lt;see cref=&quot;liblistfile.OptimizedList&quot;/&gt; is equal to the current &lt;see cref=&quot;l ... " />
-            <marker date="1478349013884" expanded="true" signature="12718:12880" ph="{...}" />
-            <marker date="1478349013884" expanded="true" signature="12884:13144" ph="/// Serves as a hash function for a &lt;see cref=&quot;liblistfile.OptimizedList&quot;/&gt; object. ... " />
-            <marker date="1478349013884" expanded="true" signature="13180:13282" ph="{...}" />
           </folding>
         </state>
       </provider>
@@ -1249,10 +864,83 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../../lib/liblistfile/liblistfile/OptimizedListContainer.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="22" column="33" selection-start-line="22" selection-start-column="33" selection-end-line="22" selection-end-column="33" />
+          <folding>
+            <marker date="1478349013884" expanded="true" signature="0:783" ph="/* MyClass.cs ... */" />
+            <marker date="1478349013884" expanded="true" signature="790:907" ph="..." />
+            <marker date="1478349013884" expanded="true" signature="930:13301" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="934:1509" ph="/// A container for OptimizedList objects. ... " />
+            <marker date="1478349013884" expanded="true" signature="1546:6464" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="1552:1682" ph="/// The binary file signature. Used when serializing this object into an RIFF-style ... " />
+            <marker date="1478349013884" expanded="true" signature="1728:1820" ph="/// The file extension used for serialized list containers. ... " />
+            <marker date="1478349013884" expanded="true" signature="1865:1926" ph="/// The file format version. ... " />
+            <marker date="1478349013884" expanded="true" signature="1963:2053" ph="/// The name of the archive this container has lists for. ... " />
+            <marker date="1478349013884" expanded="true" signature="2095:2180" ph="/// The optimized lists contained in this container. ... " />
+            <marker date="1478349013884" expanded="true" signature="2317:2562" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.OptimizedListContainer&quot;/&gt; class. ... " />
+            <marker date="1478349013884" expanded="true" signature="2616:2661" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="2665:2916" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.OptimizedListContainer&quot;/&gt; class. ... " />
+            <marker date="1478349013884" expanded="true" signature="2961:4015" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="4019:4282" ph="/// Determines whether the specifed package hash has any lists stored in the container. ... " />
+            <marker date="1478349013884" expanded="true" signature="4340:4404" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="4408:4727" ph="/// Determines whether the specifed list is the same as the one which is stored in the container. ... " />
+            <marker date="1478349013884" expanded="true" signature="4780:5096" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="5100:5281" ph="/// Adds the optimized list to the container. If the list is already in the container, ... " />
+            <marker date="1478349013884" expanded="true" signature="5332:5462" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="5466:5647" ph="/// Replaces the optimized list stored in the container (under the same package hash) with the provided list. ... " />
+            <marker date="1478349013884" expanded="true" signature="5702:5828" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="5832:5945" ph="/// Serializes the object into a byte array. ... " />
+            <marker date="1478349013884" expanded="true" signature="5972:6461" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="6467:6658" ph="/// Equality comparator for byte arrays used in the optimized lists. ... " />
+            <marker date="1478349013884" expanded="true" signature="6720:7539" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="6726:6887" ph="/// Determines whether the two arrays are equal. ... " />
+            <marker date="1478349013884" expanded="true" signature="6935:7055" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="7059:7353" ph="/// Gets the hash code. ... " />
+            <marker date="1478349013884" expanded="true" signature="7390:7536" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="7542:8068" ph="/// An optimized list of file paths. ... " />
+            <marker date="1478349013884" expanded="true" signature="8124:13299" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="8130:8260" ph="/// The binary file signature. Used when serializing this object into an RIFF-style ... " />
+            <marker date="1478349013884" expanded="true" signature="8306:8399" ph="/// A 126-bit MD5 hash of the archive this list is made for. ... " />
+            <marker date="1478349013884" expanded="true" signature="8456:8540" ph="/// A 126-bit MD5 hash of the compressed list data. ... " />
+            <marker date="1478349013884" expanded="true" signature="8594:8674" ph="/// The optimized paths contained in this list. ... " />
+            <marker date="1478349013884" expanded="true" signature="8746:9051" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.OptimizedList&quot;/&gt; class. ... " />
+            <marker date="1478349013884" expanded="true" signature="9127:9281" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="9285:9515" ph="/// Initializes a new instance of the &lt;see cref=&quot;liblistfile.OptimizedList&quot;/&gt; class. ... " />
+            <marker date="1478349013884" expanded="true" signature="9551:10701" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="10705:10818" ph="/// Serializes the object into a byte array. ... " />
+            <marker date="1478349013884" expanded="true" signature="10845:11456" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="11460:13296" ph="IEquatable implementation" />
+            <marker date="1478349013884" expanded="true" signature="11497:11970" ph="/// Determines whether the specified &lt;see cref=&quot;System.Object&quot;/&gt; is equal to the current &lt;see cref=&quot;liblistfile.O ... " />
+            <marker date="1478349013884" expanded="true" signature="12012:12161" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="12165:12676" ph="/// Determines whether the specified &lt;see cref=&quot;liblistfile.OptimizedList&quot;/&gt; is equal to the current &lt;see cref=&quot;l ... " />
+            <marker date="1478349013884" expanded="true" signature="12718:12880" ph="{...}" />
+            <marker date="1478349013884" expanded="true" signature="12884:13144" ph="/// Serves as a hash function for a &lt;see cref=&quot;liblistfile.OptimizedList&quot;/&gt; object. ... " />
+            <marker date="1478349013884" expanded="true" signature="13180:13282" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Everlook/Program.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+          <folding>
+            <marker date="1478349665829" expanded="true" signature="0:783" ph="/* Program.cs ... */" />
+            <marker date="1478349665829" expanded="true" signature="791:828" ph="..." />
+            <marker date="1478349665829" expanded="true" signature="848:1175" ph="{...}" />
+            <marker date="1478349665829" expanded="true" signature="883:1173" ph="{...}" />
+            <marker date="1478349665829" expanded="true" signature="914:1170" ph="{...}" />
+            <marker date="1478349665829" expanded="true" signature="970:1052" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/../../Everlook/UI/MainWindow.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="33" column="10" selection-start-line="33" selection-start-column="10" selection-end-line="33" selection-end-column="10" />
+        <state relative-caret-position="-390">
+          <caret line="160" column="21" selection-start-line="160" selection-start-column="21" selection-end-line="160" selection-end-column="21" />
           <folding>
             <marker date="1478349529994" expanded="true" signature="0:786" ph="/* MainWindow.cs ... */" />
             <marker date="1478349529994" expanded="true" signature="794:1308" ph="..." />
