@@ -1,6 +1,3 @@
 [submodule "lib/liblistfile"]
 	path = lib/liblistfile
 	url = git@github.com:Nihlus/liblistfile.git
-[submodule "lib/libwarcraft"]
-	path = lib/libwarcraft
-	url = git@github.com:WowDevTools/libwarcraft.git
