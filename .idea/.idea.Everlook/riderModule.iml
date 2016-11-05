@@ -3,22 +3,18 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$/../..">
       <sourceFolder url="file://$MODULE_DIR$/../../Everlook" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../GLWidgetGTK3" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../lib/GLWidgetGTK3" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../lib/liblistfile/lib/libwarcraft/libwarcraft" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../lib/liblistfile/liblistfile" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/../../Everlook/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../Everlook/obj" />
-      <excludeFolder url="file://$MODULE_DIR$/../../GLWidgetGTK3/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../GLWidgetGTK3/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../lib/GLWidgetGTK3/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../lib/GLWidgetGTK3/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../lib/liblistfile/lib/libwarcraft/libwarcraft/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../lib/liblistfile/lib/libwarcraft/libwarcraft/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../lib/liblistfile/liblistfile/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../lib/liblistfile/liblistfile/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../packages" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../../liblistfile/liblistfile">
-      <sourceFolder url="file://$MODULE_DIR$/../../../liblistfile/liblistfile" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/../../../liblistfile/liblistfile/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../../liblistfile/liblistfile/obj" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../../libwarcraft/libwarcraft">
-      <sourceFolder url="file://$MODULE_DIR$/../../../libwarcraft/libwarcraft" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/../../../libwarcraft/libwarcraft/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../../libwarcraft/libwarcraft/obj" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

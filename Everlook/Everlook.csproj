@@ -159,6 +159,10 @@
       <Project>{47B57CB3-1885-462D-84DA-FBA0AE356F2A}</Project>
       <Name>GLWidgetGTK3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\lib\GLWidgetGTK3\GLWidgetGTK3.csproj">
+      <Project>{47B57CB3-1885-462D-84DA-FBA0AE356F2A}</Project>
+      <Name>GLWidgetGTK3</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Listfiles\backup-enUS.olc">

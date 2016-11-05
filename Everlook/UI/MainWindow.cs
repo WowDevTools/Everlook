@@ -41,7 +41,6 @@ using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
 using Application = Gtk.Application;
 using ExtensionMethods = Everlook.Utility.ExtensionMethods;
-using KeyPressEventArgs = Gtk.KeyPressEventArgs;
 using IOPath = System.IO.Path;
 
 namespace Everlook.UI
@@ -196,9 +195,8 @@ namespace Everlook.UI
 			// Right click is released
 			if (args.Event.Type == EventType.ButtonRelease && args.Event.Button == 3)
 			{
-				// Return the mouse pointer
+				// Return the mouse pointer to its original appearance
 				this.Window.Cursor = new Cursor(CursorType.Arrow);
-
 				this.GrabFocus();
 			}
 		}
