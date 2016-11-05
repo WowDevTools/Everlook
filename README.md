@@ -12,7 +12,7 @@ Travis | [![Build Status](https://travis-ci.org/WowDevTools/Everlook.svg?branch=
 # About #
 Everlook is a cross-platform, open-source World of Warcraft model viewer, created to showcase the capabilities of libwarcraft.
 
-Everlook is capable of browsing, exporting and converting most World of Warcraft formats up until 
+Everlook will be capable of browsing, exporting and converting most World of Warcraft formats up until 
 Wrath of the Lich King, and is under active development. The current goal is to act as an open, simple
 and feature-complete replacement for World of Warcraft Model Viewer.
 
@@ -23,6 +23,7 @@ Currently, Everlook is in early development and may not be usable in your day-to
 * Explore games on an archive-by-archive basis, or as a unified virtual file tree
 * Export files from the archives
 * View textures stored in most major image formats, as well as BLP
+* View WMO models
 
 ![Everlook](https://i.imgur.com/ZusgxJ7.png)
 
@@ -31,21 +32,23 @@ Currently, Everlook is in early development and may not be usable in your day-to
 * The export queue does not work beyond the UI.
 * Everlook lacks any testing on Windows-based systems.
 * The UI becomes sluggish when loading directories with many files in them (mainly Textures/Minimap and Textures/BakedNPCTextures, who both have thousands of files under a single directory).
-* Models are not rendered in the viewport.
+* Standard models are not rendered in the viewport.
 
 ### Compiling
-In order to compile Everlook, you will need a Nuget-capable IDE that supports the C# language. The most commonly used ones are Visual Studio, MonoDevelop and more recently Project Rider. Additionally, you need recent copies of the following projects: 
+In order to compile Everlook, you will need a Nuget-capable IDE that supports the C# language. The most commonly used ones are Visual Studio, MonoDevelop and more recently Project Rider. 
 
-* [libwarcraft](https://github.com/Nihlus/libwarcraft)
-* [liblistfile](https://github.com/Nihlus/liblistfile)
+Beyond that, downloading and compiling Everlook is as simple as the following commands:
+
+    $ git clone git@github.com:WowDevTools/Everlook.git
+    $ cd Everlook
+    $ git submodule update --init --recursive
+    $ nuget restore
 
 If you're running Windows, you also need the GTK# 3 libraries, which are available here:
 * [GTK# 3 for Windows](https://download.gnome.org/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi)
 
 For Debian-based Linux distributions, the following package should suffice:
 * mono-complete (>= 4.4.2.11-0xamarin1)
-
-Beyond that, it's pretty straightforward - hit compile, run, and develop.
 
 ### Binary Packages
 Currently, Everlook does not provide any binary packages or installers due to its early state. Packages will, 
