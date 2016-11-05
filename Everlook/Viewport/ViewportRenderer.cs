@@ -81,6 +81,11 @@ namespace Everlook.Viewport
 		private float deltaTime;
 
 		/// <summary>
+		///
+		/// </summary>
+		public bool WantsToMove { get; set; }
+
+		/// <summary>
 		/// The X position of the mouse during the last frame, relative to the <see cref="ViewportWidget"/>.
 		/// </summary>
 		public int InitialMouseX;
@@ -173,6 +178,8 @@ namespace Everlook.Viewport
 		{
 			lock (RenderTargetLock)
 			{
+				Stopwatch sw = Stopwatch.StartNew();
+
 				// Make sure the viewport is accurate for the current widget size on screen
 				int widgetWidth = this.ViewportWidget.AllocatedWidth;
 				int widgetHeight = this.ViewportWidget.AllocatedHeight;
@@ -181,11 +188,9 @@ namespace Everlook.Viewport
 
 				if (RenderTarget != null)
 				{
-					Stopwatch sw = Stopwatch.StartNew();
 
 					// Calculate the current relative movement of the camera
-					//if (WantsToMove)
-					if (Mouse.GetState().IsButtonDown(MouseButton.Right))
+					if (WantsToMove)
 					{
 						int mouseX = Mouse.GetCursorState().X;
 						int mouseY = Mouse.GetCursorState().Y;
@@ -213,9 +218,11 @@ namespace Everlook.Viewport
 					RenderTarget.Render(view, projection);
 
 					GraphicsContext.CurrentContext.SwapBuffers();
-					sw.Stop();
-					deltaTime = (float) sw.Elapsed.TotalMilliseconds / 1000;
+
 				}
+
+				sw.Stop();
+				deltaTime = (float) sw.Elapsed.TotalMilliseconds / 1000;
 			}
 		}
 

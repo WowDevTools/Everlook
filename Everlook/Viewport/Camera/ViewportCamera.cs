@@ -109,7 +109,7 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// The default field of view for perspective projections.
 		/// </summary>
-		public const float DefaultFieldOfView = 45.0f;
+		public const float DefaultFieldOfView = 90.0f;
 
 		/// <summary>
 		/// The default near clipping distance.

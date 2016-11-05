@@ -96,7 +96,7 @@ namespace Everlook.UI
 				CanFocus = true,
 				SingleBuffer = false,
 				ColorBPP = 24,
-				DepthBPP = 16,
+				DepthBPP = 32,
 				Samples = 4,
 				GLVersionMajor = 3,
 				GLVersionMinor = 3,
@@ -184,6 +184,7 @@ namespace Everlook.UI
 
 				this.ViewportWidget.GrabFocus();
 
+				this.viewportRenderer.WantsToMove = true;
 				this.viewportRenderer.InitialMouseX = Mouse.GetCursorState().X;
 				this.viewportRenderer.InitialMouseY = Mouse.GetCursorState().Y;
 			}
@@ -203,6 +204,7 @@ namespace Everlook.UI
 				// Return the mouse pointer to its original appearance
 				this.Window.Cursor = new Cursor(CursorType.Arrow);
 				this.GrabFocus();
+				this.viewportRenderer.WantsToMove = false;
 			}
 		}
 
@@ -1215,7 +1217,6 @@ namespace Everlook.UI
 
 			this.viewportRenderer.SetRenderTarget(null);
 			this.viewportRenderer.Dispose();
-			this.ViewportWidget.Destroy();
 
 			Application.Quit();
 			a.RetVal = true;

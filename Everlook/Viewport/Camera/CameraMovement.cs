@@ -85,7 +85,7 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// The default turning speed of the observer within the viewport.
 		/// </summary>
-		private const float DefaultTurningSpeed = 10.0f;
+		private const float DefaultTurningSpeed = 1.0f;
 
 		/// <summary>
 		/// Creates a new <see cref="CameraMovement"/> instance, bound to the input camera.
@@ -140,12 +140,12 @@ namespace Everlook.Viewport.Camera
 			}
 
 
-			if (Keyboard.GetState().IsKeyDown(Key.E))
+			if (Keyboard.GetState().IsKeyDown(Key.Q))
 			{
 				MoveUp(deltaTime * DefaultMovementSpeed);
 			}
 
-			if (Keyboard.GetState().IsKeyDown(Key.Q))
+			if (Keyboard.GetState().IsKeyDown(Key.E))
 			{
 				MoveDown(deltaTime * DefaultMovementSpeed);
 			}
