@@ -37,6 +37,7 @@ namespace Everlook
 				EnableHighResolution = true
 			});
 
+
 			// GTK
 			Application.Init();
 			MainWindow win = MainWindow.Create();

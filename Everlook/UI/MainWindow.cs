@@ -24,6 +24,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using Everlook.Configuration;
 using Everlook.Explorer;
 using Everlook.Utility;
@@ -100,7 +101,7 @@ namespace Everlook.UI
 				Samples = 4,
 				GLVersionMajor = 3,
 				GLVersionMinor = 3,
-				GraphicsContextFlags = GraphicsContextFlags.Default
+				GraphicsContextFlags = GraphicsContextFlags.Default,
 			};
 
 			this.ViewportWidget.Events |=
@@ -809,7 +810,7 @@ namespace Everlook.UI
 					{
 						using (MemoryStream ms = new MemoryStream(fileData))
 						{
-							RenderableBitmap renderable = new RenderableBitmap(new Bitmap(ms));
+							RenderableBitmap renderable = new RenderableBitmap(new Bitmap(ms), fileReference.ItemPath);
 							viewportRenderer.SetRenderTarget(renderable);
 						}
 

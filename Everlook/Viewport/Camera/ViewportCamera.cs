@@ -23,6 +23,7 @@
 using System;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
+using SlimTK;
 
 namespace Everlook.Viewport.Camera
 {
@@ -102,6 +103,11 @@ namespace Everlook.Viewport.Camera
 
 		private float verticalViewAngle;
 
+		/// <summary>
+		/// The bounding frustrum of the camera.
+		/// </summary>
+		public BoundingFrustum Frustum { get; private set; }
+
 		/*
 			Default camera and movement speeds.
 		*/
@@ -109,17 +115,17 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// The default field of view for perspective projections.
 		/// </summary>
-		public const float DefaultFieldOfView = 90.0f;
+		public const float DefaultFieldOfView = 45.0f;
 
 		/// <summary>
 		/// The default near clipping distance.
 		/// </summary>
-		public const float DefaultNearClippingDistance = 0.01f;
+		public const float DefaultNearClippingDistance = 0.1f;
 
 		/// <summary>
 		/// The default far clipping distance.
 		/// </summary>
-		public const float DefaultFarClippingDistance = 10000.0f;
+		public const float DefaultFarClippingDistance = 1000.0f;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="ViewportCamera"/> class, and sets its position
@@ -166,6 +172,26 @@ namespace Everlook.Viewport.Camera
 				(float) Math.Cos(this.HorizontalViewAngle - MathHelper.PiOver2));
 
 			this.UpVector = Vector3.Cross(this.RightVector, this.LookDirectionVector);
+		}
+
+		/// <summary>
+		/// Recalculates the bounding frustrum of the camera.
+		/// </summary>
+		/// <param name="viewportWidth"></param>
+		/// <param name="viewportHeight"></param>
+		public void RecalculateFrustrum(int viewportWidth, int viewportHeight)
+		{
+			float aspectRatio = (float) viewportWidth / (float) viewportHeight;
+
+			this.Frustum = BoundingFrustum.FromCamera(
+				this.Position,
+				LookDirectionVector,
+				UpVector,
+				MathHelper.DegreesToRadians(DefaultFieldOfView),
+				DefaultNearClippingDistance,
+				DefaultFarClippingDistance,
+				aspectRatio
+			);
 		}
 
 		/// <summary>

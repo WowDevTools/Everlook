@@ -21,10 +21,12 @@
 //
 using System;
 using System.Collections.Generic;
+using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using SlimTK;
 using Warcraft.BLP;
 using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 using SyPixelFormat = System.Drawing.Imaging.PixelFormat;
@@ -136,7 +138,7 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Renders the current object in the current OpenGL context.
 		/// </summary>
-		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix)
+		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
 		{
 			if (!IsInitialized)
 			{
@@ -236,10 +238,10 @@ namespace Everlook.Viewport.Rendering
 			// Generate UV coordinates
 			List<float> textureCoordinates = new List<float>
 			{
-				1, 0,
-				1, 1,
 				0, 0,
-				0, 1
+				1, 0,
+				0, 1,
+				1, 1
 			};
 
 			// Buffer the generated UV coordinates in the GPU

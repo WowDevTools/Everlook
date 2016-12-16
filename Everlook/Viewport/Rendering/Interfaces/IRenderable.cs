@@ -20,7 +20,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
+using Everlook.Viewport.Camera;
 using OpenTK;
+using SlimTK;
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {
@@ -66,7 +68,7 @@ namespace Everlook.Viewport.Rendering.Interfaces
 		/// <summary>
 		/// Renders the current object in the current OpenGL context.
 		/// </summary>
-		void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix);
+		void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera);
 	}
 
 	/// <summary>

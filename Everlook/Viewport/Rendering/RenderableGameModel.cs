@@ -20,8 +20,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
+using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
+using SlimTK;
 using Warcraft.MDX;
 
 namespace Everlook.Viewport.Rendering
@@ -73,7 +75,7 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Renders the current object in the current OpenGL context.
 		/// </summary>
-		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix)
+		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
 		{
 			throw new NotImplementedException();
 		}

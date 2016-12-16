@@ -24,10 +24,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Everlook.Package;
+using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using SlimTK;
 using Warcraft.BLP;
 using Warcraft.Core;
 using Warcraft.WMO;
@@ -242,15 +244,15 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Renders the current object in the current OpenGL context.
 		/// </summary>
-		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix)
+		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
 		{
 			if (!IsInitialized)
 			{
 				return;
 			}
 
-
-			foreach (ModelGroup modelGroup in this.Model.Groups)
+			foreach (ModelGroup modelGroup in this.Model.Groups
+				.OrderByDescending(modelGroup => VectorMath.Distance(camera.Position, modelGroup.GetPosition().AsOpenTKVector())))
 			{
 				RenderGroup(modelGroup, viewMatrix, projectionMatrix);
 			}

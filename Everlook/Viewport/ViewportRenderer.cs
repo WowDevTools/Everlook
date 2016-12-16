@@ -146,7 +146,8 @@ namespace Everlook.Viewport
 
 			// Make sure we use the depth buffer when drawing
 			GL.Enable(EnableCap.DepthTest);
-			GL.DepthFunc(DepthFunction.Less);
+			GL.DepthFunc(DepthFunction.Lequal);
+			GL.DepthMask(true);
 
 			// Enable backface culling for performance reasons
 			GL.Enable(EnableCap.CullFace);
@@ -215,7 +216,9 @@ namespace Everlook.Viewport
 					// Then render the visual component
 					Matrix4 view = this.Camera.GetViewMatrix();
 					Matrix4 projection = this.Camera.GetProjectionMatrix(this.RenderTarget.Projection, widgetWidth, widgetHeight);
-					RenderTarget.Render(view, projection);
+					this.Camera.RecalculateFrustrum(widgetWidth, widgetHeight);
+
+					RenderTarget.Render(view, projection, this.Camera);
 
 					GraphicsContext.CurrentContext.SwapBuffers();
 

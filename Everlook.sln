@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "liblistfile", "lib\liblistf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GLWidgetGTK3", "lib\GLWidgetGTK3\GLWidgetGTK3.csproj", "{47B57CB3-1885-462D-84DA-FBA0AE356F2A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlimTK", "lib\SlimTK\SlimTK\SlimTK.csproj", "{06C99D4B-9FD6-4AAA-83FD-CEB5CB308121}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libwarcraft", "lib\liblistfile\lib\libwarcraft\libwarcraft\libwarcraft.csproj", "{DA06A44E-A67B-46C7-B07D-E90AEBED0502}"
 EndProject
 Global
@@ -27,6 +29,10 @@ Global
 		{47B57CB3-1885-462D-84DA-FBA0AE356F2A}.Debug|x86.Build.0 = Debug|x86
 		{47B57CB3-1885-462D-84DA-FBA0AE356F2A}.Release|x86.ActiveCfg = Release|x86
 		{47B57CB3-1885-462D-84DA-FBA0AE356F2A}.Release|x86.Build.0 = Release|x86
+		{06C99D4B-9FD6-4AAA-83FD-CEB5CB308121}.Debug|x86.ActiveCfg = Debug|x86
+		{06C99D4B-9FD6-4AAA-83FD-CEB5CB308121}.Debug|x86.Build.0 = Debug|x86
+		{06C99D4B-9FD6-4AAA-83FD-CEB5CB308121}.Release|x86.ActiveCfg = Release|x86
+		{06C99D4B-9FD6-4AAA-83FD-CEB5CB308121}.Release|x86.Build.0 = Release|x86
 		{DA06A44E-A67B-46C7-B07D-E90AEBED0502}.Debug|x86.ActiveCfg = Debug|x86
 		{DA06A44E-A67B-46C7-B07D-E90AEBED0502}.Debug|x86.Build.0 = Debug|x86
 		{DA06A44E-A67B-46C7-B07D-E90AEBED0502}.Release|x86.ActiveCfg = Release|x86
