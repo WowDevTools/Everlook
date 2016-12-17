@@ -119,7 +119,7 @@
       <file leaf-file-name="MainWindow.cs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../../Everlook/UI/MainWindow.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-6585">
+            <state relative-caret-position="-11265">
               <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
               <folding>
                 <marker date="1481996170618" expanded="true" signature="0:786" ph="/* MainWindow.cs ... */" />
@@ -709,12 +709,12 @@
       <workItem from="1481928342199" duration="1183000" />
       <workItem from="1481929537551" duration="114000" />
       <workItem from="1481929754823" duration="1855000" />
-      <workItem from="1481989640343" duration="6327000" />
+      <workItem from="1481989640343" duration="6899000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="72418000" />
+    <option name="totallyTimeSpent" value="72990000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1471,7 +1471,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../../Everlook/UI/MainWindow.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6585">
+        <state relative-caret-position="-11265">
           <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
           <folding>
             <marker date="1481996170618" expanded="true" signature="0:786" ph="/* MainWindow.cs ... */" />
