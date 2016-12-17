@@ -83,6 +83,7 @@
     <Compile Include="UI\MainWindowElements.cs">
       <DependentUpon>"MainWindow.cs"</DependentUpon>
     </Compile>
+    <Compile Include="Utility\ModelLoadingRoutines.cs" />
     <Compile Include="Viewport\Camera\CameraMovement.cs" />
     <Compile Include="Viewport\Camera\ViewportCamera.cs" />
     <Compile Include="Viewport\Rendering\Core\EverlookShader.cs" />

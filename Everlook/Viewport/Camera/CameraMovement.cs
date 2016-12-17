@@ -85,7 +85,7 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// The default turning speed of the observer within the viewport.
 		/// </summary>
-		private const float DefaultTurningSpeed = 1.0f;
+		private const float DefaultTurningSpeed = 0.5f;
 
 		/// <summary>
 		/// Creates a new <see cref="CameraMovement"/> instance, bound to the input camera.

@@ -24,7 +24,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Security.Policy;
+using System.Threading.Tasks;
 using Everlook.Configuration;
 using Everlook.Explorer;
 using Everlook.Utility;
@@ -38,8 +38,6 @@ using OpenTK.Graphics;
 using OpenTK.Input;
 using Warcraft.BLP;
 using Warcraft.Core;
-using Warcraft.WMO;
-using Warcraft.WMO.GroupFile;
 using Application = Gtk.Application;
 using ExtensionMethods = Everlook.Utility.ExtensionMethods;
 using IOPath = System.IO.Path;
@@ -73,6 +71,11 @@ namespace Everlook.UI
 		private bool shuttingDown;
 
 		/// <summary>
+		/// Task scheduler for the UI thread. This allows task-based code to have very simple UI callbacks.
+		/// </summary>
+		private TaskScheduler UIThreadScheduler;
+
+		/// <summary>
 		/// Creates an instance of the MainWindow class, loading the glade XML UI as needed.
 		/// </summary>
 		public static MainWindow Create()
@@ -92,6 +95,8 @@ namespace Everlook.UI
 			builder.Autoconnect(this);
 			DeleteEvent += OnDeleteEvent;
 
+			UIThreadScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
 			this.ViewportWidget = new GLWidget(GraphicsMode.Default)
 			{
 				CanFocus = true,
@@ -101,7 +106,7 @@ namespace Everlook.UI
 				Samples = 4,
 				GLVersionMajor = 3,
 				GLVersionMinor = 3,
-				GraphicsContextFlags = GraphicsContextFlags.Default,
+				GraphicsContextFlags = GraphicsContextFlags.Default
 			};
 
 			this.ViewportWidget.Events |=
@@ -731,9 +736,10 @@ namespace Everlook.UI
 						{
 							try
 							{
-								BLP blp = new BLP(fileData);
-								RenderableBLP image = new RenderableBLP(blp, fileReference.ItemPath);
-								viewportRenderer.SetRenderTarget(image);
+								BLP image = new BLP(fileData);
+								RenderableBLP renderableImage = new RenderableBLP(image, fileReference.ItemPath);
+
+								this.viewportRenderer.SetRenderTarget(renderableImage);
 								EnableControlPage(ControlPage.Image);
 							}
 							catch (FileLoadException fex)
@@ -754,50 +760,12 @@ namespace Everlook.UI
 					}
 					case WarcraftFileType.WorldObjectModel:
 					{
-						byte[] fileData = fileReference.Extract();
-						if (fileData != null)
-						{
-							WMO worldModel = new WMO(fileData);
-
-							string modelPathWithoutExtension = IOPath.GetFileNameWithoutExtension(fileReference.ItemPath);
-							for (int i = 0; i < worldModel.GroupCount; ++i)
-							{
-								// Extract the groups as well
-								string modelGroupPath = $"{modelPathWithoutExtension}_{i:D3}.wmo";
-								byte[] modelGroupData = fileReference.PackageGroup.ExtractFile(modelGroupPath);
-
-								if (modelGroupData != null)
-								{
-									worldModel.AddModelGroup(new ModelGroup(modelGroupData));
-								}
-
-								RenderableWorldModel renderableWorldModel = new RenderableWorldModel(worldModel, fileReference.PackageGroup);
-								this.viewportRenderer.SetRenderTarget(renderableWorldModel);
-							}
-						}
-
+						BeginLoadingWorldModel(fileReference);
 						break;
 					}
 					case WarcraftFileType.WorldObjectModelGroup:
 					{
-						// Get the file name of the root object
-						string modelRootPath = fileReference.ItemPath.Remove(fileReference.ItemPath.Length - 8, 4);
-
-						// Extract it and load just this model group
-						byte[] fileData = fileReference.PackageGroup.ExtractFile(modelRootPath);
-						if (fileData != null)
-						{
-							WMO worldModel = new WMO(fileData);
-							byte[] modelGroupData = fileReference.Extract();
-							if (modelGroupData != null)
-							{
-								worldModel.AddModelGroup(new ModelGroup(modelGroupData));
-							}
-
-							RenderableWorldModel renderableWorldModel = new RenderableWorldModel(worldModel, fileReference.PackageGroup);
-							this.viewportRenderer.SetRenderTarget(renderableWorldModel);
-						}
-
+						BeginLoadingWorldModelGroup(fileReference);
 						break;
 					}
 				}
@@ -810,14 +778,54 @@ namespace Everlook.UI
 					{
 						using (MemoryStream ms = new MemoryStream(fileData))
 						{
-							RenderableBitmap renderable = new RenderableBitmap(new Bitmap(ms), fileReference.ItemPath);
-							viewportRenderer.SetRenderTarget(renderable);
+							RenderableBitmap renderableImage = new RenderableBitmap(new Bitmap(ms), fileReference.ItemPath);
+							this.viewportRenderer.SetRenderTarget(renderableImage);
 						}
 
 						EnableControlPage(ControlPage.Image);
 					}
 				}
 			}
+		}
+
+		private void BeginLoadingWorldModel(ItemReference fileReference)
+		{
+			StatusSpinner.Active = true;
+
+			string modelName = IOPath.GetFileNameWithoutExtension(fileReference.ItemPath);
+			uint modelStatusMessageContextID = MainStatusBar.GetContextId($"worldModelLoad_{modelName}");
+			uint modelStatusMessageID = MainStatusBar.Push(modelStatusMessageContextID,
+				$"Loading world model \"{modelName}\"...");
+
+			Task.Factory.StartNew(() => ModelLoadingRoutines.LoadWorldModel(fileReference))
+				.ContinueWith(modelLoadTask => ModelLoadingRoutines.CreateRenderableWorldModel(modelLoadTask.Result, fileReference.PackageGroup), this.UIThreadScheduler)
+				.ContinueWith(createRenderableTask => this.viewportRenderer.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
+				.ContinueWith(result =>
+				{
+					StatusSpinner.Active = false;
+					MainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
+				},
+				this.UIThreadScheduler);
+		}
+
+		private void BeginLoadingWorldModelGroup(ItemReference fileReference)
+		{
+			StatusSpinner.Active = true;
+
+			string modelName = IOPath.GetFileNameWithoutExtension(fileReference.ItemPath);
+			uint modelStatusMessageContextID = MainStatusBar.GetContextId($"worldModelGroupLoad_{modelName}");
+			uint modelStatusMessageID = MainStatusBar.Push(modelStatusMessageContextID,
+				$"Loading world model group \"{modelName}\"...");
+
+			Task.Factory.StartNew(() => ModelLoadingRoutines.LoadWorldModelGroup(fileReference))
+				.ContinueWith(modelLoadTask => ModelLoadingRoutines.CreateRenderableWorldModel(modelLoadTask.Result, fileReference.PackageGroup), this.UIThreadScheduler)
+				.ContinueWith(createRenderableTask => this.viewportRenderer.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
+				.ContinueWith(result =>
+					{
+						StatusSpinner.Active = false;
+						MainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
+					},
+					this.UIThreadScheduler);
 		}
 
 		/// <summary>

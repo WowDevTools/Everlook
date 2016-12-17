@@ -35,7 +35,7 @@ namespace Everlook.Viewport.Rendering
 		/// <value>The image.</value>
 		private Bitmap Image
 		{
-			get; set;
+			get;
 		}
 
 		/// <summary>

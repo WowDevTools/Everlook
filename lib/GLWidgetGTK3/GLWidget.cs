@@ -58,7 +58,6 @@ namespace OpenTK
 		#endregion
 
 		#region Properties
-
 		/// <summary>Use a single buffer versus a double buffer.</summary>
 		[Browsable(true)]
 		public bool SingleBuffer { get; set; }

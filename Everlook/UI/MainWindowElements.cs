@@ -77,6 +77,13 @@ namespace Everlook.UI
 		[UIElement] private readonly CheckButton RenderGreenCheckButton;
 		[UIElement] private readonly CheckButton RenderBlueCheckButton;
 
+
+		/*
+			Status bar elements
+		*/
+		[UIElement] private readonly Statusbar MainStatusBar;
+		[UIElement] private readonly Spinner StatusSpinner;
+
 		/*
 			Model control elements
 		*/
