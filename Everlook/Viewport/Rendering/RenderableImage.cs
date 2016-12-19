@@ -29,6 +29,11 @@ namespace Everlook.Viewport.Rendering
 		}
 
 		/// <summary>
+		/// The model transformation of the image. Used for moving and zooming.
+		/// </summary>
+		protected Transform ImageTransform { get; set; }
+
+		/// <summary>
 		/// Returns a value which represents whether or not the current renderable has been initialized.
 		/// </summary>
 		public bool IsInitialized { get; set; }
@@ -95,6 +100,10 @@ namespace Everlook.Viewport.Rendering
 			// Use cached shaders whenever possible
 			this.ImageShaderID = LoadCachedShader();
 
+			this.ImageTransform = new Transform(
+				new Vector3(0.0f, 0.0f, 0.0f),
+				OpenTK.Quaternion.FromAxisAngle(Vector3.UnitX, 0.0f),
+				new Vector3(1.0f, 1.0f, 1.0f));
 
 			IsInitialized = true;
 		}
@@ -163,9 +172,7 @@ namespace Everlook.Viewport.Rendering
 			GL.Uniform1(textureVariableHandle, 1, ref textureUnit);
 
 			// Set the model view matrix
-			Matrix4 modelTranslation = Matrix4.CreateTranslation(new Vector3(0.0f, 0.0f, 0.0f));
-			Matrix4 modelScale = Matrix4.CreateScale(new Vector3(1.0f, 1.0f, 1.0f));
-			Matrix4 modelViewProjection = modelScale * modelTranslation * viewMatrix * projectionMatrix;
+			Matrix4 modelViewProjection = ImageTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
 			// Send the model matrix to the shader
 			int projectionShaderVariableHandle = GL.GetUniformLocation(this.ImageShaderID, "ModelViewProjection");
