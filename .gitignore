@@ -192,3 +192,6 @@ test-results/
 
 # Visual Studio Code
 .settings/
+
+# IntelliJ 
+.idea/
