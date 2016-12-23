@@ -52,7 +52,7 @@ namespace Everlook.Package
 		{
 			get
 			{
-				return Path.GetFileNameWithoutExtension(PackagePath);
+				return Path.GetFileNameWithoutExtension(this.PackagePath);
 			}
 		}
 
@@ -97,29 +97,29 @@ namespace Everlook.Package
 		/// Checks if the package contains the specified file. This method only checks the file path.
 		/// </summary>
 		/// <returns><c>true</c>, if the package contains the file, <c>false</c> otherwise.</returns>
-		/// <param name="fileReference">File reference.</param>
-		public bool ContainsFile(ItemReference fileReference)
+		/// <param name="fileReference">Reference reference.</param>
+		public bool ContainsFile(FileReference fileReference)
 		{
 			if (!fileReference.IsFile)
 			{
 				return false;
 			}
 
-			return Package.ContainsFile(fileReference.ItemPath);
+			return this.Package.ContainsFile(fileReference.ItemPath);
 		}
 
 		/// <summary>
 		/// Extracts the specified reference from its associated package. This method only operates on the file path.
 		/// </summary>
-		/// <param name="fileReference">File reference.</param>
-		public byte[] ExtractReference(ItemReference fileReference)
+		/// <param name="fileReference">Reference reference.</param>
+		public byte[] ExtractReference(FileReference fileReference)
 		{
 			if (!fileReference.IsFile)
 			{
 				return null;
 			}
 
-			return Package.ExtractFile(fileReference.ItemPath);
+			return this.Package.ExtractFile(fileReference.ItemPath);
 		}
 
 		/// <summary>
@@ -127,15 +127,15 @@ namespace Everlook.Package
 		/// and storage flags.
 		/// </summary>
 		/// <returns>The reference info.</returns>
-		/// <param name="fileReference">File reference.</param>
-		public MPQFileInfo GetReferenceInfo(ItemReference fileReference)
+		/// <param name="fileReference">Reference reference.</param>
+		public MPQFileInfo GetReferenceInfo(FileReference fileReference)
 		{
 			if (!fileReference.IsFile)
 			{
 				return null;
 			}
 
-			return Package.GetFileInfo(fileReference.ItemPath);
+			return this.Package.GetFileInfo(fileReference.ItemPath);
 		}
 
 		#region IPackage implementation
@@ -144,11 +144,11 @@ namespace Everlook.Package
 		/// Extracts the file.
 		/// </summary>
 		/// <returns>The file.</returns>
-		/// <param name="filePath">File path.</param>
+		/// <param name="filePath">Reference path.</param>
 		public byte[] ExtractFile(string filePath)
 		{
-			ItemReference itemReference = new ItemReference(null, null, "", filePath);
-			return this.ExtractReference(itemReference);
+			FileReference fileReference = new FileReference(null, null, "", filePath);
+			return ExtractReference(fileReference);
 		}
 
 		/// <summary>
@@ -176,22 +176,22 @@ namespace Everlook.Package
 		/// </summary>
 		/// <returns>true</returns>
 		/// <c>false</c>
-		/// <param name="filePath">File path.</param>
+		/// <param name="filePath">Reference path.</param>
 		public bool ContainsFile(string filePath)
 		{
-			ItemReference itemReference = new ItemReference(null, null, "", filePath);
-			return this.ContainsFile(itemReference);
+			FileReference fileReference = new FileReference(null, null, "", filePath);
+			return ContainsFile(fileReference);
 		}
 
 		/// <summary>
 		/// Gets the file info of the provided path.
 		/// </summary>
 		/// <returns>The file info, or null if the file doesn't exist in the archive.</returns>
-		/// <param name="filePath">File path.</param>
+		/// <param name="filePath">Reference path.</param>
 		public MPQFileInfo GetFileInfo(string filePath)
 		{
-			ItemReference itemReference = new ItemReference(null, null, "", filePath);
-			return this.GetReferenceInfo(itemReference);
+			FileReference fileReference = new FileReference(null, null, "", filePath);
+			return GetReferenceInfo(fileReference);
 		}
 
 		#endregion

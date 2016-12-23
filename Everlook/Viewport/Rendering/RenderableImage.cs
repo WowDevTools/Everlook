@@ -105,7 +105,7 @@ namespace Everlook.Viewport.Rendering
 				OpenTK.Quaternion.FromAxisAngle(Vector3.UnitX, 0.0f),
 				new Vector3(1.0f, 1.0f, 1.0f));
 
-			IsInitialized = true;
+			this.IsInitialized = true;
 		}
 
 		/// <summary>
@@ -121,12 +121,12 @@ namespace Everlook.Viewport.Rendering
 		/// <returns></returns>
 		protected int LoadCachedShader()
 		{
-			if (Cache.HasCachedShader(EverlookShader.Plain2D))
+			if (this.Cache.HasCachedShader(EverlookShader.Plain2D))
 			{
-				return Cache.GetCachedShader(EverlookShader.Plain2D);
+				return this.Cache.GetCachedShader(EverlookShader.Plain2D);
 			}
 
-			return Cache.CreateCachedShader(EverlookShader.Plain2D);
+			return this.Cache.CreateCachedShader(EverlookShader.Plain2D);
 		}
 
 		/// <summary>
@@ -134,7 +134,7 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
 		{
-			if (!IsInitialized)
+			if (!this.IsInitialized)
 			{
 				return;
 			}
@@ -172,7 +172,7 @@ namespace Everlook.Viewport.Rendering
 			GL.Uniform1(textureVariableHandle, 1, ref textureUnit);
 
 			// Set the model view matrix
-			Matrix4 modelViewProjection = ImageTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
+			Matrix4 modelViewProjection = this.ImageTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
 			// Send the model matrix to the shader
 			int projectionShaderVariableHandle = GL.GetUniformLocation(this.ImageShaderID, "ModelViewProjection");

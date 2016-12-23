@@ -73,11 +73,11 @@ namespace Everlook.Viewport.Camera
 		{
 			get
 			{
-				return horizontalViewAngle;
+				return this.horizontalViewAngle;
 			}
 			set
 			{
-				horizontalViewAngle = value;
+				this.horizontalViewAngle = value;
 				RecalculateVectors();
 			}
 		}
@@ -92,11 +92,11 @@ namespace Everlook.Viewport.Camera
 		{
 			get
 			{
-				return verticalViewAngle;
+				return this.verticalViewAngle;
 			}
 			set
 			{
-				verticalViewAngle = value;
+				this.verticalViewAngle = value;
 				RecalculateVectors();
 			}
 		}
@@ -151,11 +151,11 @@ namespace Everlook.Viewport.Camera
 				(float) (Math.Cos(this.VerticalViewAngle) * Math.Cos(this.HorizontalViewAngle)));
 
 			this.RightVector = new Vector3(
-				(float) Math.Sin(HorizontalViewAngle - MathHelper.PiOver2),
+				(float) Math.Sin(this.HorizontalViewAngle - MathHelper.PiOver2),
 				0,
-				(float) Math.Cos(HorizontalViewAngle - MathHelper.PiOver2));
+				(float) Math.Cos(this.HorizontalViewAngle - MathHelper.PiOver2));
 
-			this.UpVector = Vector3.Cross(RightVector, LookDirectionVector);
+			this.UpVector = Vector3.Cross(this.RightVector, this.LookDirectionVector);
 		}
 
 		private void RecalculateVectors()
@@ -184,9 +184,7 @@ namespace Everlook.Viewport.Camera
 			float aspectRatio = (float) viewportWidth / (float) viewportHeight;
 
 			this.Frustum = BoundingFrustum.FromCamera(
-				this.Position,
-				LookDirectionVector,
-				UpVector,
+				this.Position, this.LookDirectionVector, this.UpVector,
 				MathHelper.DegreesToRadians(DefaultFieldOfView),
 				DefaultNearClippingDistance,
 				DefaultFarClippingDistance,
@@ -225,10 +223,7 @@ namespace Everlook.Viewport.Camera
 		/// <returns>A <see cref="Matrix4"/> view matrix.</returns>
 		public Matrix4 GetViewMatrix()
 		{
-			return Matrix4.LookAt(
-				Position,
-				Position + LookDirectionVector,
-				UpVector
+			return Matrix4.LookAt(this.Position, this.Position + this.LookDirectionVector, this.UpVector
 			);
 		}
 	}

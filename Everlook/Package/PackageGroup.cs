@@ -76,7 +76,7 @@ namespace Everlook.Package
 			this.GroupName = inGroupName;
 
 			// Grab all packages in the game directory
-			List<string> packagePaths = Directory.EnumerateFiles(RootPackageDirectory, "*.*", SearchOption.AllDirectories)
+			List<string> packagePaths = Directory.EnumerateFiles(this.RootPackageDirectory, "*.*", SearchOption.AllDirectories)
 				.OrderBy(a => a)
 				.Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ"))
 				.ToList();
@@ -93,7 +93,7 @@ namespace Everlook.Package
 				}
 			}
 
-			foreach (PackageInteractionHandler package in Packages)
+			foreach (PackageInteractionHandler package in this.Packages)
 			{
 				if (BundledListfiles.Instance.HasListfileForPackage(package))
 				{
@@ -119,14 +119,14 @@ namespace Everlook.Package
 		/// overriding packages.
 		/// </summary>
 		/// <returns>The reference info.</returns>
-		/// <param name="fileReference">File reference.</param>
-		public MPQFileInfo GetReferenceInfo(ItemReference fileReference)
+		/// <param name="fileReference">Reference reference.</param>
+		public MPQFileInfo GetReferenceInfo(FileReference fileReference)
 		{
-			for (int i = Packages.Count - 1; i >= 0; --i)
+			for (int i = this.Packages.Count - 1; i >= 0; --i)
 			{
-				if (Packages[i].ContainsFile(fileReference))
+				if (this.Packages[i].ContainsFile(fileReference))
 				{
-					return Packages[i].GetReferenceInfo(fileReference);
+					return this.Packages[i].GetReferenceInfo(fileReference);
 				}
 			}
 			return null;
@@ -135,16 +135,16 @@ namespace Everlook.Package
 
 		/// <summary>
 		/// Gets the file info for the specified reference in its specific package. If the file does not exist in
-		/// the package referenced in <paramref name="itemReference"/>, this method returned will return null.
+		/// the package referenced in <paramref name="fileReference"/>, this method returned will return null.
 		/// </summary>
 		/// <returns>The reference info.</returns>
-		/// <param name="itemReference">Item reference.</param>
-		public MPQFileInfo GetUnversionedReferenceInfo(ItemReference itemReference)
+		/// <param name="fileReference">Reference reference.</param>
+		public MPQFileInfo GetUnversionedReferenceInfo(FileReference fileReference)
 		{
-			PackageInteractionHandler package = GetPackageByName(itemReference.PackageName);
+			PackageInteractionHandler package = GetPackageByName(fileReference.PackageName);
 			if (package != null)
 			{
-				return package.GetReferenceInfo(itemReference);
+				return package.GetReferenceInfo(fileReference);
 			}
 
 			return null;
@@ -155,8 +155,8 @@ namespace Everlook.Package
 		/// the package referenced in <paramref name="fileReference"/>, this method returned will return null.
 		/// </summary>
 		/// <returns>The unversioned file or null.</returns>
-		/// <param name="fileReference">File reference.</param>
-		public byte[] ExtractUnversionedReference(ItemReference fileReference)
+		/// <param name="fileReference">Reference reference.</param>
+		public byte[] ExtractUnversionedReference(FileReference fileReference)
 		{
 			PackageInteractionHandler package = GetPackageByName(fileReference.PackageName);
 			if (package != null)
@@ -175,14 +175,14 @@ namespace Everlook.Package
 		/// If the file does not exist in any package, this method will return null.
 		/// </summary>
 		/// <returns>The file or null.</returns>
-		/// <param name="fileReference">File reference.</param>
-		public byte[] ExtractReference(ItemReference fileReference)
+		/// <param name="fileReference">Reference reference.</param>
+		public byte[] ExtractReference(FileReference fileReference)
 		{
-			for (int i = Packages.Count - 1; i >= 0; --i)
+			for (int i = this.Packages.Count - 1; i >= 0; --i)
 			{
-				if (Packages[i].ContainsFile(fileReference))
+				if (this.Packages[i].ContainsFile(fileReference))
 				{
-					return Packages[i].ExtractReference(fileReference);
+					return this.Packages[i].ExtractReference(fileReference);
 				}
 			}
 			return null;
@@ -192,12 +192,12 @@ namespace Everlook.Package
 		/// Checks whether or not this package group contains the specified item reference.
 		/// </summary>
 		/// <returns><c>true</c>, if reference exist was doesed, <c>false</c> otherwise.</returns>
-		/// <param name="itemReference">Item reference.</param>
-		public bool DoesReferenceExist(ItemReference itemReference)
+		/// <param name="fileReference">Reference reference.</param>
+		public bool DoesReferenceExist(FileReference fileReference)
 		{
-			for (int i = Packages.Count - 1; i >= 0; --i)
+			for (int i = this.Packages.Count - 1; i >= 0; --i)
 			{
-				if (Packages[i].ContainsFile(itemReference))
+				if (this.Packages[i].ContainsFile(fileReference))
 				{
 					return true;
 				}
@@ -213,7 +213,7 @@ namespace Everlook.Package
 		/// <param name="packageName">Package name.</param>
 		private PackageInteractionHandler GetPackageByName(string packageName)
 		{
-			foreach (PackageInteractionHandler package in Packages)
+			foreach (PackageInteractionHandler package in this.Packages)
 			{
 				if (package.PackageName == packageName)
 				{
@@ -230,11 +230,11 @@ namespace Everlook.Package
 		/// Extracts the file.
 		/// </summary>
 		/// <returns>The file.</returns>
-		/// <param name="filePath">File path.</param>
+		/// <param name="filePath">Reference path.</param>
 		public byte[] ExtractFile(string filePath)
 		{
-			ItemReference itemReference = new ItemReference(this, null, "", filePath);
-			return this.ExtractReference(itemReference);
+			FileReference fileReference = new FileReference(this, null, "", filePath);
+			return ExtractReference(fileReference);
 		}
 
 		/// <summary>
@@ -244,7 +244,7 @@ namespace Everlook.Package
 		/// <c>false</c>
 		public bool HasFileList()
 		{
-			return PackageListfiles.Count > 0;
+			return this.PackageListfiles.Count > 0;
 		}
 
 		/// <summary>
@@ -258,7 +258,7 @@ namespace Everlook.Package
 
 			List<List<string>> listFiles = new List<List<string>>();
 
-			foreach (KeyValuePair<string, List<string>> listPair in PackageListfiles)
+			foreach (KeyValuePair<string, List<string>> listPair in this.PackageListfiles)
 			{
 				listFiles.Add(listPair.Value);
 			}
@@ -271,22 +271,22 @@ namespace Everlook.Package
 		/// </summary>
 		/// <returns>true</returns>
 		/// <c>false</c>
-		/// <param name="filePath">File path.</param>
+		/// <param name="filePath">Reference path.</param>
 		public bool ContainsFile(string filePath)
 		{
-			ItemReference itemReference = new ItemReference(this, null, "", filePath);
-			return this.DoesReferenceExist(itemReference);
+			FileReference fileReference = new FileReference(this, null, "", filePath);
+			return DoesReferenceExist(fileReference);
 		}
 
 		/// <summary>
 		/// Gets the file info of the provided path.
 		/// </summary>
 		/// <returns>The file info, or null if the file doesn't exist in the archive.</returns>
-		/// <param name="filePath">File path.</param>
+		/// <param name="filePath">Reference path.</param>
 		public MPQFileInfo GetFileInfo(string filePath)
 		{
-			ItemReference itemReference = new ItemReference(this, null, "", filePath);
-			return this.GetReferenceInfo(itemReference);
+			FileReference fileReference = new FileReference(this, null, "", filePath);
+			return GetReferenceInfo(fileReference);
 		}
 
 		/// <summary>
@@ -338,7 +338,7 @@ namespace Everlook.Package
 		/// so the garbage collector can reclaim the memory that the <see cref="Everlook.Package.PackageGroup"/> was occupying.</remarks>
 		public void Dispose()
 		{
-			foreach (PackageInteractionHandler package in Packages)
+			foreach (PackageInteractionHandler package in this.Packages)
 			{
 				package.Dispose();
 			}

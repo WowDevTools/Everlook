@@ -39,16 +39,16 @@ namespace Everlook.UI
 		/// <summary>
 		/// The reference to the file in the package that is to be exported.
 		/// </summary>
-		private readonly ItemReference ExportTarget;
+		private readonly FileReference ExportTarget;
 
 		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
 
-		private readonly Dictionary<string, ItemReference> ReferenceMapping = new Dictionary<string, ItemReference>();
+		private readonly Dictionary<string, FileReference> ReferenceMapping = new Dictionary<string, FileReference>();
 
 		/// <summary>
 		/// Creates an instance of the Image Export dialog, using the glade XML UI file.
 		/// </summary>
-		public static EverlookDirectoryExportDialog Create(ItemReference inExportTarget)
+		public static EverlookDirectoryExportDialog Create(FileReference inExportTarget)
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookDirectoryExport.glade", null);
 			return new EverlookDirectoryExportDialog(builder, builder.GetObject("EverlookDirectoryExportDialog").Handle,
@@ -61,7 +61,7 @@ namespace Everlook.UI
 		/// <param name="builder">Builder.</param>
 		/// <param name="handle">Handle.</param>
 		/// <param name="inExportTarget">In export target.</param>
-		private EverlookDirectoryExportDialog(Builder builder, IntPtr handle, ItemReference inExportTarget)
+		private EverlookDirectoryExportDialog(Builder builder, IntPtr handle, FileReference inExportTarget)
 			: base(handle)
 		{
 			builder.Autoconnect(this);
@@ -71,26 +71,26 @@ namespace Everlook.UI
 			/*
 				 UI Setup
 			*/
-			ExportItemToggleRenderer.Toggled += OnExportItemToggleClicked;
-			ItemListingTreeView.ButtonPressEvent += OnItemListingButtonPressed;
-			SelectAllItem.Activated += OnSelectAllItemActivated;
-			SelectNoneItem.Activated += OnSelectNoneItemActivated;
+			this.ExportItemToggleRenderer.Toggled += OnExportItemToggleClicked;
+			this.ItemListingTreeView.ButtonPressEvent += OnItemListingButtonPressed;
+			this.SelectAllItem.Activated += OnSelectAllItemActivated;
+			this.SelectNoneItem.Activated += OnSelectNoneItemActivated;
 
 			LoadInformation();
 		}
 
 		private void LoadInformation()
 		{
-			this.Title = "Export Directory | " + ExportTarget.GetReferencedItemName();
-			ExportDirectoryFileChooserButton.SetFilename(Config.GetDefaultExportDirectory());
+			this.Title = "Export Directory | " + this.ExportTarget.GetReferencedItemName();
+			this.ExportDirectoryFileChooserButton.SetFilename(this.Config.GetDefaultExportDirectory());
 
 			// Load all references
-			foreach (ItemReference childReference in ExportTarget.ChildReferences)
+			foreach (FileReference childReference in this.ExportTarget.ChildReferences)
 			{
 				// TODO: Support recursive folder export
 				if (childReference.IsFile)
 				{
-					ItemExportListStore.AppendValues(true, childReference.GetReferencedItemName());
+					this.ItemExportListStore.AppendValues(true, childReference.GetReferencedItemName());
 
 					if (!this.ReferenceMapping.ContainsKey(childReference.GetReferencedItemName()))
 					{
@@ -105,29 +105,28 @@ namespace Everlook.UI
 		/// </summary>
 		public void RunExport()
 		{
-			ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
+			this.ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
 			{
-				bool bShouldExport = (bool)ItemExportListStore.GetValue(iter, 0);
+				bool bShouldExport = (bool) this.ItemExportListStore.GetValue(iter, 0);
 
 				if (bShouldExport)
 				{
-					ItemReference referenceToExport = this.ReferenceMapping[(string)ItemExportListStore.GetValue(iter, 1)];
+					FileReference referenceToExport = this.ReferenceMapping[(string) this.ItemExportListStore.GetValue(iter, 1)];
 
 					string exportPath = "";
-					if (Config.GetShouldKeepFileDirectoryStructure())
+					if (this.Config.GetShouldKeepFileDirectoryStructure())
 					{
-						string parentDirectoryOfFile =
-							ExportTarget.ItemPath.ConvertPathSeparatorsToCurrentNativeSeparator();
+						string parentDirectoryOfFile = this.ExportTarget.ItemPath.ConvertPathSeparatorsToCurrentNativeSeparator();
 
 						exportPath =
-							$"{ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{parentDirectoryOfFile}{System.IO.Path.DirectorySeparatorChar}{referenceToExport.GetReferencedItemName()}";
+							$"{this.ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{parentDirectoryOfFile}{System.IO.Path.DirectorySeparatorChar}{referenceToExport.GetReferencedItemName()}";
 					}
 					else
 					{
-						exportPath = $"{ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{referenceToExport.GetReferencedItemName()}";
+						exportPath = $"{this.ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{referenceToExport.GetReferencedItemName()}";
 					}
 
-					System.IO.Directory.CreateDirectory(System.IO.Directory.GetParent(exportPath).FullName);
+					Directory.CreateDirectory(Directory.GetParent(exportPath).FullName);
 
 					byte[] fileData = referenceToExport.Extract();
 					if (fileData != null)
@@ -150,8 +149,8 @@ namespace Everlook.UI
 		{
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
 			{
-				ExportPopupMenu.ShowAll();
-				ExportPopupMenu.Popup();
+				this.ExportPopupMenu.ShowAll();
+				this.ExportPopupMenu.Popup();
 			}
 		}
 
@@ -162,9 +161,9 @@ namespace Everlook.UI
 		/// <param name="e">E.</param>
 		private void OnSelectAllItemActivated(object sender, EventArgs e)
 		{
-			ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
+			this.ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
 			{
-				ItemExportListStore.SetValue(iter, 0, true);
+				this.ItemExportListStore.SetValue(iter, 0, true);
 				return false;
 			});
 		}
@@ -176,9 +175,9 @@ namespace Everlook.UI
 		/// <param name="e">E.</param>
 		private void OnSelectNoneItemActivated(object sender, EventArgs e)
 		{
-			ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
+			this.ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
 			{
-				ItemExportListStore.SetValue(iter, 0, false);
+				this.ItemExportListStore.SetValue(iter, 0, false);
 				return false;
 			});
 		}
@@ -191,11 +190,11 @@ namespace Everlook.UI
 		private void OnExportItemToggleClicked(object sender, ToggledArgs e)
 		{
 			TreeIter Iter;
-			ItemExportListStore.GetIterFromString(out Iter, e.Path);
+			this.ItemExportListStore.GetIterFromString(out Iter, e.Path);
 
-			bool currentValue = (bool)ItemExportListStore.GetValue(Iter, 0);
+			bool currentValue = (bool) this.ItemExportListStore.GetValue(Iter, 0);
 
-			ItemExportListStore.SetValue(Iter, 0, !currentValue);
+			this.ItemExportListStore.SetValue(Iter, 0, !currentValue);
 		}
 
 		/// <summary>

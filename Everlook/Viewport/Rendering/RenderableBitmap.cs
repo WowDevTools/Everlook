@@ -58,12 +58,12 @@ namespace Everlook.Viewport.Rendering
 		/// <returns></returns>
 		protected override int LoadCachedTexture()
 		{
-			if (Cache.HasCachedTextureForPath(this.TexturePath))
+			if (this.Cache.HasCachedTextureForPath(this.TexturePath))
 			{
-				return Cache.GetCachedTexture(this.TexturePath);
+				return this.Cache.GetCachedTexture(this.TexturePath);
 			}
 
-			return Cache.CreateCachedTexture(this.Image, this.TexturePath);
+			return this.Cache.CreateCachedTexture(this.Image, this.TexturePath);
 		}
 
 		/// <summary>
@@ -72,7 +72,7 @@ namespace Everlook.Viewport.Rendering
 		/// <returns></returns>
 		protected override Resolution GetResolution()
 		{
-			return new Resolution((uint) Image.Width, (uint) Image.Height);
+			return new Resolution((uint) this.Image.Width, (uint) this.Image.Height);
 		}
 
 		/// <summary>
@@ -87,7 +87,7 @@ namespace Everlook.Viewport.Rendering
 		{
 			base.Dispose();
 
-			Image.Dispose();
+			this.Image.Dispose();
 		}
 
 		/// <summary>
@@ -96,7 +96,7 @@ namespace Everlook.Viewport.Rendering
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()
 		{
-			return (IsStatic.GetHashCode() + Image.GetHashCode()).GetHashCode();
+			return (this.IsStatic.GetHashCode() + this.Image.GetHashCode()).GetHashCode();
 		}
 	}
 }

@@ -119,6 +119,11 @@ namespace Everlook.Viewport
 		*/
 
 		/// <summary>
+		/// Frame timing stopwatch, used to calculate deltaTime.
+		/// </summary>
+		private readonly Stopwatch frameWatch = new Stopwatch();
+
+		/// <summary>
 		/// Static reference to the configuration handler.
 		/// </summary>
 		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
@@ -162,10 +167,10 @@ namespace Everlook.Viewport
 			int widgetHeight = this.ViewportWidget.AllocatedHeight;
 			GL.Viewport(0, 0, widgetWidth, widgetHeight);
 			GL.ClearColor(
-				(float)Config.GetViewportBackgroundColour().Red,
-				(float)Config.GetViewportBackgroundColour().Green,
-				(float)Config.GetViewportBackgroundColour().Blue,
-				(float)Config.GetViewportBackgroundColour().Alpha);
+				(float) this.Config.GetViewportBackgroundColour().Red,
+				(float) this.Config.GetViewportBackgroundColour().Green,
+				(float) this.Config.GetViewportBackgroundColour().Blue,
+				(float) this.Config.GetViewportBackgroundColour().Alpha);
 
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
@@ -177,9 +182,10 @@ namespace Everlook.Viewport
 		/// </summary>
 		public void RenderFrame()
 		{
-			lock (RenderTargetLock)
+			lock (this.RenderTargetLock)
 			{
-				Stopwatch sw = Stopwatch.StartNew();
+				frameWatch.Reset();
+				frameWatch.Start();
 
 				// Make sure the viewport is accurate for the current widget size on screen
 				int widgetWidth = this.ViewportWidget.AllocatedWidth;
@@ -187,30 +193,30 @@ namespace Everlook.Viewport
 				GL.Viewport(0, 0, widgetWidth, widgetHeight);
 				GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-				if (RenderTarget != null)
+				if (this.RenderTarget != null)
 				{
 
 					// Calculate the current relative movement of the camera
-					if (WantsToMove)
+					if (this.WantsToMove)
 					{
 						int mouseX = Mouse.GetCursorState().X;
 						int mouseY = Mouse.GetCursorState().Y;
 
-						float deltaMouseX = InitialMouseX - mouseX;
-						float deltaMouseY = InitialMouseY - mouseY;
+						float deltaMouseX = this.InitialMouseX - mouseX;
+						float deltaMouseY = this.InitialMouseY - mouseY;
 
 						this.Movement.CalculateMovement(deltaMouseX, deltaMouseY, this.deltaTime);
 
 						// Return the mouse to its original position
-						Mouse.SetPosition(InitialMouseX, InitialMouseY);
+						Mouse.SetPosition(this.InitialMouseX, this.InitialMouseY);
 					}
 
 					// Render the current object
 					// Tick the actor, advancing any time-dependent behaviour
-					ITickingActor tickingRenderable = RenderTarget as ITickingActor;
+					ITickingActor tickingRenderable = this.RenderTarget as ITickingActor;
 					if (tickingRenderable != null)
 					{
-						tickingRenderable.Tick(deltaTime);
+						tickingRenderable.Tick(this.deltaTime);
 					}
 
 					// Then render the visual component
@@ -218,14 +224,14 @@ namespace Everlook.Viewport
 					Matrix4 projection = this.Camera.GetProjectionMatrix(this.RenderTarget.Projection, widgetWidth, widgetHeight);
 					this.Camera.RecalculateFrustrum(widgetWidth, widgetHeight);
 
-					RenderTarget.Render(view, projection, this.Camera);
+					this.RenderTarget.Render(view, projection, this.Camera);
 
 					GraphicsContext.CurrentContext.SwapBuffers();
 
 				}
 
-				sw.Stop();
-				deltaTime = (float) sw.Elapsed.TotalMilliseconds / 1000;
+				frameWatch.Stop();
+				this.deltaTime = (float) frameWatch.Elapsed.TotalMilliseconds / 1000;
 			}
 		}
 
@@ -245,7 +251,7 @@ namespace Everlook.Viewport
 		/// <param name="inRenderable">inRenderable.</param>
 		public void SetRenderTarget(IRenderable inRenderable)
 		{
-			lock (RenderTargetLock)
+			lock (this.RenderTargetLock)
 			{
 				// Dispose of the old render target
 				if (this.RenderTarget != null)

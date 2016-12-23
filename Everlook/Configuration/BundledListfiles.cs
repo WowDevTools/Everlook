@@ -62,7 +62,7 @@ namespace Everlook.Configuration
 				return false;
 			}
 
-			if (OptimizedLists.ContainsKey(inPackageHandler.PackageName))
+			if (this.OptimizedLists.ContainsKey(inPackageHandler.PackageName))
 			{
 				// The package listfile container has already been loaded.
 				// Thus, check if the container has a listfile for this package
@@ -76,7 +76,7 @@ namespace Everlook.Configuration
 					OptimizedListContainer bundledListfile = new OptimizedListContainer(File.ReadAllBytes(bundledListfilePath));
 
 					// Keep the listfile container around, in case we need it.
-					OptimizedLists.Add(bundledListfile.PackageName, bundledListfile);
+					this.OptimizedLists.Add(bundledListfile.PackageName, bundledListfile);
 
 					if (bundledListfile.ContainsPackageListfile(inPackageHandler.GetHashTableHash()))
 					{
@@ -106,9 +106,9 @@ namespace Everlook.Configuration
 		/// <param name="packageTableHash">Package table hash.</param>
 		public bool HasListfileForPackage(string packageName, byte[] packageTableHash)
 		{
-			if (OptimizedLists.ContainsKey(packageName))
+			if (this.OptimizedLists.ContainsKey(packageName))
 			{
-				return OptimizedLists[packageName].ContainsPackageListfile(packageTableHash);
+				return this.OptimizedLists[packageName].ContainsPackageListfile(packageTableHash);
 			}
 			else
 			{
@@ -134,7 +134,7 @@ namespace Everlook.Configuration
 		/// <param name="packageTableHash">Package table hash.</param>
 		public List<string> GetBundledListfile(string packageName, byte[] packageTableHash)
 		{
-			return OptimizedLists[packageName].OptimizedLists[packageTableHash].OptimizedPaths;
+			return this.OptimizedLists[packageName].OptimizedLists[packageTableHash].OptimizedPaths;
 		}
 
 		/// <summary>

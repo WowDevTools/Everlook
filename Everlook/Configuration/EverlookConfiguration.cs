@@ -49,7 +49,7 @@ namespace Everlook.Configuration
 		{
 			FileIniDataParser parser = new FileIniDataParser();
 
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				if (!File.Exists(GetConfigurationFilePath()))
 				{
@@ -122,7 +122,7 @@ namespace Everlook.Configuration
 
 					data["Privacy"].AddKey("AllowSendAnonymousStats", "true");
 
-					lock (WriteLock)
+					lock (this.WriteLock)
 					{
 						WriteConfig(parser, data);
 					}
@@ -151,7 +151,7 @@ namespace Everlook.Configuration
 						data["General"].RemoveKey("GameDirectory");
 					}
 
-					lock (WriteLock)
+					lock (this.WriteLock)
 					{
 						WriteConfig(parser, data);
 					}
@@ -209,7 +209,7 @@ namespace Everlook.Configuration
 		/// <returns>The viewport background colour.</returns>
 		public RGBA GetViewportBackgroundColour()
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
@@ -233,14 +233,14 @@ namespace Everlook.Configuration
 		/// <param name="colour">Colour.</param>
 		public void SetViewportBackgroundColour(RGBA colour)
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				data["General"]["ViewportBackgroundColour"] = colour.ToString();
 
-				lock (WriteLock)
+				lock (this.WriteLock)
 				{
 					WriteConfig(parser, data);
 				}
@@ -253,7 +253,7 @@ namespace Everlook.Configuration
 		/// <returns>The default export directory.</returns>
 		public string GetDefaultExportDirectory()
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
@@ -274,14 +274,14 @@ namespace Everlook.Configuration
 		/// <param name="exportDirectory">Export directory.</param>
 		public void SetDefaultExportDirectory(string exportDirectory)
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				data["Export"]["DefaultExportDirectory"] = exportDirectory;
 
-				lock (WriteLock)
+				lock (this.WriteLock)
 				{
 					WriteConfig(parser, data);
 				}
@@ -294,7 +294,7 @@ namespace Everlook.Configuration
 		/// <returns>The default model format.</returns>
 		public ModelFormat GetDefaultModelFormat()
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
@@ -317,14 +317,14 @@ namespace Everlook.Configuration
 		/// <param name="modelFormat">Model format.</param>
 		public void SetDefaultModelFormat(ModelFormat modelFormat)
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				data["Export"]["DefaultExportModelFormat"] = ((int)modelFormat).ToString();
 
-				lock (WriteLock)
+				lock (this.WriteLock)
 				{
 					WriteConfig(parser, data);
 				}
@@ -337,7 +337,7 @@ namespace Everlook.Configuration
 		/// <returns>The default image format.</returns>
 		public ImageFormat GetDefaultImageFormat()
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
@@ -360,14 +360,14 @@ namespace Everlook.Configuration
 		/// <param name="imageFormat">Image format.</param>
 		public void SetDefaultImageFormat(ImageFormat imageFormat)
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				data["Export"]["DefaultExportImageFormat"] = ((int)imageFormat).ToString();
 
-				lock (WriteLock)
+				lock (this.WriteLock)
 				{
 					WriteConfig(parser, data);
 				}
@@ -380,7 +380,7 @@ namespace Everlook.Configuration
 		/// <returns>The default audio format.</returns>
 		public AudioFormat GetDefaultAudioFormat()
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
@@ -403,14 +403,14 @@ namespace Everlook.Configuration
 		/// <param name="audioFormat">Audio format.</param>
 		public void SetDefaultAudioFormat(AudioFormat audioFormat)
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				data["Export"]["DefaultExportAudioFormat"] = ((int)audioFormat).ToString();
 
-				lock (WriteLock)
+				lock (this.WriteLock)
 				{
 					WriteConfig(parser, data);
 				}
@@ -423,7 +423,7 @@ namespace Everlook.Configuration
 		/// <returns><c>true</c>, if should keep file directory structure was gotten, <c>false</c> otherwise.</returns>
 		public bool GetShouldKeepFileDirectoryStructure()
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
@@ -446,14 +446,14 @@ namespace Everlook.Configuration
 		/// <param name="keepStructure">If set to <c>true</c> keep structure.</param>
 		public void SetKeepFileDirectoryStructure(bool keepStructure)
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				data["Export"]["KeepFileDirectoryStructure"] = keepStructure.ToString().ToLower();
 
-				lock (WriteLock)
+				lock (this.WriteLock)
 				{
 					WriteConfig(parser, data);
 				}
@@ -466,7 +466,7 @@ namespace Everlook.Configuration
 		/// <returns><c>true</c>, if sending anonymous stats is allowed, <c>false</c> otherwise.</returns>
 		public bool GetAllowSendAnonymousStats()
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
@@ -489,14 +489,14 @@ namespace Everlook.Configuration
 		/// <param name="allowSendAnonymousStats">If set to <c>true</c> allow sending of anonymous stats.</param>
 		public void SetAllowSendAnonymousStats(bool allowSendAnonymousStats)
 		{
-			lock (ReadLock)
+			lock (this.ReadLock)
 			{
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
 				data["Privacy"]["AllowSendAnonymousStats"] = allowSendAnonymousStats.ToString().ToLower();
 
-				lock (WriteLock)
+				lock (this.WriteLock)
 				{
 					WriteConfig(parser, data);
 				}

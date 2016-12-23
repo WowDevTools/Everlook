@@ -1,5 +1,5 @@
 ﻿//
-//  VirtualItemReference.cs
+//  VirtualFileReference.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -32,14 +32,14 @@ namespace Everlook.Explorer
 	/// which is its primary target, and a number of other item references (0 or more) that are overridden by this
 	/// hard reference.
 	/// </summary>
-	public class VirtualItemReference : ItemReference
+	public class VirtualFileReference : FileReference
 	{
 		/// <summary>
 		/// Gets the hard reference. The hard reference is the primary underlying package-specific
 		/// reference to which this virtual reference points.
 		/// </summary>
 		/// <value>The hard reference.</value>
-		public ItemReference HardReference
+		public FileReference HardReference
 		{
 			get;
 		}
@@ -49,7 +49,7 @@ namespace Everlook.Explorer
 		/// the primary hard reference. See: (<see cref="HardReference"/>)
 		/// </summary>
 		/// <value>The overridden hard references.</value>
-		public List<ItemReference> OverriddenHardReferences
+		public List<FileReference> OverriddenHardReferences
 		{
 			get;
 			private set;
@@ -106,13 +106,13 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Explorer.VirtualItemReference"/> class.
+		/// Initializes a new instance of the <see cref="VirtualFileReference"/> class.
 		/// </summary>
 		/// <param name="inHardReference">The primary hard reference this virtual reference points to.</param>
 		/// <param name="inPackageGroup">The package group this reference is a part of.</param>
-		public VirtualItemReference(PackageGroup inPackageGroup, ItemReference inHardReference)
+		public VirtualFileReference(PackageGroup inPackageGroup, FileReference inHardReference)
 		{
-			this.OverriddenHardReferences = new List<ItemReference>();
+			this.OverriddenHardReferences = new List<FileReference>();
 
 			this.PackageGroup = inPackageGroup;
 			this.HardReference = inHardReference;
@@ -120,13 +120,13 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Explorer.VirtualItemReference"/> class,
-		/// where the reference has a parent <see cref="Everlook.Explorer.VirtualItemReference"/>.
+		/// Initializes a new instance of the <see cref="VirtualFileReference"/> class,
+		/// where the reference has a parent <see cref="VirtualFileReference"/>.
 		/// </summary>
 		/// <param name="parentVirtualReference">Parent virtual reference.</param>
 		/// <param name="inPackageGroup">In group.</param>
 		/// <param name="inHardReference">In hard reference.</param>
-		public VirtualItemReference(VirtualItemReference parentVirtualReference, PackageGroup inPackageGroup, ItemReference inHardReference)
+		public VirtualFileReference(VirtualFileReference parentVirtualReference, PackageGroup inPackageGroup, FileReference inHardReference)
 			: this(inPackageGroup, inHardReference)
 		{
 			this.ParentReference = parentVirtualReference;
@@ -153,7 +153,7 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Serves as a hash function for a <see cref="Everlook.Explorer.VirtualItemReference"/> object.
+		/// Serves as a hash function for a <see cref="VirtualFileReference"/> object.
 		/// </summary>
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()

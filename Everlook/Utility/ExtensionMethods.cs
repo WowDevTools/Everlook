@@ -71,13 +71,13 @@ namespace Everlook.Utility
 		}
 
 		/// <summary>
-		/// Gets the icon best representing this <see cref="ItemReference"/>, based on its file extension.
+		/// Gets the icon best representing this <see cref="FileReference"/>, based on its file extension.
 		/// </summary>
-		/// <param name="itemReference">The item reference for which the icon should be retrieved.</param>
+		/// <param name="fileReference">The item reference for which the icon should be retrieved.</param>
 		/// <returns></returns>
-		public static Pixbuf GetIcon(this ItemReference itemReference)
+		public static Pixbuf GetIcon(this FileReference fileReference)
 		{
-			return GetIconForFiletype(itemReference.ItemPath);
+			return GetIconForFiletype(fileReference.ItemPath);
 		}
 
 		/// <summary>
@@ -85,7 +85,7 @@ namespace Everlook.Utility
 		/// usually the mimetype.
 		/// </summary>
 		/// <returns>The icon for the filetype.</returns>
-		/// <param name="file">File.</param>
+		/// <param name="file">Reference.</param>
 		public static Pixbuf GetIconForFiletype(string file)
 		{
 			Pixbuf icon = IconTheme.Default.LoadIcon(Stock.File, 16, 0);

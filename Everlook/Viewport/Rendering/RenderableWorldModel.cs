@@ -123,13 +123,13 @@ namespace Everlook.Viewport.Rendering
 		public void Initialize()
 		{
 			// Load and cache a simple, unlit shader
-			if (Cache.HasCachedShader(EverlookShader.UnlitWorldModel))
+			if (this.Cache.HasCachedShader(EverlookShader.UnlitWorldModel))
 			{
-				this.SimpleShaderID = Cache.GetCachedShader(EverlookShader.UnlitWorldModel);
+				this.SimpleShaderID = this.Cache.GetCachedShader(EverlookShader.UnlitWorldModel);
 			}
 			else
 			{
-				this.SimpleShaderID = Cache.CreateCachedShader(EverlookShader.UnlitWorldModel);
+				this.SimpleShaderID = this.Cache.CreateCachedShader(EverlookShader.UnlitWorldModel);
 			}
 
 			// TODO: Load and cache doodads in their respective sets
@@ -246,7 +246,7 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
 		{
-			if (!IsInitialized)
+			if (!this.IsInitialized)
 			{
 				return;
 			}
@@ -325,7 +325,7 @@ namespace Everlook.Viewport.Rendering
 				ModelMaterial modelMaterial = this.Model.GetMaterial(renderBatch.MaterialIndex);
 				EnableMaterial(modelMaterial);
 
-				int textureID = Cache.GetCachedTexture(modelMaterial.Texture0);
+				int textureID = this.Cache.GetCachedTexture(modelMaterial.Texture0);
 
 				// Set the texture ID as a uniform sampler in unit 0
 				GL.ActiveTexture(TextureUnit.Texture0);
@@ -407,17 +407,17 @@ namespace Everlook.Viewport.Rendering
 
 		private void CacheTexture(string texturePath, TextureWrapMode textureWrapMode = TextureWrapMode.Repeat)
 		{
-			if (Cache.HasCachedTextureForPath(texturePath))
+			if (this.Cache.HasCachedTextureForPath(texturePath))
 			{
 				if (!this.textureLookup.ContainsKey(texturePath))
 				{
-					this.textureLookup.Add(texturePath, Cache.GetCachedTexture(texturePath));
+					this.textureLookup.Add(texturePath, this.Cache.GetCachedTexture(texturePath));
 				}
 			}
 			else
 			{
-				BLP texture = new BLP(ModelPackageGroup.ExtractFile(texturePath));
-				this.textureLookup.Add(texturePath, Cache.CreateCachedTexture(texture, texturePath, textureWrapMode));
+				BLP texture = new BLP(this.ModelPackageGroup.ExtractFile(texturePath));
+				this.textureLookup.Add(texturePath, this.Cache.CreateCachedTexture(texture, texturePath, textureWrapMode));
 			}
 		}
 
@@ -431,7 +431,7 @@ namespace Everlook.Viewport.Rendering
 		/// <see cref="RenderableWorldModel"/> was occupying.</remarks>
 		public void Dispose()
 		{
-			Model.Dispose();
+			this.Model.Dispose();
 
 			foreach (var vertexBuffer in this.vertexBufferLookup)
 			{
@@ -464,7 +464,7 @@ namespace Everlook.Viewport.Rendering
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()
 		{
-			return (IsStatic.GetHashCode() + Model.GetHashCode()).GetHashCode();
+			return (this.IsStatic.GetHashCode() + this.Model.GetHashCode()).GetHashCode();
 		}
 	}
 }

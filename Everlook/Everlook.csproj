@@ -64,9 +64,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Explorer\ItemReference.cs" />
+    <Compile Include="Explorer\FileReference.cs" />
     <Compile Include="Explorer\ReferenceState.cs" />
-    <Compile Include="Explorer\VirtualItemReference.cs" />
+    <Compile Include="Explorer\VirtualFileReference.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\EverlookConfiguration.cs" />
