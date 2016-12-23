@@ -272,8 +272,10 @@ namespace Everlook.Explorer
 
 						// Create a virtual item reference that points to the package group
 						VirtualFileReference packageGroupReference = new VirtualFileReference(packageGroup,
-							new FileReference(packageGroup));
-						packageGroupReference.State = ReferenceState.Enumerated;
+							new FileReference(packageGroup))
+						{
+							State = ReferenceState.Enumerated
+						};
 
 						// Create a virtual package folder for the individual packages under the package group
 						FileReference packageGroupPackagesFolderReference = new FileReference(packageGroup, packageGroupReference, "");

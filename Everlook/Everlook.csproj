@@ -149,17 +149,13 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\..\liblistfile\liblistfile\liblistfile.csproj">
-      <Project>{CE32160A-4A61-4813-93A5-D9DFDD7AB470}</Project>
-      <Name>liblistfile</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GLWidgetGTK3\GLWidgetGTK3.csproj">
-      <Project>{47B57CB3-1885-462D-84DA-FBA0AE356F2A}</Project>
-      <Name>GLWidgetGTK3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\lib\GLWidgetGTK3\GLWidgetGTK3.csproj">
       <Project>{47B57CB3-1885-462D-84DA-FBA0AE356F2A}</Project>
       <Name>GLWidgetGTK3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\liblistfile\liblistfile\liblistfile.csproj">
+      <Project>{CE32160A-4A61-4813-93A5-D9DFDD7AB470}</Project>
+      <Name>liblistfile</Name>
     </ProjectReference>
     <ProjectReference Include="..\lib\liblistfile\lib\libwarcraft\libwarcraft\libwarcraft.csproj">
       <Project>{DA06A44E-A67B-46C7-B07D-E90AEBED0502}</Project>
