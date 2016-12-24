@@ -1,6 +1,6 @@
 [submodule "lib/liblistfile"]
 	path = lib/liblistfile
-	url = git@github.com:Nihlus/liblistfile.git
+	url = https://github.com/Nihlus/liblistfile.git
 [submodule "lib/SlimTK"]
 	path = lib/SlimTK
-	url = git@github.com:WowDevTools/SlimTK.git
+	url = https://github.com/WoWDevTools/SlimTK.git

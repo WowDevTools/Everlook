@@ -73,7 +73,7 @@ namespace Everlook.UI
 		/// <summary>
 		/// Task scheduler for the UI thread. This allows task-based code to have very simple UI callbacks.
 		/// </summary>
-		private TaskScheduler UIThreadScheduler;
+		private readonly TaskScheduler UIThreadScheduler;
 
 		/// <summary>
 		/// Creates an instance of the MainWindow class, loading the glade XML UI as needed.

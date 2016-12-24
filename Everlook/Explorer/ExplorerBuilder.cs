@@ -366,6 +366,12 @@ namespace Everlook.Explorer
 			FileReference parentReference = parentReferenceObject as FileReference;
 			if (parentReference != null)
 			{
+				if (!this.bShouldProcessWork)
+				{
+					// Early drop out
+					return;
+				}
+
 				VirtualFileReference virtualParentReference = parentReference as VirtualFileReference;
 				if (virtualParentReference != null)
 				{
@@ -380,7 +386,7 @@ namespace Everlook.Explorer
 				}
 				else
 				{
-					EnumerateHardReference(parentReference);
+					EnumerateHardReference(parentReference); // TODO: Probable issue, no assignment of state
 				}
 			}
 		}
