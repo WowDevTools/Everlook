@@ -1,0 +1,26 @@
+everlook (1.0.6203.35136-1) xenial; urgency=medium
+
+  * Added libgtk3.0-cil to dependencies.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Sun, 25 Dec 2016 19:31:13 +0100
+
+everlook (1.0.6203.34786-1) xenial; urgency=medium
+
+  * Removed debian dependency on libwarcraft (for now).
+
+ -- Jarl <jarl.gullberg@gmail.com>  Sun, 25 Dec 2016 19:19:33 +0100
+
+everlook (1.0.6203.34590-1) xenial; urgency=medium
+
+  * Initial compilation of debian package. 
+  * Removed unneccesary bits of the debian control files.
+  * Made tarball always lower-case.
+  * This release bundles all libraries, which will change in a later release.
+
+ -- Jarl <jarl@nessie>  Sun, 25 Dec 2016 19:13:01 +0100
+
+everlook (1.0) xenial; urgency=medium
+
+  * Initial release.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Sun, 25 Dec 2016 18:48:09 +0100

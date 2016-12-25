@@ -1,0 +1,3 @@
+Everlook/bin/Release/* /usr/lib/cli/Everlook/
+linux-desktop/everlook /usr/bin/
+linux-desktop/Everlook.desktop /usr/share/applications/

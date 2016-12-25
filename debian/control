@@ -1,0 +1,46 @@
+Source: everlook
+Priority: optional
+Maintainer: Jarl Gullberg <jarl.gullberg@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), 
+	cli-common-dev (>= 0.8),
+	libmono-cil-dev,
+	mono-mcs (>= 4.0),
+	mono-devel (>= 4.0),
+	mono-xbuild (>= 4.0),
+	libgtk3.0-cil
+Standards-Version: 3.9.7
+Section: cli-mono
+Homepage: https://github.com/WoWDevTools/Everlook
+
+Package: everlook
+Section: cli-mono
+Architecture: any
+Depends: ${cli:Depends}, 
+	${misc:Depends},
+	libgtk3.0-cil
+Description: Everlook is a cross-platform, open-source World of Warcraft model viewer, 
+ created to showcase the capabilities of libwarcraft.
+ .
+ Everlook will be capable of browsing, exporting and converting most World of Warcraft
+ formats up until Wrath of the Lich King, and is under active development. The current 
+ goal is to act as an open, simple and feature-complete replacement for 
+ World of Warcraft Model Viewer.
+ .
+ Currently, Everlook is in early development and may not be usable in your day-to-day activities.
+ .
+ Features:
+  - Explore multiple game versions in one application
+  - Explore games on an archive-by-archive basis, or as a unified virtual file tree
+  - Export files from the archives
+  - View textures stored in most major image formats, as well as BLP
+  - View WMO models
+ .
+ Known issues:
+  - No format-specific export functions have been implemented.
+  - The export queue does not work beyond the UI.
+  - Everlook lacks any testing on Windows-based systems.
+  - The UI becomes sluggish when loading directories with many files in them (mainly Textures/Minimap and Textures/BakedNPCTextures, who both have thousands of files under a single directory).
+  - Standard models are not rendered in the viewport.
+ .
+ If you want to help out, I'll gladly accept pull requests and patches for the 
+ code. 
