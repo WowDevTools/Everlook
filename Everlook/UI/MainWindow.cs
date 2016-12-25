@@ -789,7 +789,7 @@ namespace Everlook.UI
 					}
 					case WarcraftFileType.GIFImage:
 					case WarcraftFileType.PNGImage:
-					case WarcraftFileType.JPEGImage:
+					case WarcraftFileType.JPGImage:
 					{
 						byte[] fileData = fileReference.Extract();
 						if (fileData != null)

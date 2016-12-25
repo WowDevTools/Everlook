@@ -361,7 +361,7 @@ namespace Everlook.Explorer
 					case "jpg":
 					case "jpeg":
 					{
-						return WarcraftFileType.JPEGImage;
+						return WarcraftFileType.JPGImage;
 					}
 					case "gif":
 					{
