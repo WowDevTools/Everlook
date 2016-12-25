@@ -132,6 +132,7 @@ namespace Everlook.UI
 			this.PreferencesButton.Clicked += OnPreferencesButtonClicked;
 
 			this.GameExplorerTreeView.RowExpanded += OnGameExplorerRowExpanded;
+			this.GameExplorerTreeView.RowActivated += OnGameExplorerRowActivated;
 			this.GameExplorerTreeView.Selection.Changed += OnGameExplorerSelectionChanged;
 			this.GameExplorerTreeView.ButtonPressEvent += OnGameExplorerButtonPressed;
 
@@ -436,7 +437,7 @@ namespace Everlook.UI
 		private void OnExportItemContextItemActivated(object sender, EventArgs e)
 		{
 			FileReference fileReference = GetSelectedReference();
-			if (fileReference != null && !string.IsNullOrEmpty(fileReference.ItemPath))
+			if (fileReference != null && !string.IsNullOrEmpty(fileReference.FilePath))
 			{
 
 				WarcraftFileType fileType = fileReference.GetReferencedFileType();
@@ -490,7 +491,7 @@ namespace Everlook.UI
 		{
 			FileReference fileReference = GetSelectedReference();
 
-			string cleanFilepath = fileReference.ItemPath.ConvertPathSeparatorsToCurrentNativeSeparator();
+			string cleanFilepath = fileReference.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
 			string exportpath;
 			if (this.Config.GetShouldKeepFileDirectoryStructure())
 			{
@@ -539,7 +540,7 @@ namespace Everlook.UI
 			TreeIter selectedIter;
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			clipboard.Text = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter)).ItemPath;
+			clipboard.Text = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter)).FilePath;
 		}
 
 		/// <summary>
@@ -552,7 +553,7 @@ namespace Everlook.UI
 		{
 			FileReference fileReference = GetSelectedReference();
 
-			string cleanFilepath = fileReference.ItemPath.ConvertPathSeparatorsToCurrentNativeSeparator();
+			string cleanFilepath = fileReference.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
 
 			if (String.IsNullOrEmpty(cleanFilepath))
 			{
@@ -679,6 +680,62 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
+		/// Handles double-clicking on files in the explorer.
+		/// </summary>
+		/// <param name="o">The sending object.</param>
+		/// <param name="args">Arguments describing the row that was activated.</param>
+		private void OnGameExplorerRowActivated(object o, RowActivatedArgs args)
+		{
+			TreeIter selectedIter;
+			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
+
+			FileReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
+			if (fileReference != null && fileReference.IsFile)
+			{
+				if (string.IsNullOrEmpty(fileReference.FilePath))
+				{
+					return;
+				}
+
+				switch (fileReference.GetReferencedFileType())
+				{
+					// Warcraft-typed standard files
+					case WarcraftFileType.AddonManifest:
+					case WarcraftFileType.AddonManifestSignature:
+					case WarcraftFileType.ConfigurationFile:
+					case WarcraftFileType.Hashmap:
+					case WarcraftFileType.XML:
+					case WarcraftFileType.INI:
+					case WarcraftFileType.PDF:
+					case WarcraftFileType.HTML:
+					{
+						byte[] fileData = fileReference.Extract();
+						if (fileData != null)
+						{
+							// create a temporary file and write the data to it.
+							string tempPath = IOPath.GetTempPath() + fileReference.Filename;
+							if (File.Exists(tempPath))
+							{
+								File.Delete(tempPath);
+							}
+
+							using (Stream tempStream = File.Open(tempPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Read))
+							{
+								tempStream.Write(fileData, 0, fileData.Length);
+								tempStream.Flush();
+							}
+
+							// Hand off the file to the operating system.
+							System.Diagnostics.Process.Start(tempPath);
+						}
+
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		/// Handles selection of files in the game explorer, displaying them to the user and routing
 		/// whatever rendering functionality the file needs to the viewport.
 		/// </summary>
@@ -692,57 +749,13 @@ namespace Everlook.UI
 			FileReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
 			if (fileReference != null && fileReference.IsFile)
 			{
-				if (string.IsNullOrEmpty(fileReference.ItemPath))
+				if (string.IsNullOrEmpty(fileReference.FilePath))
 				{
 					return;
 				}
 
 				switch (fileReference.GetReferencedFileType())
 				{
-					case WarcraftFileType.AddonManifest:
-					{
-						break;
-					}
-					case WarcraftFileType.AddonManifestSignature:
-					{
-						break;
-					}
-					case WarcraftFileType.MoPaQArchive:
-					{
-						break;
-					}
-					case WarcraftFileType.ConfigurationFile:
-					{
-						break;
-					}
-					case WarcraftFileType.DatabaseContainer:
-					{
-						break;
-					}
-					case WarcraftFileType.Shader:
-					{
-						break;
-					}
-					case WarcraftFileType.TerrainWater:
-					{
-						break;
-					}
-					case WarcraftFileType.TerrainLiquid:
-					{
-						break;
-					}
-					case WarcraftFileType.TerrainLevel:
-					{
-						break;
-					}
-					case WarcraftFileType.TerrainTable:
-					{
-						break;
-					}
-					case WarcraftFileType.TerrainData:
-					{
-						break;
-					}
 					case WarcraftFileType.BinaryImage:
 					{
 						byte[] fileData = fileReference.Extract();
@@ -751,7 +764,7 @@ namespace Everlook.UI
 							try
 							{
 								BLP image = new BLP(fileData);
-								RenderableBLP renderableImage = new RenderableBLP(image, fileReference.ItemPath);
+								RenderableBLP renderableImage = new RenderableBLP(image, fileReference.FilePath);
 
 								this.viewportRenderer.SetRenderTarget(renderableImage);
 								EnableControlPage(ControlPage.Image);
@@ -764,14 +777,6 @@ namespace Everlook.UI
 
 						break;
 					}
-					case WarcraftFileType.Hashmap:
-					{
-						break;
-					}
-					case WarcraftFileType.GameObjectModel:
-					{
-						break;
-					}
 					case WarcraftFileType.WorldObjectModel:
 					{
 						BeginLoadingWorldModel(fileReference);
@@ -782,21 +787,22 @@ namespace Everlook.UI
 						BeginLoadingWorldModelGroup(fileReference);
 						break;
 					}
-				}
-
-				// Try some "normal" files
-				if (fileReference.ItemPath.EndsWith(".jpg") || fileReference.ItemPath.EndsWith(".gif") || fileReference.ItemPath.EndsWith(".png"))
-				{
-					byte[] fileData = fileReference.Extract();
-					if (fileData != null)
+					case WarcraftFileType.GIFImage:
+					case WarcraftFileType.PNGImage:
+					case WarcraftFileType.JPEGImage:
 					{
-						using (MemoryStream ms = new MemoryStream(fileData))
+						byte[] fileData = fileReference.Extract();
+						if (fileData != null)
 						{
-							RenderableBitmap renderableImage = new RenderableBitmap(new Bitmap(ms), fileReference.ItemPath);
-							this.viewportRenderer.SetRenderTarget(renderableImage);
-						}
+							using (MemoryStream ms = new MemoryStream(fileData))
+							{
+								RenderableBitmap renderableImage = new RenderableBitmap(new Bitmap(ms), fileReference.FilePath);
+								this.viewportRenderer.SetRenderTarget(renderableImage);
+							}
 
-						EnableControlPage(ControlPage.Image);
+							EnableControlPage(ControlPage.Image);
+						}
+						break;
 					}
 				}
 			}
@@ -806,7 +812,7 @@ namespace Everlook.UI
 		{
 			this.StatusSpinner.Active = true;
 
-			string modelName = IOPath.GetFileNameWithoutExtension(fileReference.ItemPath);
+			string modelName = IOPath.GetFileNameWithoutExtension(fileReference.FilePath);
 			uint modelStatusMessageContextID = this.MainStatusBar.GetContextId($"worldModelLoad_{modelName}");
 			uint modelStatusMessageID = this.MainStatusBar.Push(modelStatusMessageContextID,
 				$"Loading world model \"{modelName}\"...");
@@ -827,7 +833,7 @@ namespace Everlook.UI
 		{
 			this.StatusSpinner.Active = true;
 
-			string modelName = IOPath.GetFileNameWithoutExtension(fileReference.ItemPath);
+			string modelName = IOPath.GetFileNameWithoutExtension(fileReference.FilePath);
 			uint modelStatusMessageContextID = this.MainStatusBar.GetContextId($"worldModelGroupLoad_{modelName}");
 			uint modelStatusMessageID = this.MainStatusBar.Push(modelStatusMessageContextID,
 				$"Loading world model group \"{modelName}\"...");
@@ -864,7 +870,7 @@ namespace Everlook.UI
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
 			{
-				if (currentFileReference == null || string.IsNullOrEmpty(currentFileReference.ItemPath))
+				if (currentFileReference == null || string.IsNullOrEmpty(currentFileReference.FilePath))
 				{
 					this.ExtractItem.Sensitive = false;
 					this.ExportItem.Sensitive = false;
@@ -919,7 +925,7 @@ namespace Everlook.UI
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
 			{
-				if (currentReference == null || string.IsNullOrEmpty(currentReference.ItemPath))
+				if (currentReference == null || string.IsNullOrEmpty(currentReference.FilePath))
 				{
 					this.RemoveQueueItem.Sensitive = false;
 				}
@@ -1046,7 +1052,8 @@ namespace Everlook.UI
 				// Add myself to that node
 				if (!this.explorerBuilder.PackageItemNodeMapping.ContainsKey(childReference))
 				{
-					if (parentReference.State == ReferenceState.Enumerating && childReference.State == ReferenceState.NotEnumerated)
+					bool isParentExpanded = this.GameExplorerTreeView.GetRowExpanded(this.GameExplorerTreeStore.GetPath(parentNode));
+					if (isParentExpanded && childReference.State == ReferenceState.NotEnumerated)
 					{
 						// This references was added to the UI after the user had opened the previous folder.
 						// Therefore, it should be submitted back to the UI for enumeration.
@@ -1077,18 +1084,16 @@ namespace Everlook.UI
 						// Append this directory reference as an additional overridden hard reference
 						virtualChildReference.OverriddenHardReferences.Add(childReference);
 
-						if (virtualChildReference.State == ReferenceState.Enumerating)
+						bool isParentExpanded = this.GameExplorerTreeView.GetRowExpanded(this.GameExplorerTreeStore.GetPath(virtualParentNode));
+						if (isParentExpanded && virtualChildReference.State == ReferenceState.NotEnumerated)
 						{
-							// If it's currently enumerating, add it to the waiting queue
-							this.explorerBuilder.SubmitWork(childReference);
+							// This references was added to the UI after the user had opened the previous folder.
+							// Therefore, it should be submitted back to the UI for enumeration.
+							this.explorerBuilder.SubmitWork(virtualChildReference);
 						}
 					}
 					else
 					{
-						if (childReference.GetReferencedItemName() == "WTF")
-						{
-							Console.WriteLine("");
-						}
 						virtualChildReference = new VirtualFileReference(virtualParentReference, childReference.PackageGroup, childReference);
 
 						if (!virtualParentReference.ChildReferences.Contains(virtualChildReference))
@@ -1203,7 +1208,7 @@ namespace Everlook.UI
 		/// <returns>A <see cref="TreeIter"/> pointing to the new directory node.</returns>
 		private TreeIter CreateFileTreeNode(TreeIter parentNode, FileReference file)
 		{
-			return this.GameExplorerTreeStore.AppendValues(parentNode, ExtensionMethods.GetIconForFiletype(file.ItemPath),
+			return this.GameExplorerTreeStore.AppendValues(parentNode, ExtensionMethods.GetIconForFiletype(file.FilePath),
 				file.GetReferencedItemName(), "", "", (int)NodeType.File);
 		}
 

@@ -63,7 +63,7 @@ namespace Everlook.Explorer
 		/// Gets or sets the file path of the file inside the package.
 		/// </summary>
 		/// <value>The file path.</value>
-		public virtual string ItemPath { get; set; } = "";
+		public virtual string FilePath { get; set; } = "";
 
 		/// <summary>
 		/// The current state of the item reference.
@@ -152,7 +152,7 @@ namespace Everlook.Explorer
 		/// <value><c>true</c> if this reference is a package; otherwise, <c>false</c>.</value>
 		public virtual bool IsPackage
 		{
-			get { return !string.IsNullOrEmpty(this.PackageName) && string.IsNullOrEmpty(this.ItemPath); }
+			get { return !string.IsNullOrEmpty(this.PackageName) && string.IsNullOrEmpty(this.FilePath); }
 		}
 
 		/// <summary>
@@ -161,7 +161,7 @@ namespace Everlook.Explorer
 		/// <value><c>true</c> if this instance is directory; otherwise, <c>false</c>.</value>
 		public bool IsDirectory
 		{
-			get { return !string.IsNullOrEmpty(this.ItemPath) && GetReferencedFileType() == WarcraftFileType.Directory; }
+			get { return !string.IsNullOrEmpty(this.FilePath) && GetReferencedFileType() == WarcraftFileType.Directory; }
 		}
 
 		/// <summary>
@@ -170,7 +170,16 @@ namespace Everlook.Explorer
 		/// <value><c>true</c> if this instance is file; otherwise, <c>false</c>.</value>
 		public bool IsFile
 		{
-			get { return !string.IsNullOrEmpty(this.ItemPath) && (GetReferencedFileType() != WarcraftFileType.Directory); }
+			get { return !string.IsNullOrEmpty(this.FilePath) && (GetReferencedFileType() != WarcraftFileType.Directory); }
+		}
+
+		/// <summary>
+		/// The name of the file.
+		/// </summary>
+		public string Filename
+		{
+			// Return the filename, and replace any nonnative file paths with the native one.
+			get { return Path.GetFileName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar)); }
 		}
 
 		/// <summary>
@@ -193,7 +202,7 @@ namespace Everlook.Explorer
 		{
 			this.ParentReference = inParentReference;
 			this.PackageName = inPackageName;
-			this.ItemPath = inFilePath;
+			this.FilePath = inFilePath;
 		}
 
 		/// <summary>
@@ -208,7 +217,7 @@ namespace Everlook.Explorer
 		{
 			this.ParentReference = inParentReference;
 			this.PackageName = inParentReference.PackageName;
-			this.ItemPath = inParentReference.ItemPath + subPath;
+			this.FilePath = inParentReference.FilePath + subPath;
 		}
 
 		/// <summary>
@@ -235,13 +244,13 @@ namespace Everlook.Explorer
 		public virtual string GetReferencedItemName()
 		{
 			string itemName;
-			if (this.ParentReference == null || string.IsNullOrEmpty(this.ParentReference.ItemPath))
+			if (this.ParentReference == null || string.IsNullOrEmpty(this.ParentReference.FilePath))
 			{
-				itemName = this.ItemPath;
+				itemName = this.FilePath;
 			}
 			else
 			{
-				itemName = this.ItemPath.Substring(this.ParentReference.ItemPath.Length);
+				itemName = this.FilePath.Substring(this.ParentReference.FilePath.Length);
 			}
 
 			if (this.IsDirectory)
@@ -260,7 +269,7 @@ namespace Everlook.Explorer
 		/// <returns>The referenced file type.</returns>
 		public WarcraftFileType GetReferencedFileType()
 		{
-			string itemPath = this.ItemPath.ToLower();
+			string itemPath = this.FilePath.ToLower();
 			if (!itemPath.EndsWith("\\"))
 			{
 				string fileExtension = Path.GetExtension(itemPath).Replace(".", "");
@@ -337,6 +346,44 @@ namespace Everlook.Explorer
 							return WarcraftFileType.WorldObjectModel;
 						}
 					}
+					case "mp3":
+					{
+						return WarcraftFileType.MP3Audio;
+					}
+					case "wav":
+					{
+						return WarcraftFileType.WaveAudio;
+					}
+					case "xml":
+					{
+						return WarcraftFileType.XML;
+					}
+					case "jpg":
+					case "jpeg":
+					{
+						return WarcraftFileType.JPEGImage;
+					}
+					case "gif":
+					{
+						return WarcraftFileType.GIFImage;
+					}
+					case "png":
+					{
+						return WarcraftFileType.PNGImage;
+					}
+					case "ini":
+					{
+						return WarcraftFileType.INI;
+					}
+					case "pdf":
+					{
+						return WarcraftFileType.PDF;
+					}
+					case "htm":
+					case "html":
+					{
+						return WarcraftFileType.HTML;
+					}
 					default:
 					{
 						return WarcraftFileType.Unknown;
@@ -387,7 +434,7 @@ namespace Everlook.Explorer
 					parentsEqual &&
 					this.PackageGroup == other.PackageGroup &&
 					this.PackageName == other.PackageName &&
-					this.ItemPath == other.ItemPath;
+					this.FilePath == other.FilePath;
 			}
 			else
 			{
@@ -403,7 +450,7 @@ namespace Everlook.Explorer
 		/// <returns>A <see cref="System.String"/> that represents the current <see cref="FileReference"/>.</returns>
 		public override string ToString()
 		{
-			return $"{this.PackageName}:{this.ItemPath}";
+			return $"{this.PackageName}:{this.FilePath}";
 		}
 
 		/// <summary>
@@ -415,7 +462,7 @@ namespace Everlook.Explorer
 			if (this.ParentReference != null)
 			{
 				return (this.PackageName.GetHashCode() +
-						this.ItemPath.GetHashCode() +
+						this.FilePath.GetHashCode() +
 						this.ParentReference.GetHashCode() +
 						this.PackageGroup.GroupName.GetHashCode()
 				).GetHashCode();
@@ -423,7 +470,7 @@ namespace Everlook.Explorer
 			else
 			{
 				return (this.PackageName.GetHashCode() +
-						this.ItemPath.GetHashCode() +
+						this.FilePath.GetHashCode() +
 						0 +
 						this.PackageGroup.GroupName.GetHashCode()
 				).GetHashCode();

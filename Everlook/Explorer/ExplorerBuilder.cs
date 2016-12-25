@@ -274,7 +274,7 @@ namespace Everlook.Explorer
 						VirtualFileReference packageGroupReference = new VirtualFileReference(packageGroup,
 							new FileReference(packageGroup))
 						{
-							State = ReferenceState.Enumerated
+							State = ReferenceState.Enumerating
 						};
 
 						// Create a virtual package folder for the individual packages under the package group
@@ -402,10 +402,10 @@ namespace Everlook.Explorer
 			if (hardReference.PackageGroup.PackageListfiles.TryGetValue(hardReference.PackageName, out packageListFile))
 			{
 				IEnumerable<string> strippedListfile =
-					packageListFile.Where(s => s.StartsWith(hardReference.ItemPath, true, new CultureInfo("en-GB")));
+					packageListFile.Where(s => s.StartsWith(hardReference.FilePath, true, new CultureInfo("en-GB")));
 				foreach (string filePath in strippedListfile)
 				{
-					string childPath = Regex.Replace(filePath, "^(?-i)" + Regex.Escape(hardReference.ItemPath), "");
+					string childPath = Regex.Replace(filePath, "^(?-i)" + Regex.Escape(hardReference.FilePath), "");
 
 					int slashIndex = childPath.IndexOf('\\');
 					string topDirectory = childPath.Substring(0, slashIndex + 1);
@@ -491,15 +491,15 @@ namespace Everlook.Explorer
 			PackageGroup referenceGroup = hardReference.PackageGroup;
 			if (this.VirtualReferenceMappings.ContainsKey(referenceGroup))
 			{
-				if (!this.VirtualReferenceMappings[referenceGroup].ContainsKey(hardReference.ItemPath))
+				if (!this.VirtualReferenceMappings[referenceGroup].ContainsKey(hardReference.FilePath))
 				{
-					this.VirtualReferenceMappings[referenceGroup].Add(hardReference.ItemPath, virtualReference);
+					this.VirtualReferenceMappings[referenceGroup].Add(hardReference.FilePath, virtualReference);
 				}
 			}
 			else
 			{
 				Dictionary<string, VirtualFileReference> groupDictionary = new Dictionary<string, VirtualFileReference>();
-				groupDictionary.Add(hardReference.ItemPath, virtualReference);
+				groupDictionary.Add(hardReference.FilePath, virtualReference);
 
 				this.VirtualReferenceMappings.Add(referenceGroup, groupDictionary);
 			}
@@ -516,7 +516,7 @@ namespace Everlook.Explorer
 			if (this.VirtualReferenceMappings.ContainsKey(referenceGroup))
 			{
 				VirtualFileReference virtualReference;
-				if (this.VirtualReferenceMappings[referenceGroup].TryGetValue(hardReference.ItemPath, out virtualReference))
+				if (this.VirtualReferenceMappings[referenceGroup].TryGetValue(hardReference.FilePath, out virtualReference))
 				{
 					return virtualReference;
 				}

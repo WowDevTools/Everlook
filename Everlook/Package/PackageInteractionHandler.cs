@@ -105,7 +105,7 @@ namespace Everlook.Package
 				return false;
 			}
 
-			return this.Package.ContainsFile(fileReference.ItemPath);
+			return this.Package.ContainsFile(fileReference.FilePath);
 		}
 
 		/// <summary>
@@ -119,7 +119,7 @@ namespace Everlook.Package
 				return null;
 			}
 
-			return this.Package.ExtractFile(fileReference.ItemPath);
+			return this.Package.ExtractFile(fileReference.FilePath);
 		}
 
 		/// <summary>
@@ -135,7 +135,7 @@ namespace Everlook.Package
 				return null;
 			}
 
-			return this.Package.GetFileInfo(fileReference.ItemPath);
+			return this.Package.GetFileInfo(fileReference.FilePath);
 		}
 
 		#region IPackage implementation

@@ -75,20 +75,20 @@ namespace Everlook.Explorer
 		/// Gets or sets the file path of the file inside the package.
 		/// </summary>
 		/// <value>The file path.</value>
-		public override string ItemPath
+		public override string FilePath
 		{
 			get
 			{
-				return this.HardReference.ItemPath;
+				return this.HardReference.FilePath;
 			}
 			set
 			{
-				if (value != this.HardReference.ItemPath)
+				if (value != this.HardReference.FilePath)
 				{
 					throw new InvalidOperationException("The item path may not point to a file other than the one the base reference points to.");
 				}
 
-				base.ItemPath = value;
+				base.FilePath = value;
 			}
 		}
 
@@ -116,7 +116,7 @@ namespace Everlook.Explorer
 
 			this.PackageGroup = inPackageGroup;
 			this.HardReference = inHardReference;
-			this.ItemPath = this.HardReference.ItemPath;
+			this.FilePath = this.HardReference.FilePath;
 		}
 
 		/// <summary>

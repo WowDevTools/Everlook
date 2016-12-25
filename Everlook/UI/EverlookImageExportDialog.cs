@@ -84,7 +84,7 @@ namespace Everlook.UI
 
 		private void LoadInformation()
 		{
-			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(ExtensionMethods.ConvertPathSeparatorsToCurrentNativeSeparator(this.ExportTarget.ItemPath));
+			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(ExtensionMethods.ConvertPathSeparatorsToCurrentNativeSeparator(this.ExportTarget.FilePath));
 			this.Title = $"Export Image | {ImageFilename}";
 
 			byte[] file = this.ExportTarget.Extract();
@@ -106,13 +106,13 @@ namespace Everlook.UI
 		/// </summary>
 		public void RunExport()
 		{
-			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(ExtensionMethods.ConvertPathSeparatorsToCurrentNativeSeparator(this.ExportTarget.ItemPath));
+			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(ExtensionMethods.ConvertPathSeparatorsToCurrentNativeSeparator(this.ExportTarget.FilePath));
 
 			string ExportPath = "";
 			if (this.Config.GetShouldKeepFileDirectoryStructure())
 			{
 				ExportPath =
-					$"{this.ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{ExtensionMethods.ConvertPathSeparatorsToCurrentNativeSeparator(this.ExportTarget.ItemPath).Replace(".blp", "")}";
+					$"{this.ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{ExtensionMethods.ConvertPathSeparatorsToCurrentNativeSeparator(this.ExportTarget.FilePath).Replace(".blp", "")}";
 			}
 			else
 			{

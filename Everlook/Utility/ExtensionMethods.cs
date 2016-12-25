@@ -77,7 +77,7 @@ namespace Everlook.Utility
 		/// <returns></returns>
 		public static Pixbuf GetIcon(this FileReference fileReference)
 		{
-			return GetIconForFiletype(fileReference.ItemPath);
+			return GetIconForFiletype(fileReference.FilePath);
 		}
 
 		/// <summary>
@@ -154,6 +154,10 @@ namespace Everlook.Utility
 			else if (file.EndsWith(".zmp"))
 			{
 				icon = IconTheme.Default.LoadIcon("application-x-executable", 16, 0);
+			}
+			else if (file.EndsWith(".xml"))
+			{
+				icon = IconTheme.Default.LoadIcon("text-x-generic", 16, 0);
 			}
 
 			return icon;

@@ -116,7 +116,7 @@ namespace Everlook.UI
 					string exportPath = "";
 					if (this.Config.GetShouldKeepFileDirectoryStructure())
 					{
-						string parentDirectoryOfFile = this.ExportTarget.ItemPath.ConvertPathSeparatorsToCurrentNativeSeparator();
+						string parentDirectoryOfFile = this.ExportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
 
 						exportPath =
 							$"{this.ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{parentDirectoryOfFile}{System.IO.Path.DirectorySeparatorChar}{referenceToExport.GetReferencedItemName()}";
