@@ -41,7 +41,7 @@ namespace Everlook.Export.Image
 		JPG = 1,
 
 		/// <summary>
-		/// Tagged Image File Format
+		/// Tagged Image Reference Format
 		/// <a href="https://en.wikipedia.org/wiki/Tagged_Image_File_Format"/>
 		/// </summary>
 		TIF = 2,

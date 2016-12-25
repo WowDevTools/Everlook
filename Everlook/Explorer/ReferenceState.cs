@@ -23,7 +23,7 @@
 namespace Everlook.Explorer
 {
 	/// <summary>
-	/// The state an <see cref="ItemReference"/> is currently in.
+	/// The state an <see cref="FileReference"/> is currently in.
 	/// </summary>
 	public enum ReferenceState
 	{

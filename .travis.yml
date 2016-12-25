@@ -4,7 +4,3 @@ sudo: required
 dist: trusty
 before_install:
     - sudo apt-get install mono-complete libgtk3.0-cil
-    - git clone https://github.com/WowDevTools/libwarcraft.git ../libwarcraft
-    - git clone https://github.com/Nihlus/liblistfile.git ../liblistfile
-    - nuget restore ../libwarcraft
-    - nuget restore ../liblistfile

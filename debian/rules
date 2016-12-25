@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+%:
+	dh $@ --with=cli
+	
+override_dh_auto_build:
+	xbuild $(CURDIR)/Everlook.sln /p:Configuration=Release 
+
+override_dh_auto_clean:
+	rm -rf $(CURDIR)/bin
+	rm -rf $(CURDIR)/obj

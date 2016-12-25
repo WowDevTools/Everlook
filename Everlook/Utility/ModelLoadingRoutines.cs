@@ -42,14 +42,14 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <param name="fileReference">The archive reference to the WMO root object.</param>
 		/// <returns>A WMO object.</returns>
-		public static WMO LoadWorldModel(ItemReference fileReference)
+		public static WMO LoadWorldModel(FileReference fileReference)
 		{
 			byte[] fileData = fileReference.Extract();
 			if (fileData != null)
 			{
 				WMO worldModel = new WMO(fileData);
 
-				string modelPathWithoutExtension = Path.GetFileNameWithoutExtension(fileReference.ItemPath);
+				string modelPathWithoutExtension = Path.GetFileNameWithoutExtension(fileReference.FilePath);
 				for (int i = 0; i < worldModel.GroupCount; ++i)
 				{
 					// Extract the groups as well
@@ -73,10 +73,10 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <param name="fileReference">The archive reference to the model group.</param>
 		/// <returns>A WMO object, containing just the specified model group.</returns>
-		public static WMO LoadWorldModelGroup(ItemReference fileReference)
+		public static WMO LoadWorldModelGroup(FileReference fileReference)
 		{
 			// Get the file name of the root object
-			string modelRootPath = fileReference.ItemPath.Remove(fileReference.ItemPath.Length - 8, 4);
+			string modelRootPath = fileReference.FilePath.Remove(fileReference.FilePath.Length - 8, 4);
 
 			// Extract it and load just this model group
 			byte[] fileData = fileReference.PackageGroup.ExtractFile(modelRootPath);

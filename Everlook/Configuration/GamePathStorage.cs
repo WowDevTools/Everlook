@@ -75,9 +75,9 @@ namespace Everlook.Configuration
 		/// <param name="pathToStore">Path to store.</param>
 		public void StorePath(string pathToStore)
 		{
-			if (!GamePaths.Contains(pathToStore))
+			if (!this.GamePaths.Contains(pathToStore))
 			{
-				lock (StorageLock)
+				lock (this.StorageLock)
 				{
 					using (FileStream fs = File.Open(GetPathStoragePath(), FileMode.Append))
 					{
@@ -97,11 +97,11 @@ namespace Everlook.Configuration
 		/// <param name="pathToRemove">Path to remove.</param>
 		public void RemoveStoredPath(string pathToRemove)
 		{
-			List<string> storedPaths = GamePaths;
+			List<string> storedPaths = this.GamePaths;
 			if (storedPaths.Contains(pathToRemove))
 			{
 				ClearPaths();
-				lock (StorageLock)
+				lock (this.StorageLock)
 				{
 					storedPaths.Remove(pathToRemove);
 
@@ -123,7 +123,7 @@ namespace Everlook.Configuration
 		private List<string> ReadStoredPaths()
 		{
 			List<string> storedPaths = new List<string>();
-			lock (StorageLock)
+			lock (this.StorageLock)
 			{
 				using (FileStream fs = File.OpenRead(GetPathStoragePath()))
 				{
@@ -142,7 +142,7 @@ namespace Everlook.Configuration
 
 		private void ClearPaths()
 		{
-			lock (StorageLock)
+			lock (this.StorageLock)
 			{
 				File.Delete(GetPathStoragePath());
 				File.Create(GetPathStoragePath()).Close();

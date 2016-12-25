@@ -116,7 +116,7 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// File extensions for model-related file types.
+		/// Reference extensions for model-related file types.
 		/// </summary>
 		public static readonly List<string> ModelTypeExtensions = new List<string>
 		{
@@ -133,7 +133,7 @@ namespace Everlook.Explorer
 		};
 
 		/// <summary>
-		/// File extensions for texture and image file types.
+		/// Reference extensions for texture and image file types.
 		/// </summary>
 		public static readonly List<string> TextureTypeExtensions = new List<string>
 		{
@@ -152,7 +152,7 @@ namespace Everlook.Explorer
 		};
 
 		/// <summary>
-		/// File extensions for audio filetypes.
+		/// Reference extensions for audio filetypes.
 		/// </summary>
 		public static readonly List<string> AudioTypeExtensions = new List<string>
 		{
@@ -163,7 +163,7 @@ namespace Everlook.Explorer
 		};
 
 		/// <summary>
-		/// File extensions for data storage filetypes.
+		/// Reference extensions for data storage filetypes.
 		/// </summary>
 		public static readonly List<string> DataTypeExtensions = new List<string>
 		{
@@ -197,7 +197,7 @@ namespace Everlook.Explorer
 		};
 
 		/// <summary>
-		/// File extensions for terrain-related file types.
+		/// Reference extensions for terrain-related file types.
 		/// </summary>
 		public static readonly List<string> TerrainTypeExtensions = new List<string>
 		{

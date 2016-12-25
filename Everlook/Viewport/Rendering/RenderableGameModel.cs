@@ -108,8 +108,8 @@ namespace Everlook.Viewport.Rendering
 		/// <see cref="RenderableGameModel"/> was occupying.</remarks>
 		public void Dispose()
 		{
-			Model.Dispose();
-			Model = null;
+			this.Model.Dispose();
+			this.Model = null;
 		}
 
 		/// <summary>
@@ -118,7 +118,7 @@ namespace Everlook.Viewport.Rendering
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()
 		{
-			return (IsStatic.GetHashCode() + Model.GetHashCode()).GetHashCode();
+			return (this.IsStatic.GetHashCode() + this.Model.GetHashCode()).GetHashCode();
 		}
 	}
 }

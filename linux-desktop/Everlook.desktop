@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Comment=View, extract and explore World of Warcraft data files
+Exec=everlook
+Icon=weather-snow
+Terminal=false
+Categories=Game;Development;
+Name[en_US]=Everlook

@@ -34,18 +34,18 @@ namespace Everlook.Explorer
 	/// Represents a file stored in a game package. Holds the package name and path of the file
 	/// inside the package.
 	/// </summary>
-	public class ItemReference : IEquatable<ItemReference>
+	public class FileReference : IEquatable<FileReference>
 	{
 		/// <summary>
 		/// Gets or sets the parent reference.
 		/// </summary>
 		/// <value>The parent reference.</value>
-		public ItemReference ParentReference { get; set; }
+		public FileReference ParentReference { get; set; }
 
 		/// <summary>
 		/// Contains a list of references that have this reference as a parent.
 		/// </summary>
-		public List<ItemReference> ChildReferences = new List<ItemReference>();
+		public List<FileReference> ChildReferences = new List<FileReference>();
 
 		/// <summary>
 		/// Gets or sets the group this reference belongs to.
@@ -63,7 +63,7 @@ namespace Everlook.Explorer
 		/// Gets or sets the file path of the file inside the package.
 		/// </summary>
 		/// <value>The file path.</value>
-		public virtual string ItemPath { get; set; } = "";
+		public virtual string FilePath { get; set; } = "";
 
 		/// <summary>
 		/// The current state of the item reference.
@@ -102,8 +102,13 @@ namespace Everlook.Explorer
 		{
 			get
 			{
+				if (this.State != ReferenceState.Enumerated)
+				{
+					return false;
+				}
+
 				bool areChildrenEnumerated = true;
-				foreach (ItemReference childReference in ChildReferences)
+				foreach (FileReference childReference in this.ChildReferences)
 				{
 					if (childReference.IsDirectory)
 					{
@@ -147,7 +152,7 @@ namespace Everlook.Explorer
 		/// <value><c>true</c> if this reference is a package; otherwise, <c>false</c>.</value>
 		public virtual bool IsPackage
 		{
-			get { return !string.IsNullOrEmpty(PackageName) && string.IsNullOrEmpty(ItemPath); }
+			get { return !string.IsNullOrEmpty(this.PackageName) && string.IsNullOrEmpty(this.FilePath); }
 		}
 
 		/// <summary>
@@ -156,7 +161,7 @@ namespace Everlook.Explorer
 		/// <value><c>true</c> if this instance is directory; otherwise, <c>false</c>.</value>
 		public bool IsDirectory
 		{
-			get { return !string.IsNullOrEmpty(ItemPath) && GetReferencedFileType() == WarcraftFileType.Directory; }
+			get { return !string.IsNullOrEmpty(this.FilePath) && GetReferencedFileType() == WarcraftFileType.Directory; }
 		}
 
 		/// <summary>
@@ -165,52 +170,61 @@ namespace Everlook.Explorer
 		/// <value><c>true</c> if this instance is file; otherwise, <c>false</c>.</value>
 		public bool IsFile
 		{
-			get { return !string.IsNullOrEmpty(ItemPath) && (GetReferencedFileType() != WarcraftFileType.Directory); }
+			get { return !string.IsNullOrEmpty(this.FilePath) && (GetReferencedFileType() != WarcraftFileType.Directory); }
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Explorer.ItemReference"/> class.
+		/// The name of the file.
+		/// </summary>
+		public string Filename
+		{
+			// Return the filename, and replace any nonnative file paths with the native one.
+			get { return Path.GetFileName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar)); }
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FileReference"/> class.
 		/// This creates a new, empty item reference.
 		/// </summary>
-		protected ItemReference()
+		protected FileReference()
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Explorer.ItemReference"/> class.
+		/// Initializes a new instance of the <see cref="FileReference"/> class.
 		/// </summary>
 		/// <param name="inPackageGroup">The package group this reference belongs to.</param>
 		/// <param name="inParentReference">The parent of this item reference.</param>
 		/// <param name="inPackageName">The name of the package this reference belongs to.</param>
 		/// <param name="inFilePath">The complete file path this reference points to.</param>
-		public ItemReference(PackageGroup inPackageGroup, ItemReference inParentReference, string inPackageName, string inFilePath)
+		public FileReference(PackageGroup inPackageGroup, FileReference inParentReference, string inPackageName, string inFilePath)
 			: this(inPackageGroup)
 		{
 			this.ParentReference = inParentReference;
 			this.PackageName = inPackageName;
-			this.ItemPath = inFilePath;
+			this.FilePath = inFilePath;
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Explorer.ItemReference"/> class by
+		/// Initializes a new instance of the <see cref="FileReference"/> class by
 		/// appending the provided subpath to the provided refererence's file path.
 		/// </summary>
 		/// <param name="inPackageGroup">The package group this reference belongs to.</param>
 		/// <param name="inParentReference">In reference.</param>
 		/// <param name="subPath">Sub directory.</param>
-		public ItemReference(PackageGroup inPackageGroup, ItemReference inParentReference, string subPath)
+		public FileReference(PackageGroup inPackageGroup, FileReference inParentReference, string subPath)
 			: this(inPackageGroup)
 		{
 			this.ParentReference = inParentReference;
 			this.PackageName = inParentReference.PackageName;
-			this.ItemPath = inParentReference.ItemPath + subPath;
+			this.FilePath = inParentReference.FilePath + subPath;
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Explorer.ItemReference"/> class.
+		/// Initializes a new instance of the <see cref="FileReference"/> class.
 		/// </summary>
 		/// <param name="inPackageGroup">PackageGroup.</param>
-		public ItemReference(PackageGroup inPackageGroup)
+		public FileReference(PackageGroup inPackageGroup)
 		{
 			this.PackageGroup = inPackageGroup;
 		}
@@ -230,16 +244,16 @@ namespace Everlook.Explorer
 		public virtual string GetReferencedItemName()
 		{
 			string itemName;
-			if (ParentReference == null || string.IsNullOrEmpty(ParentReference.ItemPath))
+			if (this.ParentReference == null || string.IsNullOrEmpty(this.ParentReference.FilePath))
 			{
-				itemName = ItemPath;
+				itemName = this.FilePath;
 			}
 			else
 			{
-				itemName = ItemPath.Substring(ParentReference.ItemPath.Length);
+				itemName = this.FilePath.Substring(this.ParentReference.FilePath.Length);
 			}
 
-			if (IsDirectory)
+			if (this.IsDirectory)
 			{
 				// Remove the trailing slash from directory names.
 				int slashIndex = itemName.LastIndexOf("\\", StringComparison.Ordinal);
@@ -255,7 +269,7 @@ namespace Everlook.Explorer
 		/// <returns>The referenced file type.</returns>
 		public WarcraftFileType GetReferencedFileType()
 		{
-			string itemPath = ItemPath.ToLower();
+			string itemPath = this.FilePath.ToLower();
 			if (!itemPath.EndsWith("\\"))
 			{
 				string fileExtension = Path.GetExtension(itemPath).Replace(".", "");
@@ -332,6 +346,44 @@ namespace Everlook.Explorer
 							return WarcraftFileType.WorldObjectModel;
 						}
 					}
+					case "mp3":
+					{
+						return WarcraftFileType.MP3Audio;
+					}
+					case "wav":
+					{
+						return WarcraftFileType.WaveAudio;
+					}
+					case "xml":
+					{
+						return WarcraftFileType.XML;
+					}
+					case "jpg":
+					case "jpeg":
+					{
+						return WarcraftFileType.JPGImage;
+					}
+					case "gif":
+					{
+						return WarcraftFileType.GIFImage;
+					}
+					case "png":
+					{
+						return WarcraftFileType.PNGImage;
+					}
+					case "ini":
+					{
+						return WarcraftFileType.INI;
+					}
+					case "pdf":
+					{
+						return WarcraftFileType.PDF;
+					}
+					case "htm":
+					case "html":
+					{
+						return WarcraftFileType.HTML;
+					}
 					default:
 					{
 						return WarcraftFileType.Unknown;
@@ -347,24 +399,24 @@ namespace Everlook.Explorer
 		#region IEquatable implementation
 
 		/// <summary>
-		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Everlook.Explorer.ItemReference"/>.
+		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="FileReference"/>.
 		/// </summary>
-		/// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Everlook.Explorer.ItemReference"/>.</param>
-		/// <returns><c>true</c> if the specified <see cref="Everlook.Explorer.ItemReference"/> is equal to the current
-		/// <see cref="Everlook.Explorer.ItemReference"/>; otherwise, <c>false</c>.</returns>
+		/// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="FileReference"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="FileReference"/> is equal to the current
+		/// <see cref="FileReference"/>; otherwise, <c>false</c>.</returns>
 		public override bool Equals(object obj)
 		{
-			ItemReference other = obj as ItemReference;
+			FileReference other = obj as FileReference;
 			return other != null && Equals(other);
 		}
 
 		/// <summary>
-		/// Determines whether the specified <see cref="Everlook.Explorer.ItemReference"/> is equal to the current <see cref="Everlook.Explorer.ItemReference"/>.
+		/// Determines whether the specified <see cref="FileReference"/> is equal to the current <see cref="FileReference"/>.
 		/// </summary>
-		/// <param name="other">The <see cref="Everlook.Explorer.ItemReference"/> to compare with the current <see cref="Everlook.Explorer.ItemReference"/>.</param>
-		/// <returns><c>true</c> if the specified <see cref="Everlook.Explorer.ItemReference"/> is equal to the current
-		/// <see cref="Everlook.Explorer.ItemReference"/>; otherwise, <c>false</c>.</returns>
-		public bool Equals(ItemReference other)
+		/// <param name="other">The <see cref="FileReference"/> to compare with the current <see cref="FileReference"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="FileReference"/> is equal to the current
+		/// <see cref="FileReference"/>; otherwise, <c>false</c>.</returns>
+		public bool Equals(FileReference other)
 		{
 			if (other != null)
 			{
@@ -382,7 +434,7 @@ namespace Everlook.Explorer
 					parentsEqual &&
 					this.PackageGroup == other.PackageGroup &&
 					this.PackageName == other.PackageName &&
-					this.ItemPath == other.ItemPath;
+					this.FilePath == other.FilePath;
 			}
 			else
 			{
@@ -393,16 +445,16 @@ namespace Everlook.Explorer
 		#endregion
 
 		/// <summary>
-		/// Returns a <see cref="System.String"/> that represents the current <see cref="Everlook.Explorer.ItemReference"/>.
+		/// Returns a <see cref="System.String"/> that represents the current <see cref="FileReference"/>.
 		/// </summary>
-		/// <returns>A <see cref="System.String"/> that represents the current <see cref="Everlook.Explorer.ItemReference"/>.</returns>
+		/// <returns>A <see cref="System.String"/> that represents the current <see cref="FileReference"/>.</returns>
 		public override string ToString()
 		{
-			return $"{PackageName}:{ItemPath}";
+			return $"{this.PackageName}:{this.FilePath}";
 		}
 
 		/// <summary>
-		/// Serves as a hash function for a <see cref="Everlook.Explorer.ItemReference"/> object.
+		/// Serves as a hash function for a <see cref="FileReference"/> object.
 		/// </summary>
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()
@@ -410,7 +462,7 @@ namespace Everlook.Explorer
 			if (this.ParentReference != null)
 			{
 				return (this.PackageName.GetHashCode() +
-						this.ItemPath.GetHashCode() +
+						this.FilePath.GetHashCode() +
 						this.ParentReference.GetHashCode() +
 						this.PackageGroup.GroupName.GetHashCode()
 				).GetHashCode();
@@ -418,7 +470,7 @@ namespace Everlook.Explorer
 			else
 			{
 				return (this.PackageName.GetHashCode() +
-						this.ItemPath.GetHashCode() +
+						this.FilePath.GetHashCode() +
 						0 +
 						this.PackageGroup.GroupName.GetHashCode()
 				).GetHashCode();

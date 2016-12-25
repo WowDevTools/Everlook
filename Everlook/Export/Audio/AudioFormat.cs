@@ -34,7 +34,7 @@ namespace Everlook.Export.Audio
 		Original = 0,
 
 		/// <summary>
-		/// Waveform Audio File Format
+		/// Waveform Audio Reference Format
 		/// <a href="https://en.wikipedia.org/wiki/WAV"/>
 		/// </summary>
 		WAV = 1,

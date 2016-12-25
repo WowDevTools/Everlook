@@ -58,8 +58,8 @@ namespace Everlook.UI
 		{
 			builder.Autoconnect(this);
 
-			AddPathButton.Clicked += OnAddPathButtonClicked;
-			RemovePathButton.Clicked += OnRemovePathButtonClicked;
+			this.AddPathButton.Clicked += OnAddPathButtonClicked;
+			this.RemovePathButton.Clicked += OnRemovePathButtonClicked;
 
 			LoadPreferences();
 		}
@@ -72,10 +72,10 @@ namespace Everlook.UI
 		protected void OnAddPathButtonClicked(object sender, EventArgs e)
 		{
 			Uri defaultLocation = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-			GameSelectionFileChooserDialog.SetCurrentFolderUri(defaultLocation.ToString());
-			if (GameSelectionFileChooserDialog.Run() == (int)ResponseType.Ok)
+			this.GameSelectionFileChooserDialog.SetCurrentFolderUri(defaultLocation.ToString());
+			if (this.GameSelectionFileChooserDialog.Run() == (int)ResponseType.Ok)
 			{
-				Uri uriToStore = new Uri(GameSelectionFileChooserDialog.CurrentFolderUri);
+				Uri uriToStore = new Uri(this.GameSelectionFileChooserDialog.CurrentFolderUri);
 
 				if (Directory.Exists(uriToStore.LocalPath))
 				{
@@ -84,7 +84,7 @@ namespace Everlook.UI
 				}
 			}
 
-			GameSelectionFileChooserDialog.Hide();
+			this.GameSelectionFileChooserDialog.Hide();
 		}
 
 		/// <summary>
@@ -95,13 +95,13 @@ namespace Everlook.UI
 		protected void OnRemovePathButtonClicked(object sender, EventArgs e)
 		{
 			TreeIter selectedIter;
-			GamePathSelectionTreeView.Selection.GetSelected(out selectedIter);
+			this.GamePathSelectionTreeView.Selection.GetSelected(out selectedIter);
 
-			if (GamePathListStore.IterIsValid(selectedIter))
+			if (this.GamePathListStore.IterIsValid(selectedIter))
 			{
-				string gamePath = (string)GamePathListStore.GetValue(selectedIter, 0);
+				string gamePath = (string) this.GamePathListStore.GetValue(selectedIter, 0);
 				GamePathStorage.Instance.RemoveStoredPath(gamePath);
-				GamePathListStore.Remove(ref selectedIter);
+				this.GamePathListStore.Remove(ref selectedIter);
 			}
 		}
 
@@ -118,18 +118,18 @@ namespace Everlook.UI
 				}
 			}
 
-			ViewportColourButton.Rgba = Config.GetViewportBackgroundColour();
+			this.ViewportColourButton.Rgba = this.Config.GetViewportBackgroundColour();
 
-			if (!String.IsNullOrEmpty(Config.GetDefaultExportDirectory()))
+			if (!String.IsNullOrEmpty(this.Config.GetDefaultExportDirectory()))
 			{
-				DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(Config.GetDefaultExportDirectory());
+				this.DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(this.Config.GetDefaultExportDirectory());
 			}
 
-			DefaultModelExportFormatComboBox.Active = (int)Config.GetDefaultModelFormat();
-			DefaultImageExportFormatComboBox.Active = (int)Config.GetDefaultImageFormat();
-			DefaultAudioExportFormatComboBox.Active = (int)Config.GetDefaultAudioFormat();
-			KeepDirectoryStructureCheckButton.Active = Config.GetShouldKeepFileDirectoryStructure();
-			SendStatsCheckButton.Active = Config.GetAllowSendAnonymousStats();
+			this.DefaultModelExportFormatComboBox.Active = (int) this.Config.GetDefaultModelFormat();
+			this.DefaultImageExportFormatComboBox.Active = (int) this.Config.GetDefaultImageFormat();
+			this.DefaultAudioExportFormatComboBox.Active = (int) this.Config.GetDefaultAudioFormat();
+			this.KeepDirectoryStructureCheckButton.Active = this.Config.GetShouldKeepFileDirectoryStructure();
+			this.SendStatsCheckButton.Active = this.Config.GetAllowSendAnonymousStats();
 		}
 
 		/// <summary>
@@ -137,7 +137,7 @@ namespace Everlook.UI
 		/// </summary>
 		public void SavePreferences()
 		{
-			GamePathListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
+			this.GamePathListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
 				{
 					string GamePath = (string)model.GetValue(iter, 0);
 					GamePathStorage.Instance.StorePath(GamePath);
@@ -145,13 +145,13 @@ namespace Everlook.UI
 					return false;
 				});
 
-			Config.SetViewportBackgroundColour(ViewportColourButton.Rgba);
-			Config.SetDefaultExportDirectory(DefaultExportDirectoryFileChooserButton.Filename);
-			Config.SetDefaultModelFormat((ModelFormat)DefaultModelExportFormatComboBox.Active);
-			Config.SetDefaultImageFormat((ImageFormat)DefaultImageExportFormatComboBox.Active);
-			Config.SetDefaultAudioFormat((AudioFormat)DefaultAudioExportFormatComboBox.Active);
-			Config.SetKeepFileDirectoryStructure(KeepDirectoryStructureCheckButton.Active);
-			Config.SetAllowSendAnonymousStats(SendStatsCheckButton.Active);
+			this.Config.SetViewportBackgroundColour(this.ViewportColourButton.Rgba);
+			this.Config.SetDefaultExportDirectory(this.DefaultExportDirectoryFileChooserButton.Filename);
+			this.Config.SetDefaultModelFormat((ModelFormat) this.DefaultModelExportFormatComboBox.Active);
+			this.Config.SetDefaultImageFormat((ImageFormat) this.DefaultImageExportFormatComboBox.Active);
+			this.Config.SetDefaultAudioFormat((AudioFormat) this.DefaultAudioExportFormatComboBox.Active);
+			this.Config.SetKeepFileDirectoryStructure(this.KeepDirectoryStructureCheckButton.Active);
+			this.Config.SetAllowSendAnonymousStats(this.SendStatsCheckButton.Active);
 		}
 	}
 }
