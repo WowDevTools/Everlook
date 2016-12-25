@@ -51,8 +51,15 @@ For Debian-based Linux distributions, the following package should suffice:
 * mono-complete (>= 4.4.2.11-0xamarin1)
 
 ### Binary Packages
-Currently, Everlook does not provide any binary packages or installers due to its early state. Packages will, 
-in the future, be available as a debian repository and zip archives. 
+There are a number of ways you could get Everlook. For Windows users, the current method is, unfortunately, limited to downloading and compiling from source. You get the latest version, but it's a bit more of a hassle. In the future, Everlook may become available as an installer.
+
+Ubuntu (and Ubuntu derivations) can simply add this PPA to get the application and a number of other helper packages, such as mime types and the underlying libraries used in the development of Everlook.
+
+* [[PPA] blizzard-development-tools](https://launchpad.net/~jarl-gullberg/+archive/ubuntu/blizzard-dev-tools)
+
+Debian users can manually download packages from the PPA, or add it manually to their sources.list file. Maybe someday it'll be in the main repo? We can hope!
+
+Other Linux users can get tarballs of the binaries from the PPA as well. I plan on figuring out some better format for you soon. If someone who uses Arch sees this, I'd love some help getting it onto the AUR.Currently, Everlook does not provide any binary packages or installers due to its early state.
 
 ### Why?
 World of Warcraft modding and development in general relies on a number of different command-line utilities, halfway finished applications and various pieces of abandonware, many which lack any source code. Furthermore, most of them are written for a specific operating system (most commonly Windows), which limits their use for developers on other systems.

@@ -1,3 +1,15 @@
+everlook (1.0.6203.36079-1) xenial; urgency=medium
+
+  * Manually expanded clillibs.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Sun, 25 Dec 2016 20:02:39 +0100
+
+everlook (1.0.6203.35376-1) xenial; urgency=medium
+
+  * Fixed missing copy path in build script.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Sun, 25 Dec 2016 19:39:14 +0100
+
 everlook (1.0.6203.35136-1) xenial; urgency=medium
 
   * Added libgtk3.0-cil to dependencies.

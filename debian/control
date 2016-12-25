@@ -15,9 +15,20 @@ Homepage: https://github.com/WoWDevTools/Everlook
 Package: everlook
 Section: cli-mono
 Architecture: any
-Depends: ${cli:Depends}, 
-	${misc:Depends},
-	libgtk3.0-cil
+Depends: ${misc:Depends},
+	libgtk3.0-cil,
+	libgl1-mesa-glx | nvidia-current,
+	libopenal1,
+	libudev1,
+	libinput10,
+	libdrm2,
+	libgbm1,
+	libx11-6,
+	libsdl2-2.0-0,
+	libalut0,
+	libgdiplus,
+	libxxf86vm1,
+	libxrandr2
 Description: Everlook is a cross-platform, open-source World of Warcraft model viewer, 
  created to showcase the capabilities of libwarcraft.
  .
