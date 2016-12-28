@@ -39,7 +39,7 @@ namespace Everlook
 			});
 
 			// GTK
-			EmbeddedIconManager.LoadBuiltInIcons();
+			IconManager.LoadEmbeddedIcons();
 			Application.Init();
 			MainWindow win = MainWindow.Create();
 			win.Show();

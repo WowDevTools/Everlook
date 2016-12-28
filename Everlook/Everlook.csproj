@@ -84,7 +84,7 @@
     <Compile Include="UI\MainWindowElements.cs">
       <DependentUpon>"MainWindow.cs"</DependentUpon>
     </Compile>
-    <Compile Include="Utility\EmbeddedIconManager.cs" />
+    <Compile Include="Utility\IconManager.cs" />
     <Compile Include="Utility\ModelLoadingRoutines.cs" />
     <Compile Include="Viewport\Camera\CameraMovement.cs" />
     <Compile Include="Viewport\Camera\ViewportCamera.cs" />
@@ -126,6 +126,8 @@
     <EmbeddedResource Include="Content\Icons\Blender-Planet-Icon.svg" />
     <EmbeddedResource Include="Content\Icons\Blender-Wave-Icon.svg" />
     <EmbeddedResource Include="Content\Icons\applications-other.png" />
+	<EmbeddedResource Include="Content\Icons\empty.png" />
+    <EmbeddedResource Include="Content\Icons\package-x-generic.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
