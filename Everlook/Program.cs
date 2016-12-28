@@ -21,6 +21,7 @@
 //
 
 using Everlook.UI;
+using Everlook.Utility;
 using Gtk;
 using OpenTK;
 
@@ -37,8 +38,8 @@ namespace Everlook
 				EnableHighResolution = true
 			});
 
-
 			// GTK
+			EmbeddedIconManager.LoadBuiltInIcons();
 			Application.Init();
 			MainWindow win = MainWindow.Create();
 			win.Show();

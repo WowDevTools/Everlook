@@ -84,6 +84,7 @@
     <Compile Include="UI\MainWindowElements.cs">
       <DependentUpon>"MainWindow.cs"</DependentUpon>
     </Compile>
+    <Compile Include="Utility\EmbeddedIconManager.cs" />
     <Compile Include="Utility\ModelLoadingRoutines.cs" />
     <Compile Include="Viewport\Camera\CameraMovement.cs" />
     <Compile Include="Viewport\Camera\ViewportCamera.cs" />
@@ -124,10 +125,10 @@
     <EmbeddedResource Include="Content\Icons\Blender-Object-Icon.svg" />
     <EmbeddedResource Include="Content\Icons\Blender-Planet-Icon.svg" />
     <EmbeddedResource Include="Content\Icons\Blender-Wave-Icon.svg" />
+    <EmbeddedResource Include="Content\Icons\applications-other.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
-    <Folder Include="Content\Icons" />
     <Folder Include="Content\Shaders\Adapted\WorldModel" />
     <Folder Include="Export" />
     <Folder Include="Export\" />

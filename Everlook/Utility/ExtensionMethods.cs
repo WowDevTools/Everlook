@@ -109,55 +109,55 @@ namespace Everlook.Utility
 			}
 			else if (file.EndsWith(".blp") || file.EndsWith(".jpg") || file.EndsWith(".gif") || file.EndsWith(".png"))
 			{
-				icon = IconTheme.Default.LoadIcon("image-x-generic", 16, 0);
+				icon = IconTheme.Default.LoadIcon("image-x-generic", 16, IconLookupFlags.GenericFallback);
 			}
 			else if (file.EndsWith(".wav") || file.EndsWith(".mp3") || file.EndsWith(".ogg"))
 			{
-				icon = IconTheme.Default.LoadIcon("audio-x-generic", 16, 0);
+				icon = IconTheme.Default.LoadIcon("audio-x-generic", 16, IconLookupFlags.GenericFallback);
 			}
 			else if (file.EndsWith(".txt"))
 			{
-				icon = IconTheme.Default.LoadIcon("text-x-generic", 16, 0);
+				icon = IconTheme.Default.LoadIcon("text-x-generic", 16, IconLookupFlags.GenericFallback);
 			}
 			else if (file.EndsWith(".dbc") || file.EndsWith(".wdt"))
 			{
-				icon = IconTheme.Default.LoadIcon("x-office-spreadsheet", 16, 0);
+				icon = IconTheme.Default.LoadIcon("x-office-spreadsheet", 16, IconLookupFlags.GenericFallback);
 			}
 			else if (file.EndsWith(".exe") || file.EndsWith(".dll"))
 			{
-				icon = IconTheme.Default.LoadIcon("application-x-executable", 16, 0);
+				icon = IconTheme.Default.LoadIcon("application-x-executable", 16, IconLookupFlags.GenericFallback);
 			}
 			else if (file.EndsWith(".wtf") || file.EndsWith(".ini"))
 			{
-				icon = IconTheme.Default.LoadIcon("text-x-script", 16, 0);
+				icon = IconTheme.Default.LoadIcon("text-x-script", 16, IconLookupFlags.GenericFallback);
 			}
 			else if (file.EndsWith(".html") || file.EndsWith(".url"))
 			{
-				icon = IconTheme.Default.LoadIcon("text-html", 16, 0);
+				icon = IconTheme.Default.LoadIcon("text-html", 16, IconLookupFlags.GenericFallback);
 			}
 			else if (file.EndsWith(".pdf"))
 			{
-				icon = IconTheme.Default.LoadIcon("x-office-address-book", 16, 0);
+				icon = IconTheme.Default.LoadIcon("x-office-address-book", 16, IconLookupFlags.GenericFallback);
 			}
 			else if (file.EndsWith(".ttf"))
 			{
-				icon = IconTheme.Default.LoadIcon("font-x-generic", 16, 0);
+				icon = IconTheme.Default.LoadIcon("font-x-generic", 16, IconLookupFlags.GenericFallback);
 			}
 			else if (file.EndsWith(".wdl"))
 			{
-				icon = IconTheme.Default.LoadIcon("text-x-generic-template", 16, 0);
+				icon = IconTheme.Default.LoadIcon("text-x-generic-template", 16, IconLookupFlags.GenericFallback);
 			}
 			else if (file.EndsWith(".sbt"))
 			{
-				icon = IconTheme.Default.LoadIcon("text-x-generic", 16, 0);
+				icon = IconTheme.Default.LoadIcon("text-x-generic", 16, IconLookupFlags.GenericFallback);
 			}
 			else if (file.EndsWith(".zmp"))
 			{
-				icon = IconTheme.Default.LoadIcon("application-x-executable", 16, 0);
+				icon = IconTheme.Default.LoadIcon("application-x-executable", 16, IconLookupFlags.GenericFallback);
 			}
 			else if (file.EndsWith(".xml"))
 			{
-				icon = IconTheme.Default.LoadIcon("text-x-generic", 16, 0);
+				icon = IconTheme.Default.LoadIcon("text-x-generic", 16, IconLookupFlags.GenericFallback);
 			}
 
 			return icon;
@@ -165,17 +165,17 @@ namespace Everlook.Utility
 
 		private static Pixbuf LoadEmbeddedVector(string vectorName)
 		{
-			using (Stream shaderStream =
+			using (Stream vectorStream =
 				Assembly.GetExecutingAssembly().GetManifestResourceStream($"Everlook.Content.Icons.{vectorName}.svg"))
 			{
-				if (shaderStream == null)
+				if (vectorStream == null)
 				{
 					return null;
 				}
 
 				using (MemoryStream ms = new MemoryStream())
 				{
-					shaderStream.CopyTo(ms);
+					vectorStream.CopyTo(ms);
 
 					return new Pixbuf(ms.ToArray(), 16, 16);
 				}
