@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e1530823-c830-4766-9a26-23e259a4f4f1" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/SlimTK" afterPath="$PROJECT_DIR$/lib/SlimTK" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/liblistfile" afterPath="$PROJECT_DIR$/lib/liblistfile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.idea.Everlook/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/.idea.Everlook/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.idea.Everlook/riderModule.iml" afterPath="$PROJECT_DIR$/.idea/.idea.Everlook/riderModule.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/appveyor.yml" afterPath="$PROJECT_DIR$/appveyor.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/debian/changelog" afterPath="$PROJECT_DIR$/debian/changelog" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/debian/control" afterPath="$PROJECT_DIR$/debian/control" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/debian/rules" afterPath="$PROJECT_DIR$/debian/rules" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/GLWidgetGTK3/GLWidget.cs" afterPath="$PROJECT_DIR$/lib/GLWidgetGTK3/GLWidget.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Everlook/UI/EverlookPreferences.cs" afterPath="$PROJECT_DIR$/Everlook/UI/EverlookPreferences.cs" />
     </list>
     <ignored path="Everlook.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,8 +22,8 @@
     <favorites_list name="Everlook" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="Program.cs" pinned="false" current-in-tab="true">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="Program.cs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Everlook/Program.cs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="525">
@@ -48,6 +40,40 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="EverlookPreferences.cs" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Everlook/UI/EverlookPreferences.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="512">
+              <caret line="142" column="65" lean-forward="true" selection-start-line="142" selection-start-column="65" selection-end-line="142" selection-end-column="65" />
+              <folding>
+                <marker date="1482932893465" expanded="true" signature="0:795" ph="/* EverlookPreferences.cs ... */" />
+                <marker date="1482932893465" expanded="true" signature="803:1002" ph="..." />
+                <marker date="1482932893465" expanded="true" signature="1025:5749" ph="{...}" />
+                <marker date="1482932893465" expanded="true" signature="1029:1254" ph="/// Everlook preferences dialog. The &quot;partial&quot; qualifier is not strictly needed, but prevents the compiler from ... " />
+                <marker date="1482932893465" expanded="true" signature="1305:5747" ph="{...}" />
+                <marker date="1482932893465" expanded="true" signature="1394:1506" ph="/// Creates an instance of the Preferences dialog, using the glade XML UI file. ... " />
+                <marker date="1482932893465" expanded="true" signature="1551:1745" ph="{...}" />
+                <marker date="1482932893465" expanded="true" signature="1749:1960" ph="/// Initializes a new instance of the &lt;see cref=&quot;Everlook.UI.EverlookPreferences&quot;/&gt; class. ... " />
+                <marker date="1482932893465" expanded="true" signature="2042:2224" ph="{...}" />
+                <marker date="1482932893465" expanded="true" signature="2228:2383" ph="/// Handles the add path button clicked event. ... " />
+                <marker date="1482932893465" expanded="true" signature="2451:3047" ph="{...}" />
+                <marker date="1482932893465" expanded="true" signature="2713:2995" ph="{...}" />
+                <marker date="1482932893465" expanded="true" signature="2851:2990" ph="{...}" />
+                <marker date="1482932893465" expanded="true" signature="3051:3209" ph="/// Handles the remove path button clicked event. ... " />
+                <marker date="1482932893465" expanded="true" signature="3280:3648" ph="{...}" />
+                <marker date="1482932893465" expanded="true" signature="3443:3644" ph="{...}" />
+                <marker date="1482932893465" expanded="true" signature="3652:3753" ph="/// Loads the preferences from disk, setting their values in the UI. ... " />
+                <marker date="1482932893465" expanded="true" signature="3786:4706" ph="{...}" />
+                <marker date="1482932893465" expanded="true" signature="3857:3967" ph="{...}" />
+                <marker date="1482932893465" expanded="true" signature="3898:3962" ph="{...}" />
+                <marker date="1482932893465" expanded="true" signature="4119:4240" ph="{...}" />
+                <marker date="1482932893465" expanded="true" signature="4710:4807" ph="/// Saves the selected preferences to disk from the UI elements. ... " />
+                <marker date="1482932893465" expanded="true" signature="4839:5744" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FindInProjectRecents">
@@ -56,6 +82,7 @@
       <find>Stopwatch</find>
       <find>Activated</find>
       <find>libGL</find>
+      <find>FileChooserDialog.</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -64,7 +91,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$USER_HOME$/Everlook/UI/EverlookPreferences.cs" />
         <option value="$USER_HOME$/Everlook/UI/EverlookImageExportDialog.cs" />
         <option value="$USER_HOME$/Everlook/UI/EverlookImageExportDialogElements.cs" />
         <option value="$USER_HOME$/Everlook/UI/EverlookDirectoryExportDialogElements.cs" />
@@ -115,6 +141,7 @@
         <option value="$PROJECT_DIR$/lib/liblistfile/lib/libwarcraft/libwarcraft/Core/WarcraftFileType.cs" />
         <option value="$PROJECT_DIR$/lib/GLWidgetGTK3/GLWidget.cs" />
         <option value="$PROJECT_DIR$/Everlook/Program.cs" />
+        <option value="$PROJECT_DIR$/Everlook/UI/EverlookPreferences.cs" />
       </list>
     </option>
   </component>
@@ -176,6 +203,24 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="Everlook" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook (5 projects)" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Everlook" />
+              <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="UI" />
               <option name="myItemType" value="com.jetbrains.resharper.projectView.solutionExplorer.SolutionExplorerNodeRider" />
             </PATH_ELEMENT>
           </PATH>
@@ -302,11 +347,12 @@
       <workItem from="1482686036114" duration="3216000" />
       <workItem from="1482695125092" duration="2008000" />
       <workItem from="1482839613248" duration="136000" />
+      <workItem from="1482932747408" duration="153000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="98739000" />
+    <option name="totallyTimeSpent" value="98892000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -321,28 +367,28 @@
     <frame x="0" y="0" width="1920" height="1050" extended-state="0" />
     <editor active="true" />
     <layout>
+      <window_info id="Change Signature" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21237993" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Errors in solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15368196" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4073252" sideWeight="0.4914621" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16519824" sideWeight="0.5832444" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32963374" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="UnitTesting" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20864461" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32929516" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="NuGet" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5011013" sideWeight="0.5096051" order="11" side_tool="true" content_ui="tabs" />
-      <window_info id="Change Signature" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21024546" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4073252" sideWeight="0.4914621" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20864461" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36847946" sideWeight="0.4903949" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="SvgViewer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32963374" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32852387" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36847946" sideWeight="0.4903949" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -364,7 +410,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/lib/SlimTK/SlimTK/ViewportF.cs" />
     <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/42E0BC73-3F35-4A27-8EB2-A33F1B3C196E/60/c26b0e03/GraphicsContextFlags.cs" />
     <entry file="file://$USER_HOME$/.local/share/JetBrains/Shared/v07/DecompilerCache/decompiler/42E0BC73-3F35-4A27-8EB2-A33F1B3C196E/11/dd407d56/GraphicsMode.cs" />
     <entry file="file://$USER_HOME$/Everlook/Program.cs" />
@@ -563,6 +608,38 @@
             <marker date="1482839732865" expanded="true" signature="883:1174" ph="{...}" />
             <marker date="1482839732865" expanded="true" signature="914:1171" ph="{...}" />
             <marker date="1482839732865" expanded="true" signature="970:1052" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Everlook/UI/EverlookPreferences.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="512">
+          <caret line="142" column="65" lean-forward="true" selection-start-line="142" selection-start-column="65" selection-end-line="142" selection-end-column="65" />
+          <folding>
+            <marker date="1482932893465" expanded="true" signature="0:795" ph="/* EverlookPreferences.cs ... */" />
+            <marker date="1482932893465" expanded="true" signature="803:1002" ph="..." />
+            <marker date="1482932893465" expanded="true" signature="1025:5749" ph="{...}" />
+            <marker date="1482932893465" expanded="true" signature="1029:1254" ph="/// Everlook preferences dialog. The &quot;partial&quot; qualifier is not strictly needed, but prevents the compiler from ... " />
+            <marker date="1482932893465" expanded="true" signature="1305:5747" ph="{...}" />
+            <marker date="1482932893465" expanded="true" signature="1394:1506" ph="/// Creates an instance of the Preferences dialog, using the glade XML UI file. ... " />
+            <marker date="1482932893465" expanded="true" signature="1551:1745" ph="{...}" />
+            <marker date="1482932893465" expanded="true" signature="1749:1960" ph="/// Initializes a new instance of the &lt;see cref=&quot;Everlook.UI.EverlookPreferences&quot;/&gt; class. ... " />
+            <marker date="1482932893465" expanded="true" signature="2042:2224" ph="{...}" />
+            <marker date="1482932893465" expanded="true" signature="2228:2383" ph="/// Handles the add path button clicked event. ... " />
+            <marker date="1482932893465" expanded="true" signature="2451:3047" ph="{...}" />
+            <marker date="1482932893465" expanded="true" signature="2713:2995" ph="{...}" />
+            <marker date="1482932893465" expanded="true" signature="2851:2990" ph="{...}" />
+            <marker date="1482932893465" expanded="true" signature="3051:3209" ph="/// Handles the remove path button clicked event. ... " />
+            <marker date="1482932893465" expanded="true" signature="3280:3648" ph="{...}" />
+            <marker date="1482932893465" expanded="true" signature="3443:3644" ph="{...}" />
+            <marker date="1482932893465" expanded="true" signature="3652:3753" ph="/// Loads the preferences from disk, setting their values in the UI. ... " />
+            <marker date="1482932893465" expanded="true" signature="3786:4706" ph="{...}" />
+            <marker date="1482932893465" expanded="true" signature="3857:3967" ph="{...}" />
+            <marker date="1482932893465" expanded="true" signature="3898:3962" ph="{...}" />
+            <marker date="1482932893465" expanded="true" signature="4119:4240" ph="{...}" />
+            <marker date="1482932893465" expanded="true" signature="4710:4807" ph="/// Saves the selected preferences to disk from the UI elements. ... " />
+            <marker date="1482932893465" expanded="true" signature="4839:5744" ph="{...}" />
           </folding>
         </state>
       </provider>

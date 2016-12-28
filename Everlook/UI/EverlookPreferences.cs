@@ -146,7 +146,7 @@ namespace Everlook.UI
 				});
 
 			this.Config.SetViewportBackgroundColour(this.ViewportColourButton.Rgba);
-			this.Config.SetDefaultExportDirectory(this.DefaultExportDirectoryFileChooserButton.Filename);
+			this.Config.SetDefaultExportDirectory(new Uri(this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri).LocalPath);
 			this.Config.SetDefaultModelFormat((ModelFormat) this.DefaultModelExportFormatComboBox.Active);
 			this.Config.SetDefaultImageFormat((ImageFormat) this.DefaultImageExportFormatComboBox.Active);
 			this.Config.SetDefaultAudioFormat((AudioFormat) this.DefaultAudioExportFormatComboBox.Active);
