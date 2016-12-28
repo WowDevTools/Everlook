@@ -1,3 +1,70 @@
+everlook (1.0.6206.22366-1) xenial; urgency=medium
+
+  * Readded libGL package to build-deps.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 12:25:34 +0100
+
+everlook (1.0.6206.22160-1) xenial; urgency=medium
+
+  * Removed GLWidget dllmap, might help
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 12:18:42 +0100
+
+everlook (1.0.6206.21957-1) xenial; urgency=medium
+
+  * Readded libGL dev packages to build-deps.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 12:11:56 +0100
+
+everlook (1.0.6206.21787-1) xenial; urgency=medium
+
+  * Progress! No more undefined shlibs entries.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 12:06:14 +0100
+
+everlook (1.0.6206.21564-1) xenial; urgency=medium
+
+  * Added shlibs.local.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 11:58:49 +0100
+
+everlook (1.0.6206.3935-1) xenial; urgency=medium
+
+  * Here's hoping
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 02:11:11 +0100
+
+everlook (1.0.6206.3575-1) xenial; urgency=medium
+
+  * Learning some more
+  * Please
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 01:59:12 +0100
+
+everlook (1.0.6206.3445-1) xenial; urgency=medium
+
+  * Ok, we're learning
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 01:54:51 +0100
+
+everlook (1.0.6206.3240-1) xenial; urgency=medium
+
+  * ARGH
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 01:48:01 +0100
+
+everlook (1.0.6206.2957-1) xenial; urgency=medium
+
+  * Adding all of OpenTK's build dependencies. We'll be able to remove all of these later.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 01:38:35 +0100
+
+everlook (1.0.6206.2690-1) xenial; urgency=medium
+
+  * More dependency changes.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 01:29:41 +0100
+
 everlook (1.0.6206.2414-1) xenial; urgency=medium
 
   * Keeping at it.

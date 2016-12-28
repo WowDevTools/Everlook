@@ -1,0 +1,5 @@
+libXxf86vm 1 libxxf86vm1 (>= 1:1.1.4-1)
+libGLESv1_CM 1 libgles1-mesa (>= 11.2.0)
+libopenal 1 libopenal1 (>= 1:1.16.0-3)
+libSDL2-2.0 0 libsdl2-2.0-0 (>= 2.0.4)
+libinput 10 libinput10 (>= 1.2.3)

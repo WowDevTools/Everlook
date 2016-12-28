@@ -3,11 +3,14 @@ Priority: optional
 Maintainer: Jarl Gullberg <jarl.gullberg@gmail.com>
 Build-Depends: debhelper (>= 8.0.0), 
 	cli-common-dev (>= 0.8),
-	libmono-cil-dev,
 	mono-mcs (>= 4.0),
-	mono-devel (>= 4.0),
 	mono-xbuild (>= 4.0),
+	libgl1-mesa-glx (>= 11.2.0),
 	libgtk3.0-cil
+Build-Depends-Indep: mono-devel (>= 4.0),
+	libmono-cil-dev,
+	libgl1-mesa-dev, 
+	libglu1-mesa-dev,	
 Standards-Version: 3.9.7
 Section: cli-mono
 Homepage: https://github.com/WoWDevTools/Everlook
@@ -16,8 +19,10 @@ Package: everlook
 Section: cli-mono
 Architecture: any
 Depends: ${cli:Depends},
+	${shlibs:Depends},
 	${misc:Depends},
 	libgtk3.0-cil
+Suggests: nvidia-libopencl1-dev | fglrx | fglrx-updates | nvidia-current | nvidia-current-updates
 Description: This program is a cross-platform, open-source World of Warcraft model viewer, 
  created to showcase the capabilities of libwarcraft.
  .
@@ -46,4 +51,4 @@ Description: This program is a cross-platform, open-source World of Warcraft mod
   - Standard models are not rendered in the viewport.
  .
  If you want to help out, I'll gladly accept pull requests and patches for the 
- code. 
+ code.
