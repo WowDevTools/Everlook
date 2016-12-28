@@ -55,14 +55,15 @@ namespace Everlook.Utility
 					)
 				);
 
-			foreach (string manifestIcon in manifestIcons)
+			foreach (string manifestIconName in manifestIcons)
 			{
-				string iconNameWithExtension = manifestIcon.Substring(manifestIcon.IndexOf("Icons.", StringComparison.Ordinal) +
-				                                                      "Icons.".Length);
-				string iconName = Path.GetFileNameWithoutExtension(iconNameWithExtension);
+				// Grab the second to last part of the resource name, that is, the filename before the extension.
+				// Note that this assumes that there is only a single extension.
+				string[] manifestNameParts = manifestIconName.Split('.');
+				string iconName = manifestNameParts.ElementAt(manifestNameParts.Length - 2);
 
 
-				Pixbuf iconBuffer = LoadEmbeddedImage(manifestIcon);
+				Pixbuf iconBuffer = LoadEmbeddedImage(manifestIconName);
 				if (iconBuffer != null)
 				{
 					IconTheme.AddBuiltinIcon(iconName, 16, iconBuffer);

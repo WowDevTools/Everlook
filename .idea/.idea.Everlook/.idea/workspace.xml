@@ -2,12 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e1530823-c830-4766-9a26-23e259a4f4f1" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Everlook/Utility/EmbeddedIconManager.cs" afterPath="$PROJECT_DIR$/Everlook/Utility/IconManager.cs" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Everlook/Content/Icons/Blender-Armature-Icon.svg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Everlook/Content/Icons/Blender-Object-Icon.svg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Everlook/Content/Icons/Blender-Planet-Icon.svg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Everlook/Content/Icons/Blender-Wave-Icon.svg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Everlook/Content/Icons/applications-other.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Everlook/Content/Icons/empty.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Everlook/Content/Icons/package-x-generic.png" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.idea.Everlook/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/.idea.Everlook/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Everlook/Everlook.csproj" afterPath="$PROJECT_DIR$/Everlook/Everlook.csproj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Everlook/Program.cs" afterPath="$PROJECT_DIR$/Everlook/Program.cs" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Everlook/UI/MainWindow.cs" afterPath="$PROJECT_DIR$/Everlook/UI/MainWindow.cs" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Everlook/Utility/ExtensionMethods.cs" afterPath="$PROJECT_DIR$/Everlook/Utility/ExtensionMethods.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Everlook/Utility/IconManager.cs" afterPath="$PROJECT_DIR$/Everlook/Utility/IconManager.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/debian/copyright" afterPath="$PROJECT_DIR$/debian/copyright" />
     </list>
     <ignored path="Everlook.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -45,52 +50,54 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IconManager.cs" pinned="false" current-in-tab="false">
+      <file leaf-file-name="IconManager.cs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Everlook/Utility/IconManager.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-523">
-              <caret line="106" column="15" lean-forward="false" selection-start-line="106" selection-start-column="15" selection-end-line="106" selection-end-column="15" />
+            <state relative-caret-position="437">
+              <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
               <folding>
-                <marker date="1482944464329" expanded="true" signature="0:783" ph="/* Program.cs ... */" />
-                <marker date="1482944464329" expanded="true" signature="791:927" ph="..." />
-                <marker date="1482944464329" expanded="true" signature="955:6192" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="959:1043" ph="/// Handles loading and providing embedded GTK icons. ... " />
-                <marker date="1482944464329" expanded="true" signature="1076:6190" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="1082:1186" ph="/// Loads all embedded builtin icons into the application's icon theme. ... " />
-                <marker date="1482944464329" expanded="true" signature="2156:2575" ph="/// Loads an embedded image from the resource manifest of a specified width and height. ... " />
-                <marker date="1482944464329" expanded="true" signature="2819:2849" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="3008:3293" ph="/// Gets the specified icon as a pixel buffer. If the icon is not found in the current theme, or ... " />
-                <marker date="1482944464329" expanded="true" signature="3352:3399" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="3425:3570" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="3578:3805" ph="/// Gets the icon that would best represent the provided file. This is ... " />
-                <marker date="1482944464329" expanded="true" signature="3860:5563" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="3958:4013" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="4048:4101" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="4136:4189" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="4274:4325" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="4435:4484" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="4569:4618" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="4653:4701" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="4761:4815" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="4900:4958" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="5018:5065" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="5126:5169" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="5204:5259" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="5294:5342" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="5377:5434" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="5494:5542" ph="{...}" />
-                <marker date="1482944464329" expanded="true" signature="5567:6026" ph="/// Loads the pixel buffer for the specified icon. This method is unchecked and can ... " />
-                <marker date="1482944464329" expanded="true" signature="6097:6187" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="0:783" ph="/* Program.cs ... */" />
+                <marker date="1482945636002" expanded="true" signature="791:927" ph="..." />
+                <marker date="1482945636002" expanded="true" signature="955:6242" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="959:1043" ph="/// Handles loading and providing embedded GTK icons. ... " />
+                <marker date="1482945636002" expanded="true" signature="1076:6240" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="1082:1186" ph="/// Loads all embedded builtin icons into the application's icon theme. ... " />
+                <marker date="1482945636002" expanded="true" signature="1714:2198" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="1724:1890" ph="/* Grab the second to last part of the resource name, that is, the filename before the extension. ... */" />
+                <marker date="1482945636002" expanded="true" signature="2206:2625" ph="/// Loads an embedded image from the resource manifest of a specified width and height. ... " />
+                <marker date="1482945636002" expanded="true" signature="2869:2899" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="3058:3343" ph="/// Gets the specified icon as a pixel buffer. If the icon is not found in the current theme, or ... " />
+                <marker date="1482945636002" expanded="true" signature="3402:3449" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="3475:3620" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="3628:3855" ph="/// Gets the icon that would best represent the provided file. This is ... " />
+                <marker date="1482945636002" expanded="true" signature="3910:5613" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="4008:4063" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="4098:4151" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="4186:4239" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="4324:4375" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="4485:4534" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="4619:4668" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="4703:4751" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="4811:4865" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="4950:5008" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="5068:5115" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="5176:5219" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="5254:5309" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="5344:5392" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="5427:5484" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="5544:5592" ph="{...}" />
+                <marker date="1482945636002" expanded="true" signature="5617:6076" ph="/// Loads the pixel buffer for the specified icon. This method is unchecked and can ... " />
+                <marker date="1482945636002" expanded="true" signature="6147:6237" ph="{...}" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MainWindow.cs" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MainWindow.cs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Everlook/UI/MainWindow.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5882">
-              <caret line="1223" column="36" lean-forward="true" selection-start-line="1223" selection-start-column="36" selection-end-line="1223" selection-end-column="36" />
+            <state relative-caret-position="5702">
+              <caret line="1223" column="36" lean-forward="false" selection-start-line="1223" selection-start-column="36" selection-end-line="1223" selection-end-column="36" />
               <folding>
                 <marker date="1482944485597" expanded="true" signature="0:786" ph="/* MainWindow.cs ... */" />
                 <marker date="1482944485597" expanded="true" signature="794:1288" ph="..." />
@@ -477,9 +484,9 @@
         <option value="$PROJECT_DIR$/Everlook/UI/EverlookPreferences.cs" />
         <option value="$PROJECT_DIR$/Everlook/Program.cs" />
         <option value="$PROJECT_DIR$/Everlook/Utility/EmbeddedIconManager.cs" />
-        <option value="$PROJECT_DIR$/Everlook/Utility/IconManager.cs" />
         <option value="$PROJECT_DIR$/Everlook/Utility/ExtensionMethods.cs" />
         <option value="$PROJECT_DIR$/Everlook/UI/MainWindow.cs" />
+        <option value="$PROJECT_DIR$/Everlook/Utility/IconManager.cs" />
       </list>
     </option>
   </component>
@@ -798,12 +805,12 @@
       <workItem from="1482686036114" duration="3216000" />
       <workItem from="1482695125092" duration="2008000" />
       <workItem from="1482839613248" duration="136000" />
-      <workItem from="1482932747408" duration="5268000" />
+      <workItem from="1482932747408" duration="6304000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="104007000" />
+    <option name="totallyTimeSpent" value="105043000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -816,7 +823,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="-1" width="1920" height="1050" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Errors in solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15368196" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -831,7 +838,7 @@
       <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4073252" sideWeight="0.4914621" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20864461" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36847946" sideWeight="0.4903949" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36847946" sideWeight="0.4903949" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="SvgViewer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -852,11 +859,17 @@
           <properties exception="System.Exception" />
           <option name="timeStamp" value="25" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Everlook/Utility/IconManager.cs</url>
+          <line>65</line>
+          <properties startOffset="2040" endOffset="2096" documentPath="$PROJECT_DIR$/Everlook/Utility/IconManager.cs" />
+          <option name="timeStamp" value="77" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="77" />
+      <option name="time" value="78" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1170,45 +1183,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Everlook/Utility/IconManager.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-523">
-          <caret line="106" column="15" lean-forward="false" selection-start-line="106" selection-start-column="15" selection-end-line="106" selection-end-column="15" />
-          <folding>
-            <marker date="1482944464329" expanded="true" signature="0:783" ph="/* Program.cs ... */" />
-            <marker date="1482944464329" expanded="true" signature="791:927" ph="..." />
-            <marker date="1482944464329" expanded="true" signature="955:6192" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="959:1043" ph="/// Handles loading and providing embedded GTK icons. ... " />
-            <marker date="1482944464329" expanded="true" signature="1076:6190" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="1082:1186" ph="/// Loads all embedded builtin icons into the application's icon theme. ... " />
-            <marker date="1482944464329" expanded="true" signature="2156:2575" ph="/// Loads an embedded image from the resource manifest of a specified width and height. ... " />
-            <marker date="1482944464329" expanded="true" signature="2819:2849" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="3008:3293" ph="/// Gets the specified icon as a pixel buffer. If the icon is not found in the current theme, or ... " />
-            <marker date="1482944464329" expanded="true" signature="3352:3399" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="3425:3570" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="3578:3805" ph="/// Gets the icon that would best represent the provided file. This is ... " />
-            <marker date="1482944464329" expanded="true" signature="3860:5563" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="3958:4013" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="4048:4101" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="4136:4189" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="4274:4325" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="4435:4484" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="4569:4618" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="4653:4701" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="4761:4815" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="4900:4958" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="5018:5065" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="5126:5169" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="5204:5259" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="5294:5342" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="5377:5434" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="5494:5542" ph="{...}" />
-            <marker date="1482944464329" expanded="true" signature="5567:6026" ph="/// Loads the pixel buffer for the specified icon. This method is unchecked and can ... " />
-            <marker date="1482944464329" expanded="true" signature="6097:6187" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Everlook/Utility/ExtensionMethods.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="767">
@@ -1239,8 +1213,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Everlook/UI/MainWindow.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5882">
-          <caret line="1223" column="36" lean-forward="true" selection-start-line="1223" selection-start-column="36" selection-end-line="1223" selection-end-column="36" />
+        <state relative-caret-position="5702">
+          <caret line="1223" column="36" lean-forward="false" selection-start-line="1223" selection-start-column="36" selection-end-line="1223" selection-end-column="36" />
           <folding>
             <marker date="1482944485597" expanded="true" signature="0:786" ph="/* MainWindow.cs ... */" />
             <marker date="1482944485597" expanded="true" signature="794:1288" ph="..." />
@@ -1440,6 +1414,47 @@
             <marker date="1482944485597" expanded="true" signature="42387:42516" ph="/// Model control page. Handles vertex joining, geoset rendering and other model ... " />
             <marker date="1482944485597" expanded="true" signature="42533:42639" ph="/// Animation control page. Handles active animations and their settings. ... " />
             <marker date="1482944485597" expanded="true" signature="42660:42743" ph="/// Audio control page. Handles playback of audio. ... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Everlook/Utility/IconManager.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+          <folding>
+            <marker date="1482945636002" expanded="true" signature="0:783" ph="/* Program.cs ... */" />
+            <marker date="1482945636002" expanded="true" signature="791:927" ph="..." />
+            <marker date="1482945636002" expanded="true" signature="955:6242" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="959:1043" ph="/// Handles loading and providing embedded GTK icons. ... " />
+            <marker date="1482945636002" expanded="true" signature="1076:6240" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="1082:1186" ph="/// Loads all embedded builtin icons into the application's icon theme. ... " />
+            <marker date="1482945636002" expanded="true" signature="1714:2198" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="1724:1890" ph="/* Grab the second to last part of the resource name, that is, the filename before the extension. ... */" />
+            <marker date="1482945636002" expanded="true" signature="2206:2625" ph="/// Loads an embedded image from the resource manifest of a specified width and height. ... " />
+            <marker date="1482945636002" expanded="true" signature="2869:2899" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="3058:3343" ph="/// Gets the specified icon as a pixel buffer. If the icon is not found in the current theme, or ... " />
+            <marker date="1482945636002" expanded="true" signature="3402:3449" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="3475:3620" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="3628:3855" ph="/// Gets the icon that would best represent the provided file. This is ... " />
+            <marker date="1482945636002" expanded="true" signature="3910:5613" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="4008:4063" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="4098:4151" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="4186:4239" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="4324:4375" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="4485:4534" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="4619:4668" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="4703:4751" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="4811:4865" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="4950:5008" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="5068:5115" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="5176:5219" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="5254:5309" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="5344:5392" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="5427:5484" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="5544:5592" ph="{...}" />
+            <marker date="1482945636002" expanded="true" signature="5617:6076" ph="/// Loads the pixel buffer for the specified icon. This method is unchecked and can ... " />
+            <marker date="1482945636002" expanded="true" signature="6147:6237" ph="{...}" />
           </folding>
         </state>
       </provider>
