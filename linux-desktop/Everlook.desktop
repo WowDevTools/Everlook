@@ -6,4 +6,4 @@ Exec=everlook
 Icon=weather-snow
 Terminal=false
 Categories=Game;Development;
-Name[en_US]=Everlook
+Name=Everlook

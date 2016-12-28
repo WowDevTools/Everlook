@@ -1,3 +1,75 @@
+everlook (1.0.6206.2414-1) xenial; urgency=medium
+
+  * Keeping at it.
+  * Building only source for PPA.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 01:20:29 +0100
+
+everlook (1.0.6206.2146-1) xenial; urgency=medium
+
+  * Once more...
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 01:11:34 +0100
+
+everlook (1.0.6206.2064-1) xenial; urgency=medium
+
+  * And again...
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 01:08:48 +0100
+
+everlook (1.0.6206.1993-1) xenial; urgency=medium
+
+  * Rebuild of just the source packages.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 01:06:27 +0100
+
+everlook (1.0.6206.1707-1) xenial; urgency=medium
+
+  * Trying to find the last bits of the dh_clideps that isn't working.
+  * Finally found the missing DLLMap entries.
+  * Fixed some issues in the control file.
+  * Fixed broken dependency injection.
+  * Initial release on PPA.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 00:56:55 +0100
+
+everlook (1.0.6203.37917-1) xenial; urgency=medium
+
+  * Forgot invalid option in rules file.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Sun, 25 Dec 2016 21:03:55 +0100
+
+everlook (1.0.6203.37770-1) xenial; urgency=medium
+
+  * More exclusions.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Sun, 25 Dec 2016 20:59:01 +0100
+
+everlook (1.0.6203.37492-1) xenial; urgency=medium
+
+  * Comments not allowed in multiline commands, got it.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Sun, 25 Dec 2016 20:49:45 +0100
+
+everlook (1.0.6203.37214-1) xenial; urgency=medium
+
+  * Added windows exclusions for dh_clilibs.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Sun, 25 Dec 2016 20:40:30 +0100
+
+everlook (1.0.6203.36781-1) xenial; urgency=medium
+
+  * Excluded additional mac clilibs.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Sun, 25 Dec 2016 20:26:04 +0100
+
+everlook (1.0.6203.36508-1) xenial; urgency=medium
+
+  * Readded cli:Depends.
+  * Overrode some options for dh_clideps.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Sun, 25 Dec 2016 20:16:57 +0100
+
 everlook (1.0.6203.36079-1) xenial; urgency=medium
 
   * Manually expanded clillibs.
@@ -29,7 +101,7 @@ everlook (1.0.6203.34590-1) xenial; urgency=medium
   * Made tarball always lower-case.
   * This release bundles all libraries, which will change in a later release.
 
- -- Jarl <jarl@nessie>  Sun, 25 Dec 2016 19:13:01 +0100
+ -- Jarl <jarl.gullberg@gmail.com>  Sun, 25 Dec 2016 19:13:01 +0100
 
 everlook (1.0) xenial; urgency=medium
 

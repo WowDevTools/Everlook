@@ -163,7 +163,9 @@ namespace OpenTK
 		private static void OnGraphicsContextInitialized()
 		{
 			if (GraphicsContextInitialized != null)
+			{
 				GraphicsContextInitialized(null, EventArgs.Empty);
+			}
 		}
 
 		// Called when the first GraphicsContext is being destroyed in the case of GraphicsContext.ShareContexts == True;
@@ -172,7 +174,9 @@ namespace OpenTK
 		private static void OnGraphicsContextShuttingDown()
 		{
 			if (GraphicsContextShuttingDown != null)
+			{
 				GraphicsContextShuttingDown(null, EventArgs.Empty);
+			}
 		}
 
 		// Called when this GLWidget has a valid GraphicsContext
@@ -181,7 +185,9 @@ namespace OpenTK
 		protected virtual void OnInitialized()
 		{
 			if (Initialized != null)
+			{
 				Initialized(this, EventArgs.Empty);
+			}
 		}
 
 		// Called when this GLWidget needs to render a frame
@@ -190,7 +196,9 @@ namespace OpenTK
 		protected virtual void OnRenderFrame()
 		{
 			if (RenderFrame != null)
+			{
 				RenderFrame(this, EventArgs.Empty);
+			}
 		}
 
 		// Called when this GLWidget is being Disposed
@@ -199,7 +207,9 @@ namespace OpenTK
 		protected virtual void OnShuttingDown()
 		{
 			if (ShuttingDown != null)
+			{
 				ShuttingDown(this, EventArgs.Empty);
+			}
 		}
 
 		#endregion
@@ -211,11 +221,15 @@ namespace OpenTK
 		protected override bool OnDrawn(Cairo.Context cr)
         {
 			if (!_Initialized)
+			{
 				Initialize();
+			}
 			else
-				_GraphicsContext.MakeCurrent(_WindowInfo);
+			{
+				this._GraphicsContext.MakeCurrent(this._WindowInfo);
+			}
 
-			bool result = base.OnDrawn(cr);
+	        bool result = base.OnDrawn(cr);
 			OnRenderFrame();
 
 			_GraphicsContext.SwapBuffers();
@@ -229,7 +243,9 @@ namespace OpenTK
 			bool result = base.OnConfigureEvent(evnt);
 
 			if (_GraphicsContext != null)
-				_GraphicsContext.Update(_WindowInfo);
+			{
+				this._GraphicsContext.Update(this._WindowInfo);
+			}
 
 			return result;
 		}
@@ -244,7 +260,9 @@ namespace OpenTK
 				ColorBPP = 32;
 
 				if (DepthBPP == 0)
-					DepthBPP = 16;
+				{
+					this.DepthBPP = 16;
+				}
 			}
 
 			ColorFormat colorBufferColorFormat = new ColorFormat(ColorBPP);
@@ -253,24 +271,38 @@ namespace OpenTK
 
 			int buffers = 2;
 			if (SingleBuffer)
+			{
 				buffers--;
+			}
 
 			GraphicsMode graphicsMode = new GraphicsMode(colorBufferColorFormat, DepthBPP, StencilBPP, Samples, accumulationColorFormat, buffers, Stereo);
 
 			if (Configuration.RunningOnWindows)
+			{
 				Console.WriteLine("OpenTK running on windows");
+			}
 			else if (Configuration.RunningOnMacOS)
+			{
 				Console.WriteLine("OpenTK running on OSX");
+			}
 			else
+			{
 				Console.WriteLine("OpenTK running on X11");
+			}
 
 			// IWindowInfo
 			if (Configuration.RunningOnWindows)
-				_WindowInfo = InitializeWindows();
+			{
+				this._WindowInfo = InitializeWindows();
+			}
 			else if (Configuration.RunningOnMacOS)
-				_WindowInfo = InitializeOSX();
+			{
+				this._WindowInfo = InitializeOSX();
+			}
 			else
-				_WindowInfo = InitializeX(graphicsMode);
+			{
+				this._WindowInfo = InitializeX(graphicsMode);
+			}
 
 			// GraphicsContext
 			_GraphicsContext = new GraphicsContext(graphicsMode, _WindowInfo, GLVersionMajor, GLVersionMinor, GraphicsContextFlags);
@@ -457,10 +489,14 @@ namespace OpenTK
 				attributeList.Add(GLX_RGBA);
 
 				if (!SingleBuffer)
+				{
 					attributeList.Add(GLX_DOUBLEBUFFER);
+				}
 
 				if (Stereo)
+				{
 					attributeList.Add(GLX_STEREO);
+				}
 
 				attributeList.Add(GLX_RED_SIZE);
 				attributeList.Add(ColorBPP / 4); // TODO support 16-bit

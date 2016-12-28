@@ -15,21 +15,10 @@ Homepage: https://github.com/WoWDevTools/Everlook
 Package: everlook
 Section: cli-mono
 Architecture: any
-Depends: ${misc:Depends},
-	libgtk3.0-cil,
-	libgl1-mesa-glx | nvidia-current,
-	libopenal1,
-	libudev1,
-	libinput10,
-	libdrm2,
-	libgbm1,
-	libx11-6,
-	libsdl2-2.0-0,
-	libalut0,
-	libgdiplus,
-	libxxf86vm1,
-	libxrandr2
-Description: Everlook is a cross-platform, open-source World of Warcraft model viewer, 
+Depends: ${cli:Depends},
+	${misc:Depends},
+	libgtk3.0-cil
+Description: This program is a cross-platform, open-source World of Warcraft model viewer, 
  created to showcase the capabilities of libwarcraft.
  .
  Everlook will be capable of browsing, exporting and converting most World of Warcraft
@@ -37,7 +26,8 @@ Description: Everlook is a cross-platform, open-source World of Warcraft model v
  goal is to act as an open, simple and feature-complete replacement for 
  World of Warcraft Model Viewer.
  .
- Currently, Everlook is in early development and may not be usable in your day-to-day activities.
+ Currently, Everlook is in early development and may not be usable in your day-to-day 
+ activities.
  .
  Features:
   - Explore multiple game versions in one application
@@ -50,7 +40,9 @@ Description: Everlook is a cross-platform, open-source World of Warcraft model v
   - No format-specific export functions have been implemented.
   - The export queue does not work beyond the UI.
   - Everlook lacks any testing on Windows-based systems.
-  - The UI becomes sluggish when loading directories with many files in them (mainly Textures/Minimap and Textures/BakedNPCTextures, who both have thousands of files under a single directory).
+  - The UI becomes sluggish when loading directories with many files in them 
+    (mainly Textures/Minimap and Textures/BakedNPCTextures, who both have 
+    thousands of files under a single directory).
   - Standard models are not rendered in the viewport.
  .
  If you want to help out, I'll gladly accept pull requests and patches for the 

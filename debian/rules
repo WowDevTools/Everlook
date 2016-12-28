@@ -11,5 +11,26 @@ override_dh_auto_build:
 	xbuild $(CURDIR)/Everlook.sln /p:Configuration=Release 
 
 override_dh_auto_clean:
-	rm -rf $(CURDIR)/bin
-	rm -rf $(CURDIR)/obj
+	xbuild $(CURDIR)/Everlook.sln /target:Clean
+
+override_dh_clideps:
+	dh_clideps \
+		--exclude-moduleref=/System/Library/Frameworks/Carbon.framework/Versions/Current/Carbon \
+		--exclude-moduleref=/System/Library/Frameworks/ApplicationServices.framework/Versions/Current/ApplicationServices \
+		--exclude-moduleref=/System/Library/Frameworks/AGL.framework/Versions/Current/AGL \
+		--exclude-moduleref=/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL \
+		--exclude-moduleref=/System/Library/Frameworks/OpenGL.framework/OpenGL \
+		--exclude-moduleref=/System/Library/Frameworks/OpenGL.framework/OpenAL \
+		--exclude-moduleref=/System/Library/Frameworks/OpenGL.framework/OpenGLES \
+		--exclude-moduleref=/System/Library/Frameworks/OpenGL.framework/OpenCL \
+		--exclude-moduleref=/System/Library/Frameworks/IOKit.framework/Versions/Current/IOKit \
+		--exclude-moduleref=/usr/lib/libobjc.dylib \
+		--exclude-moduleref=libdl.dylib \
+		--exclude-moduleref=libgdk-quartz-2.0.0.dylib \
+		--exclude-moduleref=libgdk-3-0.dll \
+		--exclude-moduleref=hid.dll \
+		--exclude-moduleref=libEGL.dll \
+		--exclude-moduleref=libGLES.dll \
+		--exclude-moduleref=libGLESv2.dll \
+		--exclude-moduleref=libGLESv1_CM.dll \
+		--exclude-moduleref=libSDL2.dylib
