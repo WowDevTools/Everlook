@@ -39,7 +39,6 @@ using OpenTK.Input;
 using Warcraft.BLP;
 using Warcraft.Core;
 using Application = Gtk.Application;
-using ExtensionMethods = Everlook.Utility.ExtensionMethods;
 using IOPath = System.IO.Path;
 
 namespace Everlook.UI
@@ -102,7 +101,7 @@ namespace Everlook.UI
 				CanFocus = true,
 				SingleBuffer = false,
 				ColorBPP = 24,
-				DepthBPP = 32,
+				DepthBPP = 24,
 				Samples = 4,
 				GLVersionMajor = 3,
 				GLVersionMinor = 3,

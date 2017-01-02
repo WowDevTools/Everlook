@@ -104,7 +104,7 @@ namespace Everlook.Viewport.Camera
 		private float verticalViewAngle;
 
 		/// <summary>
-		/// The bounding frustrum of the camera.
+		/// The bounding frustum of the camera.
 		/// </summary>
 		public BoundingFrustum Frustum { get; private set; }
 
@@ -175,11 +175,11 @@ namespace Everlook.Viewport.Camera
 		}
 
 		/// <summary>
-		/// Recalculates the bounding frustrum of the camera.
+		/// Recalculates the bounding frustum of the camera.
 		/// </summary>
 		/// <param name="viewportWidth"></param>
 		/// <param name="viewportHeight"></param>
-		public void RecalculateFrustrum(int viewportWidth, int viewportHeight)
+		public void RecalculateFrustum(int viewportWidth, int viewportHeight)
 		{
 			float aspectRatio = (float) viewportWidth / (float) viewportHeight;
 

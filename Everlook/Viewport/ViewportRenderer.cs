@@ -54,6 +54,9 @@ namespace Everlook.Viewport
 		/// </summary>
 		private readonly object RenderTargetLock = new object();
 
+		/// <summary>
+		/// Whether or not the renderer currently has an object to render.
+		/// </summary>
 		public bool HasRenderTarget
 		{
 			get { return this.RenderTarget != null; }
@@ -184,8 +187,8 @@ namespace Everlook.Viewport
 		{
 			lock (this.RenderTargetLock)
 			{
-				frameWatch.Reset();
-				frameWatch.Start();
+				this.frameWatch.Reset();
+				this.frameWatch.Start();
 
 				// Make sure the viewport is accurate for the current widget size on screen
 				int widgetWidth = this.ViewportWidget.AllocatedWidth;
@@ -222,7 +225,7 @@ namespace Everlook.Viewport
 					// Then render the visual component
 					Matrix4 view = this.Camera.GetViewMatrix();
 					Matrix4 projection = this.Camera.GetProjectionMatrix(this.RenderTarget.Projection, widgetWidth, widgetHeight);
-					this.Camera.RecalculateFrustrum(widgetWidth, widgetHeight);
+					this.Camera.RecalculateFrustum(widgetWidth, widgetHeight);
 
 					this.RenderTarget.Render(view, projection, this.Camera);
 
@@ -230,8 +233,8 @@ namespace Everlook.Viewport
 
 				}
 
-				frameWatch.Stop();
-				this.deltaTime = (float) frameWatch.Elapsed.TotalMilliseconds / 1000;
+				this.frameWatch.Stop();
+				this.deltaTime = (float) this.frameWatch.Elapsed.TotalMilliseconds / 1000;
 			}
 		}
 

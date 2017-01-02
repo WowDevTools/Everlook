@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Everlook.Package;
+using Everlook.Utility;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
@@ -251,9 +252,18 @@ namespace Everlook.Viewport.Rendering
 				return;
 			}
 
+			// TODO: Fix frustum culling
 			foreach (ModelGroup modelGroup in this.Model.Groups
 				.OrderByDescending(modelGroup => VectorMath.Distance(camera.Position, modelGroup.GetPosition().AsOpenTKVector())))
 			{
+				Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
+				BoundingBox groupBoundingBox = modelGroup.GetBoundingBox().ToOpenGLBoundingBox().Transform(ref modelViewProjection);
+
+				if (camera.Frustum.Contains(groupBoundingBox) == ContainmentType.Disjoint)
+				{
+					continue;
+				}
+
 				RenderGroup(modelGroup, viewMatrix, projectionMatrix);
 			}
 

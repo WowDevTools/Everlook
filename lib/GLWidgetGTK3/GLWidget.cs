@@ -113,17 +113,17 @@ namespace OpenTK
 		{
 			this.DoubleBuffered = false;
 
-			SingleBuffer = graphicsMode.Buffers == 1;
-			ColorBPP = graphicsMode.ColorFormat.BitsPerPixel;
-			AccumulatorBPP = graphicsMode.AccumulatorFormat.BitsPerPixel;
-			DepthBPP = graphicsMode.Depth;
-			StencilBPP = graphicsMode.Stencil;
-			Samples = graphicsMode.Samples;
-			Stereo = graphicsMode.Stereo;
+			this.SingleBuffer = graphicsMode.Buffers == 1;
+			this.ColorBPP = graphicsMode.ColorFormat.BitsPerPixel;
+			this.AccumulatorBPP = graphicsMode.AccumulatorFormat.BitsPerPixel;
+			this.DepthBPP = graphicsMode.Depth;
+			this.StencilBPP = graphicsMode.Stencil;
+			this.Samples = graphicsMode.Samples;
+			this.Stereo = graphicsMode.Stereo;
 
-			GLVersionMajor = glVersionMajor;
-			GLVersionMinor = glVersionMinor;
-			GraphicsContextFlags = graphicsContextFlags;
+			this.GLVersionMajor = glVersionMajor;
+			this.GLVersionMinor = glVersionMinor;
+			this.GraphicsContextFlags = graphicsContextFlags;
 		}
 
 		~GLWidget()
@@ -142,14 +142,14 @@ namespace OpenTK
 		{
 			if (disposing)
 			{
-				_GraphicsContext.MakeCurrent(_WindowInfo);
+				this._GraphicsContext.MakeCurrent(this._WindowInfo);
 				OnShuttingDown();
 				if (GraphicsContext.ShareContexts && (Interlocked.Decrement(ref _GraphicsContextCount) == 0))
 				{
 					OnGraphicsContextShuttingDown();
 					_SharedContextInitialized = false;
 				}
-				_GraphicsContext.Dispose();
+				this._GraphicsContext.Dispose();
 			}
 		}
 
@@ -220,7 +220,7 @@ namespace OpenTK
 		// Called when the widget needs to be (fully or partially) redrawn.
 		protected override bool OnDrawn(Cairo.Context cr)
         {
-			if (!_Initialized)
+			if (!this._Initialized)
 			{
 				Initialize();
 			}
@@ -232,7 +232,7 @@ namespace OpenTK
 	        bool result = base.OnDrawn(cr);
 			OnRenderFrame();
 
-			_GraphicsContext.SwapBuffers();
+	        this._GraphicsContext.SwapBuffers();
 
 			return result;
 		}
@@ -242,7 +242,7 @@ namespace OpenTK
 		{
 			bool result = base.OnConfigureEvent(evnt);
 
-			if (_GraphicsContext != null)
+			if (this._GraphicsContext != null)
 			{
 				this._GraphicsContext.Update(this._WindowInfo);
 			}
@@ -252,30 +252,30 @@ namespace OpenTK
 
 		private void Initialize()
 		{
-			_Initialized = true;
+			this._Initialized = true;
 
 			// If this looks uninitialized...  initialize.
-			if (ColorBPP == 0)
+			if (this.ColorBPP == 0)
 			{
-				ColorBPP = 32;
+				this.ColorBPP = 32;
 
-				if (DepthBPP == 0)
+				if (this.DepthBPP == 0)
 				{
 					this.DepthBPP = 16;
 				}
 			}
 
-			ColorFormat colorBufferColorFormat = new ColorFormat(ColorBPP);
+			ColorFormat colorBufferColorFormat = new ColorFormat(this.ColorBPP);
 
-			ColorFormat accumulationColorFormat = new ColorFormat(AccumulatorBPP);
+			ColorFormat accumulationColorFormat = new ColorFormat(this.AccumulatorBPP);
 
 			int buffers = 2;
-			if (SingleBuffer)
+			if (this.SingleBuffer)
 			{
 				buffers--;
 			}
 
-			GraphicsMode graphicsMode = new GraphicsMode(colorBufferColorFormat, DepthBPP, StencilBPP, Samples, accumulationColorFormat, buffers, Stereo);
+			GraphicsMode graphicsMode = new GraphicsMode(colorBufferColorFormat, this.DepthBPP, this.StencilBPP, this.Samples, accumulationColorFormat, buffers, this.Stereo);
 
 			if (Configuration.RunningOnWindows)
 			{
@@ -305,8 +305,8 @@ namespace OpenTK
 			}
 
 			// GraphicsContext
-			_GraphicsContext = new GraphicsContext(graphicsMode, _WindowInfo, GLVersionMajor, GLVersionMinor, GraphicsContextFlags);
-			_GraphicsContext.MakeCurrent(_WindowInfo);
+			this._GraphicsContext = new GraphicsContext(graphicsMode, this._WindowInfo, this.GLVersionMajor, this.GLVersionMinor, this.GraphicsContextFlags);
+			this._GraphicsContext.MakeCurrent(this._WindowInfo);
 
 			if (GraphicsContext.ShareContexts)
 			{
@@ -315,13 +315,13 @@ namespace OpenTK
 				if (!_SharedContextInitialized)
 				{
 					_SharedContextInitialized = true;
-					((IGraphicsContextInternal)_GraphicsContext).LoadAll();
+					((IGraphicsContextInternal) this._GraphicsContext).LoadAll();
 					OnGraphicsContextInitialized();
 				}
 			}
 			else
 			{
-				((IGraphicsContextInternal)_GraphicsContext).LoadAll();
+				((IGraphicsContextInternal) this._GraphicsContext).LoadAll();
 				OnGraphicsContextInitialized();
 			}
 
@@ -411,7 +411,7 @@ namespace OpenTK
 
 			public override string ToString()
 			{
-				return $"id ({VisualID}), screen ({Screen}), depth ({Depth}), class ({Class})";
+				return $"id ({this.VisualID}), screen ({this.Screen}), depth ({this.Depth}), class ({this.Class})";
 			}
 		}
 
@@ -433,11 +433,11 @@ namespace OpenTK
 
 		private IWindowInfo InitializeX(GraphicsMode mode)
 		{
-			IntPtr display = gdk_x11_display_get_xdisplay(Display.Handle);
-			int screen = Screen.Number;
+			IntPtr display = gdk_x11_display_get_xdisplay(this.Display.Handle);
+			int screen = this.Screen.Number;
 
-			IntPtr windowHandle = gdk_x11_window_get_xid(Window.Handle);
-			IntPtr rootWindow = gdk_x11_window_get_xid(RootWindow.Handle);
+			IntPtr windowHandle = gdk_x11_window_get_xid(this.Window.Handle);
+			IntPtr rootWindow = gdk_x11_window_get_xid(this.RootWindow.Handle);
 
 			IntPtr visualInfo;
 			if (mode.Index.HasValue)
@@ -467,8 +467,8 @@ namespace OpenTK
 		{
 			try
 			{
-				int[] attributes = AttributeList.ToArray();
-				return glXChooseVisual(display, Screen.Number, attributes);
+				int[] attributes = this.AttributeList.ToArray();
+				return glXChooseVisual(display, this.Screen.Number, attributes);
 			}
 			catch (DllNotFoundException e)
 			{
@@ -488,48 +488,48 @@ namespace OpenTK
 
 				attributeList.Add(GLX_RGBA);
 
-				if (!SingleBuffer)
+				if (!this.SingleBuffer)
 				{
 					attributeList.Add(GLX_DOUBLEBUFFER);
 				}
 
-				if (Stereo)
+				if (this.Stereo)
 				{
 					attributeList.Add(GLX_STEREO);
 				}
 
 				attributeList.Add(GLX_RED_SIZE);
-				attributeList.Add(ColorBPP / 4); // TODO support 16-bit
+				attributeList.Add(this.ColorBPP / 4); // TODO support 16-bit
 
 				attributeList.Add(GLX_GREEN_SIZE);
-				attributeList.Add(ColorBPP / 4); // TODO support 16-bit
+				attributeList.Add(this.ColorBPP / 4); // TODO support 16-bit
 
 				attributeList.Add(GLX_BLUE_SIZE);
-				attributeList.Add(ColorBPP / 4); // TODO support 16-bit
+				attributeList.Add(this.ColorBPP / 4); // TODO support 16-bit
 
 				attributeList.Add(GLX_ALPHA_SIZE);
-				attributeList.Add(ColorBPP / 4); // TODO support 16-bit
+				attributeList.Add(this.ColorBPP / 4); // TODO support 16-bit
 
 				attributeList.Add(GLX_DEPTH_SIZE);
-				attributeList.Add(DepthBPP);
+				attributeList.Add(this.DepthBPP);
 
 				attributeList.Add(GLX_STENCIL_SIZE);
-				attributeList.Add(StencilBPP);
+				attributeList.Add(this.StencilBPP);
 
 				//attributeList.Add(GLX_AUX_BUFFERS);
 				//attributeList.Add(Buffers);
 
 				attributeList.Add(GLX_ACCUM_RED_SIZE);
-				attributeList.Add(AccumulatorBPP / 4);// TODO support 16-bit
+				attributeList.Add(this.AccumulatorBPP / 4);// TODO support 16-bit
 
 				attributeList.Add(GLX_ACCUM_GREEN_SIZE);
-				attributeList.Add(AccumulatorBPP / 4);// TODO support 16-bit
+				attributeList.Add(this.AccumulatorBPP / 4);// TODO support 16-bit
 
 				attributeList.Add(GLX_ACCUM_BLUE_SIZE);
-				attributeList.Add(AccumulatorBPP / 4);// TODO support 16-bit
+				attributeList.Add(this.AccumulatorBPP / 4);// TODO support 16-bit
 
 				attributeList.Add(GLX_ACCUM_ALPHA_SIZE);
-				attributeList.Add(AccumulatorBPP / 4);// TODO support 16-bit
+				attributeList.Add(this.AccumulatorBPP / 4);// TODO support 16-bit
 
 				attributeList.Add(GLX_NONE);
 

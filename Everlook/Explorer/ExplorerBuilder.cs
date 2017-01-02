@@ -467,7 +467,7 @@ namespace Everlook.Explorer
 				List<FileReference> readyReferences = new List<FileReference>();
 				for (int i = 0; i < this.WaitQueue.Count; ++i)
 				{
-					if (this.WaitQueue[i].ParentReference.State == ReferenceState.Enumerated)
+					if (this.WaitQueue[i].ParentReference?.State == ReferenceState.Enumerated)
 					{
 						readyReferences.Add(this.WaitQueue[i]);
 					}

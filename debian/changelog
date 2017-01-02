@@ -1,3 +1,13 @@
+everlook (1.0.6206.33050-1) xenial; urgency=medium
+
+  * Updated debian/copyright with Mint-X/Y and Blender copyrights. 
+  * Bundled package-x-generic, empty and applications-other icons from 
+    Mint-X and Mint-Y.
+  * Refactored icon loading to work on Windows too, where the icon theme 
+    may not have all icons.
+
+ -- Jarl <jarl.gullberg@gmail.com>  Wed, 28 Dec 2016 18:21:42 +0100
+
 everlook (1.0.6206.22366-1) xenial; urgency=medium
 
   * Readded libGL package to build-deps.

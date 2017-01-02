@@ -24,8 +24,8 @@ using System.IO;
 using System.Reflection;
 using Everlook.Explorer;
 using Gdk;
-using Gtk;
 using OpenTK;
+using SlimTK;
 using Warcraft.Core;
 
 namespace Everlook.Utility
@@ -94,6 +94,16 @@ namespace Everlook.Utility
 		public static Vector3 ToOpenGLVector(this Vector3f vector3f)
 		{
 			return new Vector3(vector3f.X, vector3f.Y, vector3f.Z);
+		}
+
+		/// <summary>
+		/// Converts the current Warcraft box structure to an OpenGL box structure.
+		/// </summary>
+		/// <param name="box">The box to conver.t</param>
+		/// <returns></returns>
+		public static BoundingBox ToOpenGLBoundingBox(this Box box)
+		{
+			return new BoundingBox(box.BottomCorner.ToOpenGLVector(), box.TopCorner.ToOpenGLVector());
 		}
 	}
 }
