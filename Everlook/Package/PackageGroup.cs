@@ -66,7 +66,7 @@ namespace Everlook.Package
 		/// </summary>
 		public PackageGroup(string inGroupName, string inRootPackageDirectory)
 		{
-			if (String.IsNullOrEmpty(inGroupName))
+			if (string.IsNullOrEmpty(inGroupName))
 			{
 				throw new ArgumentNullException(inGroupName, "A package group must be provided with a name.");
 			}

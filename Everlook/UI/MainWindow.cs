@@ -371,7 +371,7 @@ namespace Everlook.UI
 
 			string bComparisonString = (string)model.GetValue(iterB, 1);
 
-			int result = String.CompareOrdinal(aComparisonString, bComparisonString);
+			int result = string.CompareOrdinal(aComparisonString, bComparisonString);
 
 			if (result <= sortABeforeB)
 			{
@@ -554,11 +554,11 @@ namespace Everlook.UI
 
 			string cleanFilepath = fileReference.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
 
-			if (String.IsNullOrEmpty(cleanFilepath))
+			if (string.IsNullOrEmpty(cleanFilepath))
 			{
 				cleanFilepath = fileReference.PackageName;
 			}
-			else if (String.IsNullOrEmpty(IOPath.GetFileName(cleanFilepath)))
+			else if (string.IsNullOrEmpty(IOPath.GetFileName(cleanFilepath)))
 			{
 				cleanFilepath = Directory.GetParent(cleanFilepath).FullName.Replace(Directory.GetCurrentDirectory(), "");
 			}

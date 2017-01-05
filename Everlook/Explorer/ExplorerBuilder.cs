@@ -49,12 +49,6 @@ namespace Everlook.Explorer
 		/// </summary>
 		public event ItemEnumeratedEventHandler PackageEnumerated;
 
-		/// <summary>
-		/// Occurs when a work order has been completed.
-		/// </summary>
-		public event ReferenceEnumeratedEventHandler EnumerationFinished;
-
-
 		private readonly object EnumeratedReferenceQueueLock = new object();
 		/// <summary>
 		/// A list of enumerated references. This list acts as an intermediate location where the UI can fetch results
@@ -64,7 +58,6 @@ namespace Everlook.Explorer
 
 		private ReferenceEnumeratedEventArgs PackageGroupAddedArgs;
 		private ReferenceEnumeratedEventArgs PackageEnumeratedArgs;
-		private ReferenceEnumeratedEventArgs EnumerationFinishedArgs;
 
 		/// <summary>
 		/// The cached package directories. Used when the user adds or removes game directories during runtime.
@@ -76,7 +69,7 @@ namespace Everlook.Explorer
 		/// that act as a cohesive unit. Usually, a single package group represents a single game
 		/// instance.
 		/// </summary>
-		public readonly Dictionary<string, PackageGroup> PackageGroups = new Dictionary<string, PackageGroup>();
+		private readonly Dictionary<string, PackageGroup> PackageGroups = new Dictionary<string, PackageGroup>();
 
 		/// <summary>
 		/// The package node group mapping. Maps package groups to their base virtual item references.
@@ -132,13 +125,6 @@ namespace Everlook.Explorer
 		/// The main resubmission loop thread. Takes waiting references and adds them back to the work queue.
 		/// </summary>
 		private readonly Thread ResubmissionLoopThread;
-
-		/// <summary>
-		/// The maximum number of enumeration threads that can be active at any one point. This value
-		/// is calcuated in the constructor, and is equal to the number of available processor cores
-		/// multiplied by 250.
-		/// </summary>
-		//private readonly int MaxEnumerationThreadCount;
 
 		/// <summary>
 		/// Whether or not the explorer builder should currently process any work. Acts as an on/off switch
@@ -363,15 +349,15 @@ namespace Everlook.Explorer
 		/// <param name="parentReferenceObject">Parent reference where the search should start.</param>
 		protected void EnumerateFilesAndFolders(object parentReferenceObject)
 		{
+			if (!this.bShouldProcessWork)
+			{
+				// Early drop out
+				return;
+			}
+
 			FileReference parentReference = parentReferenceObject as FileReference;
 			if (parentReference != null)
 			{
-				if (!this.bShouldProcessWork)
-				{
-					// Early drop out
-					return;
-				}
-
 				VirtualFileReference virtualParentReference = parentReference as VirtualFileReference;
 				if (virtualParentReference != null)
 				{
@@ -410,7 +396,7 @@ namespace Everlook.Explorer
 					int slashIndex = childPath.IndexOf('\\');
 					string topDirectory = childPath.Substring(0, slashIndex + 1);
 
-					if (!String.IsNullOrEmpty(topDirectory))
+					if (!string.IsNullOrEmpty(topDirectory))
 					{
 						FileReference directoryReference = new FileReference(hardReference.PackageGroup, hardReference, topDirectory);
 						if (!hardReference.ChildReferences.Contains(directoryReference))
@@ -420,7 +406,7 @@ namespace Everlook.Explorer
 							localEnumeratedReferences.Add(directoryReference);
 						}
 					}
-					else if (String.IsNullOrEmpty(topDirectory) && slashIndex == -1)
+					else if (string.IsNullOrEmpty(topDirectory) && slashIndex == -1)
 					{
 						FileReference fileReference = new FileReference(hardReference.PackageGroup, hardReference, childPath);
 						if (!hardReference.ChildReferences.Contains(fileReference))
@@ -446,9 +432,6 @@ namespace Everlook.Explorer
 				}
 
 				hardReference.State = ReferenceState.Enumerated;
-
-				this.EnumerationFinishedArgs = new ReferenceEnumeratedEventArgs(hardReference);
-				RaiseEnumerationFinished();
 			}
 			else
 			{
@@ -548,17 +531,6 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Raises the enumeration finished event.
-		/// </summary>
-		protected void RaiseEnumerationFinished()
-		{
-			if (EnumerationFinished != null)
-			{
-				EnumerationFinished(this, this.EnumerationFinishedArgs);
-			}
-		}
-
-		/// <summary>
 		/// Releases all resource used by the <see cref="Everlook.Explorer.ExplorerBuilder"/> object.
 		/// </summary>
 		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="Everlook.Explorer.ExplorerBuilder"/>. The
@@ -582,11 +554,6 @@ namespace Everlook.Explorer
 	/// </summary>
 	public delegate void ItemEnumeratedEventHandler(object sender, ReferenceEnumeratedEventArgs e);
 
-	/// <summary>
-	/// Reference enumerated event handler. Bundles arguments for an event where a reference has been
-	/// enumerated.
-	/// </summary>
-	public delegate void ReferenceEnumeratedEventHandler(object sender, ReferenceEnumeratedEventArgs e);
 
 	/// <summary>
 	/// Reference enumerated event arguments.

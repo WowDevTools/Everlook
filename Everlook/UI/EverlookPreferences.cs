@@ -120,7 +120,7 @@ namespace Everlook.UI
 
 			this.ViewportColourButton.Rgba = this.Config.GetViewportBackgroundColour();
 
-			if (!String.IsNullOrEmpty(this.Config.GetDefaultExportDirectory()))
+			if (!string.IsNullOrEmpty(this.Config.GetDefaultExportDirectory()))
 			{
 				this.DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(this.Config.GetDefaultExportDirectory());
 			}
