@@ -2,16 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e1530823-c830-4766-9a26-23e259a4f4f1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Everlook/Content/Shaders/BoundingBoxFragment.glsl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Everlook/Content/Shaders/BoundingBoxVertex.glsl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Everlook/Viewport/Rendering/Extensions/RenderExtensions.cs" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/liblistfile" afterPath="$PROJECT_DIR$/lib/liblistfile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.idea.Everlook/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/.idea.Everlook/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Everlook/Everlook.csproj" afterPath="$PROJECT_DIR$/Everlook/Everlook.csproj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Everlook/UI/MainWindow.cs" afterPath="$PROJECT_DIR$/Everlook/UI/MainWindow.cs" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Everlook/Viewport/Rendering/Core/EverlookShader.cs" afterPath="$PROJECT_DIR$/Everlook/Viewport/Rendering/Core/EverlookShader.cs" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Everlook/Viewport/Rendering/RenderCache.cs" afterPath="$PROJECT_DIR$/Everlook/Viewport/Rendering/RenderCache.cs" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Everlook/Viewport/Rendering/RenderableWorldModel.cs" afterPath="$PROJECT_DIR$/Everlook/Viewport/Rendering/RenderableWorldModel.cs" />
     </list>
     <ignored path="Everlook.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -74,7 +66,7 @@
         <entry file="file://$PROJECT_DIR$/Everlook/Viewport/Rendering/RenderableWorldModel.cs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-181">
-              <caret line="401" column="36" lean-forward="true" selection-start-line="401" selection-start-column="36" selection-end-line="401" selection-end-column="36" />
+              <caret line="401" column="36" lean-forward="false" selection-start-line="401" selection-start-column="36" selection-end-line="401" selection-end-column="36" />
               <folding>
                 <marker date="1483914925159" expanded="true" signature="0:796" ph="/* RenderableWorldModel.cs ... */" />
                 <marker date="1483914925159" expanded="true" signature="1352:18855" ph="{...}" />
@@ -151,58 +143,58 @@
       <file leaf-file-name="RenderCache.cs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Everlook/Viewport/Rendering/RenderCache.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="385">
-              <caret line="209" column="17" lean-forward="true" selection-start-line="209" selection-start-column="17" selection-end-line="209" selection-end-column="17" />
+            <state relative-caret-position="165">
+              <caret line="50" column="56" lean-forward="true" selection-start-line="50" selection-start-column="56" selection-end-line="50" selection-end-column="56" />
               <folding>
-                <marker date="1483912868542" expanded="true" signature="0:787" ph="/* RenderCache.cs ... */" />
-                <marker date="1483912868542" expanded="true" signature="794:1204" ph="..." />
-                <marker date="1483912868542" expanded="true" signature="1243:12473" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="1247:1478" ph="/// OpenGL caching handler for objects that can be used more than once during a run of the program and ... " />
-                <marker date="1483912868542" expanded="true" signature="1518:12471" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="1722:1803" ph="/// A singleton instance of the rendering cache. ... " />
-                <marker date="1483912868542" expanded="true" signature="1886:1895" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="1899:2048" ph="/// Determines whether or not the rendering cache has a cached texture id ... " />
-                <marker date="1483912868542" expanded="true" signature="2106:2348" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="2152:2220" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="2352:2491" ph="/// Determines whether or not the rendering cache has a cached shader ... " />
-                <marker date="1483912868542" expanded="true" signature="2544:2774" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="2604:2719" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="2778:2865" ph="/// Gets a cached texture ID from the rendering cache. ... " />
-                <marker date="1483912868542" expanded="true" signature="2915:3034" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="3038:3124" ph="/// Gets a cached shader ID from the rendering cache. ... " />
-                <marker date="1483912868542" expanded="true" signature="3176:3222" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="3226:3361" ph="/// Creates a cached texture for the specifed texture, using the specified path ... " />
-                <marker date="1483912868542" expanded="true" signature="3485:5133" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="3513:3577" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="3682:4097" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="3695:3748" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="3787:3919" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="3931:4092" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="4027:4086" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="4105:4221" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="4160:4216" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="5137:5272" ph="/// Creates a cached texture for the specifed texture, using the specified path ... " />
-                <marker date="1483912868542" expanded="true" signature="5341:6219" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="5369:5433" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="6223:6370" ph="/// Creates a cached shader for the specifed shader, using the specified shader enumeration ... " />
-                <marker date="1483912868542" expanded="true" signature="6425:9736" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="6485:6600" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="6820:7766" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="8158:8296" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="8655:8795" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="9242:9382" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="9805:10158" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="9949:10129" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="9984:10014" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="10076:10124" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="10232:11470" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="10400:11466" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="10631:11219" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="11542:12058" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="12062:12172" ph="/// Disposes of the rendering cache, deleting any cached textures or shaders. ... " />
-                <marker date="1483912868542" expanded="true" signature="12196:12468" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="12276:12329" ph="{...}" />
-                <marker date="1483912868542" expanded="true" signature="12412:12464" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="0:787" ph="/* RenderCache.cs ... */" />
+                <marker date="1483915147790" expanded="true" signature="794:1204" ph="..." />
+                <marker date="1483915147790" expanded="true" signature="1243:12482" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="1247:1478" ph="/// OpenGL caching handler for objects that can be used more than once during a run of the program and ... " />
+                <marker date="1483915147790" expanded="true" signature="1518:12480" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="1722:1803" ph="/// A singleton instance of the rendering cache. ... " />
+                <marker date="1483915147790" expanded="true" signature="1895:1904" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="1908:2057" ph="/// Determines whether or not the rendering cache has a cached texture id ... " />
+                <marker date="1483915147790" expanded="true" signature="2115:2357" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="2161:2229" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="2361:2500" ph="/// Determines whether or not the rendering cache has a cached shader ... " />
+                <marker date="1483915147790" expanded="true" signature="2553:2783" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="2613:2728" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="2787:2874" ph="/// Gets a cached texture ID from the rendering cache. ... " />
+                <marker date="1483915147790" expanded="true" signature="2924:3043" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="3047:3133" ph="/// Gets a cached shader ID from the rendering cache. ... " />
+                <marker date="1483915147790" expanded="true" signature="3185:3231" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="3235:3370" ph="/// Creates a cached texture for the specifed texture, using the specified path ... " />
+                <marker date="1483915147790" expanded="true" signature="3494:5142" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="3522:3586" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="3691:4106" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="3704:3757" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="3796:3928" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="3940:4101" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="4036:4095" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="4114:4230" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="4169:4225" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="5146:5281" ph="/// Creates a cached texture for the specifed texture, using the specified path ... " />
+                <marker date="1483915147790" expanded="true" signature="5350:6228" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="5378:5442" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="6232:6379" ph="/// Creates a cached shader for the specifed shader, using the specified shader enumeration ... " />
+                <marker date="1483915147790" expanded="true" signature="6434:9745" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="6494:6609" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="6829:7775" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="8167:8305" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="8664:8804" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="9251:9391" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="9814:10167" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="9958:10138" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="9993:10023" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="10085:10133" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="10241:11479" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="10409:11475" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="10640:11228" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="11551:12067" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="12071:12181" ph="/// Disposes of the rendering cache, deleting any cached textures or shaders. ... " />
+                <marker date="1483915147790" expanded="true" signature="12205:12477" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="12285:12338" ph="{...}" />
+                <marker date="1483915147790" expanded="true" signature="12421:12473" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -418,10 +410,10 @@
         <option value="$PROJECT_DIR$/Everlook/UI/MainWindow.cs" />
         <option value="$PROJECT_DIR$/Everlook/Viewport/Rendering/Extensions/RenderExtensions.cs" />
         <option value="$PROJECT_DIR$/Everlook/Viewport/Rendering/Core/EverlookShader.cs" />
-        <option value="$PROJECT_DIR$/Everlook/Viewport/Rendering/RenderCache.cs" />
         <option value="$PROJECT_DIR$/Everlook/Content/Shaders/BoundingBoxVertex.glsl" />
         <option value="$PROJECT_DIR$/Everlook/Content/Shaders/BoundingBoxFragment.glsl" />
         <option value="$PROJECT_DIR$/Everlook/Viewport/Rendering/RenderableWorldModel.cs" />
+        <option value="$PROJECT_DIR$/Everlook/Viewport/Rendering/RenderCache.cs" />
       </list>
     </option>
   </component>
@@ -818,12 +810,12 @@
       <workItem from="1483119464891" duration="147000" />
       <workItem from="1483466512575" duration="1515000" />
       <workItem from="1483651141384" duration="2895000" />
-      <workItem from="1483903780239" duration="11272000" />
+      <workItem from="1483903780239" duration="11325000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="132022000" />
+    <option name="totallyTimeSpent" value="132075000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1956,7 +1948,7 @@
     <entry file="file://$PROJECT_DIR$/Everlook/Viewport/Rendering/RenderableWorldModel.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-181">
-          <caret line="401" column="36" lean-forward="true" selection-start-line="401" selection-start-column="36" selection-end-line="401" selection-end-column="36" />
+          <caret line="401" column="36" lean-forward="false" selection-start-line="401" selection-start-column="36" selection-end-line="401" selection-end-column="36" />
           <folding>
             <marker date="1483914925159" expanded="true" signature="0:796" ph="/* RenderableWorldModel.cs ... */" />
             <marker date="1483914925159" expanded="true" signature="1352:18855" ph="{...}" />
@@ -2031,58 +2023,58 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Everlook/Viewport/Rendering/RenderCache.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="385">
-          <caret line="209" column="17" lean-forward="true" selection-start-line="209" selection-start-column="17" selection-end-line="209" selection-end-column="17" />
+        <state relative-caret-position="165">
+          <caret line="50" column="56" lean-forward="true" selection-start-line="50" selection-start-column="56" selection-end-line="50" selection-end-column="56" />
           <folding>
-            <marker date="1483912868542" expanded="true" signature="0:787" ph="/* RenderCache.cs ... */" />
-            <marker date="1483912868542" expanded="true" signature="794:1204" ph="..." />
-            <marker date="1483912868542" expanded="true" signature="1243:12473" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="1247:1478" ph="/// OpenGL caching handler for objects that can be used more than once during a run of the program and ... " />
-            <marker date="1483912868542" expanded="true" signature="1518:12471" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="1722:1803" ph="/// A singleton instance of the rendering cache. ... " />
-            <marker date="1483912868542" expanded="true" signature="1886:1895" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="1899:2048" ph="/// Determines whether or not the rendering cache has a cached texture id ... " />
-            <marker date="1483912868542" expanded="true" signature="2106:2348" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="2152:2220" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="2352:2491" ph="/// Determines whether or not the rendering cache has a cached shader ... " />
-            <marker date="1483912868542" expanded="true" signature="2544:2774" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="2604:2719" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="2778:2865" ph="/// Gets a cached texture ID from the rendering cache. ... " />
-            <marker date="1483912868542" expanded="true" signature="2915:3034" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="3038:3124" ph="/// Gets a cached shader ID from the rendering cache. ... " />
-            <marker date="1483912868542" expanded="true" signature="3176:3222" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="3226:3361" ph="/// Creates a cached texture for the specifed texture, using the specified path ... " />
-            <marker date="1483912868542" expanded="true" signature="3485:5133" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="3513:3577" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="3682:4097" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="3695:3748" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="3787:3919" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="3931:4092" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="4027:4086" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="4105:4221" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="4160:4216" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="5137:5272" ph="/// Creates a cached texture for the specifed texture, using the specified path ... " />
-            <marker date="1483912868542" expanded="true" signature="5341:6219" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="5369:5433" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="6223:6370" ph="/// Creates a cached shader for the specifed shader, using the specified shader enumeration ... " />
-            <marker date="1483912868542" expanded="true" signature="6425:9736" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="6485:6600" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="6820:7766" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="8158:8296" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="8655:8795" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="9242:9382" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="9805:10158" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="9949:10129" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="9984:10014" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="10076:10124" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="10232:11470" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="10400:11466" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="10631:11219" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="11542:12058" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="12062:12172" ph="/// Disposes of the rendering cache, deleting any cached textures or shaders. ... " />
-            <marker date="1483912868542" expanded="true" signature="12196:12468" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="12276:12329" ph="{...}" />
-            <marker date="1483912868542" expanded="true" signature="12412:12464" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="0:787" ph="/* RenderCache.cs ... */" />
+            <marker date="1483915147790" expanded="true" signature="794:1204" ph="..." />
+            <marker date="1483915147790" expanded="true" signature="1243:12482" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="1247:1478" ph="/// OpenGL caching handler for objects that can be used more than once during a run of the program and ... " />
+            <marker date="1483915147790" expanded="true" signature="1518:12480" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="1722:1803" ph="/// A singleton instance of the rendering cache. ... " />
+            <marker date="1483915147790" expanded="true" signature="1895:1904" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="1908:2057" ph="/// Determines whether or not the rendering cache has a cached texture id ... " />
+            <marker date="1483915147790" expanded="true" signature="2115:2357" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="2161:2229" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="2361:2500" ph="/// Determines whether or not the rendering cache has a cached shader ... " />
+            <marker date="1483915147790" expanded="true" signature="2553:2783" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="2613:2728" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="2787:2874" ph="/// Gets a cached texture ID from the rendering cache. ... " />
+            <marker date="1483915147790" expanded="true" signature="2924:3043" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="3047:3133" ph="/// Gets a cached shader ID from the rendering cache. ... " />
+            <marker date="1483915147790" expanded="true" signature="3185:3231" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="3235:3370" ph="/// Creates a cached texture for the specifed texture, using the specified path ... " />
+            <marker date="1483915147790" expanded="true" signature="3494:5142" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="3522:3586" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="3691:4106" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="3704:3757" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="3796:3928" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="3940:4101" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="4036:4095" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="4114:4230" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="4169:4225" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="5146:5281" ph="/// Creates a cached texture for the specifed texture, using the specified path ... " />
+            <marker date="1483915147790" expanded="true" signature="5350:6228" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="5378:5442" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="6232:6379" ph="/// Creates a cached shader for the specifed shader, using the specified shader enumeration ... " />
+            <marker date="1483915147790" expanded="true" signature="6434:9745" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="6494:6609" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="6829:7775" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="8167:8305" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="8664:8804" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="9251:9391" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="9814:10167" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="9958:10138" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="9993:10023" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="10085:10133" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="10241:11479" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="10409:11475" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="10640:11228" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="11551:12067" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="12071:12181" ph="/// Disposes of the rendering cache, deleting any cached textures or shaders. ... " />
+            <marker date="1483915147790" expanded="true" signature="12205:12477" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="12285:12338" ph="{...}" />
+            <marker date="1483915147790" expanded="true" signature="12421:12473" ph="{...}" />
           </folding>
         </state>
       </provider>

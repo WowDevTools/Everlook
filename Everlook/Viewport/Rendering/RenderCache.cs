@@ -50,7 +50,7 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// A singleton instance of the rendering cache.
 		/// </summary>
-		public static RenderCache Instance = new RenderCache();
+		public static readonly RenderCache Instance = new RenderCache();
 
 		private RenderCache()
 		{
