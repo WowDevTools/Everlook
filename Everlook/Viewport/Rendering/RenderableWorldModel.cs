@@ -543,26 +543,33 @@ namespace Everlook.Viewport.Rendering
 			foreach (var vertexBuffer in this.vertexBufferLookup)
 			{
 				int bufferID = vertexBuffer.Value;
-				GL.DeleteBuffers(1, ref bufferID);
+				GL.DeleteBuffer(bufferID);
 			}
 
 			foreach (var normalBuffer in this.normalBufferLookup)
 			{
 				int bufferID = normalBuffer.Value;
-				GL.DeleteBuffers(1, ref bufferID);
+				GL.DeleteBuffer(bufferID);
 			}
 
 			foreach (var coordinateBuffer in this.textureCoordinateBufferLookup)
 			{
 				int bufferID = coordinateBuffer.Value;
-				GL.DeleteBuffers(1, ref bufferID);
+				GL.DeleteBuffer(bufferID);
 			}
 
 			foreach (var indexBuffer in this.vertexIndexBufferLookup)
 			{
 				int bufferID = indexBuffer.Value;
-				GL.DeleteBuffers(1, ref bufferID);
+				GL.DeleteBuffer(bufferID);
 			}
+
+			foreach (var boundingBoxVertexBuffer in this.boundingBoxVertexBufferLookup)
+			{
+				int bufferID = boundingBoxVertexBuffer.Value;
+				GL.DeleteBuffer(bufferID);
+			}
+			GL.DeleteBuffer(this.boundingBoxVertexIndexBufferID);
 		}
 
 		/// <summary>
