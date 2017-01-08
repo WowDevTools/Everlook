@@ -93,6 +93,7 @@
     <Compile Include="Viewport\Rendering\Core\EverlookShader.cs" />
     <Compile Include="Viewport\Rendering\Core\Plane.cs" />
     <Compile Include="Viewport\Rendering\Core\Transform.cs" />
+    <Compile Include="Viewport\Rendering\Extensions\RenderExtensions.cs" />
     <Compile Include="Viewport\Rendering\Interfaces\IActor.cs" />
     <Compile Include="Viewport\Rendering\Interfaces\IRenderable.cs" />
     <Compile Include="Viewport\Rendering\Interfaces\ITickingActor.cs" />
@@ -123,6 +124,8 @@
     <EmbeddedResource Include="Content\Shaders\Adapted\PlainImage\PlainImageVertex.glsl" />
     <EmbeddedResource Include="Content\Shaders\Adapted\WorldModel\WorldModelFragment.glsl" />
     <EmbeddedResource Include="Content\Shaders\Adapted\WorldModel\WorldModelVertex.glsl" />
+	<EmbeddedResource Include="Content\Shaders\BoundingBoxFragment.glsl" />
+    <EmbeddedResource Include="Content\Shaders\BoundingBoxVertex.glsl" />
     <EmbeddedResource Include="Content\Icons\Blender\Blender-Armature-Icon.svg" />
     <EmbeddedResource Include="Content\Icons\Blender\Blender-Object-Icon.svg" />
     <EmbeddedResource Include="Content\Icons\Blender\Blender-Planet-Icon.svg" />

@@ -124,8 +124,8 @@ namespace Everlook.UI
 			this.viewportRenderer = new ViewportRenderer(this.ViewportWidget);
 
 			// Add a staggered idle handler for adding enumerated items to the interface
-			//Timeout.Add(1, OnGLibLoopIdle, Priority.DefaultIdle);
-			Idle.Add(OnGLibLoopIdle, Priority.DefaultIdle);
+			//Timeout.Add(1, OnIdle, Priority.DefaultIdle);
+			Idle.Add(OnIdle, Priority.DefaultIdle);
 
 			this.AboutButton.Clicked += OnAboutButtonClicked;
 			this.PreferencesButton.Clicked += OnPreferencesButtonClicked;
@@ -469,7 +469,7 @@ namespace Everlook.UI
 		/// Idle functionality. This code is called as a way of lazily loading rows into the UI
 		/// without causing lockups due to sheer data volume.
 		/// </summary>
-		private bool OnGLibLoopIdle()
+		private bool OnIdle()
 		{
 			const bool keepCalling = true;
 			const bool stopCalling = false;

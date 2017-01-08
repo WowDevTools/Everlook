@@ -212,6 +212,12 @@ namespace Everlook.Viewport.Rendering
 					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelFragment.glsl");
 					break;
 				}
+				case EverlookShader.BoundingBox:
+				{
+					vertexShaderSource = LoadShaderSource("Everlook.Content.Shaders.BoundingBoxVertex.glsl");
+					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.BoundingBoxFragment.glsl");
+					break;
+				}
 				default:
 				{
 					vertexShaderSource = "";
