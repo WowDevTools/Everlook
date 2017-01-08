@@ -261,7 +261,7 @@ namespace Everlook.Viewport.Rendering
 
 				if (camera.Frustum.Contains(groupBoundingBox) == ContainmentType.Disjoint)
 				{
-					continue;
+					//continue;
 				}
 
 				RenderGroup(modelGroup, viewMatrix, projectionMatrix);
@@ -329,7 +329,9 @@ namespace Everlook.Viewport.Rendering
 			GL.UniformMatrix4(projectionShaderVariableHandle, false, ref modelViewProjection);
 
 			// Render all the different materials (opaque first, transparent after)
-			foreach (RenderBatch renderBatch in modelGroup.GetRenderBatches().OrderBy(batch => this.Model.GetMaterial(batch.MaterialIndex).BlendMode))
+			foreach (RenderBatch renderBatch in modelGroup.GetRenderBatches()
+				.OrderBy(batch => batch.MaterialIndex)
+				.ThenBy(batch => this.Model.GetMaterial(batch.MaterialIndex).BlendMode))
 			{
 				// TODO: Render based on the shader. For now, simple rendering of diffuse texture
 				ModelMaterial modelMaterial = this.Model.GetMaterial(renderBatch.MaterialIndex);

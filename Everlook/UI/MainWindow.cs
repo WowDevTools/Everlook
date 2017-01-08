@@ -124,7 +124,8 @@ namespace Everlook.UI
 			this.viewportRenderer = new ViewportRenderer(this.ViewportWidget);
 
 			// Add a staggered idle handler for adding enumerated items to the interface
-			Timeout.Add(1, OnGLibLoopIdle, Priority.DefaultIdle);
+			//Timeout.Add(1, OnGLibLoopIdle, Priority.DefaultIdle);
+			Idle.Add(OnGLibLoopIdle, Priority.DefaultIdle);
 
 			this.AboutButton.Clicked += OnAboutButtonClicked;
 			this.PreferencesButton.Clicked += OnPreferencesButtonClicked;
@@ -148,18 +149,17 @@ namespace Everlook.UI
 			this.RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
 
 			this.explorerBuilder = new ExplorerBuilder
+			(
+				new ExplorerStore
 				(
-					new ExplorerStore
-					(
-						this.GameExplorerTreeStore,
-						this.GameExplorerTreeFilter,
-						this.GameExplorerTreeSorter
-					)
-				);
-
+					this.GameExplorerTreeStore,
+					this.GameExplorerTreeFilter,
+					this.GameExplorerTreeSorter
+				)
+			);
 			this.explorerBuilder.PackageGroupAdded += OnPackageGroupAdded;
 			this.explorerBuilder.PackageEnumerated += OnPackageEnumerated;
-			this.explorerBuilder.Start(); // TODO: This is a performance hog (and the whole damn thing should be rewritten)
+			this.explorerBuilder.Start();
 
 			/*
 				Set up item control sections
@@ -713,7 +713,12 @@ namespace Everlook.UI
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
 			FileReference fileReference = this.explorerBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
-			if (fileReference != null && fileReference.IsFile)
+			if (fileReference == null)
+			{
+				return;
+			}
+
+			if (fileReference.IsFile)
 			{
 				if (string.IsNullOrEmpty(fileReference.FilePath))
 				{
@@ -755,6 +760,10 @@ namespace Everlook.UI
 						break;
 					}
 				}
+			}
+			else
+			{
+				this.GameExplorerTreeView.ExpandRow(this.explorerBuilder.NodeStorage.GetPath(selectedIter), false);
 			}
 		}
 

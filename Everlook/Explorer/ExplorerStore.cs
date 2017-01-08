@@ -96,8 +96,25 @@ namespace Everlook.Explorer
 		/// <returns>The TreePath of the iter.</returns>
 		public TreePath GetPath(TreeIter iter)
 		{
-			// TODO: Probably an issue here, doesn't distinguish between the store, filter and sorter
-			return this.FiletreeStore.GetPath(iter);
+			TreePath storePath = this.FiletreeStore.GetPath(iter);
+			if (storePath != null)
+			{
+				return storePath;
+			}
+
+			TreePath filterPath = this.FiletreeStore.GetPath(GetStoreIterFromFilterIter(iter));
+			if (filterPath != null)
+			{
+				return filterPath;
+			}
+
+			TreePath sorterPath = this.FiletreeStore.GetPath(GetStoreIterFromSorterIter(iter));
+			if (sorterPath != null)
+			{
+				return sorterPath;
+			}
+
+			return null;
 		}
 
 		/// <summary>
