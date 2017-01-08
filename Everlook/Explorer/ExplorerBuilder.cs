@@ -23,7 +23,6 @@
 using System;
 using System.Threading;
 using System.Collections.Generic;
-using Gtk;
 using Everlook.Configuration;
 using System.IO;
 using System.Linq;
@@ -72,36 +71,9 @@ namespace Everlook.Explorer
 		private readonly Dictionary<string, PackageGroup> PackageGroups = new Dictionary<string, PackageGroup>();
 
 		/// <summary>
-		/// The package node group mapping. Maps package groups to their base virtual item references.
+		/// The storage where all enumerated nodes and their mappings are kept.
 		/// </summary>
-		public readonly Dictionary<PackageGroup, VirtualFileReference> PackageGroupVirtualNodeMapping =
-			new Dictionary<PackageGroup, VirtualFileReference>();
-
-		/// <summary>
-		/// Maps package names and paths to tree nodes.
-		/// Key: Path of package, folder or file.
-		/// Value: TreeIter that maps to the package, folder or file.
-		/// </summary>
-		public readonly Dictionary<FileReference, TreeIter> PackageItemNodeMapping =
-			new Dictionary<FileReference, TreeIter>();
-
-		/// <summary>
-		/// Maps tree nodes to package names and paths.
-		/// Key: TreeIter that represents the item reference.
-		/// Value: FileReference that the iter maps to.
-		/// </summary>
-		public readonly Dictionary<TreeIter, FileReference> PackageNodeItemMapping =
-			new Dictionary<TreeIter, FileReference>();
-
-		/// <summary>
-		/// The virtual reference mapping. Maps item references to their virtual counterparts.
-		/// Key: PackageGroup that hosts this virtual reference.
-		/// Dictionary::Key: An item path in an arbitrary package.
-		/// Dictionary::Value: A virtual item reference that hosts the hard item references.
-		/// </summary>
-		private readonly Dictionary<PackageGroup, Dictionary<string, VirtualFileReference>> VirtualReferenceMappings =
-			new Dictionary<PackageGroup, Dictionary<string, VirtualFileReference>>();
-
+		public readonly ExplorerStore NodeStorage;
 
 		/// <summary>
 		/// A queue of work submitted by the UI (and indirectly, the user). Worker threads are given
@@ -148,8 +120,10 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Explorer.ExplorerBuilder"/> class.
 		/// </summary>
-		public ExplorerBuilder()
+		public ExplorerBuilder(ExplorerStore inExplorerStore)
 		{
+			this.NodeStorage = inExplorerStore;
+
 			ThreadPool.SetMinThreads(10, 4);
 
 			this.EnumerationLoopThread = new Thread(EnumerationLoop)
@@ -238,11 +212,7 @@ namespace Everlook.Explorer
 				if (this.CachedPackageDirectories.Count > 0)
 				{
 					this.WorkQueue.Clear();
-					this.PackageItemNodeMapping.Clear();
-					this.PackageNodeItemMapping.Clear();
-
-					this.PackageGroupVirtualNodeMapping.Clear();
-					this.VirtualReferenceMappings.Clear();
+					this.NodeStorage.Clear();
 				}
 
 				foreach (string packageDirectory in this.CachedPackageDirectories)
@@ -462,50 +432,6 @@ namespace Everlook.Explorer
 					SubmitWork(readyReference);
 				}
 			}
-		}
-
-		/// <summary>
-		/// Adds a virtual mapping.
-		/// </summary>
-		/// <param name="hardReference">Hard reference.</param>
-		/// <param name="virtualReference">Virtual reference.</param>
-		public void AddVirtualMapping(FileReference hardReference, VirtualFileReference virtualReference)
-		{
-			PackageGroup referenceGroup = hardReference.PackageGroup;
-			if (this.VirtualReferenceMappings.ContainsKey(referenceGroup))
-			{
-				if (!this.VirtualReferenceMappings[referenceGroup].ContainsKey(hardReference.FilePath))
-				{
-					this.VirtualReferenceMappings[referenceGroup].Add(hardReference.FilePath, virtualReference);
-				}
-			}
-			else
-			{
-				Dictionary<string, VirtualFileReference> groupDictionary = new Dictionary<string, VirtualFileReference>();
-				groupDictionary.Add(hardReference.FilePath, virtualReference);
-
-				this.VirtualReferenceMappings.Add(referenceGroup, groupDictionary);
-			}
-		}
-
-		/// <summary>
-		/// Gets a virtual reference.
-		/// </summary>
-		/// <returns>The virtual reference.</returns>
-		/// <param name="hardReference">Hard reference.</param>
-		public VirtualFileReference GetVirtualReference(FileReference hardReference)
-		{
-			PackageGroup referenceGroup = hardReference.PackageGroup;
-			if (this.VirtualReferenceMappings.ContainsKey(referenceGroup))
-			{
-				VirtualFileReference virtualReference;
-				if (this.VirtualReferenceMappings[referenceGroup].TryGetValue(hardReference.FilePath, out virtualReference))
-				{
-					return virtualReference;
-				}
-			}
-
-			return null;
 		}
 
 		/// <summary>

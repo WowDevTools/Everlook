@@ -23,7 +23,6 @@
 using System;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Everlook.Configuration;
 using Everlook.Explorer;
@@ -62,7 +61,7 @@ namespace Everlook.UI
 		/// <summary>
 		/// Background file explorer tree builder. Handles enumeration of files in the archives.
 		/// </summary>
-		private readonly ExplorerBuilder explorerBuilder = new ExplorerBuilder();
+		private readonly ExplorerBuilder explorerBuilder;
 
 		/// <summary>
 		/// Whether or not the program is shutting down. This is used to remove callbacks and events.
@@ -125,7 +124,7 @@ namespace Everlook.UI
 			this.viewportRenderer = new ViewportRenderer(this.ViewportWidget);
 
 			// Add a staggered idle handler for adding enumerated items to the interface
-			Timeout.Add(10, OnGLibLoopIdle, Priority.DefaultIdle);
+			Timeout.Add(1, OnGLibLoopIdle, Priority.DefaultIdle);
 
 			this.AboutButton.Clicked += OnAboutButtonClicked;
 			this.PreferencesButton.Clicked += OnPreferencesButtonClicked;
@@ -148,6 +147,16 @@ namespace Everlook.UI
 
 			this.RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
 
+			this.explorerBuilder = new ExplorerBuilder
+				(
+					new ExplorerStore
+					(
+						this.GameExplorerTreeStore,
+						this.GameExplorerTreeFilter,
+						this.GameExplorerTreeSorter
+					)
+				);
+
 			this.explorerBuilder.PackageGroupAdded += OnPackageGroupAdded;
 			this.explorerBuilder.PackageEnumerated += OnPackageEnumerated;
 			this.explorerBuilder.Start(); // TODO: This is a performance hog (and the whole damn thing should be rewritten)
@@ -167,102 +176,6 @@ namespace Everlook.UI
 			// Animation
 
 			// Audio
-		}
-
-		/// <summary>
-		/// Handles input inside the OpenGL viewport for mouse button presses.
-		/// This function grabs focus for the viewport, and hides the mouse
-		/// cursor during movement.
-		/// </summary>
-		[ConnectBefore]
-		private void OnViewportButtonPressed(object o, ButtonPressEventArgs args)
-		{
-			if (this.viewportRenderer.IsMovementDisabled())
-			{
-				return;
-			}
-
-			// Right click is pressed
-			if (args.Event.Type == EventType.ButtonPress && args.Event.Button == 3)
-			{
-				// Hide the mouse pointer
-				this.Window.Cursor = new Cursor(CursorType.BlankCursor);
-
-				this.ViewportWidget.GrabFocus();
-
-				this.viewportRenderer.WantsToMove = true;
-				this.viewportRenderer.InitialMouseX = Mouse.GetCursorState().X;
-				this.viewportRenderer.InitialMouseY = Mouse.GetCursorState().Y;
-			}
-		}
-
-		/// <summary>
-		/// Handles input inside the OpenGL viewport for mouse button releases.
-		/// This function restores input focus to the main UI and returns the
-		/// cursor to its original appearance.
-		/// </summary>
-		[ConnectBefore]
-		private void OnViewportButtonReleased(object o, ButtonReleaseEventArgs args)
-		{
-			// Right click is released
-			if (args.Event.Type == EventType.ButtonRelease && args.Event.Button == 3)
-			{
-				// Return the mouse pointer to its original appearance
-				this.Window.Cursor = new Cursor(CursorType.Arrow);
-				GrabFocus();
-				this.viewportRenderer.WantsToMove = false;
-			}
-		}
-
-		/// <summary>
-		/// Handles OpenGL initialization post-context creation. This function
-		/// passes the main OpenGL initialization to the viewport renderer, and
-		/// adds an idle function for rendering.
-		/// </summary>
-		private void OnViewportInitialized(object sender, EventArgs e)
-		{
-			// Initialize all OpenGL rendering parameters
-			this.viewportRenderer.Initialize();
-			Idle.Add(OnIdleRenderFrame);
-		}
-
-		/// <summary>
-		/// This function lazily renders frames of the currently focused object.
-		/// All rendering functionality is either in the viewport renderer, or in a
-		/// renderable object currently hosted by it.
-		/// </summary>
-		private bool OnIdleRenderFrame()
-		{
-			const bool keepCalling = true;
-			const bool stopCalling = false;
-
-			if (this.shuttingDown)
-			{
-				return stopCalling;
-			}
-
-			if (!this.viewportRenderer.IsInitialized)
-			{
-				return stopCalling;
-			}
-
-			if (this.viewportRenderer.HasRenderTarget || this.viewportHasPendingRedraw)
-			{
-				this.viewportRenderer.RenderFrame();
-				this.viewportHasPendingRedraw = false;
-			}
-
-			return keepCalling;
-		}
-
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="o">The sending object.</param>
-		/// <param name="args">The configuration arguments.</param>
-		private void OnViewportConfigured(object o, ConfigureEventArgs args)
-		{
-			this.viewportHasPendingRedraw = true;
 		}
 
 		/// <summary>
@@ -388,6 +301,171 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
+		/// Gets the current <see cref="FileReference"/> that is selected in the tree view.
+		/// </summary>
+		/// <returns></returns>
+		private FileReference GetSelectedReference()
+		{
+			TreeIter selectedIter;
+			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
+
+			return this.explorerBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
+		}
+
+		/// <summary>
+		/// Reloads visible runtime values that the user can change in the preferences, such as the colour
+		/// of the viewport or the loaded packages.
+		/// </summary>
+		private void ReloadRuntimeValues()
+		{
+			this.ViewportWidget.OverrideBackgroundColor(StateFlags.Normal, this.Config.GetViewportBackgroundColour());
+
+			if (this.explorerBuilder.HasPackageDirectoryChanged())
+			{
+				this.GameExplorerTreeStore.Clear();
+				this.explorerBuilder.Reload();
+			}
+		}
+
+		private void BeginLoadingWorldModel(FileReference fileReference)
+		{
+			this.StatusSpinner.Active = true;
+
+			string modelName = IOPath.GetFileNameWithoutExtension(fileReference.FilePath);
+			uint modelStatusMessageContextID = this.MainStatusBar.GetContextId($"worldModelLoad_{modelName}");
+			uint modelStatusMessageID = this.MainStatusBar.Push(modelStatusMessageContextID,
+				$"Loading world model \"{modelName}\"...");
+
+			Task.Factory.StartNew(() => ModelLoadingRoutines.LoadWorldModel(fileReference))
+				.ContinueWith(modelLoadTask => ModelLoadingRoutines.CreateRenderableWorldModel(modelLoadTask.Result, fileReference.PackageGroup), this.UIThreadScheduler)
+				.ContinueWith(createRenderableTask => this.viewportRenderer.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
+				.ContinueWith(result =>
+					{
+						this.StatusSpinner.Active = false;
+						this.MainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
+						EnableControlPage(ControlPage.Model);
+					},
+					this.UIThreadScheduler);
+		}
+
+		private void BeginLoadingWorldModelGroup(FileReference fileReference)
+		{
+			this.StatusSpinner.Active = true;
+
+			string modelName = IOPath.GetFileNameWithoutExtension(fileReference.FilePath);
+			uint modelStatusMessageContextID = this.MainStatusBar.GetContextId($"worldModelGroupLoad_{modelName}");
+			uint modelStatusMessageID = this.MainStatusBar.Push(modelStatusMessageContextID,
+				$"Loading world model group \"{modelName}\"...");
+
+			Task.Factory.StartNew(() => ModelLoadingRoutines.LoadWorldModelGroup(fileReference))
+				.ContinueWith(modelLoadTask => ModelLoadingRoutines.CreateRenderableWorldModel(modelLoadTask.Result, fileReference.PackageGroup), this.UIThreadScheduler)
+				.ContinueWith(createRenderableTask => this.viewportRenderer.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
+				.ContinueWith(result =>
+					{
+						this.StatusSpinner.Active = false;
+						this.MainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
+						EnableControlPage(ControlPage.Model);
+					},
+					this.UIThreadScheduler);
+		}
+
+		/// <summary>
+		/// Handles input inside the OpenGL viewport for mouse button presses.
+		/// This function grabs focus for the viewport, and hides the mouse
+		/// cursor during movement.
+		/// </summary>
+		[ConnectBefore]
+		private void OnViewportButtonPressed(object o, ButtonPressEventArgs args)
+		{
+			if (this.viewportRenderer.IsMovementDisabled())
+			{
+				return;
+			}
+
+			// Right click is pressed
+			if (args.Event.Type == EventType.ButtonPress && args.Event.Button == 3)
+			{
+				// Hide the mouse pointer
+				this.Window.Cursor = new Cursor(CursorType.BlankCursor);
+
+				this.ViewportWidget.GrabFocus();
+
+				this.viewportRenderer.WantsToMove = true;
+				this.viewportRenderer.InitialMouseX = Mouse.GetCursorState().X;
+				this.viewportRenderer.InitialMouseY = Mouse.GetCursorState().Y;
+			}
+		}
+
+		/// <summary>
+		/// Handles input inside the OpenGL viewport for mouse button releases.
+		/// This function restores input focus to the main UI and returns the
+		/// cursor to its original appearance.
+		/// </summary>
+		[ConnectBefore]
+		private void OnViewportButtonReleased(object o, ButtonReleaseEventArgs args)
+		{
+			// Right click is released
+			if (args.Event.Type == EventType.ButtonRelease && args.Event.Button == 3)
+			{
+				// Return the mouse pointer to its original appearance
+				this.Window.Cursor = new Cursor(CursorType.Arrow);
+				GrabFocus();
+				this.viewportRenderer.WantsToMove = false;
+			}
+		}
+
+		/// <summary>
+		/// Handles OpenGL initialization post-context creation. This function
+		/// passes the main OpenGL initialization to the viewport renderer, and
+		/// adds an idle function for rendering.
+		/// </summary>
+		private void OnViewportInitialized(object sender, EventArgs e)
+		{
+			// Initialize all OpenGL rendering parameters
+			this.viewportRenderer.Initialize();
+			Idle.Add(OnIdleRenderFrame);
+		}
+
+		/// <summary>
+		/// This function lazily renders frames of the currently focused object.
+		/// All rendering functionality is either in the viewport renderer, or in a
+		/// renderable object currently hosted by it.
+		/// </summary>
+		private bool OnIdleRenderFrame()
+		{
+			const bool keepCalling = true;
+			const bool stopCalling = false;
+
+			if (this.shuttingDown)
+			{
+				return stopCalling;
+			}
+
+			if (!this.viewportRenderer.IsInitialized)
+			{
+				return stopCalling;
+			}
+
+			if (this.viewportRenderer.HasRenderTarget || this.viewportHasPendingRedraw)
+			{
+				this.viewportRenderer.RenderFrame();
+				this.viewportHasPendingRedraw = false;
+			}
+
+			return keepCalling;
+		}
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="o">The sending object.</param>
+		/// <param name="args">The configuration arguments.</param>
+		private void OnViewportConfigured(object o, ConfigureEventArgs args)
+		{
+			this.viewportHasPendingRedraw = true;
+		}
+
+		/// <summary>
 		/// Idle functionality. This code is called as a way of lazily loading rows into the UI
 		/// without causing lockups due to sheer data volume.
 		/// </summary>
@@ -415,11 +493,20 @@ namespace Everlook.UI
 
 				if (newContent.IsFile)
 				{
-					AddFileNode(newContent.ParentReference, newContent);
+					this.explorerBuilder.NodeStorage.AddFileNode(newContent);
 				}
 				else if (newContent.IsDirectory)
 				{
-					AddDirectoryNode(newContent.ParentReference, newContent);
+					TreePath pathToParent = this.explorerBuilder.NodeStorage.GetPath(newContent.ParentReference.ReferenceIter);
+					bool isParentExpanded = this.GameExplorerTreeView.GetRowExpanded(pathToParent);
+					if (isParentExpanded && newContent.State == ReferenceState.NotEnumerated)
+					{
+						// This references was added to the UI after the user had opened the previous folder.
+						// Therefore, it should be submitted back to the UI for enumeration.
+						this.explorerBuilder.SubmitWork(newContent);
+					}
+
+					this.explorerBuilder.NodeStorage.AddDirectoryNode(newContent);
 				}
 
 				this.explorerBuilder.EnumeratedReferences.Remove(newContent);
@@ -539,7 +626,7 @@ namespace Everlook.UI
 			TreeIter selectedIter;
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			clipboard.Text = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter)).FilePath;
+			clipboard.Text = this.explorerBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter).FilePath;
 		}
 
 		/// <summary>
@@ -597,33 +684,6 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
-		/// Gets the current <see cref="FileReference"/> that is selected in the tree view.
-		/// </summary>
-		/// <returns></returns>
-		private FileReference GetSelectedReference()
-		{
-			TreeIter selectedIter;
-			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
-
-			return GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
-		}
-
-		/// <summary>
-		/// Reloads visible runtime values that the user can change in the preferences, such as the colour
-		/// of the viewport or the loaded packages.
-		/// </summary>
-		private void ReloadRuntimeValues()
-		{
-			this.ViewportWidget.OverrideBackgroundColor(StateFlags.Normal, this.Config.GetViewportBackgroundColour());
-
-			if (this.explorerBuilder.HasPackageDirectoryChanged())
-			{
-				this.GameExplorerTreeStore.Clear();
-				this.explorerBuilder.Reload();
-			}
-		}
-
-		/// <summary>
 		/// Handles expansion of rows in the game explorer, enumerating any subfolders and
 		/// files present under that row.
 		/// </summary>
@@ -632,7 +692,7 @@ namespace Everlook.UI
 		private void OnGameExplorerRowExpanded(object sender, RowExpandedArgs e)
 		{
 			// Whenever a row is expanded, enumerate the subfolders of that row.
-			FileReference parentReference = GetItemReferenceFromStoreIter(GetStoreIterFromVisiblePath(e.Path));
+			FileReference parentReference = this.explorerBuilder.NodeStorage.GetItemReferenceFromPath(e.Path);
 			foreach (FileReference childReference in parentReference.ChildReferences)
 			{
 				if (childReference.IsDirectory && childReference.State != ReferenceState.Enumerated)
@@ -640,42 +700,6 @@ namespace Everlook.UI
 					this.explorerBuilder.SubmitWork(childReference);
 				}
 			}
-		}
-
-		/// <summary>
-		/// Gets a <see cref="TreeIter"/> that's valid for the <see cref="GameExplorerTreeStore"/> from a
-		/// <see cref="TreePath"/> visible to the user in the UI.
-		/// </summary>
-		/// <param name="path">The TreePath.</param>
-		/// <returns>A <see cref="TreeIter"/>.</returns>
-		private TreeIter GetStoreIterFromVisiblePath(TreePath path)
-		{
-			TreeIter sorterIter;
-			this.GameExplorerTreeSorter.GetIter(out sorterIter, path);
-			return GetStoreIterFromSorterIter(sorterIter);
-		}
-
-		/// <summary>
-		/// Gets a <see cref="TreeIter"/> that's valid for the <see cref="GameExplorerTreeStore"/> from a TreeIter
-		/// valid for the <see cref="GameExplorerTreeSorter"/>.
-		/// </summary>
-		/// <param name="sorterIter">The GameExplorerTreeSorter iter.</param>
-		/// <returns>A <see cref="TreeIter"/>.</returns>
-		private TreeIter GetStoreIterFromSorterIter(TreeIter sorterIter)
-		{
-			TreeIter filterIter = this.GameExplorerTreeSorter.ConvertIterToChildIter(sorterIter);
-			return GetStoreIterFromFilterIter(filterIter);
-		}
-
-		/// <summary>
-		/// Gets a <see cref="TreeIter"/> that's valid for the <see cref="GameExplorerTreeStore"/> from a TreeIter
-		/// valid for the <see cref="GameExplorerTreeFilter"/>.
-		/// </summary>
-		/// <param name="filterIter">The GameExplorerTreeFilter iter.</param>
-		/// <returns>A <see cref="TreeIter"/>.</returns>
-		private TreeIter GetStoreIterFromFilterIter(TreeIter filterIter)
-		{
-			return this.GameExplorerTreeFilter.ConvertIterToChildIter(filterIter);
 		}
 
 		/// <summary>
@@ -688,7 +712,7 @@ namespace Everlook.UI
 			TreeIter selectedIter;
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			FileReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
+			FileReference fileReference = this.explorerBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
 			if (fileReference != null && fileReference.IsFile)
 			{
 				if (string.IsNullOrEmpty(fileReference.FilePath))
@@ -745,7 +769,7 @@ namespace Everlook.UI
 			TreeIter selectedIter;
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			FileReference fileReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(selectedIter));
+			FileReference fileReference = this.explorerBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
 			if (fileReference != null && fileReference.IsFile)
 			{
 				if (string.IsNullOrEmpty(fileReference.FilePath))
@@ -807,48 +831,6 @@ namespace Everlook.UI
 			}
 		}
 
-		private void BeginLoadingWorldModel(FileReference fileReference)
-		{
-			this.StatusSpinner.Active = true;
-
-			string modelName = IOPath.GetFileNameWithoutExtension(fileReference.FilePath);
-			uint modelStatusMessageContextID = this.MainStatusBar.GetContextId($"worldModelLoad_{modelName}");
-			uint modelStatusMessageID = this.MainStatusBar.Push(modelStatusMessageContextID,
-				$"Loading world model \"{modelName}\"...");
-
-			Task.Factory.StartNew(() => ModelLoadingRoutines.LoadWorldModel(fileReference))
-				.ContinueWith(modelLoadTask => ModelLoadingRoutines.CreateRenderableWorldModel(modelLoadTask.Result, fileReference.PackageGroup), this.UIThreadScheduler)
-				.ContinueWith(createRenderableTask => this.viewportRenderer.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
-				.ContinueWith(result =>
-				{
-					this.StatusSpinner.Active = false;
-					this.MainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
-					EnableControlPage(ControlPage.Model);
-				},
-				this.UIThreadScheduler);
-		}
-
-		private void BeginLoadingWorldModelGroup(FileReference fileReference)
-		{
-			this.StatusSpinner.Active = true;
-
-			string modelName = IOPath.GetFileNameWithoutExtension(fileReference.FilePath);
-			uint modelStatusMessageContextID = this.MainStatusBar.GetContextId($"worldModelGroupLoad_{modelName}");
-			uint modelStatusMessageID = this.MainStatusBar.Push(modelStatusMessageContextID,
-				$"Loading world model group \"{modelName}\"...");
-
-			Task.Factory.StartNew(() => ModelLoadingRoutines.LoadWorldModelGroup(fileReference))
-				.ContinueWith(modelLoadTask => ModelLoadingRoutines.CreateRenderableWorldModel(modelLoadTask.Result, fileReference.PackageGroup), this.UIThreadScheduler)
-				.ContinueWith(createRenderableTask => this.viewportRenderer.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
-				.ContinueWith(result =>
-					{
-						this.StatusSpinner.Active = false;
-						this.MainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
-						EnableControlPage(ControlPage.Model);
-					},
-					this.UIThreadScheduler);
-		}
-
 		/// <summary>
 		/// Handles context menu spawning for the game explorer.
 		/// </summary>
@@ -863,8 +845,7 @@ namespace Everlook.UI
 			FileReference currentFileReference = null;
 			if (path != null)
 			{
-				TreeIter iter = GetStoreIterFromVisiblePath(path);
-				currentFileReference = GetItemReferenceFromStoreIter(iter);
+				currentFileReference = this.explorerBuilder.NodeStorage.GetItemReferenceFromPath(path);
 			}
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
@@ -919,7 +900,7 @@ namespace Everlook.UI
 			{
 				TreeIter iter;
 				this.ExportQueueListStore.GetIterFromString(out iter, path.ToString());
-				currentReference = GetItemReferenceFromStoreIter(GetStoreIterFromSorterIter(iter));
+				currentReference = this.explorerBuilder.NodeStorage.GetItemReferenceFromIter(iter);
 			}
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
@@ -959,36 +940,9 @@ namespace Everlook.UI
 		private void OnPackageGroupAdded(object sender, ReferenceEnumeratedEventArgs e)
 		{
 			Application.Invoke(delegate
-				{
-					AddPackageGroupNode(e.Reference);
-				});
-		}
-
-		/// <summary>
-		/// Adds a package group node to the game explorer view
-		/// </summary>
-		/// <param name="groupReference">PackageGroup reference.</param>
-		private void AddPackageGroupNode(FileReference groupReference)
-		{
-			// Add the group node
-			Pixbuf packageGroupIcon = IconManager.GetIcon("user-home");
-			TreeIter packageGroupNode = this.GameExplorerTreeStore.AppendValues(packageGroupIcon,
-				                            groupReference.PackageGroup.GroupName, "", "Virtual file tree", (int)NodeType.PackageGroup);
-			this.explorerBuilder.PackageItemNodeMapping.Add(groupReference, packageGroupNode);
-			this.explorerBuilder.PackageNodeItemMapping.Add(packageGroupNode, groupReference);
-
-			VirtualFileReference virtualGroupReference = groupReference as VirtualFileReference;
-			if (virtualGroupReference != null)
 			{
-				this.explorerBuilder.PackageGroupVirtualNodeMapping.Add(groupReference.PackageGroup, virtualGroupReference);
-			}
-
-			// Add the package folder subnode
-			Pixbuf packageFolderIcon = IconManager.GetIcon("applications-other");
-			TreeIter packageFolderNode = this.GameExplorerTreeStore.AppendValues(packageGroupNode,
-				                             packageFolderIcon, "Packages", "", "Individual packages", (int)NodeType.PackageFolder);
-			this.explorerBuilder.PackageItemNodeMapping.Add(groupReference.ChildReferences.First(), packageFolderNode);
-			this.explorerBuilder.PackageNodeItemMapping.Add(packageFolderNode, groupReference.ChildReferences.First());
+				this.explorerBuilder.NodeStorage.AddPackageGroupNode(e.Reference);
+			});
 		}
 
 		/// <summary>
@@ -999,234 +953,9 @@ namespace Everlook.UI
 		private void OnPackageEnumerated(object sender, ReferenceEnumeratedEventArgs e)
 		{
 			Application.Invoke(delegate
-				{
-					AddPackageNode(e.Reference.ParentReference, e.Reference);
-				});
-		}
-
-		/// <summary>
-		/// Adds a package node to the game explorer view.
-		/// </summary>
-		/// <param name="parentReference">Parent reference where the package should be added.</param>
-		/// <param name="packageReference">File reference pointing to the package.</param>
-		private void AddPackageNode(FileReference parentReference, FileReference packageReference)
-		{
-			// I'm a new root node
-			TreeIter parentNode;
-			this.explorerBuilder.PackageItemNodeMapping.TryGetValue(parentReference, out parentNode);
-
-			if (this.GameExplorerTreeStore.IterIsValid(parentNode))
 			{
-				// Add myself to that node
-				if (!this.explorerBuilder.PackageItemNodeMapping.ContainsKey(packageReference))
-				{
-					Pixbuf packageIcon = IconManager.GetIcon("package-x-generic");
-					TreeIter packageNode = this.GameExplorerTreeStore.AppendValues(parentNode,
-											packageIcon, packageReference.PackageName, "", "", (int)NodeType.Package);
-					this.explorerBuilder.PackageItemNodeMapping.Add(packageReference, packageNode);
-					this.explorerBuilder.PackageNodeItemMapping.Add(packageNode, packageReference);
-				}
-			}
-
-			// Map package nodes to virtual root nodes
-			VirtualFileReference virtualGroupReference;
-			if (this.explorerBuilder.PackageGroupVirtualNodeMapping.TryGetValue(packageReference.PackageGroup, out virtualGroupReference))
-			{
-				this.explorerBuilder.AddVirtualMapping(packageReference, virtualGroupReference);
-			}
-		}
-
-		/// <summary>
-		/// Adds a directory node to the game explorer view, attachedt to the provided parent
-		/// package and directory.
-		/// </summary>
-		/// <param name="parentReference">Parent reference where the new directory should be added.</param>
-		/// <param name="childReference">Child reference representing the directory.</param>
-		private void AddDirectoryNode(FileReference parentReference, FileReference childReference)
-		{
-			TreeIter parentNode;
-			this.explorerBuilder.PackageItemNodeMapping.TryGetValue(parentReference, out parentNode);
-
-			if (this.GameExplorerTreeStore.IterIsValid(parentNode))
-			{
-				// Add myself to that node
-				if (!this.explorerBuilder.PackageItemNodeMapping.ContainsKey(childReference))
-				{
-					bool isParentExpanded = this.GameExplorerTreeView.GetRowExpanded(this.GameExplorerTreeStore.GetPath(parentNode));
-					if (isParentExpanded && childReference.State == ReferenceState.NotEnumerated)
-					{
-						// This references was added to the UI after the user had opened the previous folder.
-						// Therefore, it should be submitted back to the UI for enumeration.
-						this.explorerBuilder.SubmitWork(childReference);
-					}
-
-					TreeIter node = CreateDirectoryTreeNode(parentNode, childReference);
-					this.explorerBuilder.PackageItemNodeMapping.Add(childReference, node);
-					this.explorerBuilder.PackageNodeItemMapping.Add(node, childReference);
-				}
-			}
-
-			// Now, let's add (or append to) the virtual node
-			VirtualFileReference virtualParentReference = this.explorerBuilder.GetVirtualReference(parentReference);
-
-			if (virtualParentReference != null)
-			{
-				TreeIter virtualParentNode;
-				this.explorerBuilder.PackageItemNodeMapping.TryGetValue(virtualParentReference, out virtualParentNode);
-
-				if (this.GameExplorerTreeStore.IterIsValid(virtualParentNode))
-				{
-
-					VirtualFileReference virtualChildReference = this.explorerBuilder.GetVirtualReference(childReference);
-
-					if (virtualChildReference != null)
-					{
-						// Append this directory reference as an additional overridden hard reference
-						virtualChildReference.OverriddenHardReferences.Add(childReference);
-
-						bool isParentExpanded = this.GameExplorerTreeView.GetRowExpanded(this.GameExplorerTreeStore.GetPath(virtualParentNode));
-						if (isParentExpanded && virtualChildReference.State == ReferenceState.NotEnumerated)
-						{
-							// This references was added to the UI after the user had opened the previous folder.
-							// Therefore, it should be submitted back to the UI for enumeration.
-							this.explorerBuilder.SubmitWork(virtualChildReference);
-						}
-					}
-					else
-					{
-						virtualChildReference = new VirtualFileReference(virtualParentReference, childReference.PackageGroup, childReference);
-
-						if (!virtualParentReference.ChildReferences.Contains(virtualChildReference))
-						{
-							virtualParentReference.ChildReferences.Add(virtualChildReference);
-
-							// Create a new virtual reference and a node that maps to it.
-							if (!this.explorerBuilder.PackageItemNodeMapping.ContainsKey(virtualChildReference))
-							{
-
-								TreeIter node = CreateDirectoryTreeNode(virtualParentNode, virtualChildReference);
-
-								this.explorerBuilder.PackageItemNodeMapping.Add(virtualChildReference, node);
-								this.explorerBuilder.PackageNodeItemMapping.Add(node, virtualChildReference);
-
-								// Needs to be a path, not a reference
-								this.explorerBuilder.AddVirtualMapping(childReference, virtualChildReference);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Creates a node in the <see cref="GameExplorerTreeView"/> for the specified directory reference, as
-		/// a child below the specified parent node.
-		/// </summary>
-		/// <param name="parentNode">The parent node where the new node should be attached.</param>
-		/// <param name="directory">The <see cref="FileReference"/> describing the directory.</param>
-		/// <returns>A <see cref="TreeIter"/> pointing to the new directory node.</returns>
-		private TreeIter CreateDirectoryTreeNode(TreeIter parentNode, FileReference directory)
-		{
-			Pixbuf directoryIcon = IconManager.GetIcon(Stock.Directory);
-			return this.GameExplorerTreeStore.AppendValues(parentNode,
-				directoryIcon, directory.GetReferencedItemName(), "", "", (int)NodeType.Directory);
-		}
-
-		/// <summary>
-		/// Adds a file node to the game explorer view, attached to the provided parent
-		/// package and directory.
-		/// </summary>
-		/// <param name="parentReference">Parent file reference</param>
-		/// <param name="childReference">Child file reference.</param>
-		private void AddFileNode(FileReference parentReference, FileReference childReference)
-		{
-			TreeIter parentNode;
-			this.explorerBuilder.PackageItemNodeMapping.TryGetValue(parentReference, out parentNode);
-
-			if (this.GameExplorerTreeStore.IterIsValid(parentNode))
-			{
-				// Add myself to that node
-				if (!this.explorerBuilder.PackageItemNodeMapping.ContainsKey(childReference))
-				{
-					parentReference.ChildReferences.Add(childReference);
-
-					TreeIter node = CreateFileTreeNode(parentNode, childReference);
-
-					this.explorerBuilder.PackageItemNodeMapping.Add(childReference, node);
-					this.explorerBuilder.PackageNodeItemMapping.Add(node, childReference);
-				}
-			}
-
-			// Now, let's add (or append to) the virtual node
-			VirtualFileReference virtualParentReference = this.explorerBuilder.GetVirtualReference(parentReference);
-
-			if (virtualParentReference != null)
-			{
-				TreeIter virtualParentNode;
-				this.explorerBuilder.PackageItemNodeMapping.TryGetValue(virtualParentReference, out virtualParentNode);
-
-				if (this.GameExplorerTreeStore.IterIsValid(virtualParentNode))
-				{
-
-					VirtualFileReference virtualChildReference = this.explorerBuilder.GetVirtualReference(childReference);
-
-					if (virtualChildReference != null)
-					{
-						// Append this directory reference as an additional overridden hard reference
-						virtualChildReference.OverriddenHardReferences.Add(childReference);
-					}
-					else
-					{
-						virtualChildReference = new VirtualFileReference(virtualParentReference, childReference.PackageGroup, childReference);
-
-						if (!virtualParentReference.ChildReferences.Contains(virtualChildReference))
-						{
-							virtualParentReference.ChildReferences.Add(virtualChildReference);
-
-							// Create a new virtual reference and a node that maps to it.
-							if (!this.explorerBuilder.PackageItemNodeMapping.ContainsKey(virtualChildReference))
-							{
-								TreeIter node = CreateFileTreeNode(virtualParentNode, virtualChildReference);
-
-								this.explorerBuilder.PackageItemNodeMapping.Add(virtualChildReference, node);
-								this.explorerBuilder.PackageNodeItemMapping.Add(node, virtualChildReference);
-
-								this.explorerBuilder.AddVirtualMapping(childReference, virtualChildReference);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Creates a node in the <see cref="GameExplorerTreeView"/> for the specified file reference, as
-		/// a child below the specified parent node.
-		/// </summary>
-		/// <param name="parentNode">The parent node where the new node should be attached.</param>
-		/// <param name="file">The <see cref="FileReference"/> describing the file.</param>
-		/// <returns>A <see cref="TreeIter"/> pointing to the new directory node.</returns>
-		private TreeIter CreateFileTreeNode(TreeIter parentNode, FileReference file)
-		{
-			return this.GameExplorerTreeStore.AppendValues(parentNode, file.GetIcon(),
-				file.GetReferencedItemName(), "", "", (int)NodeType.File);
-		}
-
-		/// <summary>
-		/// Converts a <see cref="TreeIter"/> into an <see cref="FileReference"/>. The reference object is queried
-		/// from the explorerBuilder's internal store.
-		/// </summary>
-		/// <returns>The FileReference object pointed to by the TreeIter.</returns>
-		/// <param name="iter">The TreeIter.</param>
-		private FileReference GetItemReferenceFromStoreIter(TreeIter iter)
-		{
-			FileReference reference;
-			if (this.explorerBuilder.PackageNodeItemMapping.TryGetValue(iter, out reference))
-			{
-				return reference;
-			}
-
-			return null;
+				this.explorerBuilder.NodeStorage.AddPackageNode(e.Reference);
+			});
 		}
 
 		/// <summary>
@@ -1248,35 +977,10 @@ namespace Everlook.UI
 			this.viewportRenderer.SetRenderTarget(null);
 			this.viewportRenderer.Dispose();
 
+			this.ViewportWidget.Destroy();
+
 			Application.Quit();
 			a.RetVal = true;
 		}
-	}
-
-	/// <summary>
-	/// Available control pages in the Everlook UI.
-	/// </summary>
-	public enum ControlPage
-	{
-		/// <summary>
-		/// Image control page. Handles mip levels and rendered channels.
-		/// </summary>
-		Image = 0,
-
-		/// <summary>
-		/// Model control page. Handles vertex joining, geoset rendering and other model
-		/// settings.
-		/// </summary>
-		Model = 1,
-
-		/// <summary>
-		/// Animation control page. Handles active animations and their settings.
-		/// </summary>
-		Animation = 2,
-
-		/// <summary>
-		/// Audio control page. Handles playback of audio.
-		/// </summary>
-		Audio = 3
 	}
 }

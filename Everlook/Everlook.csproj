@@ -65,6 +65,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Explorer\ExplorerStore.cs" />
     <Compile Include="Explorer\FileReference.cs" />
     <Compile Include="Explorer\ReferenceState.cs" />
     <Compile Include="Explorer\VirtualFileReference.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="UI\EverlookPreferences.cs" />
     <Compile Include="UI\EverlookPreferencesElements.cs" />
     <Compile Include="UI\MainWindow.cs" />
+    <Compile Include="UI\ControlPages.cs" />
     <Compile Include="UI\MainWindowElements.cs">
       <DependentUpon>"MainWindow.cs"</DependentUpon>
     </Compile>
@@ -126,7 +128,7 @@
     <EmbeddedResource Include="Content\Icons\Blender\Blender-Planet-Icon.svg" />
     <EmbeddedResource Include="Content\Icons\Blender\Blender-Wave-Icon.svg" />
     <EmbeddedResource Include="Content\Icons\Mint-Y\applications-other.png" />
-	<EmbeddedResource Include="Content\Icons\Mint-X\empty.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-X\empty.png" />
     <EmbeddedResource Include="Content\Icons\Mint-X\package-x-generic.png" />
   </ItemGroup>
   <ItemGroup>

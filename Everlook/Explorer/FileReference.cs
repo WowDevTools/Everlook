@@ -26,6 +26,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Everlook.Package;
+using Gtk;
 using Warcraft.MPQ.FileInfo;
 
 namespace Everlook.Explorer
@@ -40,18 +41,23 @@ namespace Everlook.Explorer
 		/// Gets or sets the parent reference.
 		/// </summary>
 		/// <value>The parent reference.</value>
-		public FileReference ParentReference { get; set; }
+		public FileReference ParentReference { get; protected set; }
+
+		/// <summary>
+		/// The <see cref="TreeIter"/> this FileReference maps to.
+		/// </summary>
+		public TreeIter ReferenceIter { get; set; }
 
 		/// <summary>
 		/// Contains a list of references that have this reference as a parent.
 		/// </summary>
-		public List<FileReference> ChildReferences = new List<FileReference>();
+		public readonly List<FileReference> ChildReferences = new List<FileReference>();
 
 		/// <summary>
 		/// Gets or sets the group this reference belongs to.
 		/// </summary>
 		/// <value>The group.</value>
-		public PackageGroup PackageGroup { get; set; }
+		public PackageGroup PackageGroup { get; protected set; }
 
 		/// <summary>
 		/// Gets or sets the name of the package where the file is stored.
@@ -227,6 +233,16 @@ namespace Everlook.Explorer
 		public FileReference(PackageGroup inPackageGroup)
 		{
 			this.PackageGroup = inPackageGroup;
+		}
+
+		/// <summary>
+		/// Determines whether or not this <see cref="FileReference"/> has been added to the UI
+		/// by seeing if its associated <see cref="TreeIter"/> is zero (the default) or not.
+		/// </summary>
+		/// <returns></returns>
+		public bool HasBeenAddedToTheUI()
+		{
+			return !this.ReferenceIter.Equals(TreeIter.Zero);
 		}
 
 		/// <summary>
