@@ -27,7 +27,6 @@ using Everlook.Package;
 using Everlook.Utility;
 using Gdk;
 using Gtk;
-using Warcraft.WMO.GroupFile.Chunks;
 
 namespace Everlook.Explorer
 {
@@ -87,34 +86,6 @@ namespace Everlook.Explorer
 			this.FiletreeStore = inFiletreeStore;
 			this.FiletreeFilter = inFiletreeFilter;
 			this.FiletreeStorter = inFiletreeSorter;
-		}
-
-		/// <summary>
-		/// Gets the <see cref="TreePath"/> of the specified <see cref="TreeIter"/>.
-		/// </summary>
-		/// <param name="iter">The iter to get the path for.</param>
-		/// <returns>The TreePath of the iter.</returns>
-		public TreePath GetPath(TreeIter iter)
-		{
-			TreePath storePath = this.FiletreeStore.GetPath(iter);
-			if (storePath != null)
-			{
-				return storePath;
-			}
-
-			TreePath filterPath = this.FiletreeStore.GetPath(GetStoreIterFromFilterIter(iter));
-			if (filterPath != null)
-			{
-				return filterPath;
-			}
-
-			TreePath sorterPath = this.FiletreeStore.GetPath(GetStoreIterFromSorterIter(iter));
-			if (sorterPath != null)
-			{
-				return sorterPath;
-			}
-
-			return null;
 		}
 
 		/// <summary>
@@ -386,6 +357,34 @@ namespace Everlook.Explorer
 			if (this.PackageNodeItemMapping.TryGetValue(GetStoreIterFromSorterIter(iter), out reference))
 			{
 				return reference;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Gets the <see cref="TreePath"/> of the specified <see cref="TreeIter"/>.
+		/// </summary>
+		/// <param name="iter">The iter to get the path for.</param>
+		/// <returns>The TreePath of the iter.</returns>
+		public TreePath GetPath(TreeIter iter)
+		{
+			TreePath storePath = this.FiletreeStore.GetPath(iter);
+			if (storePath != null)
+			{
+				return storePath;
+			}
+
+			TreePath filterPath = this.FiletreeStore.GetPath(GetStoreIterFromFilterIter(iter));
+			if (filterPath != null)
+			{
+				return filterPath;
+			}
+
+			TreePath sorterPath = this.FiletreeStore.GetPath(GetStoreIterFromSorterIter(iter));
+			if (sorterPath != null)
+			{
+				return sorterPath;
 			}
 
 			return null;
