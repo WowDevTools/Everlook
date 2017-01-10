@@ -106,7 +106,7 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// The bounding frustum of the camera.
 		/// </summary>
-		public BoundingFrustum Frustum { get; private set; }
+		private BoundingFrustum Frustum;
 
 		/*
 			Default camera and movement speeds.
@@ -177,19 +177,11 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// Recalculates the bounding frustum of the camera.
 		/// </summary>
-		/// <param name="viewportWidth"></param>
-		/// <param name="viewportHeight"></param>
-		public void RecalculateFrustum(int viewportWidth, int viewportHeight)
+		/// <param name="projectionMatrix">The matrix to recalulcate from.</param>
+		public void RecalculateFrustum(Matrix4 projectionMatrix)
 		{
-			float aspectRatio = (float) viewportWidth / (float) viewportHeight;
-
-			this.Frustum = BoundingFrustum.FromCamera(
-				this.Position, this.LookDirectionVector, this.UpVector,
-				MathHelper.DegreesToRadians(DefaultFieldOfView),
-				DefaultNearClippingDistance,
-				DefaultFarClippingDistance,
-				aspectRatio
-			);
+			Matrix4 tempMatrix = projectionMatrix;
+			this.Frustum.Matrix = tempMatrix;
 		}
 
 		/// <summary>
@@ -225,6 +217,17 @@ namespace Everlook.Viewport.Camera
 		{
 			return Matrix4.LookAt(this.Position, this.Position + this.LookDirectionVector, this.UpVector
 			);
+		}
+
+		/// <summary>
+		/// Determines whether or not the camera can see the provided bounding box (that is, it is within
+		/// the view frustum).
+		/// </summary>
+		/// <param name="groupBoundingBox">The box to check.</param>
+		/// <returns><value>true</value> if the camera can see the box; Otherwise, <value>false</value>.</returns>
+		public bool CanSee(BoundingBox groupBoundingBox)
+		{
+			return this.Frustum.Contains(groupBoundingBox) != ContainmentType.Disjoint;
 		}
 	}
 }

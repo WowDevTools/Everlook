@@ -225,12 +225,11 @@ namespace Everlook.Viewport
 					// Then render the visual component
 					Matrix4 view = this.Camera.GetViewMatrix();
 					Matrix4 projection = this.Camera.GetProjectionMatrix(this.RenderTarget.Projection, widgetWidth, widgetHeight);
-					this.Camera.RecalculateFrustum(widgetWidth, widgetHeight);
+					this.Camera.RecalculateFrustum(projection);
 
 					this.RenderTarget.Render(view, projection, this.Camera);
 
 					GraphicsContext.CurrentContext.SwapBuffers();
-
 				}
 
 				this.frameWatch.Stop();

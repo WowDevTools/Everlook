@@ -307,20 +307,28 @@ namespace Everlook.Viewport.Rendering
 			{
 				return;
 			}
+OpenTK.
+			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
 			// TODO: Fix frustum culling
 			foreach (ModelGroup modelGroup in this.Model.Groups
 				.OrderByDescending(modelGroup => VectorMath.Distance(camera.Position, modelGroup.GetPosition().AsOpenTKVector())))
 			{
-				Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
-				BoundingBox groupBoundingBox = modelGroup.GetBoundingBox().ToOpenGLBoundingBox().Transform(ref modelViewProjection);
 
-				if (camera.Frustum.Contains(groupBoundingBox) == ContainmentType.Disjoint)
+				RenderGroup(modelGroup, modelViewProjection);
+
+				// Now, draw the model's bounding box
+				BoundingBox groupBoundingBox = modelGroup.GetBoundingBox().ToOpenGLBoundingBox().Transform(ref modelViewProjection);
+				if (camera.CanSee(groupBoundingBox))
 				{
 					//continue;
+					RenderBoundingBox(modelGroup, modelViewProjection, Color4.LimeGreen);
+				}
+				else
+				{
+					RenderBoundingBox(modelGroup, modelViewProjection, Color4.Red);
 				}
 
-				RenderGroup(modelGroup, viewMatrix, projectionMatrix);
 			}
 
 			// TODO: Summarize the render batches from each group that has the same material ID
@@ -337,7 +345,7 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Renders the specified model group on a batch basis.
 		/// </summary>
-		private void RenderGroup(ModelGroup modelGroup, Matrix4 viewMatrix, Matrix4 projectionMatrix)
+		private void RenderGroup(ModelGroup modelGroup, Matrix4 modelViewProjection)
 		{
 			GL.UseProgram(this.SimpleShaderID);
 
@@ -380,7 +388,6 @@ namespace Everlook.Viewport.Rendering
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, indexBufferID);
 
 			// Send the model matrix to the shader
-			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 			int projectionShaderVariableHandle = GL.GetUniformLocation(this.SimpleShaderID, "ModelViewProjection");
 			GL.UniformMatrix4(projectionShaderVariableHandle, false, ref modelViewProjection);
 
@@ -412,12 +419,9 @@ namespace Everlook.Viewport.Rendering
 			GL.DisableVertexAttribArray(0);
 			GL.DisableVertexAttribArray(1);
 			GL.DisableVertexAttribArray(2);
-
-			// Now, draw the model's bounding box
-			RenderBoundingBox(modelGroup, modelViewProjection);
 		}
 
-		private void RenderBoundingBox(ModelGroup modelGroup, Matrix4 modelViewProjection)
+		private void RenderBoundingBox(ModelGroup modelGroup, Matrix4 modelViewProjection, Color4 colour)
 		{
 			GL.UseProgram(this.BoundingBoxShaderID);
 			GL.Disable(EnableCap.CullFace);
@@ -443,7 +447,7 @@ namespace Everlook.Viewport.Rendering
 
 			// Send the box colour to the shader
 			int boxColourShaderVariableHandle = GL.GetUniformLocation(this.BoundingBoxShaderID, "boxColour");
-			GL.Uniform4(boxColourShaderVariableHandle, Color4.Red);
+			GL.Uniform4(boxColourShaderVariableHandle, colour);
 
 			// Now draw the box
 			GL.DrawRangeElements(PrimitiveType.LineLoop, 0,
