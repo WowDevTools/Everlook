@@ -119,7 +119,13 @@ namespace Everlook.UI
             				EventMask.KeyPressMask |
             				EventMask.KeyReleaseMask;
 
-			this.ViewportWidget.Initialized += OnViewportInitialized;
+			this.ViewportWidget.Initialized += delegate
+			{
+				// Initialize all OpenGL rendering parameters
+				this.viewportRenderer.Initialize();
+				Idle.Add(OnIdleRenderFrame);
+			};
+
 			this.ViewportWidget.ButtonPressEvent += OnViewportButtonPressed;
 			this.ViewportWidget.ButtonReleaseEvent += OnViewportButtonReleased;
 			this.ViewportWidget.ConfigureEvent += OnViewportConfigured;
@@ -418,18 +424,6 @@ namespace Everlook.UI
 				GrabFocus();
 				this.viewportRenderer.WantsToMove = false;
 			}
-		}
-
-		/// <summary>
-		/// Handles OpenGL initialization post-context creation. This function
-		/// passes the main OpenGL initialization to the viewport renderer, and
-		/// adds an idle function for rendering.
-		/// </summary>
-		private void OnViewportInitialized(object sender, EventArgs e)
-		{
-			// Initialize all OpenGL rendering parameters
-			this.viewportRenderer.Initialize();
-			Idle.Add(OnIdleRenderFrame);
 		}
 
 		/// <summary>

@@ -377,6 +377,12 @@ namespace Everlook.Explorer
 					packageListFile.Where(s => s.StartsWith(hardReference.FilePath, true, new CultureInfo("en-GB")));
 				foreach (string filePath in strippedListfile)
 				{
+					if (!this.bShouldProcessWork)
+					{
+						// Early drop out
+						return;
+					}
+
 					string childPath = Regex.Replace(filePath, "^(?-i)" + Regex.Escape(hardReference.FilePath), "");
 
 					int slashIndex = childPath.IndexOf('\\');
