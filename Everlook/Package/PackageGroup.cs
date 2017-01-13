@@ -91,6 +91,10 @@ namespace Everlook.Package
 				{
 					Console.WriteLine($"FileLoadException for package \"{packagePath}\": {fex.Message}");
 				}
+				catch (NotImplementedException nex)
+				{
+					Console.WriteLine($"NotImplementedException for package \"{packagePath}\": {nex.Message}");
+				}
 			}
 
 			foreach (PackageInteractionHandler package in this.Packages)

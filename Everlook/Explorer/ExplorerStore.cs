@@ -320,7 +320,7 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <returns>The virtual reference.</returns>
 		/// <param name="hardReference">Hard reference.</param>
-		public VirtualFileReference GetVirtualReference(FileReference hardReference)
+		private VirtualFileReference GetVirtualReference(FileReference hardReference)
 		{
 			PackageGroup referenceGroup = hardReference.PackageGroup;
 			if (this.VirtualReferenceMappings.ContainsKey(referenceGroup))

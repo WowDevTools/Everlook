@@ -673,6 +673,7 @@ namespace Everlook.UI
 		{
 			using (EverlookPreferences preferencesDialog = EverlookPreferences.Create())
 			{
+				preferencesDialog.TransientFor = this;
 				if (preferencesDialog.Run() == (int)ResponseType.Ok)
 				{
 					preferencesDialog.SavePreferences();
