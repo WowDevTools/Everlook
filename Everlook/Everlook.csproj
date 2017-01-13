@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Explorer\ExplorerStore.cs" />
     <Compile Include="Explorer\FileReference.cs" />
+    <Compile Include="Explorer\ReferenceEnumeratedEventArgs.cs" />
     <Compile Include="Explorer\ReferenceState.cs" />
     <Compile Include="Explorer\VirtualFileReference.cs" />
     <Compile Include="Program.cs" />
