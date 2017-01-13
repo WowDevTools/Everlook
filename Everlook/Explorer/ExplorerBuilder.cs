@@ -35,8 +35,13 @@ namespace Everlook.Explorer
 	/// <summary>
 	/// The Explorer Builder class acts as a background worker for the file explorer, enumerating file nodes as requested.
 	/// </summary>
-	public class ExplorerBuilder : IDisposable
+	public sealed class ExplorerBuilder : IDisposable
 	{
+		/// <summary>
+		/// Package enumerated event handler.
+		/// </summary>
+		public delegate void ItemEnumeratedEventHandler(object sender, ReferenceEnumeratedEventArgs e);
+
 		/// <summary>
 		/// Occurs when a package group has been added.
 		/// </summary>
@@ -49,6 +54,7 @@ namespace Everlook.Explorer
 		public event ItemEnumeratedEventHandler PackageEnumerated;
 
 		private readonly object EnumeratedReferenceQueueLock = new object();
+
 		/// <summary>
 		/// A list of enumerated references. This list acts as an intermediate location where the UI can fetch results
 		/// when it's idle.
@@ -129,6 +135,7 @@ namespace Everlook.Explorer
 			this.EnumerationLoopThread = new Thread(EnumerationLoop)
 			{
 				Name = "EnumerationLoop",
+				Priority = ThreadPriority.AboveNormal,
 				IsBackground = true
 			};
 
@@ -160,6 +167,10 @@ namespace Everlook.Explorer
 				this.bShouldProcessWork = true;
 
 				this.EnumerationLoopThread.Start();
+			}
+
+			if (!this.ResubmissionLoopThread.IsAlive)
+			{
 				this.ResubmissionLoopThread.Start();
 			}
 		}
@@ -169,11 +180,15 @@ namespace Everlook.Explorer
 		/// </summary>
 		public void Stop()
 		{
+			this.bShouldProcessWork = false;
+
 			if (this.EnumerationLoopThread.IsAlive)
 			{
-				this.bShouldProcessWork = false;
-
 				this.EnumerationLoopThread.Join();
+			}
+
+			if (this.ResubmissionLoopThread.IsAlive)
+			{
 				this.ResubmissionLoopThread.Join();
 			}
 		}
@@ -202,7 +217,7 @@ namespace Everlook.Explorer
 		/// Loads all packages in the currently selected game directory. This function does not enumerate files
 		/// and directories deeper than one to keep the UI responsive.
 		/// </summary>
-		protected void Reload_Implementation()
+		private void Reload_Implementation()
 		{
 			if (HasPackageDirectoryChanged())
 			{
@@ -274,7 +289,8 @@ namespace Everlook.Explorer
 		/// <returns><c>true</c> if the package directory has changed; otherwise, <c>false</c>.</returns>
 		public bool HasPackageDirectoryChanged()
 		{
-			return !this.CachedPackageDirectories.OrderBy(t => t).SequenceEqual(GamePathStorage.Instance.GamePaths.OrderBy(t => t));
+			return !this.CachedPackageDirectories.OrderBy(t => t)
+				.SequenceEqual(GamePathStorage.Instance.GamePaths.OrderBy(t => t));
 		}
 
 		/// <summary>
@@ -317,7 +333,7 @@ namespace Everlook.Explorer
 		/// the provided root path.
 		/// </summary>
 		/// <param name="parentReferenceObject">Parent reference where the search should start.</param>
-		protected void EnumerateFilesAndFolders(object parentReferenceObject)
+		private void EnumerateFilesAndFolders(object parentReferenceObject)
 		{
 			if (!this.bShouldProcessWork)
 			{
@@ -351,7 +367,7 @@ namespace Everlook.Explorer
 		/// Enumerates a hard reference.
 		/// </summary>
 		/// <param name="hardReference">Hard reference.</param>
-		protected void EnumerateHardReference(FileReference hardReference)
+		private void EnumerateHardReference(FileReference hardReference)
 		{
 			List<FileReference> localEnumeratedReferences = new List<FileReference>();
 			List<string> packageListFile;
@@ -361,6 +377,12 @@ namespace Everlook.Explorer
 					packageListFile.Where(s => s.StartsWith(hardReference.FilePath, true, new CultureInfo("en-GB")));
 				foreach (string filePath in strippedListfile)
 				{
+					if (!this.bShouldProcessWork)
+					{
+						// Early drop out
+						return;
+					}
+
 					string childPath = Regex.Replace(filePath, "^(?-i)" + Regex.Escape(hardReference.FilePath), "");
 
 					int slashIndex = childPath.IndexOf('\\');
@@ -393,7 +415,6 @@ namespace Everlook.Explorer
 						break;
 					}
 				}
-
 
 				lock (this.EnumeratedReferenceQueueLock)
 				{
@@ -437,7 +458,7 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Raises the package group added event.
 		/// </summary>
-		protected void RaisePackageGroupAdded()
+		private void RaisePackageGroupAdded()
 		{
 			if (PackageGroupAdded != null)
 			{
@@ -448,7 +469,7 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Raises the package enumerated event.
 		/// </summary>
-		protected void RaisePackageEnumerated()
+		private void RaisePackageEnumerated()
 		{
 			if (PackageEnumerated != null)
 			{
@@ -472,33 +493,6 @@ namespace Everlook.Explorer
 			{
 				group.Value.Dispose();
 			}
-		}
-	}
-
-	/// <summary>
-	/// Package enumerated event handler.
-	/// </summary>
-	public delegate void ItemEnumeratedEventHandler(object sender, ReferenceEnumeratedEventArgs e);
-
-
-	/// <summary>
-	/// Reference enumerated event arguments.
-	/// </summary>
-	public class ReferenceEnumeratedEventArgs : EventArgs
-	{
-		/// <summary>
-		/// Contains the enumerated file reference.
-		/// </summary>
-		/// <value>The item.</value>
-		public FileReference Reference { get; private set; }
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ReferenceEnumeratedEventArgs"/> class.
-		/// </summary>
-		/// <param name="inReference">In item.</param>
-		public ReferenceEnumeratedEventArgs(FileReference inReference)
-		{
-			this.Reference = inReference;
 		}
 	}
 }

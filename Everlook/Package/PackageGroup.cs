@@ -27,6 +27,7 @@ using Warcraft.MPQ.FileInfo;
 using Warcraft.MPQ;
 using Everlook.Configuration;
 using Everlook.Explorer;
+using log4net;
 
 namespace Everlook.Package
 {
@@ -38,6 +39,11 @@ namespace Everlook.Package
 	/// </summary>
 	public sealed class PackageGroup : IDisposable, IPackage
 	{
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(PackageGroup));
+
 		/// <summary>
 		/// Gets the name of the package group.
 		/// </summary>
@@ -89,7 +95,13 @@ namespace Everlook.Package
 				}
 				catch (FileLoadException fex)
 				{
-					Console.WriteLine($"FileLoadException for package \"{packagePath}\": {fex.Message}");
+					Log.Warn($"FileLoadException for package \"{packagePath}\": {fex.Message}\n" +
+					         $"Please report this on GitHub or via email.");
+				}
+				catch (NotImplementedException nex)
+				{
+					Log.Warn($"NotImplementedException for package \"{packagePath}\": {nex.Message}\n" +
+					         $"There's a good chance your game version isn't supported yet.");
 				}
 			}
 
