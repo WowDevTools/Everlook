@@ -27,6 +27,7 @@ using System.IO;
 using System.Reflection;
 using Everlook.Utility;
 using Everlook.Viewport.Rendering.Core;
+using log4net;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Warcraft.BLP;
@@ -44,7 +45,19 @@ namespace Everlook.Viewport.Rendering
 	/// </summary>
 	public class RenderCache : IDisposable
 	{
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(RenderCache));
+
+		/// <summary>
+		/// The cache dictionary that maps active OpenGL textures on the GPU.
+		/// </summary>
 		private readonly Dictionary<string, int> GLTextureCache = new Dictionary<string, int>();
+
+		/// <summary>
+		/// The cache dictionary that maps active OpenGL shaders on the GPU.
+		/// </summary>
 		private readonly Dictionary<EverlookShader, int> GLShaderCache = new Dictionary<EverlookShader, int>();
 
 		/// <summary>
@@ -121,7 +134,8 @@ namespace Everlook.Viewport.Rendering
 				}
 				catch (GraphicsErrorException gex)
 				{
-					Console.WriteLine($"GraphicsErrorException in CreateCachedTexture (failed to create DXT texture): {gex.Message}");
+					Log.Warn($"GraphicsErrorException in CreateCachedTexture (failed to create DXT texture): {gex.Message}\n" +
+					         $"The texture will be loaded as a bitmap instead.");
 				}
 				finally
 				{
@@ -192,6 +206,8 @@ namespace Everlook.Viewport.Rendering
 				throw new ArgumentException("An unknown shader was passed to the rendering cache.", nameof(shader));
 			}
 
+			Log.Info($"Creating cached shader for \"{shader}\"");
+
 			int vertexShaderID = GL.CreateShader(ShaderType.VertexShader);
 			int fragmentShaderID = GL.CreateShader(ShaderType.FragmentShader);
 
@@ -229,7 +245,7 @@ namespace Everlook.Viewport.Rendering
 			int result;
 			int compilationLogLength;
 
-			Console.WriteLine("Compiling vertex shader...");
+			Log.Info("Compiling vertex shader...");
 			GL.ShaderSource(vertexShaderID, vertexShaderSource);
 			GL.CompileShader(vertexShaderID);
 
@@ -241,10 +257,11 @@ namespace Everlook.Viewport.Rendering
 				string compilationLog;
 				GL.GetShaderInfoLog(vertexShaderID, out compilationLog);
 
-				Console.WriteLine(compilationLog);
+				Log.Warn($"Vertex shader compilation failed or had warnings. Please review the following log: \n" +
+				         $"{compilationLog}");
 			}
 
-			Console.WriteLine("Compiling fragment shader...");
+			Log.Info("Compiling fragment shader...");
 			GL.ShaderSource(fragmentShaderID, fragmentShaderSource);
 			GL.CompileShader(fragmentShaderID);
 
@@ -256,26 +273,28 @@ namespace Everlook.Viewport.Rendering
 				string compilationLog;
 				GL.GetShaderInfoLog(fragmentShaderID, out compilationLog);
 
-				Console.WriteLine(compilationLog);
+				Log.Warn($"Fragment shader compilation failed or had warnings. Please review the following log: \n" +
+				         $"{compilationLog}");
 			}
 
 
-			Console.WriteLine("Linking shader program...");
+			Log.Info("Linking shader program...");
 			int shaderProgramID = GL.CreateProgram();
 
 			GL.AttachShader(shaderProgramID, vertexShaderID);
 			GL.AttachShader(shaderProgramID, fragmentShaderID);
 			GL.LinkProgram(shaderProgramID);
 
-			GL.GetProgram(shaderProgramID, ProgramParameter.LinkStatus, out result);
-			GL.GetProgram(shaderProgramID, ProgramParameter.InfoLogLength, out compilationLogLength);
+			GL.GetProgram(shaderProgramID, GetProgramParameterName.LinkStatus, out result);
+			GL.GetProgram(shaderProgramID, GetProgramParameterName.InfoLogLength, out compilationLogLength);
 
 			if (compilationLogLength > 0)
 			{
 				string compilationLog;
 				GL.GetProgramInfoLog(shaderProgramID, out compilationLog);
 
-				Console.WriteLine(compilationLog);
+				Log.Warn($"Shader linking failed or had warnings. Please review the following log: \n" +
+				         $"{compilationLog}");
 			}
 
 			// Clean up the shader source code and unlinked object files from graphics memory

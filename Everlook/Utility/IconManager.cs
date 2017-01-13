@@ -28,6 +28,7 @@ using System.Reflection;
 using Gdk;
 using GLib;
 using Gtk;
+using log4net;
 
 namespace Everlook.Utility
 {
@@ -36,6 +37,11 @@ namespace Everlook.Utility
 	/// </summary>
 	public static class IconManager
 	{
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(IconManager));
+
 		/// <summary>
 		/// Loads all embedded builtin icons into the application's icon theme.
 		/// </summary>
@@ -111,7 +117,8 @@ namespace Everlook.Utility
 			}
 			catch (GException gex)
 			{
-				Console.WriteLine($"Loading of icon \"{iconName}\" failed. Exception message: {gex.Message}");
+				Log.Warn($"Loading of icon \"{iconName}\" failed. Exception message: {gex.Message}\n" +
+				         $"A fallback icon will be used instead.");
 				return LoadIconPixbuf("empty");
 			}
 		}

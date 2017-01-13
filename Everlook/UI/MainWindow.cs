@@ -32,6 +32,7 @@ using Everlook.Viewport.Rendering;
 using Gdk;
 using GLib;
 using Gtk;
+using log4net;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Input;
@@ -52,6 +53,11 @@ namespace Everlook.UI
 		/// Static reference to the configuration handler.
 		/// </summary>
 		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
+
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(MainWindow));
 
 		/// <summary>
 		/// Background viewport renderer. Handles all rendering in the viewport.
@@ -804,7 +810,8 @@ namespace Everlook.UI
 							}
 							catch (FileLoadException fex)
 							{
-								Console.WriteLine("FileLoadException when opening BLP: " + fex.Message);
+								Log.Warn($"FileLoadException when opening BLP image: {fex.Message}\n" +
+								         $"Please report this on GitHub or via email.");
 							}
 						}
 

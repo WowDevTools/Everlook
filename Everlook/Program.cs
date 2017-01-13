@@ -29,12 +29,12 @@ using OpenTK;
 
 namespace Everlook
 {
-	internal static class MainClass
+	internal static class Program
 	{
 		/// <summary>
 		/// Logger instance for this class.
 		/// </summary>
-		private static readonly ILog Log = LogManager.GetLogger(typeof(MainClass));
+		private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
 
 		public static void Main()
 		{
