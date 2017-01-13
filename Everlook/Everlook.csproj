@@ -88,8 +88,8 @@
     <Compile Include="UI\MainWindow.cs" />
     <Compile Include="UI\ControlPages.cs" />
     <Compile Include="UI\MainWindowElements.cs">
-      <DependentUpon>"MainWindow.cs"</DependentUpon>
-    </Compile>
+		<DependentUpon>"MainWindow.cs"</DependentUpon>
+	</Compile>
     <Compile Include="Utility\IconManager.cs" />
     <Compile Include="Utility\ModelLoadingRoutines.cs" />
     <Compile Include="Viewport\Camera\CameraMovement.cs" />

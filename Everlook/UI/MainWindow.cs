@@ -62,17 +62,17 @@ namespace Everlook.UI
 		/// <summary>
 		/// Background viewport renderer. Handles all rendering in the viewport.
 		/// </summary>
-		private readonly ViewportRenderer viewportRenderer;
+		private readonly ViewportRenderer RenderingEngine;
 
 		/// <summary>
 		/// Background file explorer tree builder. Handles enumeration of files in the archives.
 		/// </summary>
-		private readonly ExplorerBuilder explorerBuilder;
+		private readonly ExplorerBuilder FiletreeBuilder;
 
 		/// <summary>
 		/// Whether or not the program is shutting down. This is used to remove callbacks and events.
 		/// </summary>
-		private bool shuttingDown;
+		private bool IsShuttingDown;
 
 		/// <summary>
 		/// Task scheduler for the UI thread. This allows task-based code to have very simple UI callbacks.
@@ -122,7 +122,7 @@ namespace Everlook.UI
 			this.ViewportWidget.Initialized += delegate
 			{
 				// Initialize all OpenGL rendering parameters
-				this.viewportRenderer.Initialize();
+				this.RenderingEngine.Initialize();
 				Idle.Add(OnIdleRenderFrame);
 			};
 
@@ -133,7 +133,7 @@ namespace Everlook.UI
 			this.ViewportAlignment.Add(this.ViewportWidget);
 			this.ViewportAlignment.ShowAll();
 
-			this.viewportRenderer = new ViewportRenderer(this.ViewportWidget);
+			this.RenderingEngine = new ViewportRenderer(this.ViewportWidget);
 
 			// Add a staggered idle handler for adding enumerated items to the interface
 			//Timeout.Add(1, OnIdle, Priority.DefaultIdle);
@@ -160,7 +160,7 @@ namespace Everlook.UI
 
 			this.RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
 
-			this.explorerBuilder = new ExplorerBuilder
+			this.FiletreeBuilder = new ExplorerBuilder
 			(
 				new ExplorerStore
 				(
@@ -169,9 +169,9 @@ namespace Everlook.UI
 					this.GameExplorerTreeSorter
 				)
 			);
-			this.explorerBuilder.PackageGroupAdded += OnPackageGroupAdded;
-			this.explorerBuilder.PackageEnumerated += OnPackageEnumerated;
-			this.explorerBuilder.Start();
+			this.FiletreeBuilder.PackageGroupAdded += OnPackageGroupAdded;
+			this.FiletreeBuilder.PackageEnumerated += OnPackageEnumerated;
+			this.FiletreeBuilder.Start();
 
 			/*
 				Set up item control sections
@@ -213,24 +213,28 @@ namespace Everlook.UI
 				}
 
 
-				if (pageToEnable == ControlPage.Image)
+				switch (pageToEnable)
 				{
-					this.RenderAlphaCheckButton.Sensitive = true;
-					this.RenderRedCheckButton.Sensitive = true;
-					this.RenderGreenCheckButton.Sensitive = true;
-					this.RenderBlueCheckButton.Sensitive = true;
-				}
-				else if (pageToEnable == ControlPage.Model)
-				{
-
-				}
-				else if (pageToEnable == ControlPage.Animation)
-				{
-
-				}
-				else if (pageToEnable == ControlPage.Audio)
-				{
-
+					case ControlPage.Image:
+					{
+						this.RenderAlphaCheckButton.Sensitive = true;
+						this.RenderRedCheckButton.Sensitive = true;
+						this.RenderGreenCheckButton.Sensitive = true;
+						this.RenderBlueCheckButton.Sensitive = true;
+						break;
+					}
+					case ControlPage.Model:
+					{
+						break;
+					}
+					case ControlPage.Animation:
+					{
+						break;
+					}
+					case ControlPage.Audio:
+					{
+						break;
+					}
 				}
 			}
 		}
@@ -243,24 +247,28 @@ namespace Everlook.UI
 		{
 			if (Enum.IsDefined(typeof(ControlPage), pageToDisable))
 			{
-				if (pageToDisable == ControlPage.Image)
+				switch (pageToDisable)
 				{
-					this.RenderAlphaCheckButton.Sensitive = false;
-					this.RenderRedCheckButton.Sensitive = false;
-					this.RenderGreenCheckButton.Sensitive = false;
-					this.RenderBlueCheckButton.Sensitive = false;
-				}
-				else if (pageToDisable == ControlPage.Model)
-				{
-
-				}
-				else if (pageToDisable == ControlPage.Animation)
-				{
-
-				}
-				else if (pageToDisable == ControlPage.Audio)
-				{
-
+					case ControlPage.Image:
+					{
+						this.RenderAlphaCheckButton.Sensitive = false;
+						this.RenderRedCheckButton.Sensitive = false;
+						this.RenderGreenCheckButton.Sensitive = false;
+						this.RenderBlueCheckButton.Sensitive = false;
+						break;
+					}
+					case ControlPage.Model:
+					{
+						break;
+					}
+					case ControlPage.Animation:
+					{
+						break;
+					}
+					case ControlPage.Audio:
+					{
+						break;
+					}
 				}
 			}
 		}
@@ -321,7 +329,7 @@ namespace Everlook.UI
 			TreeIter selectedIter;
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			return this.explorerBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
+			return this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
 		}
 
 		/// <summary>
@@ -332,10 +340,10 @@ namespace Everlook.UI
 		{
 			this.ViewportWidget.OverrideBackgroundColor(StateFlags.Normal, this.Config.GetViewportBackgroundColour());
 
-			if (this.explorerBuilder.HasPackageDirectoryChanged())
+			if (this.FiletreeBuilder.HasPackageDirectoryChanged())
 			{
 				this.GameExplorerTreeStore.Clear();
-				this.explorerBuilder.Reload();
+				this.FiletreeBuilder.Reload();
 			}
 		}
 
@@ -350,7 +358,7 @@ namespace Everlook.UI
 
 			Task.Factory.StartNew(() => ModelLoadingRoutines.LoadWorldModel(fileReference))
 				.ContinueWith(modelLoadTask => ModelLoadingRoutines.CreateRenderableWorldModel(modelLoadTask.Result, fileReference.PackageGroup), this.UIThreadScheduler)
-				.ContinueWith(createRenderableTask => this.viewportRenderer.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
+				.ContinueWith(createRenderableTask => this.RenderingEngine.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
 				.ContinueWith(result =>
 					{
 						this.StatusSpinner.Active = false;
@@ -371,7 +379,7 @@ namespace Everlook.UI
 
 			Task.Factory.StartNew(() => ModelLoadingRoutines.LoadWorldModelGroup(fileReference))
 				.ContinueWith(modelLoadTask => ModelLoadingRoutines.CreateRenderableWorldModel(modelLoadTask.Result, fileReference.PackageGroup), this.UIThreadScheduler)
-				.ContinueWith(createRenderableTask => this.viewportRenderer.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
+				.ContinueWith(createRenderableTask => this.RenderingEngine.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
 				.ContinueWith(result =>
 					{
 						this.StatusSpinner.Active = false;
@@ -389,7 +397,7 @@ namespace Everlook.UI
 		[ConnectBefore]
 		private void OnViewportButtonPressed(object o, ButtonPressEventArgs args)
 		{
-			if (this.viewportRenderer.IsMovementDisabled())
+			if (this.RenderingEngine.IsMovementDisabled())
 			{
 				return;
 			}
@@ -402,9 +410,9 @@ namespace Everlook.UI
 
 				this.ViewportWidget.GrabFocus();
 
-				this.viewportRenderer.WantsToMove = true;
-				this.viewportRenderer.InitialMouseX = Mouse.GetCursorState().X;
-				this.viewportRenderer.InitialMouseY = Mouse.GetCursorState().Y;
+				this.RenderingEngine.WantsToMove = true;
+				this.RenderingEngine.InitialMouseX = Mouse.GetCursorState().X;
+				this.RenderingEngine.InitialMouseY = Mouse.GetCursorState().Y;
 			}
 		}
 
@@ -422,7 +430,7 @@ namespace Everlook.UI
 				// Return the mouse pointer to its original appearance
 				this.Window.Cursor = new Cursor(CursorType.Arrow);
 				GrabFocus();
-				this.viewportRenderer.WantsToMove = false;
+				this.RenderingEngine.WantsToMove = false;
 			}
 		}
 
@@ -436,19 +444,19 @@ namespace Everlook.UI
 			const bool keepCalling = true;
 			const bool stopCalling = false;
 
-			if (this.shuttingDown)
+			if (this.IsShuttingDown)
 			{
 				return stopCalling;
 			}
 
-			if (!this.viewportRenderer.IsInitialized)
+			if (!this.RenderingEngine.IsInitialized)
 			{
 				return stopCalling;
 			}
 
-			if (this.viewportRenderer.HasRenderTarget || this.viewportHasPendingRedraw)
+			if (this.RenderingEngine.HasRenderTarget || this.viewportHasPendingRedraw)
 			{
-				this.viewportRenderer.RenderFrame();
+				this.RenderingEngine.RenderFrame();
 				this.viewportHasPendingRedraw = false;
 			}
 
@@ -474,42 +482,42 @@ namespace Everlook.UI
 			const bool keepCalling = true;
 			const bool stopCalling = false;
 
-			if (this.shuttingDown)
+			if (this.IsShuttingDown)
 			{
 				return stopCalling;
 			}
 
-			if (this.explorerBuilder.EnumeratedReferences.Count > 0)
+			if (this.FiletreeBuilder.EnumeratedReferences.Count > 0)
 			{
 				// There's content to be added to the UI
 				// Get the last reference in the list.
-				FileReference newContent = this.explorerBuilder.EnumeratedReferences[this.explorerBuilder.EnumeratedReferences.Count - 1];
+				FileReference newContent = this.FiletreeBuilder.EnumeratedReferences[this.FiletreeBuilder.EnumeratedReferences.Count - 1];
 
 				if (newContent == null)
 				{
-					this.explorerBuilder.EnumeratedReferences.RemoveAt(this.explorerBuilder.EnumeratedReferences.Count - 1);
+					this.FiletreeBuilder.EnumeratedReferences.RemoveAt(this.FiletreeBuilder.EnumeratedReferences.Count - 1);
 					return keepCalling;
 				}
 
 				if (newContent.IsFile)
 				{
-					this.explorerBuilder.NodeStorage.AddFileNode(newContent);
+					this.FiletreeBuilder.NodeStorage.AddFileNode(newContent);
 				}
 				else if (newContent.IsDirectory)
 				{
-					TreePath pathToParent = this.explorerBuilder.NodeStorage.GetPath(newContent.ParentReference.ReferenceIter);
+					TreePath pathToParent = this.FiletreeBuilder.NodeStorage.GetPath(newContent.ParentReference.ReferenceIter);
 					bool isParentExpanded = this.GameExplorerTreeView.GetRowExpanded(pathToParent);
 					if (isParentExpanded && newContent.State == ReferenceState.NotEnumerated)
 					{
 						// This references was added to the UI after the user had opened the previous folder.
 						// Therefore, it should be submitted back to the UI for enumeration.
-						this.explorerBuilder.SubmitWork(newContent);
+						this.FiletreeBuilder.SubmitWork(newContent);
 					}
 
-					this.explorerBuilder.NodeStorage.AddDirectoryNode(newContent);
+					this.FiletreeBuilder.NodeStorage.AddDirectoryNode(newContent);
 				}
 
-				this.explorerBuilder.EnumeratedReferences.Remove(newContent);
+				this.FiletreeBuilder.EnumeratedReferences.Remove(newContent);
 			}
 
 			return keepCalling;
@@ -523,7 +531,7 @@ namespace Everlook.UI
 		private void OnExportItemContextItemActivated(object sender, EventArgs e)
 		{
 			FileReference fileReference = GetSelectedReference();
-			if (fileReference != null && !string.IsNullOrEmpty(fileReference.FilePath))
+			if (!string.IsNullOrEmpty(fileReference?.FilePath))
 			{
 
 				WarcraftFileType fileType = fileReference.GetReferencedFileType();
@@ -626,7 +634,7 @@ namespace Everlook.UI
 			TreeIter selectedIter;
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			clipboard.Text = this.explorerBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter).FilePath;
+			clipboard.Text = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter).FilePath;
 		}
 
 		/// <summary>
@@ -693,12 +701,12 @@ namespace Everlook.UI
 		private void OnGameExplorerRowExpanded(object sender, RowExpandedArgs e)
 		{
 			// Whenever a row is expanded, enumerate the subfolders of that row.
-			FileReference parentReference = this.explorerBuilder.NodeStorage.GetItemReferenceFromPath(e.Path);
+			FileReference parentReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromPath(e.Path);
 			foreach (FileReference childReference in parentReference.ChildReferences)
 			{
 				if (childReference.IsDirectory && childReference.State != ReferenceState.Enumerated)
 				{
-					this.explorerBuilder.SubmitWork(childReference);
+					this.FiletreeBuilder.SubmitWork(childReference);
 				}
 			}
 		}
@@ -713,7 +721,7 @@ namespace Everlook.UI
 			TreeIter selectedIter;
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			FileReference fileReference = this.explorerBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
+			FileReference fileReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
 			if (fileReference == null)
 			{
 				return;
@@ -764,7 +772,7 @@ namespace Everlook.UI
 			}
 			else
 			{
-				this.GameExplorerTreeView.ExpandRow(this.explorerBuilder.NodeStorage.GetPath(selectedIter), false);
+				this.GameExplorerTreeView.ExpandRow(this.FiletreeBuilder.NodeStorage.GetPath(selectedIter), false);
 			}
 		}
 
@@ -779,7 +787,7 @@ namespace Everlook.UI
 			TreeIter selectedIter;
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
-			FileReference fileReference = this.explorerBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
+			FileReference fileReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
 			if (fileReference != null && fileReference.IsFile)
 			{
 				if (string.IsNullOrEmpty(fileReference.FilePath))
@@ -799,7 +807,7 @@ namespace Everlook.UI
 								BLP image = new BLP(fileData);
 								RenderableBLP renderableImage = new RenderableBLP(image, fileReference.FilePath);
 
-								this.viewportRenderer.SetRenderTarget(renderableImage);
+								this.RenderingEngine.SetRenderTarget(renderableImage);
 								EnableControlPage(ControlPage.Image);
 							}
 							catch (FileLoadException fex)
@@ -831,7 +839,7 @@ namespace Everlook.UI
 							using (MemoryStream ms = new MemoryStream(fileData))
 							{
 								RenderableBitmap renderableImage = new RenderableBitmap(new Bitmap(ms), fileReference.FilePath);
-								this.viewportRenderer.SetRenderTarget(renderableImage);
+								this.RenderingEngine.SetRenderTarget(renderableImage);
 							}
 
 							EnableControlPage(ControlPage.Image);
@@ -856,12 +864,12 @@ namespace Everlook.UI
 			FileReference currentFileReference = null;
 			if (path != null)
 			{
-				currentFileReference = this.explorerBuilder.NodeStorage.GetItemReferenceFromPath(path);
+				currentFileReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromPath(path);
 			}
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
 			{
-				if (currentFileReference == null || string.IsNullOrEmpty(currentFileReference.FilePath))
+				if (string.IsNullOrEmpty(currentFileReference?.FilePath))
 				{
 					this.ExtractItem.Sensitive = false;
 					this.ExportItem.Sensitive = false;
@@ -911,12 +919,12 @@ namespace Everlook.UI
 			{
 				TreeIter iter;
 				this.ExportQueueListStore.GetIterFromString(out iter, path.ToString());
-				currentReference = this.explorerBuilder.NodeStorage.GetItemReferenceFromIter(iter);
+				currentReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(iter);
 			}
 
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
 			{
-				if (currentReference == null || string.IsNullOrEmpty(currentReference.FilePath))
+				if (string.IsNullOrEmpty(currentReference?.FilePath))
 				{
 					this.RemoveQueueItem.Sensitive = false;
 				}
@@ -952,7 +960,7 @@ namespace Everlook.UI
 		{
 			Application.Invoke(delegate
 			{
-				this.explorerBuilder.NodeStorage.AddPackageGroupNode(e.Reference);
+				this.FiletreeBuilder.NodeStorage.AddPackageGroupNode(e.Reference);
 			});
 		}
 
@@ -965,7 +973,7 @@ namespace Everlook.UI
 		{
 			Application.Invoke(delegate
 			{
-				this.explorerBuilder.NodeStorage.AddPackageNode(e.Reference);
+				this.FiletreeBuilder.NodeStorage.AddPackageNode(e.Reference);
 			});
 		}
 
@@ -977,16 +985,16 @@ namespace Everlook.UI
 		/// <param name="a">The alpha component.</param>
 		private void OnDeleteEvent(object sender, DeleteEventArgs a)
 		{
-			this.shuttingDown = true;
+			this.IsShuttingDown = true;
 
-			if (this.explorerBuilder.IsActive)
+			if (this.FiletreeBuilder.IsActive)
 			{
-				this.explorerBuilder.Stop();
-				this.explorerBuilder.Dispose();
+				this.FiletreeBuilder.Stop();
+				this.FiletreeBuilder.Dispose();
 			}
 
-			this.viewportRenderer.SetRenderTarget(null);
-			this.viewportRenderer.Dispose();
+			this.RenderingEngine.SetRenderTarget(null);
+			this.RenderingEngine.Dispose();
 
 			this.ViewportWidget.Destroy();
 
