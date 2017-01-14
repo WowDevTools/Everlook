@@ -136,7 +136,7 @@ namespace Everlook.Utility
 			{
 				try
 				{
-					return new BLP(fileData, fileReference.FilePath);
+					return new BLP(fileData);
 				}
 				catch (FileLoadException fex)
 				{
@@ -165,7 +165,7 @@ namespace Everlook.Utility
 				return null;
 			}
 
-			RenderableBLP renderableImage = new RenderableBLP(binaryImage);
+			RenderableBLP renderableImage = new RenderableBLP(binaryImage, fileReference.FilePath);
 			return renderableImage;
 		}
 
