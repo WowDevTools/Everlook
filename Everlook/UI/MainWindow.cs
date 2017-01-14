@@ -343,12 +343,12 @@ namespace Everlook.UI
 
 		/// <summary>
 		/// Begins loading routines for the specified fileReference, which is expected to point to a valid model.
-		/// This function takes a delegate which will correctly load the model type pointed to by the FileReference,
+		/// This function takes a delegate which will correctly load the file pointed to by the FileReference,
 		/// and another delegate which will create a correct <see cref="IRenderable"/> object from the resulting
 		/// object.
 		/// </summary>
-		/// <param name="fileReference">A <see cref="FileReference"/> which points to the desired model</param>
-		/// <param name="referenceLoadingRoutine">A delegate which correctly loads the desired item, returning a generic type T.</param>
+		/// <param name="fileReference">A <see cref="FileReference"/> which points to the desired file.</param>
+		/// <param name="referenceLoadingRoutine">A delegate which correctly loads the desired file, returning a generic type T.</param>
 		/// <param name="createRenderableDelegate">A delegate which accepts a generic type T and returns a renderable object.</param>
 		/// <param name="associatedControlPage">The control page which the file is associated with, that is, the one with relevant controls.</param>
 		/// <typeparam name="T">The type of model to load.</typeparam>
@@ -360,7 +360,7 @@ namespace Everlook.UI
 		{
 			this.StatusSpinner.Active = true;
 
-			string modelName = IOPath.GetFileNameWithoutExtension(fileReference.FilePath);
+			string modelName = fileReference.Filename;
 			uint modelStatusMessageContextID = this.MainStatusBar.GetContextId($"itemLoad_{modelName}");
 			uint modelStatusMessageID = this.MainStatusBar.Push(modelStatusMessageContextID,
 				$"Loading \"{modelName}\"...");
