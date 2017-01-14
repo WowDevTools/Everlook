@@ -146,7 +146,18 @@ namespace Everlook.UI
 				});
 
 			this.Config.SetViewportBackgroundColour(this.ViewportColourButton.Rgba);
-			this.Config.SetDefaultExportDirectory(this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri);
+
+			Uri exportPathURI;
+			if (!this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri.StartsWith("file://"))
+			{
+				exportPathURI = new Uri("file://" + this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri);
+			}
+			else
+			{
+				exportPathURI = new Uri(this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri);
+			}
+
+			this.Config.SetDefaultExportDirectory(exportPathURI.LocalPath);
 			this.Config.SetDefaultModelFormat((ModelFormat) this.DefaultModelExportFormatComboBox.Active);
 			this.Config.SetDefaultImageFormat((ImageFormat) this.DefaultImageExportFormatComboBox.Active);
 			this.Config.SetDefaultAudioFormat((AudioFormat) this.DefaultAudioExportFormatComboBox.Active);

@@ -38,13 +38,11 @@ namespace Everlook.Viewport.Rendering
 		/// Initializes a new instance of the <see cref="Everlook.Viewport.Rendering.RenderableBLP"/> class.
 		/// </summary>
 		/// <param name="inImage">An image object with populated data.</param>
-		/// <param name="texturePath">The path to the texture inside the package group.</param>
-		public RenderableBLP(BLP inImage, string texturePath)
+		public RenderableBLP(BLP inImage)
 		{
 			this.Image = inImage;
+			this.TexturePath = inImage.TexturePath;
 			this.IsInitialized = false;
-
-			this.TexturePath = texturePath;
 
 			Initialize();
 		}

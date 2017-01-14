@@ -21,7 +21,6 @@
 //
 
 using System;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,15 +28,13 @@ using Everlook.Configuration;
 using Everlook.Explorer;
 using Everlook.Utility;
 using Everlook.Viewport;
-using Everlook.Viewport.Rendering;
+using Everlook.Viewport.Rendering.Interfaces;
 using Gdk;
 using GLib;
 using Gtk;
-using log4net;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Input;
-using Warcraft.BLP;
 using Warcraft.Core;
 using Application = Gtk.Application;
 using IOPath = System.IO.Path;
@@ -54,11 +51,6 @@ namespace Everlook.UI
 		/// Static reference to the configuration handler.
 		/// </summary>
 		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
-
-		/// <summary>
-		/// Logger instance for this class.
-		/// </summary>
-		private static readonly ILog Log = LogManager.GetLogger(typeof(MainWindow));
 
 		/// <summary>
 		/// Background viewport renderer. Handles all rendering in the viewport.
@@ -178,18 +170,27 @@ namespace Everlook.UI
 				Set up item control sections to default states
 			*/
 
-			foreach (ControlPage otherPage in Enum.GetValues(typeof(ControlPage)))
-			{
-				DisableControlPage(otherPage);
-			}
+			EnableControlPage(ControlPage.None);
+
 		}
 
 		/// <summary>
-		/// Enables the specified control page and brings it to the front.
+		/// Enables the specified control page and brings it to the front. If the <paramref name="pageToEnable"/>
+		/// parameter is <see cref="ControlPage.None"/>, this is interpreted as disabling all pages.
 		/// </summary>
 		/// <param name="pageToEnable">pageToEnable.</param>
 		private void EnableControlPage(ControlPage pageToEnable)
 		{
+			if (pageToEnable == ControlPage.None)
+			{
+				foreach (ControlPage otherPage in Enum.GetValues(typeof(ControlPage)))
+				{
+					DisableControlPage(otherPage);
+				}
+
+				return;
+			}
+
 			if (Enum.IsDefined(typeof(ControlPage), pageToEnable))
 			{
 				// Set the page
@@ -336,49 +337,42 @@ namespace Everlook.UI
 
 			if (this.FiletreeBuilder.HasPackageDirectoryChanged())
 			{
-				this.GameExplorerTreeStore.Clear();
 				this.FiletreeBuilder.Reload();
 			}
 		}
 
-		private void BeginLoadingWorldModel(FileReference fileReference)
+		/// <summary>
+		/// Begins loading routines for the specified fileReference, which is expected to point to a valid model.
+		/// This function takes a delegate which will correctly load the model type pointed to by the FileReference,
+		/// and another delegate which will create a correct <see cref="IRenderable"/> object from the resulting
+		/// object.
+		/// </summary>
+		/// <param name="fileReference">A <see cref="FileReference"/> which points to the desired model</param>
+		/// <param name="referenceLoadingRoutine">A delegate which correctly loads the desired item, returning a generic type T.</param>
+		/// <param name="createRenderableDelegate">A delegate which accepts a generic type T and returns a renderable object.</param>
+		/// <param name="associatedControlPage">The control page which the file is associated with, that is, the one with relevant controls.</param>
+		/// <typeparam name="T">The type of model to load.</typeparam>
+		private void BeginLoadingFile<T>(
+			FileReference fileReference,
+			DataLoadingDelegates.LoadReferenceDelegate<T> referenceLoadingRoutine,
+			DataLoadingDelegates.CreateRenderableDelegate<T> createRenderableDelegate,
+			ControlPage associatedControlPage)
 		{
 			this.StatusSpinner.Active = true;
 
 			string modelName = IOPath.GetFileNameWithoutExtension(fileReference.FilePath);
-			uint modelStatusMessageContextID = this.MainStatusBar.GetContextId($"worldModelLoad_{modelName}");
+			uint modelStatusMessageContextID = this.MainStatusBar.GetContextId($"itemLoad_{modelName}");
 			uint modelStatusMessageID = this.MainStatusBar.Push(modelStatusMessageContextID,
-				$"Loading world model \"{modelName}\"...");
+				$"Loading \"{modelName}\"...");
 
-			Task.Factory.StartNew(() => ModelLoadingRoutines.LoadWorldModel(fileReference))
-				.ContinueWith(modelLoadTask => ModelLoadingRoutines.CreateRenderableWorldModel(modelLoadTask.Result, fileReference.PackageGroup), this.UIThreadScheduler)
+			Task.Factory.StartNew(() => referenceLoadingRoutine(fileReference))
+				.ContinueWith(modelLoadTask => createRenderableDelegate(modelLoadTask.Result, fileReference), this.UIThreadScheduler)
 				.ContinueWith(createRenderableTask => this.RenderingEngine.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
 				.ContinueWith(result =>
 					{
 						this.StatusSpinner.Active = false;
 						this.MainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
-						EnableControlPage(ControlPage.Model);
-					},
-					this.UIThreadScheduler);
-		}
-
-		private void BeginLoadingWorldModelGroup(FileReference fileReference)
-		{
-			this.StatusSpinner.Active = true;
-
-			string modelName = IOPath.GetFileNameWithoutExtension(fileReference.FilePath);
-			uint modelStatusMessageContextID = this.MainStatusBar.GetContextId($"worldModelGroupLoad_{modelName}");
-			uint modelStatusMessageID = this.MainStatusBar.Push(modelStatusMessageContextID,
-				$"Loading world model group \"{modelName}\"...");
-
-			Task.Factory.StartNew(() => ModelLoadingRoutines.LoadWorldModelGroup(fileReference))
-				.ContinueWith(modelLoadTask => ModelLoadingRoutines.CreateRenderableWorldModel(modelLoadTask.Result, fileReference.PackageGroup), this.UIThreadScheduler)
-				.ContinueWith(createRenderableTask => this.RenderingEngine.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
-				.ContinueWith(result =>
-					{
-						this.StatusSpinner.Active = false;
-						this.MainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
-						EnableControlPage(ControlPage.Model);
+						EnableControlPage(associatedControlPage);
 					},
 					this.UIThreadScheduler);
 		}
@@ -789,51 +783,39 @@ namespace Everlook.UI
 				{
 					case WarcraftFileType.BinaryImage:
 					{
-						byte[] fileData = fileReference.Extract();
-						if (fileData != null)
-						{
-							try
-							{
-								BLP image = new BLP(fileData);
-								RenderableBLP renderableImage = new RenderableBLP(image, fileReference.FilePath);
-
-								this.RenderingEngine.SetRenderTarget(renderableImage);
-								EnableControlPage(ControlPage.Image);
-							}
-							catch (FileLoadException fex)
-							{
-								Log.Warn($"FileLoadException when opening BLP image: {fex.Message}\n" +
-								         $"Please report this on GitHub or via email.");
-							}
-						}
+						BeginLoadingFile(fileReference,
+							DataLoadingRoutines.LoadBinaryImage,
+							DataLoadingRoutines.CreateRenderableBinaryImage,
+							ControlPage.Image);
 
 						break;
 					}
 					case WarcraftFileType.WorldObjectModel:
 					{
-						BeginLoadingWorldModel(fileReference);
+						BeginLoadingFile(fileReference,
+							DataLoadingRoutines.LoadWorldModel,
+							DataLoadingRoutines.CreateRenderableWorldModel,
+							ControlPage.Model);
+
 						break;
 					}
 					case WarcraftFileType.WorldObjectModelGroup:
 					{
-						BeginLoadingWorldModelGroup(fileReference);
+						BeginLoadingFile(fileReference,
+							DataLoadingRoutines.LoadWorldModelGroup,
+							DataLoadingRoutines.CreateRenderableWorldModel,
+							ControlPage.Model);
+
 						break;
 					}
 					case WarcraftFileType.GIFImage:
 					case WarcraftFileType.PNGImage:
 					case WarcraftFileType.JPGImage:
 					{
-						byte[] fileData = fileReference.Extract();
-						if (fileData != null)
-						{
-							using (MemoryStream ms = new MemoryStream(fileData))
-							{
-								RenderableBitmap renderableImage = new RenderableBitmap(new Bitmap(ms), fileReference.FilePath);
-								this.RenderingEngine.SetRenderTarget(renderableImage);
-							}
-
-							EnableControlPage(ControlPage.Image);
-						}
+						BeginLoadingFile(fileReference,
+							DataLoadingRoutines.LoadBitmapImage,
+							DataLoadingRoutines.CreateRenderableBitmapImage,
+							ControlPage.Image);
 						break;
 					}
 				}

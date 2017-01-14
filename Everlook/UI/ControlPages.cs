@@ -28,6 +28,11 @@ namespace Everlook.UI
 	public enum ControlPage
 	{
 		/// <summary>
+		/// No pages. If this page is enabled, it will instead disable all pages.
+		/// </summary>
+		None = -1,
+
+		/// <summary>
 		/// Image control page. Handles mip levels and rendered channels.
 		/// </summary>
 		Image = 0,

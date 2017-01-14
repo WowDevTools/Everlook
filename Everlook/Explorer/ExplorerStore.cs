@@ -49,7 +49,7 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// The <see cref="TreeModelSort"/> to use for sorting the nodes.
 		/// </summary>
-		private readonly TreeModelSort FiletreeStorter;
+		private readonly TreeModelSort FiletreeSorter;
 
 		/// <summary>
 		/// The package node group mapping. Maps package groups to their base virtual item references.
@@ -85,7 +85,7 @@ namespace Everlook.Explorer
 		{
 			this.FiletreeStore = inFiletreeStore;
 			this.FiletreeFilter = inFiletreeFilter;
-			this.FiletreeStorter = inFiletreeSorter;
+			this.FiletreeSorter = inFiletreeSorter;
 		}
 
 		/// <summary>
@@ -93,6 +93,10 @@ namespace Everlook.Explorer
 		/// </summary>
 		public void Clear()
 		{
+			this.FiletreeStore.Clear();
+			this.FiletreeFilter.ClearCache();
+			this.FiletreeSorter.ClearCache();
+
 			this.PackageNodeItemMapping.Clear();
 
 			this.PackageGroupVirtualNodeMapping.Clear();
@@ -410,19 +414,19 @@ namespace Everlook.Explorer
 		public TreeIter GetStoreIterFromVisiblePath(TreePath path)
 		{
 			TreeIter sorterIter;
-			this.FiletreeStorter.GetIter(out sorterIter, path);
+			this.FiletreeSorter.GetIter(out sorterIter, path);
 			return GetStoreIterFromSorterIter(sorterIter);
 		}
 
 		/// <summary>
 		/// Gets a <see cref="TreeIter"/> that's valid for the <see cref="FiletreeStore"/> from a TreeIter
-		/// valid for the <see cref="FiletreeStorter"/>.
+		/// valid for the <see cref="FiletreeSorter"/>.
 		/// </summary>
 		/// <param name="sorterIter">The GameExplorerTreeSorter iter.</param>
 		/// <returns>A <see cref="TreeIter"/>.</returns>
 		public TreeIter GetStoreIterFromSorterIter(TreeIter sorterIter)
 		{
-			TreeIter filterIter = this.FiletreeStorter.ConvertIterToChildIter(sorterIter);
+			TreeIter filterIter = this.FiletreeSorter.ConvertIterToChildIter(sorterIter);
 			return GetStoreIterFromFilterIter(filterIter);
 		}
 
