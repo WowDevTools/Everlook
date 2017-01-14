@@ -1,3 +1,10 @@
+everlook (1.0.6223.42899-1) xenial; urgency=medium
+
+  * More performance improvements.
+  * Generalized item loading in the UI.
+
+ -- Jarl Gullberg <jarl.gullberg@gmail.com>  Sat, 14 Jan 2017 23:49:58 +0100
+
 everlook (1.0.6222.37168-1) xenial; urgency=medium
 
   * Refactoring and performance improvements.
