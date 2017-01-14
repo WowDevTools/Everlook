@@ -23,6 +23,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Everlook.Configuration;
 using Everlook.Explorer;
@@ -101,12 +102,13 @@ namespace Everlook.UI
 
 			this.UIThreadScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
-			this.ViewportWidget = new GLWidget(GraphicsMode.Default)
+			this.ViewportWidget = new GLWidget
 			{
 				CanFocus = true,
 				SingleBuffer = false,
 				ColorBPP = 24,
 				DepthBPP = 24,
+				AccumulatorBPP = 24,
 				Samples = 4,
 				GLVersionMajor = 3,
 				GLVersionMinor = 3,
@@ -130,10 +132,9 @@ namespace Everlook.UI
 			this.ViewportWidget.ButtonReleaseEvent += OnViewportButtonReleased;
 			this.ViewportWidget.ConfigureEvent += OnViewportConfigured;
 
+			this.RenderingEngine = new ViewportRenderer(this.ViewportWidget);
 			this.ViewportAlignment.Add(this.ViewportWidget);
 			this.ViewportAlignment.ShowAll();
-
-			this.RenderingEngine = new ViewportRenderer(this.ViewportWidget);
 
 			// Add a staggered idle handler for adding enumerated items to the interface
 			//Timeout.Add(1, OnIdle, Priority.DefaultIdle);
@@ -174,20 +175,13 @@ namespace Everlook.UI
 			this.FiletreeBuilder.Start();
 
 			/*
-				Set up item control sections
+				Set up item control sections to default states
 			*/
 
-			// Image
-			this.RenderAlphaCheckButton.Sensitive = false;
-			this.RenderRedCheckButton.Sensitive = false;
-			this.RenderGreenCheckButton.Sensitive = false;
-			this.RenderBlueCheckButton.Sensitive = false;
-
-			// Model
-
-			// Animation
-
-			// Audio
+			foreach (ControlPage otherPage in Enum.GetValues(typeof(ControlPage)))
+			{
+				DisableControlPage(otherPage);
+			}
 		}
 
 		/// <summary>
@@ -491,7 +485,7 @@ namespace Everlook.UI
 			{
 				// There's content to be added to the UI
 				// Get the last reference in the list.
-				FileReference newContent = this.FiletreeBuilder.EnumeratedReferences[this.FiletreeBuilder.EnumeratedReferences.Count - 1];
+				FileReference newContent = this.FiletreeBuilder.EnumeratedReferences.Last();
 
 				if (newContent == null)
 				{
@@ -566,10 +560,6 @@ namespace Everlook.UI
 							}
 							exportDialog.Destroy();
 						}
-						break;
-					}
-					default:
-					{
 						break;
 					}
 				}

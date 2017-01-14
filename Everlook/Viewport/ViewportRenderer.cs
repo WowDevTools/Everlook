@@ -81,7 +81,7 @@ namespace Everlook.Viewport
 		/// <summary>
 		/// The time taken to render the previous frame.
 		/// </summary>
-		private float deltaTime;
+		private float DeltaTime;
 
 		/// <summary>
 		///
@@ -124,12 +124,12 @@ namespace Everlook.Viewport
 		/// <summary>
 		/// Frame timing stopwatch, used to calculate deltaTime.
 		/// </summary>
-		private readonly Stopwatch frameWatch = new Stopwatch();
+		private readonly Stopwatch FrameWatch = new Stopwatch();
 
 		/// <summary>
 		/// Static reference to the configuration handler.
 		/// </summary>
-		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
+		private readonly EverlookConfiguration Configuration = EverlookConfiguration.Instance;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Viewport.ViewportRenderer"/> class.
@@ -152,6 +152,8 @@ namespace Everlook.Viewport
 			GL.GenVertexArrays(1, out this.VertexArrayID);
 			GL.BindVertexArray(this.VertexArrayID);
 
+			GL.Disable(EnableCap.AlphaTest);
+
 			// Make sure we use the depth buffer when drawing
 			GL.Enable(EnableCap.DepthTest);
 			GL.DepthFunc(DepthFunction.Lequal);
@@ -170,10 +172,10 @@ namespace Everlook.Viewport
 			int widgetHeight = this.ViewportWidget.AllocatedHeight;
 			GL.Viewport(0, 0, widgetWidth, widgetHeight);
 			GL.ClearColor(
-				(float) this.Config.GetViewportBackgroundColour().Red,
-				(float) this.Config.GetViewportBackgroundColour().Green,
-				(float) this.Config.GetViewportBackgroundColour().Blue,
-				(float) this.Config.GetViewportBackgroundColour().Alpha);
+				(float) this.Configuration.GetViewportBackgroundColour().Red,
+				(float) this.Configuration.GetViewportBackgroundColour().Green,
+				(float) this.Configuration.GetViewportBackgroundColour().Blue,
+				(float) this.Configuration.GetViewportBackgroundColour().Alpha);
 
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
@@ -187,8 +189,8 @@ namespace Everlook.Viewport
 		{
 			lock (this.RenderTargetLock)
 			{
-				this.frameWatch.Reset();
-				this.frameWatch.Start();
+				this.FrameWatch.Reset();
+				this.FrameWatch.Start();
 
 				// Make sure the viewport is accurate for the current widget size on screen
 				int widgetWidth = this.ViewportWidget.AllocatedWidth;
@@ -198,7 +200,6 @@ namespace Everlook.Viewport
 
 				if (this.RenderTarget != null)
 				{
-
 					// Calculate the current relative movement of the camera
 					if (this.WantsToMove)
 					{
@@ -208,7 +209,7 @@ namespace Everlook.Viewport
 						float deltaMouseX = this.InitialMouseX - mouseX;
 						float deltaMouseY = this.InitialMouseY - mouseY;
 
-						this.Movement.CalculateMovement(deltaMouseX, deltaMouseY, this.deltaTime);
+						this.Movement.CalculateMovement(deltaMouseX, deltaMouseY, this.DeltaTime);
 
 						// Return the mouse to its original position
 						Mouse.SetPosition(this.InitialMouseX, this.InitialMouseY);
@@ -217,10 +218,7 @@ namespace Everlook.Viewport
 					// Render the current object
 					// Tick the actor, advancing any time-dependent behaviour
 					ITickingActor tickingRenderable = this.RenderTarget as ITickingActor;
-					if (tickingRenderable != null)
-					{
-						tickingRenderable.Tick(this.deltaTime);
-					}
+					tickingRenderable?.Tick(this.DeltaTime);
 
 					// Then render the visual component
 					Matrix4 view = this.Camera.GetViewMatrix();
@@ -232,8 +230,8 @@ namespace Everlook.Viewport
 					GraphicsContext.CurrentContext.SwapBuffers();
 				}
 
-				this.frameWatch.Stop();
-				this.deltaTime = (float) this.frameWatch.Elapsed.TotalMilliseconds / 1000;
+				this.FrameWatch.Stop();
+				this.DeltaTime = (float) this.FrameWatch.Elapsed.TotalMilliseconds / 1000;
 			}
 		}
 
@@ -256,10 +254,7 @@ namespace Everlook.Viewport
 			lock (this.RenderTargetLock)
 			{
 				// Dispose of the old render target
-				if (this.RenderTarget != null)
-				{
-					this.RenderTarget.Dispose();
-				}
+				this.RenderTarget?.Dispose();
 
 				// Assign the new one
 				this.RenderTarget = inRenderable;
@@ -274,10 +269,7 @@ namespace Everlook.Viewport
 		/// </summary>
 		public void Dispose()
 		{
-			if (this.RenderTarget != null)
-			{
-				this.RenderTarget.Dispose();
-			}
+			this.RenderTarget?.Dispose();
 
 			GL.DeleteVertexArrays(1, ref this.VertexArrayID);
 		}

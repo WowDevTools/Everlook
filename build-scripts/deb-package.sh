@@ -1,5 +1,22 @@
 #!/bin/bash
 
+# Move to the base folder where the script is located.
+cd $(dirname $0)
+
+PROGRAM_ROOT=$(readlink -f "..")
+OUTPUT_ROOT="$PROGRAM_ROOT/release"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+ORANGE='\033[0;33m'
+LOG_PREFIX="${GREEN}[Everlook]:"
+LOG_PREFIX_ORANGE="${ORANGE}[Everlook]:"
+LOG_PREFIX_RED="${RED}[Everlook]:"
+LOG_SUFFIX='\033[0m'
+
+PROGRAM_NAME="Everlook"
+BINARY_EXTENSION="exe"
+
 getopt --test > /dev/null
 if [[ $? -ne 4 ]]; then
     echo "I’m sorry, $(getopt --test) failed in this environment."
@@ -52,23 +69,6 @@ if [ -v $SIGNINGKEY ]; then
     exit 4
 fi
 
-# Move to the base folder where the script is located.
-cd $(dirname $0)
-
-PROGRAM_ROOT=$(readlink -f "..")
-OUTPUT_ROOT="$PROGRAM_ROOT/release"
-
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-ORANGE='\033[0;33m'
-LOG_PREFIX="${GREEN}[Everlook]:"
-LOG_PREFIX_ORANGE="${ORANGE}[Everlook]:"
-LOG_PREFIX_RED="${RED}[Everlook]:"
-LOG_SUFFIX='\033[0m'
-
-PROGRAM_NAME="Everlook"
-BINARY_EXTENSION="exe"
-
 echo -e "$LOG_PREFIX Building Release configuration of $PROGRAM_NAME... $LOG_SUFFIX"
 
 BUILDSUCCESS=$(xbuild /p:Configuration="Release" "$PROGRAM_ROOT/$PROGRAM_NAME.sln"  | grep "Build succeeded.")
@@ -76,7 +76,7 @@ BUILDSUCCESS=$(xbuild /p:Configuration="Release" "$PROGRAM_ROOT/$PROGRAM_NAME.sl
 if [[ ! -z $BUILDSUCCESS ]]; then
 	echo "Build succeeded. Copying files and building package."
 	# The library builds, so we can proceed
-	PROGRAM_ASSEMBLY_VERSION=$(monodis --assembly "$PROGRAM_ROOT/Everlook/bin/Release/$PROGRAM_NAME.$BINARY_EXTENSION" | grep Version | egrep -o '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*d*')
+	PROGRAM_ASSEMBLY_VERSION=$(monodis --assembly "$PROGRAM_ROOT/$PROGRAM_NAME/bin/Release/$PROGRAM_NAME.$BINARY_EXTENSION" | grep Version | egrep -o '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*d*')
 	PROGRAM_MAJOR_VERSION=$(echo "$PROGRAM_ASSEMBLY_VERSION" | awk -F \. {'print $1'})
 	PROGRAM_MINOR_VERSION=$(echo "$PROGRAM_ASSEMBLY_VERSION" | awk -F \. {'print $2'})
 

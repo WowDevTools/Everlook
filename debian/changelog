@@ -1,3 +1,9 @@
+everlook (1.0.6222.37168-1) xenial; urgency=medium
+
+  * Refactoring and performance improvements.
+
+ -- Jarl Gullberg <jarl.gullberg@gmail.com>  Fri, 13 Jan 2017 20:38:57 +0100
+
 everlook (1.0.6206.33050-1) xenial; urgency=medium
 
   * Updated debian/copyright with Mint-X/Y and Blender copyrights. 

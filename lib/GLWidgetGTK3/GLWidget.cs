@@ -277,6 +277,7 @@ namespace OpenTK
 
 			GraphicsMode graphicsMode = new GraphicsMode(colorBufferColorFormat, this.DepthBPP, this.StencilBPP, this.Samples, accumulationColorFormat, buffers, this.Stereo);
 
+
 			if (Configuration.RunningOnWindows)
 			{
 				Console.WriteLine("OpenTK running on windows");
