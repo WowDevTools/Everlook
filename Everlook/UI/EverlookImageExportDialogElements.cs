@@ -25,7 +25,7 @@ using UIElement = Gtk.Builder.ObjectAttribute;
 
 namespace Everlook.UI
 {
-	public sealed partial class EverlookImageExportDialog
+	public partial class EverlookImageExportDialog
 	{
 		[UIElement] ListStore MipLevelListStore;
 		[UIElement] TreeView MipLevelListingTreeView;

@@ -42,11 +42,12 @@ namespace Everlook.Viewport.Rendering
 		/// Initializes a new instance of the <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> class.
 		/// </summary>
 		/// <param name="inImage">In image.</param>
-		public RenderableBitmap(Bitmap inImage, string texturePath)
+		/// <param name="inTexturePath">The path under which this renderable texture is stored in the archives.</param>
+		public RenderableBitmap(Bitmap inImage, string inTexturePath)
 		{
 			this.Image = inImage;
 			this.IsInitialized = false;
-			this.TexturePath = texturePath;
+			this.TexturePath = inTexturePath;
 
 			Initialize();
 		}

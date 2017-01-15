@@ -52,25 +52,25 @@ namespace Everlook.UI
 		/// <summary>
 		/// Creates an instance of the Image Export dialog, using the glade XML UI file.
 		/// </summary>
-		public static EverlookImageExportDialog Create(FileReference InExportTarget)
+		public static EverlookImageExportDialog Create(FileReference inExportTarget)
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookImageExport.glade", null);
 			return new EverlookImageExportDialog(builder, builder.GetObject("EverlookImageExportDialog").Handle,
-				InExportTarget);
+				inExportTarget);
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Export.Image.EverlookImageExportDialog"/> class.
+		/// Initializes a new instance of the <see cref="EverlookImageExportDialog"/> class.
 		/// </summary>
 		/// <param name="builder">Builder.</param>
 		/// <param name="handle">Handle.</param>
-		/// <param name="InExportTarget">In export target.</param>
-		protected EverlookImageExportDialog(Builder builder, IntPtr handle, FileReference InExportTarget)
+		/// <param name="inExportTarget">In export target.</param>
+		private EverlookImageExportDialog(Builder builder, IntPtr handle, FileReference inExportTarget)
 			: base(handle)
 		{
 			builder.Autoconnect(this);
 
-			this.ExportTarget = InExportTarget;
+			this.ExportTarget = inExportTarget;
 			/*
 				 UI Setup
 			*/
@@ -84,8 +84,8 @@ namespace Everlook.UI
 
 		private void LoadInformation()
 		{
-			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(ExtensionMethods.ConvertPathSeparatorsToCurrentNativeSeparator(this.ExportTarget.FilePath));
-			this.Title = $"Export Image | {ImageFilename}";
+			string imageFilename = System.IO.Path.GetFileNameWithoutExtension(ExtensionMethods.ConvertPathSeparatorsToCurrentNativeSeparator(this.ExportTarget.FilePath));
+			this.Title = $"Export Image | {imageFilename}";
 
 			byte[] file = this.ExportTarget.Extract();
 			this.Image = new BLP(file);
@@ -106,17 +106,17 @@ namespace Everlook.UI
 		/// </summary>
 		public void RunExport()
 		{
-			string ImageFilename = System.IO.Path.GetFileNameWithoutExtension(ExtensionMethods.ConvertPathSeparatorsToCurrentNativeSeparator(this.ExportTarget.FilePath));
+			string imageFilename = System.IO.Path.GetFileNameWithoutExtension(this.ExportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
 
-			string ExportPath = "";
+			string exportPath = "";
 			if (this.Config.GetShouldKeepFileDirectoryStructure())
 			{
-				ExportPath =
-					$"{this.ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{ExtensionMethods.ConvertPathSeparatorsToCurrentNativeSeparator(this.ExportTarget.FilePath).Replace(".blp", "")}";
+				exportPath =
+					$"{this.ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{this.ExportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator().Replace(".blp", "")}";
 			}
 			else
 			{
-				ExportPath = $"{this.ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{ImageFilename}";
+				exportPath = $"{this.ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{imageFilename}";
 			}
 
 
@@ -128,9 +128,9 @@ namespace Everlook.UI
 				if (bShouldExport)
 				{
 					string formatExtension = GetFileExtensionFromImageFormat((ImageFormat) this.ExportFormatComboBox.Active);
-					System.IO.Directory.CreateDirectory(System.IO.Directory.GetParent(ExportPath).FullName);
+					System.IO.Directory.CreateDirectory(System.IO.Directory.GetParent(exportPath).FullName);
 
-					string fullExportPath = $"{ExportPath}_{i}.{formatExtension}";
+					string fullExportPath = $"{exportPath}_{i}.{formatExtension}";
 					this.Image.GetMipMap((uint)i).Save(fullExportPath, GetSystemImageFormatFromImageFormat((ImageFormat) this.ExportFormatComboBox.Active));
 				}
 
