@@ -21,6 +21,9 @@
 //
 
 using System;
+using System.IO;
+using IOPath = System.IO.Path;
+using SystemImageFormat = System.Drawing.Imaging.ImageFormat;
 using Everlook.Configuration;
 using Everlook.Explorer;
 using Everlook.Export.Image;
@@ -82,9 +85,12 @@ namespace Everlook.UI
 			LoadInformation();
 		}
 
+		/// <summary>
+		/// Loads the information from the image into the UI.
+		/// </summary>
 		private void LoadInformation()
 		{
-			string imageFilename = System.IO.Path.GetFileNameWithoutExtension(ExtensionMethods.ConvertPathSeparatorsToCurrentNativeSeparator(this.ExportTarget.FilePath));
+			string imageFilename = IOPath.GetFileNameWithoutExtension(this.ExportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
 			this.Title = $"Export Image | {imageFilename}";
 
 			byte[] file = this.ExportTarget.Extract();
@@ -106,17 +112,17 @@ namespace Everlook.UI
 		/// </summary>
 		public void RunExport()
 		{
-			string imageFilename = System.IO.Path.GetFileNameWithoutExtension(this.ExportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
+			string imageFilename = IOPath.GetFileNameWithoutExtension(this.ExportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
 
-			string exportPath = "";
+			string exportPath;
 			if (this.Config.GetShouldKeepFileDirectoryStructure())
 			{
 				exportPath =
-					$"{this.ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{this.ExportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator().Replace(".blp", "")}";
+					$"{this.ExportDirectoryFileChooserButton.Filename}{IOPath.DirectorySeparatorChar}{this.ExportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator().Replace(".blp", "")}";
 			}
 			else
 			{
-				exportPath = $"{this.ExportDirectoryFileChooserButton.Filename}{System.IO.Path.DirectorySeparatorChar}{imageFilename}";
+				exportPath = $"{this.ExportDirectoryFileChooserButton.Filename}{IOPath.DirectorySeparatorChar}{imageFilename}";
 			}
 
 
@@ -128,7 +134,7 @@ namespace Everlook.UI
 				if (bShouldExport)
 				{
 					string formatExtension = GetFileExtensionFromImageFormat((ImageFormat) this.ExportFormatComboBox.Active);
-					System.IO.Directory.CreateDirectory(System.IO.Directory.GetParent(exportPath).FullName);
+					Directory.CreateDirectory(Directory.GetParent(exportPath).FullName);
 
 					string fullExportPath = $"{exportPath}_{i}.{formatExtension}";
 					this.Image.GetMipMap((uint)i).Save(fullExportPath, GetSystemImageFormatFromImageFormat((ImageFormat) this.ExportFormatComboBox.Active));
@@ -144,20 +150,20 @@ namespace Everlook.UI
 		/// </summary>
 		/// <returns>The system image format from image format.</returns>
 		/// <param name="Format">Format.</param>
-		private static System.Drawing.Imaging.ImageFormat GetSystemImageFormatFromImageFormat(ImageFormat Format)
+		private static SystemImageFormat GetSystemImageFormatFromImageFormat(ImageFormat Format)
 		{
 			switch (Format)
 			{
 				case ImageFormat.PNG:
-					return System.Drawing.Imaging.ImageFormat.Png;
+					return SystemImageFormat.Png;
 				case ImageFormat.JPG:
-					return System.Drawing.Imaging.ImageFormat.Jpeg;
+					return SystemImageFormat.Jpeg;
 				case ImageFormat.TIF:
-					return System.Drawing.Imaging.ImageFormat.Tiff;
+					return SystemImageFormat.Tiff;
 				case ImageFormat.BMP:
-					return System.Drawing.Imaging.ImageFormat.Bmp;
+					return SystemImageFormat.Bmp;
 				default:
-					return System.Drawing.Imaging.ImageFormat.Png;
+					return SystemImageFormat.Png;
 			}
 		}
 
