@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,6 +29,7 @@ using Warcraft.MPQ;
 using Everlook.Configuration;
 using Everlook.Explorer;
 using log4net;
+using Warcraft.Core;
 
 namespace Everlook.Package
 {
@@ -120,7 +122,17 @@ namespace Everlook.Package
 					}
 					else
 					{
-						this.PackageListfiles.Add(package.PackageName, package.GetFileList());
+						try
+						{
+							this.PackageListfiles.Add(package.PackageName, package.GetFileList());
+						}
+						catch (InvalidFileSectorTableException fex)
+						{
+							Log.Warn($"The listfile in the package {package.PackageName} could not be extracted due to " +
+							         $"an invalid sector offset table (the exception states that \"{fex.Message}\".\n" +
+							         $"It is likely that the archive is corrupted, or that it has been maliciously " +
+							         $"zeroed.");
+						}
 					}
 				}
 			}
