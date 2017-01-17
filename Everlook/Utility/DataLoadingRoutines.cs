@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System;
 using System.Drawing;
 using System.IO;
 using Everlook.Explorer;
@@ -27,6 +28,7 @@ using Everlook.Viewport.Rendering;
 using Everlook.Viewport.Rendering.Interfaces;
 using log4net;
 using Warcraft.BLP;
+using Warcraft.Core;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
 
@@ -45,31 +47,53 @@ namespace Everlook.Utility
 		private static readonly ILog Log = LogManager.GetLogger(typeof(DataLoadingRoutines));
 
 		/// <summary>
+		/// TODO: Refactor this and LoadWorldModelGroup
 		/// Loads the specified WMO file from the archives and deserialize it.
 		/// </summary>
 		/// <param name="fileReference">The archive reference to the WMO root object.</param>
 		/// <returns>A WMO object.</returns>
 		public static WMO LoadWorldModel(FileReference fileReference)
 		{
-			byte[] fileData = fileReference.Extract();
-			if (fileData != null)
+			try
 			{
-				WMO worldModel = new WMO(fileData);
-
-				string modelPathWithoutExtension = Path.GetFileNameWithoutExtension(fileReference.FilePath);
-				for (int i = 0; i < worldModel.GroupCount; ++i)
+				byte[] fileData = fileReference.Extract();
+				if (fileData != null)
 				{
-					// Extract the groups as well
-					string modelGroupPath = $"{modelPathWithoutExtension}_{i:D3}.wmo";
-					byte[] modelGroupData = fileReference.PackageGroup.ExtractFile(modelGroupPath);
+					WMO worldModel = new WMO(fileData);
 
-					if (modelGroupData != null)
+					string modelPathWithoutExtension = Path.GetFileNameWithoutExtension(fileReference.FilePath);
+					for (int i = 0; i < worldModel.GroupCount; ++i)
 					{
-						worldModel.AddModelGroup(new ModelGroup(modelGroupData));
-					}
-				}
+						// Extract the groups as well
+						string modelGroupPath = $"{modelPathWithoutExtension}_{i:D3}.wmo";
 
-				return worldModel;
+						try
+						{
+							byte[] modelGroupData = fileReference.PackageGroup.ExtractFile(modelGroupPath);
+
+							if (modelGroupData != null)
+							{
+								worldModel.AddModelGroup(new ModelGroup(modelGroupData));
+							}
+						}
+						catch (InvalidFileSectorTableException fex)
+						{
+							Log.Warn(
+								$"Failed to load the model group \"{modelGroupPath}\" due to an invalid sector table (\"{fex.Message}\").");
+
+							return null;
+						}
+					}
+
+					return worldModel;
+				}
+			}
+			catch (InvalidFileSectorTableException fex)
+			{
+				Log.Warn(
+					$"Failed to load the model \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
+
+				return null;
 			}
 
 			return null;
@@ -86,19 +110,28 @@ namespace Everlook.Utility
 			string modelRootPath = fileReference.FilePath.Remove(fileReference.FilePath.Length - 8, 4);
 
 			// Extract it and load just this model group
-			byte[] fileData = fileReference.PackageGroup.ExtractFile(modelRootPath);
-			if (fileData != null)
+			try
 			{
-				WMO worldModel = new WMO(fileData);
-				byte[] modelGroupData = fileReference.Extract();
-
-				if (modelGroupData != null)
+				byte[] fileData = fileReference.PackageGroup.ExtractFile(modelRootPath);
+				if (fileData != null)
 				{
-					worldModel.AddModelGroup(new ModelGroup(modelGroupData));
+					WMO worldModel = new WMO(fileData);
+					byte[] modelGroupData = fileReference.Extract();
+
+					if (modelGroupData != null)
+					{
+						worldModel.AddModelGroup(new ModelGroup(modelGroupData));
+					}
+
+					return worldModel;
 				}
+			}
+			catch (InvalidFileSectorTableException fex)
+			{
+				Log.Warn(
+					$"Failed to load the model group \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
 
-
-				return worldModel;
+				return null;
 			}
 
 			return null;

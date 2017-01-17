@@ -137,6 +137,7 @@
     <EmbeddedResource Include="Content\Icons\Mint-Y\applications-other.png" />
     <EmbeddedResource Include="Content\Icons\Mint-X\empty.png" />
     <EmbeddedResource Include="Content\Icons\Mint-X\package-x-generic.png" />
+    <EmbeddedResource Include="Content\Textures\FallbackTexture.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />

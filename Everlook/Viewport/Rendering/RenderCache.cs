@@ -61,13 +61,40 @@ namespace Everlook.Viewport.Rendering
 		private readonly Dictionary<EverlookShader, int> GLShaderCache = new Dictionary<EverlookShader, int>();
 
 		/// <summary>
+		/// The native ID of a fallback texture.
+		/// </summary>
+		public readonly int FallbackTexture;
+
+		/// <summary>
 		/// A singleton instance of the rendering cache.
 		/// </summary>
 		public static readonly RenderCache Instance = new RenderCache();
 
 		private RenderCache()
 		{
+			this.FallbackTexture = CreateFallbackTexture();
+		}
 
+		/// <summary>
+		/// Loads and creates a fallback texture which is used if a texture fails to load.
+		/// </summary>
+		private static int CreateFallbackTexture()
+		{
+			// Load the fallback texture
+			Assembly executingAssembly = Assembly.GetExecutingAssembly();
+			const string fallbackTextureName = "Everlook.Content.Textures.FallbackTexture";
+
+			using (Stream imageStream =
+				executingAssembly.GetManifestResourceStream(fallbackTextureName))
+			{
+				if (imageStream == null)
+				{
+					return -1;
+				}
+
+				Bitmap fallbackBitmap = new Bitmap(imageStream);
+				return CreateTexture(fallbackBitmap);
+			}
 		}
 
 		/// <summary>
@@ -180,18 +207,30 @@ namespace Everlook.Viewport.Rendering
 				throw new ArgumentNullException(nameof(texture));
 			}
 
+			int textureID = CreateTexture(texture);
+
+			this.GLTextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), textureID);
+			return textureID;
+		}
+
+		/// <summary>
+		/// Creates a native OpenGL texture object from the given Bitmap.
+		/// </summary>
+		/// <param name="texture">The bitmap to create a texture from.</param>
+		/// <returns>A native OpenGL texture ID.</returns>
+		private static int CreateTexture(Bitmap texture)
+		{
 			int textureID = GL.GenTexture();
 			GL.BindTexture(TextureTarget.Texture2D, textureID);
 			LoadBitmapTexture(textureID, texture);
 
 			// Use linear mipmapped filtering
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int) TextureMagFilter.Linear);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
+				(int) TextureMinFilter.LinearMipmapLinear);
 
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
-
-			this.GLTextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), textureID);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int) TextureWrapMode.ClampToEdge);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int) TextureWrapMode.ClampToEdge);
 			return textureID;
 		}
 
@@ -309,6 +348,11 @@ namespace Everlook.Viewport.Rendering
 			return shaderProgramID;
 		}
 
+		/// <summary>
+		/// Loads the source code of a stored shader from the specified resource path.
+		/// </summary>
+		/// <param name="shaderResourcePath">The resource path of the shader.</param>
+		/// <returns>The source code of a shader.</returns>
 		private static string LoadShaderSource(string shaderResourcePath)
 		{
 			string shaderSource;

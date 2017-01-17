@@ -28,6 +28,7 @@ using Everlook.Utility;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
+using log4net;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -47,6 +48,11 @@ namespace Everlook.Viewport.Rendering
 	/// </summary>
 	public sealed class RenderableWorldModel : ITickingActor
 	{
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(RenderableWorldModel));
+
 		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is,
 		/// a single frame is rendered and then reused. Useful as an optimization for images.
@@ -527,8 +533,17 @@ OpenTK.
 			}
 			else
 			{
-				BLP texture = new BLP(this.ModelPackageGroup.ExtractFile(texturePath));
-				this.textureLookup.Add(texturePath, this.Cache.CreateCachedTexture(texture, texturePath, textureWrapMode));
+				try
+				{
+					BLP texture = new BLP(this.ModelPackageGroup.ExtractFile(texturePath));
+					this.textureLookup.Add(texturePath, this.Cache.CreateCachedTexture(texture, texturePath, textureWrapMode));
+				}
+				catch (InvalidFileSectorTableException fex)
+				{
+					Log.Warn($"Failed to load the texture \"{texturePath}\" due to an invalid sector table (\"{fex.Message}\").\n" +
+					         $" A fallback texture has been loaded instead.");
+					this.textureLookup.Add(texturePath, this.Cache.FallbackTexture);
+				}
 			}
 		}
 

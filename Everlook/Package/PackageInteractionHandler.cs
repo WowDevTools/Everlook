@@ -26,6 +26,8 @@ using Warcraft.MPQ.FileInfo;
 using System.Collections.Generic;
 using Everlook.Explorer;
 using liblistfile;
+using log4net;
+using Warcraft.Core;
 
 namespace Everlook.Package
 {
@@ -35,6 +37,11 @@ namespace Everlook.Package
 	/// </summary>
 	public class PackageInteractionHandler : IDisposable, IPackage
 	{
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(PackageInteractionHandler));
+
 		/// <summary>
 		/// Gets the package path.
 		/// </summary>
@@ -119,7 +126,16 @@ namespace Everlook.Package
 				return null;
 			}
 
-			return this.Package.ExtractFile(fileReference.FilePath);
+			try
+			{
+				return this.Package.ExtractFile(fileReference.FilePath);
+			}
+			catch (InvalidFileSectorTableException fex)
+			{
+				Log.Warn(
+					$"Failed to extract the file \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
+				return null;
+			}
 		}
 
 		/// <summary>
