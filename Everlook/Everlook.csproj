@@ -80,15 +80,21 @@
     <Compile Include="Export\Audio\AudioFormat.cs" />
     <Compile Include="Export\Model\ModelFormat.cs" />
     <Compile Include="UI\EverlookDirectoryExportDialog.cs" />
-    <Compile Include="UI\EverlookDirectoryExportDialogElements.cs" />
+    <Compile Include="UI\EverlookDirectoryExportDialogElements.cs">
+      <DependentUpon>EverlookDirectoryExportDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\EverlookImageExportDialog.cs" />
-    <Compile Include="UI\EverlookImageExportDialogElements.cs" />
+    <Compile Include="UI\EverlookImageExportDialogElements.cs">
+      <DependentUpon>EverlookImageExportDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\EverlookPreferences.cs" />
-    <Compile Include="UI\EverlookPreferencesElements.cs" />
+    <Compile Include="UI\EverlookPreferencesElements.cs">
+      <DependentUpon>EverlookPreferences.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\MainWindow.cs" />
     <Compile Include="UI\ControlPages.cs" />
     <Compile Include="UI\MainWindowElements.cs">
-      <DependentUpon>"MainWindow.cs"</DependentUpon>
+      <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Utility\IconManager.cs" />
     <Compile Include="Utility\DataLoadingDelegates.cs" />
