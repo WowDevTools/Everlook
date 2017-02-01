@@ -391,7 +391,7 @@ namespace Everlook.Viewport.Rendering
 						compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt1Ext;
 						break;
 					}
-					case BLPPixelFormat.DXT2:
+					case BLPPixelFormat.DXT3:
 					{
 						compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt3Ext;
 						break;
