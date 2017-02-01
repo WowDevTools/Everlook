@@ -137,14 +137,10 @@
     <EmbeddedResource Include="Content\Shaders\Adapted\WorldModel\WorldModelVertex.glsl" />
     <EmbeddedResource Include="Content\Shaders\BoundingBoxFragment.glsl" />
     <EmbeddedResource Include="Content\Shaders\BoundingBoxVertex.glsl" />
-    <EmbeddedResource Include="Content\Icons\Blender\Blender-Armature-Icon.svg" />
-    <EmbeddedResource Include="Content\Icons\Blender\Blender-Object-Icon.svg" />
-    <EmbeddedResource Include="Content\Icons\Blender\Blender-Planet-Icon.svg" />
-    <EmbeddedResource Include="Content\Icons\Blender\Blender-Wave-Icon.svg" />
-    <EmbeddedResource Include="Content\Icons\Mint-Y\applications-other.png" />
-    <EmbeddedResource Include="Content\Icons\Mint-X\empty.png" />
-    <EmbeddedResource Include="Content\Icons\Mint-X\package-x-generic.png" />
-    <EmbeddedResource Include="Content\Textures\FallbackTexture.png" />
+    <EmbeddedResource Include="Content\Icons\Blender\*.svg" />
+    <EmbeddedResource Include="Content\Icons\Mint-X\*.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-Y\*.png" />
+    <EmbeddedResource Include="Content\Textures\*.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
@@ -187,108 +183,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\Icons\Mint-X\gtk-directory.png" />
-    <EmbeddedResource Include="Content\Icons\Mint-X\application-x-executable.png" />
-    <EmbeddedResource Include="Content\Icons\Mint-X\audio-x-generic.png" />
-    <EmbeddedResource Include="Content\Icons\Mint-X\font-x-generic.png" />
-    <EmbeddedResource Include="Content\Icons\Mint-X\image-x-generic.png" />
-    <EmbeddedResource Include="Content\Icons\Mint-X\text-html.png" />
-    <EmbeddedResource Include="Content\Icons\Mint-X\text-x-generic-template.png" />
-    <EmbeddedResource Include="Content\Icons\Mint-X\text-x-generic.png" />
-    <EmbeddedResource Include="Content\Icons\Mint-X\text-x-script.png" />
-    <EmbeddedResource Include="Content\Icons\Mint-X\x-office-address-book.png" />
-    <EmbeddedResource Include="Content\Icons\Mint-X\x-office-spreadsheet.png" />
-    <Content Include="Content\Listfiles\backup-enUS.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\backup.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\base-enUS.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\base.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\common.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\common-2.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\dbc.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\expansion-locale-enUS.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\expansion-speech-enUS.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\expansion.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\fonts.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\interface.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\lichking.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\lichking-locale-enUS.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\lichking-speech-enUS.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\locale-enUS.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\misc.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\model.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\patch-2.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\patch-3.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\patch-enUS-2.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\patch-enUS-3.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\patch-enUS.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\patch.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\patch-w.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\sound.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\speech-enUS.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\speech.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\terrain.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\texture.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Listfiles\wmo.olc">
+    <Content Include="Content\Listfiles\*.olc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Everlook.exe.config">
