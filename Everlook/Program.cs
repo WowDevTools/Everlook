@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Globalization;
 using System.IO;
 using Everlook.UI;
 using Everlook.Utility;
@@ -93,6 +94,10 @@ namespace Everlook
 		/// <param name="unhandledExceptionEventArgs">The event object containing the information about the exception.</param>
 		private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
 		{
+			// Force english exception output
+			System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+			System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
 			Log.Fatal("----------------");
 			Log.Fatal("FATAL UNHANDLED EXCEPTION!");
 			Log.Fatal("Something has gone terribly, terribly wrong during runtime.");

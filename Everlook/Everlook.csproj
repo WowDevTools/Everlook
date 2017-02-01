@@ -187,6 +187,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Content\Icons\Mint-X\gtk-directory.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-X\application-x-executable.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-X\audio-x-generic.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-X\font-x-generic.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-X\image-x-generic.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-X\text-html.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-X\text-x-generic-template.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-X\text-x-generic.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-X\text-x-script.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-X\x-office-address-book.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-X\x-office-spreadsheet.png" />
     <Content Include="Content\Listfiles\backup-enUS.olc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
