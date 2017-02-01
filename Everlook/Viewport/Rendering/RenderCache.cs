@@ -386,17 +386,17 @@ namespace Everlook.Viewport.Rendering
 				PixelInternalFormat compressionFormat;
 				switch (compressedImage.GetPixelFormat())
 				{
-					case BLPPixelFormat.Pixel_DXT1:
+					case BLPPixelFormat.DXT1:
 					{
 						compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt1Ext;
 						break;
 					}
-					case BLPPixelFormat.Pixel_DXT3:
+					case BLPPixelFormat.DXT3:
 					{
 						compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt3Ext;
 						break;
 					}
-					case BLPPixelFormat.Pixel_DXT5:
+					case BLPPixelFormat.DXT5:
 					{
 						compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt5Ext;
 						break;

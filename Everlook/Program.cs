@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.IO;
 using Everlook.UI;
 using Everlook.Utility;
 using Gtk;
@@ -40,6 +41,9 @@ namespace Everlook
 		{
 			// Bind any unhandled exceptions in the main thread so that they are logged.
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+
+			// Set correct working directory for compatibility with double-clicking
+			Directory.SetCurrentDirectory(DirectoryHelpers.GetLocalDir());
 
 			log4net.Config.XmlConfigurator.Configure();
 
