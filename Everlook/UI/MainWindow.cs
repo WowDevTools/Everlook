@@ -102,9 +102,12 @@ namespace Everlook.UI
 				DepthBPP = 24,
 				AccumulatorBPP = 24,
 				Samples = 4,
-				GLVersionMajor = 3,
+				GLVersionMajor = 4,
 				GLVersionMinor = 3,
 				GraphicsContextFlags = GraphicsContextFlags.Default
+				#if DEBUG
+					| GraphicsContextFlags.Debug
+				#endif
 			};
 
 			this.ViewportWidget.Events |=

@@ -56,8 +56,7 @@ namespace Everlook
 			// OpenGL
 			Toolkit.Init(new ToolkitOptions
 			{
-				Backend = PlatformBackend.PreferNative,
-				EnableHighResolution = true
+				Backend = PlatformBackend.PreferNative
 			});
 
 			Log.Info($"OpenGL initialized using the {(OpenTK.Configuration.RunningOnSdl2 ? "SDL2" : "native")} backend.");

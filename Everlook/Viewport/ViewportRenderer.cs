@@ -22,9 +22,11 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Everlook.Configuration;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Interfaces;
+using log4net;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -38,6 +40,11 @@ namespace Everlook.Viewport
 	/// </summary>
 	public class ViewportRenderer : IDisposable
 	{
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(ViewportRenderer));
+
 		/// <summary>
 		/// The viewport widget displayed to the user in the main interface.
 		/// Used to get proper dimensions for the OpenGL viewport.
@@ -148,6 +155,12 @@ namespace Everlook.Viewport
 		/// </summary>
 		public void Initialize()
 		{
+			// Bind an error reporting function
+			#if DEBUG
+				GL.Enable(EnableCap.DebugOutput);
+				GL.DebugMessageCallback(LogGLError, IntPtr.Zero);
+			#endif
+
 			// Generate the vertex array
 			GL.GenVertexArrays(1, out this.VertexArrayID);
 			GL.BindVertexArray(this.VertexArrayID);
@@ -261,6 +274,28 @@ namespace Everlook.Viewport
 			}
 
 			this.Camera.ResetPosition();
+		}
+
+		/// <summary>
+		/// Logs an error which was thrown during native OpenGL code execution.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="type"></param>
+		/// <param name="id"></param>
+		/// <param name="severity"></param>
+		/// <param name="length"></param>
+		/// <param name="message"></param>
+		/// <param name="param"></param>
+		private static void LogGLError(DebugSource source, DebugType type, int id, DebugSeverity severity, int length,
+			IntPtr message, IntPtr param)
+		{
+			string messageText = length > 0 ? Marshal.PtrToStringAuto(message, length) : string.Empty;
+
+			Log.Error($"Native OpenGL error! \n" +
+			          $"\tSource: {source.ToString().Remove(0, "DebugSource".Length)}\n" +
+			          $"\tType: {type.ToString().Remove(0, "DebugType".Length)}\n" +
+			          $"\tSeverity: {severity.ToString().Remove(0, "DebugSeverity".Length)}\n" +
+			          $"\tMessage: {messageText}");
 		}
 
 		/// <summary>
