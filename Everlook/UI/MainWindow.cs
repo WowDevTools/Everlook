@@ -32,6 +32,7 @@ using Everlook.Viewport.Rendering.Interfaces;
 using Gdk;
 using GLib;
 using Gtk;
+using log4net;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Input;
@@ -47,6 +48,11 @@ namespace Everlook.UI
 	/// </summary>
 	public sealed partial class MainWindow: Gtk.Window
 	{
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(MainWindow));
+
 		/// <summary>
 		/// Static reference to the configuration handler.
 		/// </summary>
@@ -102,12 +108,9 @@ namespace Everlook.UI
 				DepthBPP = 24,
 				AccumulatorBPP = 24,
 				Samples = 4,
-				GLVersionMajor = 4,
+				GLVersionMajor = 3,
 				GLVersionMinor = 3,
 				GraphicsContextFlags = GraphicsContextFlags.Default
-				#if DEBUG
-					| GraphicsContextFlags.Debug
-				#endif
 			};
 
 			this.ViewportWidget.Events |=
@@ -209,7 +212,6 @@ namespace Everlook.UI
 
 					DisableControlPage(otherPage);
 				}
-
 
 				switch (pageToEnable)
 				{
@@ -361,6 +363,8 @@ namespace Everlook.UI
 			DataLoadingDelegates.CreateRenderableDelegate<T> createRenderableDelegate,
 			ControlPage associatedControlPage)
 		{
+			Log.Info($"Loading \"{fileReference.FilePath}\".");
+
 			this.StatusSpinner.Active = true;
 
 			string modelName = fileReference.Filename;
@@ -371,13 +375,16 @@ namespace Everlook.UI
 			Task.Factory.StartNew(() => referenceLoadingRoutine(fileReference))
 				.ContinueWith(modelLoadTask => createRenderableDelegate(modelLoadTask.Result, fileReference), this.UIThreadScheduler)
 				.ContinueWith(createRenderableTask => this.RenderingEngine.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
-				.ContinueWith(result =>
+				.ContinueWith
+				(
+					result =>
 					{
 						this.StatusSpinner.Active = false;
 						this.MainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
 						EnableControlPage(associatedControlPage);
 					},
-					this.UIThreadScheduler);
+					this.UIThreadScheduler
+				);
 		}
 
 		/// <summary>

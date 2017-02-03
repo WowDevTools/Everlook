@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Everlook.Package;
 using System.Globalization;
+using log4net;
 
 namespace Everlook.Explorer
 {
@@ -37,6 +38,11 @@ namespace Everlook.Explorer
 	/// </summary>
 	public sealed class ExplorerBuilder : IDisposable
 	{
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(ExplorerBuilder));
+
 		/// <summary>
 		/// Package enumerated event handler.
 		/// </summary>
@@ -426,6 +432,7 @@ namespace Everlook.Explorer
 			}
 			else
 			{
+				Log.Error("No listfile was found for the package referenced by the item reference being enumerated.");
 				throw new InvalidDataException("No listfile was found for the package referenced by this item reference.");
 			}
 		}

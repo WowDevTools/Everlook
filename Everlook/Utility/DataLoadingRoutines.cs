@@ -80,7 +80,6 @@ namespace Everlook.Utility
 						{
 							Log.Warn(
 								$"Failed to load the model group \"{modelGroupPath}\" due to an invalid sector table (\"{fex.Message}\").");
-
 							return null;
 						}
 					}
@@ -92,10 +91,11 @@ namespace Everlook.Utility
 			{
 				Log.Warn(
 					$"Failed to load the model \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
-
 				return null;
 			}
 
+			Log.Warn(
+				$"Failed to load the model \"{fileReference.FilePath}\". The file data could not be extracted.");
 			return null;
 		}
 
@@ -130,10 +130,11 @@ namespace Everlook.Utility
 			{
 				Log.Warn(
 					$"Failed to load the model group \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
-
 				return null;
 			}
 
+			Log.Warn(
+				$"Failed to load the model group \"{fileReference.FilePath}\". The file data could not be extracted.");
 			return null;
 		}
 
@@ -178,6 +179,8 @@ namespace Everlook.Utility
 				}
 			}
 
+			Log.Warn(
+				$"Failed to load the image \"{fileReference.FilePath}\". The file data could not be extracted.");
 			return null;
 		}
 
@@ -226,6 +229,8 @@ namespace Everlook.Utility
 				}
 			}
 
+			Log.Warn(
+				$"Failed to load the image \"{fileReference.FilePath}\". The file data could not be extracted.");
 			return null;
 		}
 

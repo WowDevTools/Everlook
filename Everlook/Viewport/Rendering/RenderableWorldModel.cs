@@ -313,7 +313,7 @@ namespace Everlook.Viewport.Rendering
 			{
 				return;
 			}
-OpenTK.
+
 			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
 			// TODO: Fix frustum culling
