@@ -69,7 +69,7 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnAddPathButtonClicked(object sender, EventArgs e)
+		private void OnAddPathButtonClicked(object sender, EventArgs e)
 		{
 			Uri defaultLocation = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
 			this.GameSelectionFileChooserDialog.SetCurrentFolderUri(defaultLocation.ToString());
@@ -92,17 +92,19 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnRemovePathButtonClicked(object sender, EventArgs e)
+		private void OnRemovePathButtonClicked(object sender, EventArgs e)
 		{
 			TreeIter selectedIter;
 			this.GamePathSelectionTreeView.Selection.GetSelected(out selectedIter);
 
-			if (this.GamePathListStore.IterIsValid(selectedIter))
+			if (!this.GamePathListStore.IterIsValid(selectedIter))
 			{
-				string gamePath = (string) this.GamePathListStore.GetValue(selectedIter, 0);
-				GamePathStorage.Instance.RemoveStoredPath(gamePath);
-				this.GamePathListStore.Remove(ref selectedIter);
+				return;
 			}
+
+			string gamePath = (string) this.GamePathListStore.GetValue(selectedIter, 0);
+			GamePathStorage.Instance.RemoveStoredPath(gamePath);
+			this.GamePathListStore.Remove(ref selectedIter);
 		}
 
 		/// <summary>
@@ -139,8 +141,8 @@ namespace Everlook.UI
 		{
 			this.GamePathListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
 				{
-					string GamePath = (string)model.GetValue(iter, 0);
-					GamePathStorage.Instance.StorePath(GamePath);
+					string gamePath = (string)model.GetValue(iter, 0);
+					GamePathStorage.Instance.StorePath(gamePath);
 
 					return false;
 				});

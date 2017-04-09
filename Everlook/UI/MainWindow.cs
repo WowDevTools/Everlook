@@ -96,7 +96,7 @@ namespace Everlook.UI
 			: base(handle)
 		{
 			builder.Autoconnect(this);
-			DeleteEvent += OnDeleteEvent;
+			this.DeleteEvent += OnDeleteEvent;
 
 			this.UIThreadScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 

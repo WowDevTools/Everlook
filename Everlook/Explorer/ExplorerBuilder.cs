@@ -467,9 +467,9 @@ namespace Everlook.Explorer
 		/// </summary>
 		private void RaisePackageGroupAdded()
 		{
-			if (PackageGroupAdded != null)
+			if (this.PackageGroupAdded != null)
 			{
-				PackageGroupAdded(this, this.PackageGroupAddedArgs);
+				this.PackageGroupAdded(this, this.PackageGroupAddedArgs);
 			}
 		}
 
@@ -478,9 +478,9 @@ namespace Everlook.Explorer
 		/// </summary>
 		private void RaisePackageEnumerated()
 		{
-			if (PackageEnumerated != null)
+			if (this.PackageEnumerated != null)
 			{
-				PackageEnumerated(this, this.PackageEnumeratedArgs);
+				this.PackageEnumerated(this, this.PackageEnumeratedArgs);
 			}
 		}
 
