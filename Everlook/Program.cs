@@ -44,7 +44,7 @@ namespace Everlook
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
 			// Set correct working directory for compatibility with double-clicking
-			Directory.SetCurrentDirectory(DirectoryHelpers.GetLocalDir());
+			Directory.SetCurrentDirectory(DirectoryHelpers.GetLocalDirectory());
 
 			log4net.Config.XmlConfigurator.Configure();
 

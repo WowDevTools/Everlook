@@ -23,8 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Reflection;
 using Everlook.Utility;
 using Everlook.Viewport.Rendering.Core;
 using log4net;
@@ -81,20 +79,11 @@ namespace Everlook.Viewport.Rendering
 		private static int CreateFallbackTexture()
 		{
 			// Load the fallback texture
-			Assembly executingAssembly = Assembly.GetExecutingAssembly();
 			const string fallbackTextureName = "Everlook.Content.Textures.FallbackTexture";
 
-			using (Stream imageStream =
-				executingAssembly.GetManifestResourceStream(fallbackTextureName))
-			{
-				if (imageStream == null)
-				{
-					return -1;
-				}
+			Bitmap fallbackBitmap = AssetManager.LoadEmbeddedImage(fallbackTextureName);
 
-				Bitmap fallbackBitmap = new Bitmap(imageStream);
-				return CreateTexture(fallbackBitmap);
-			}
+			return CreateTexture(fallbackBitmap);
 		}
 
 		/// <summary>
@@ -257,20 +246,20 @@ namespace Everlook.Viewport.Rendering
 			{
 				case EverlookShader.Plain2D:
 				{
-					vertexShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.PlainImage.PlainImageVertex.glsl");
-					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.PlainImage.PlainImageFragment.glsl");
+					vertexShaderSource = AssetManager.LoadEmbeddedText("Everlook.Content.Shaders.Adapted.PlainImage.PlainImageVertex.glsl");
+					fragmentShaderSource = AssetManager.LoadEmbeddedText("Everlook.Content.Shaders.Adapted.PlainImage.PlainImageFragment.glsl");
 					break;
 				}
 				case EverlookShader.UnlitWorldModel:
 				{
-					vertexShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelVertex.glsl");
-					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelFragment.glsl");
+					vertexShaderSource = AssetManager.LoadEmbeddedText("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelVertex.glsl");
+					fragmentShaderSource = AssetManager.LoadEmbeddedText("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelFragment.glsl");
 					break;
 				}
 				case EverlookShader.BoundingBox:
 				{
-					vertexShaderSource = LoadShaderSource("Everlook.Content.Shaders.BoundingBoxVertex.glsl");
-					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.BoundingBoxFragment.glsl");
+					vertexShaderSource = AssetManager.LoadEmbeddedText("Everlook.Content.Shaders.BoundingBoxVertex.glsl");
+					fragmentShaderSource = AssetManager.LoadEmbeddedText("Everlook.Content.Shaders.BoundingBoxFragment.glsl");
 					break;
 				}
 				default:
@@ -346,31 +335,6 @@ namespace Everlook.Viewport.Rendering
 
 			this.GLShaderCache.Add(shader, shaderProgramID);
 			return shaderProgramID;
-		}
-
-		/// <summary>
-		/// Loads the source code of a stored shader from the specified resource path.
-		/// </summary>
-		/// <param name="shaderResourcePath">The resource path of the shader.</param>
-		/// <returns>The source code of a shader.</returns>
-		private static string LoadShaderSource(string shaderResourcePath)
-		{
-			string shaderSource;
-			using (Stream shaderStream =
-					Assembly.GetExecutingAssembly().GetManifestResourceStream(shaderResourcePath))
-			{
-				if (shaderStream == null)
-				{
-					return null;
-				}
-
-				using (StreamReader sr = new StreamReader(shaderStream))
-				{
-					shaderSource = sr.ReadToEnd();
-				}
-			}
-
-			return shaderSource;
 		}
 
 		/// <summary>

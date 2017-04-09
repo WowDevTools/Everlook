@@ -35,7 +35,7 @@ namespace Everlook.Utility
 		/// Gets the assembly-local directory, that is, the directory where the executing assembly resides.
 		/// </summary>
 		/// <returns>The local dir, terminated by a directory separator.</returns>
-		public static string GetLocalDir()
+		public static string GetLocalDirectory()
 		{
 			Uri codeBaseURI = new UriBuilder(Assembly.GetExecutingAssembly().Location).Uri;
 			return Path.GetDirectoryName(Uri.UnescapeDataString(codeBaseURI.AbsolutePath)) + Path.DirectorySeparatorChar;
