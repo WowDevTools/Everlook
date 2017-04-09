@@ -147,7 +147,7 @@ namespace Everlook.UI
 
 			this.Config.SetViewportBackgroundColour(this.ViewportColourButton.Rgba);
 
-			Uri exportPathURI;
+			/*Uri exportPathURI;
 			if (!this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri.StartsWith("file://"))
 			{
 				exportPathURI = new Uri("file://" + this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri);
@@ -155,9 +155,11 @@ namespace Everlook.UI
 			else
 			{
 				exportPathURI = new Uri(this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri);
-			}
+			}*/
 
-			this.Config.SetDefaultExportDirectory(exportPathURI.LocalPath);
+			string exportPath = this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri;
+
+			this.Config.SetDefaultExportDirectory(exportPath);
 			this.Config.SetDefaultModelFormat((ModelFormat) this.DefaultModelExportFormatComboBox.Active);
 			this.Config.SetDefaultImageFormat((ImageFormat) this.DefaultImageExportFormatComboBox.Active);
 			this.Config.SetDefaultAudioFormat((AudioFormat) this.DefaultAudioExportFormatComboBox.Active);
