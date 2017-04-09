@@ -20,10 +20,17 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Everlook.Package;
 using Everlook.Viewport.Camera;
+using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
+using Warcraft.Core;
 using Warcraft.MDX;
+using Warcraft.MDX.Geometry;
 
 namespace Everlook.Viewport.Rendering
 {
@@ -47,6 +54,28 @@ namespace Everlook.Viewport.Rendering
 		public ProjectionType Projection => ProjectionType.Perspective;
 
 		/// <summary>
+		/// The model contained by this renderable game object.
+		/// </summary>
+		private readonly MDX Model;
+
+		/// <summary>
+		/// The transform of the actor.
+		/// </summary>
+		public Transform ActorTransform { get; set; }
+
+		private readonly PackageGroup ModelPackageGroup;
+		private readonly RenderCache Cache = RenderCache.Instance;
+
+		/// <summary>
+		/// Dictionary that maps texture paths to OpenGL texture IDs.
+		/// </summary>
+		private readonly Dictionary<string, int> TextureLookup = new Dictionary<string, int>();
+
+		private int VertexBufferID;
+
+		private int SimpleShaderID;
+
+		/// <summary>
 		/// Returns a value which represents whether or not the current renderable has been initialized.
 		/// </summary>
 		public bool IsInitialized { get; set; }
@@ -56,7 +85,31 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Initialize()
 		{
-			throw new NotImplementedException();
+			if (this.Cache.HasCachedShader(EverlookShader.UnlitWorldModel))
+			{
+				this.SimpleShaderID = this.Cache.GetCachedShader(EverlookShader.UnlitGameModel);
+			}
+			else
+			{
+				this.SimpleShaderID = this.Cache.CreateCachedShader(EverlookShader.UnlitGameModel);
+			}
+
+			this.VertexBufferID = GL.GenBuffer();
+
+			byte[] vertexBufferData = this.Model.Vertices
+				.Select(v => v.PackForOpenGL())
+				.SelectMany(b => b)
+				.ToArray();
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, this.VertexBufferID);
+			GL.BufferData(BufferTarget.ArrayBuffer,
+				(IntPtr)vertexBufferData.Length,
+				vertexBufferData,
+				BufferUsageHint.StaticDraw);
+
+			// TODO: Textures
+
+			this.IsInitialized = true;
 		}
 
 		/// <summary>
@@ -64,25 +117,93 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
 		{
-			throw new NotImplementedException();
-		}
+			if (!this.IsInitialized)
+			{
+				return;
+			}
 
-		/// <summary>
-		/// The model contained by this renderable game object.
-		/// </summary>
-		/// <value>The model.</value>
-		public MDX Model
-		{
-			get;
-			private set;
+			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
+
+			GL.UseProgram(this.SimpleShaderID);
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, this.VertexBufferID);
+			GL.EnableVertexAttribArray(0);
+
+			// Position pointer
+			GL.VertexAttribPointer(
+				0,
+				3,
+				VertexAttribPointerType.Float,
+				false,
+				0,
+				0);
+
+			// Bone weight pointer
+			GL.VertexAttribPointer(
+				1,
+				4,
+				VertexAttribPointerType.Byte,
+				false,
+				12,
+				12);
+
+			// Bone index pointer
+			GL.VertexAttribPointer(
+				2,
+				4,
+				VertexAttribPointerType.Byte,
+				false,
+				16,
+				16);
+
+			// Normal pointer
+			GL.VertexAttribPointer(
+				3,
+				3,
+				VertexAttribPointerType.Float,
+				false,
+				20,
+				20);
+
+			// UV1 pointer
+			GL.VertexAttribPointer(
+				4,
+				2,
+				VertexAttribPointerType.Float,
+				false,
+				32,
+				32);
+
+			// UV2 pointer
+			GL.VertexAttribPointer(
+				5,
+				2,
+				VertexAttribPointerType.Float,
+				false,
+				40,
+				40);
+
+			// Simple: Render all skins
+			MDXView bestLOD = this.Model.LODViews.First();
+			foreach (MDXSubmesh submesh in bestLOD.Submeshes)
+			{
+
+			}
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableGameModel"/> class.
 		/// </summary>
-		public RenderableGameModel(MDX inModel)
+		public RenderableGameModel(MDX inModel, PackageGroup inPackageGroup, bool shouldInitialize)
 		{
 			this.Model = inModel;
+			this.ModelPackageGroup = inPackageGroup;
+
+			this.IsInitialized = false;
+			if (shouldInitialize)
+			{
+				Initialize();
+			}
 		}
 
 		/// <summary>
@@ -96,7 +217,6 @@ namespace Everlook.Viewport.Rendering
 		public void Dispose()
 		{
 			this.Model.Dispose();
-			this.Model = null;
 		}
 
 		/// <summary>

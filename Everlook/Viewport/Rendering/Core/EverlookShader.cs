@@ -40,6 +40,11 @@ namespace Everlook.Viewport.Rendering.Core
 		UnlitWorldModel,
 
 		/// <summary>
+		/// A shader capable of rendering a simple game model. This shader does not support any animation.
+		/// </summary>
+		UnlitGameModel,
+
+		/// <summary>
 		/// A shader capable of rendering an animated model.
 		/// </summary>
 		Model,

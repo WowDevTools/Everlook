@@ -188,55 +188,41 @@ namespace Everlook.Viewport.Rendering
 				GL.GenBuffers(1, out boundingBoxVertexBufferID);
 
 				// Upload all of the vertices in this group
-				List<Vector3f> groupVertices = modelGroup.GetVertices();
-				List<float> groupVertexValues = new List<float>();
+				float[] groupVertexValues = modelGroup
+					.GetVertices()
+					.Select(v => v.Flatten())
+					.SelectMany(f => f)
+					.ToArray();
 
-				foreach (Vector3f vertex in groupVertices)
-				{
-					groupVertexValues.Add(vertex.X);
-					groupVertexValues.Add(vertex.Y);
-					groupVertexValues.Add(vertex.Z);
-				}
-
-				float[] groupVertexValuesArray = groupVertexValues.ToArray();
 				GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferID);
-				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr) (groupVertexValuesArray.Length * sizeof(float)),
-					groupVertexValuesArray, BufferUsageHint.StaticDraw);
+				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr) (groupVertexValues.Length * sizeof(float)),
+					groupVertexValues, BufferUsageHint.StaticDraw);
 
 				this.VertexBufferLookup.Add(modelGroup, vertexBufferID);
 
 				// Upload all of the normals in this group
-				List<Vector3f> groupNormals = modelGroup.GetNormals();
-				List<float> groupNormalValues = new List<float>();
+				float[] groupNormalValues = modelGroup
+					.GetNormals()
+					.Select(v => v.Flatten())
+					.SelectMany(f => f)
+					.ToArray();
 
-				foreach (Vector3f vertex in groupNormals)
-				{
-					groupNormalValues.Add(vertex.X);
-					groupNormalValues.Add(vertex.Y);
-					groupNormalValues.Add(vertex.Z);
-				}
-
-				float[] groupNormalValuesArray = groupNormalValues.ToArray();
 				GL.BindBuffer(BufferTarget.ArrayBuffer, normalBufferID);
-				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr) (groupNormalValuesArray.Length * sizeof(float)),
-					groupNormalValuesArray, BufferUsageHint.StaticDraw);
+				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr) (groupNormalValues.Length * sizeof(float)),
+					groupNormalValues, BufferUsageHint.StaticDraw);
 
 				this.NormalBufferLookup.Add(modelGroup, normalBufferID);
 
 				// Upload all of the UVs in this group
-				List<Vector2f> groupTextureCoordinates = modelGroup.GetTextureCoordinates();
-				List<float> groupTextureCoordinateValues = new List<float>();
+				float[] groupTextureCoordinateValues = modelGroup
+					.GetTextureCoordinates()
+					.Select(v => v.Flatten())
+					.SelectMany(f => f)
+					.ToArray();
 
-				foreach (Vector2f coordinate in groupTextureCoordinates)
-				{
-					groupTextureCoordinateValues.Add(coordinate.X);
-					groupTextureCoordinateValues.Add(coordinate.Y);
-				}
-
-				float[] groupTextureCoordinateValuesArray = groupTextureCoordinateValues.ToArray();
 				GL.BindBuffer(BufferTarget.ArrayBuffer, coordinateBufferID);
-				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr) (groupTextureCoordinateValuesArray.Length * sizeof(float)),
-					groupTextureCoordinateValuesArray, BufferUsageHint.StaticDraw);
+				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr) (groupTextureCoordinateValues.Length * sizeof(float)),
+					groupTextureCoordinateValues, BufferUsageHint.StaticDraw);
 
 				this.TextureCoordinateBufferLookup.Add(modelGroup, coordinateBufferID);
 
@@ -249,19 +235,16 @@ namespace Everlook.Viewport.Rendering
 				this.VertexIndexBufferLookup.Add(modelGroup, vertexIndicesID);
 
 				// Upload the corners of the bounding box
-				List<Vector3> boundingBoxCorners = modelGroup.GetBoundingBox().ToOpenGLBoundingBox().GetCorners().ToList();
-				List<float> boundingBoxCornerValues = new List<float>();
-				foreach (Vector3 vertex in boundingBoxCorners)
-				{
-					boundingBoxCornerValues.Add(vertex.X);
-					boundingBoxCornerValues.Add(vertex.Y);
-					boundingBoxCornerValues.Add(vertex.Z);
-				}
+				float[] boundingBoxVertices = modelGroup.GetBoundingBox()
+					.ToOpenGLBoundingBox()
+					.GetCorners()
+					.Select(v => v.AsWarcraftVector().Flatten())
+					.SelectMany(f => f)
+					.ToArray();
 
-				float[] boundingBoxVertexArray = boundingBoxCornerValues.ToArray();
 				GL.BindBuffer(BufferTarget.ArrayBuffer, boundingBoxVertexBufferID);
-				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(boundingBoxVertexArray.Length * sizeof(float)),
-					boundingBoxVertexArray, BufferUsageHint.StaticDraw);
+				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(boundingBoxVertices.Length * sizeof(float)),
+					boundingBoxVertices, BufferUsageHint.StaticDraw);
 
 				this.BoundingBoxVertexBufferLookup.Add(modelGroup, boundingBoxVertexBufferID);
 			}

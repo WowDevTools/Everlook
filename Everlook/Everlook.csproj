@@ -127,6 +127,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <EmbeddedResource Include="Content\Shaders\Adapted\GameModel\GameModelFragment.glsl" />
+    <EmbeddedResource Include="Content\Shaders\Adapted\GameModel\GameModelVertex.glsl" />
     <EmbeddedResource Include="interfaces\Everlook.glade" />
     <EmbeddedResource Include="interfaces\EverlookPreferences.glade" />
     <EmbeddedResource Include="interfaces\EverlookImageExport.glade" />
