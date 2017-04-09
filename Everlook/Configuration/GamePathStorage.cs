@@ -47,13 +47,7 @@ namespace Everlook.Configuration
 		/// Gets the stored game paths.
 		/// </summary>
 		/// <value>The game paths.</value>
-		public List<string> GamePaths
-		{
-			get
-			{
-				return ReadStoredPaths();
-			}
-		}
+		public List<string> GamePaths => ReadStoredPaths();
 
 		private GamePathStorage()
 		{

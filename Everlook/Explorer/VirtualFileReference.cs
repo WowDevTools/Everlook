@@ -97,13 +97,7 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <value>true</value>
 		/// <c>false</c>
-		public override bool IsPackage
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public override bool IsPackage => false;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="VirtualFileReference"/> class.
@@ -136,13 +130,7 @@ namespace Everlook.Explorer
 		/// Gets the file info of this reference.
 		/// </summary>
 		/// <value>The file info.</value>
-		public override MPQFileInfo ReferenceInfo
-		{
-			get
-			{
-				return this.HardReference.ReferenceInfo;
-			}
-		}
+		public override MPQFileInfo ReferenceInfo => this.HardReference.ReferenceInfo;
 
 		/// <summary>
 		/// Extracts this instance from the package group it is associated with.

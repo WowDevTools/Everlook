@@ -59,20 +59,13 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		/// <value>true</value>
 		/// <c>false</c>
-		public bool IsStatic
-		{
-			get { return false; }
-		}
-
+		public bool IsStatic => false;
 
 		/// <summary>
 		/// The projection method to use for this renderable object. Typically, this is Orthographic
 		/// or Perspective.
 		/// </summary>
-		public ProjectionType Projection
-		{
-			get { return ProjectionType.Perspective; }
-		}
+		public ProjectionType Projection => ProjectionType.Perspective;
 
 		/// <summary>
 		/// The model contained by this renderable world object.

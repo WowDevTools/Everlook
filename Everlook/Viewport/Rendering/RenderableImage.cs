@@ -20,13 +20,7 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		/// <value>true</value>
 		/// <c>false</c>
-		public bool IsStatic
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public bool IsStatic => true;
 
 		/// <summary>
 		/// The model transformation of the image. Used for moving and zooming.
@@ -77,13 +71,7 @@ namespace Everlook.Viewport.Rendering
 		/// The projection method to use for this renderable object. Typically, this is Orthographic
 		/// or Perspective.
 		/// </summary>
-		public ProjectionType Projection
-		{
-			get
-			{
-				return ProjectionType.Orthographic;
-			}
-		}
+		public ProjectionType Projection => ProjectionType.Orthographic;
 
 		/// <summary>
 		/// Initializes the required data for rendering.

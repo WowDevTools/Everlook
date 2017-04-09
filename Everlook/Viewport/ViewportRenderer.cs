@@ -63,10 +63,7 @@ namespace Everlook.Viewport
 		/// <summary>
 		/// Whether or not the renderer currently has an object to render.
 		/// </summary>
-		public bool HasRenderTarget
-		{
-			get { return this.RenderTarget != null; }
-		}
+		public bool HasRenderTarget => this.RenderTarget != null;
 
 		/// <summary>
 		/// The current rendering target. This is an object capable of being shown in an

@@ -156,37 +156,24 @@ namespace Everlook.Explorer
 		/// Gets a value indicating whether this or not this reference is a package reference.
 		/// </summary>
 		/// <value><c>true</c> if this reference is a package; otherwise, <c>false</c>.</value>
-		public virtual bool IsPackage
-		{
-			get { return !string.IsNullOrEmpty(this.PackageName) && string.IsNullOrEmpty(this.FilePath); }
-		}
+		public virtual bool IsPackage => !string.IsNullOrEmpty(this.PackageName) && string.IsNullOrEmpty(this.FilePath);
 
 		/// <summary>
 		/// Gets a value indicating whether this reference is a directory.
 		/// </summary>
 		/// <value><c>true</c> if this instance is directory; otherwise, <c>false</c>.</value>
-		public bool IsDirectory
-		{
-			get { return !string.IsNullOrEmpty(this.FilePath) && GetReferencedFileType() == WarcraftFileType.Directory; }
-		}
+		public bool IsDirectory => !string.IsNullOrEmpty(this.FilePath) && GetReferencedFileType() == WarcraftFileType.Directory;
 
 		/// <summary>
 		/// Gets a value indicating whether this reference is a file.
 		/// </summary>
 		/// <value><c>true</c> if this instance is file; otherwise, <c>false</c>.</value>
-		public bool IsFile
-		{
-			get { return !string.IsNullOrEmpty(this.FilePath) && (GetReferencedFileType() != WarcraftFileType.Directory); }
-		}
+		public bool IsFile => !string.IsNullOrEmpty(this.FilePath) && (GetReferencedFileType() != WarcraftFileType.Directory);
 
 		/// <summary>
 		/// The name of the file.
 		/// </summary>
-		public string Filename
-		{
-			// Return the filename, and replace any nonnative file paths with the native one.
-			get { return Path.GetFileName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar)); }
-		}
+		public string Filename => Path.GetFileName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar));
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileReference"/> class.

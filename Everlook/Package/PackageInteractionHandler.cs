@@ -55,13 +55,7 @@ namespace Everlook.Package
 		/// Gets the name of the package.
 		/// </summary>
 		/// <value>The name of the package.</value>
-		public string PackageName
-		{
-			get
-			{
-				return Path.GetFileNameWithoutExtension(this.PackagePath);
-			}
-		}
+		public string PackageName => Path.GetFileNameWithoutExtension(this.PackagePath);
 
 		private readonly MPQ Package;
 		private byte[] ArchiveHashTableHash;
