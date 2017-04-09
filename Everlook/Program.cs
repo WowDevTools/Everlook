@@ -107,7 +107,7 @@ namespace Everlook
 			Exception unhandledException = unhandledExceptionEventArgs.ExceptionObject as Exception;
 			if (unhandledException != null)
 			{
-				if (unhandledException.GetType() == typeof(DllNotFoundException))
+				if (unhandledException is DllNotFoundException)
 				{
 					Log.Fatal("This exception is typical of instances where the GTK# runtime has not been installed.\n" +
 					          "If you haven't installed it, download it at \'https://download.gnome.org/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi\'.\n" +
