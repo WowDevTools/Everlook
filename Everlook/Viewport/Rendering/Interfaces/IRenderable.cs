@@ -22,7 +22,6 @@
 using System;
 using Everlook.Viewport.Camera;
 using OpenTK;
-using SlimTK;
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {

@@ -23,7 +23,6 @@ using System;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
-using SlimTK;
 using Warcraft.MDX;
 
 namespace Everlook.Viewport.Rendering

@@ -23,7 +23,6 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using Everlook.UI;
 using Everlook.Utility;
 using Gtk;
@@ -119,12 +118,14 @@ namespace Everlook
 				Log.Fatal("Exception Message: " + unhandledException.Message);
 				Log.Fatal("Exception Stacktrace: " + unhandledException.StackTrace);
 
-				if (unhandledException is TargetInvocationException && unhandledException.InnerException != null)
+				if (unhandledException.InnerException == null)
 				{
-					Log.Fatal("Inner exception type: " + unhandledException.InnerException.GetType().FullName);
-					Log.Fatal("Inner exception Message: " + unhandledException.InnerException.Message);
-					Log.Fatal("Inner exception Stacktrace: " + unhandledException.InnerException.StackTrace);
+					return;
 				}
+
+				Log.Fatal("Inner exception type: " + unhandledException.InnerException.GetType().FullName);
+				Log.Fatal("Inner exception Message: " + unhandledException.InnerException.Message);
+				Log.Fatal("Inner exception Stacktrace: " + unhandledException.InnerException.StackTrace);
 			}
 		}
 	}
