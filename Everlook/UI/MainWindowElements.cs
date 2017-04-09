@@ -37,7 +37,7 @@ namespace Everlook.UI
 
 		[UIElement] private readonly Alignment ViewportAlignment;
 		private readonly GLWidget ViewportWidget;
-		private bool viewportHasPendingRedraw;
+		private bool ViewportHasPendingRedraw;
 
 		/*
 			Export queue elements

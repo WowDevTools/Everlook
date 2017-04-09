@@ -37,7 +37,7 @@ namespace Everlook.Export.Model
 		/// Wavefront OBJ
 		/// <a href="https://en.wikipedia.org/wiki/Wavefront_.obj_file"/>
 		/// </summary>
-		WavefrontOBJ = 1
+		WavefrontObj = 1
 	}
 }
 

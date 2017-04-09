@@ -189,12 +189,12 @@ namespace Everlook.UI
 		/// <param name="e">E.</param>
 		private void OnExportItemToggleClicked(object sender, ToggledArgs e)
 		{
-			TreeIter Iter;
-			this.ItemExportListStore.GetIterFromString(out Iter, e.Path);
+			TreeIter iter;
+			this.ItemExportListStore.GetIterFromString(out iter, e.Path);
 
-			bool currentValue = (bool) this.ItemExportListStore.GetValue(Iter, 0);
+			bool currentValue = (bool) this.ItemExportListStore.GetValue(iter, 0);
 
-			this.ItemExportListStore.SetValue(Iter, 0, !currentValue);
+			this.ItemExportListStore.SetValue(iter, 0, !currentValue);
 		}
 
 		/// <summary>
@@ -202,7 +202,7 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		private void OnOKButtonClicked(object sender, EventArgs e)
+		private void OnOkButtonClicked(object sender, EventArgs e)
 		{
 			RunExport();
 		}

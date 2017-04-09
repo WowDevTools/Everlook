@@ -149,10 +149,10 @@ namespace Everlook.UI
 		/// Gets the system image format from image format.
 		/// </summary>
 		/// <returns>The system image format from image format.</returns>
-		/// <param name="Format">Format.</param>
-		private static SystemImageFormat GetSystemImageFormatFromImageFormat(ImageFormat Format)
+		/// <param name="format">Format.</param>
+		private static SystemImageFormat GetSystemImageFormatFromImageFormat(ImageFormat format)
 		{
-			switch (Format)
+			switch (format)
 			{
 				case ImageFormat.PNG:
 					return SystemImageFormat.Png;
@@ -171,10 +171,10 @@ namespace Everlook.UI
 		/// Gets the file extension from image format.
 		/// </summary>
 		/// <returns>The file extension from image format.</returns>
-		/// <param name="Format">Format.</param>
-		private static string GetFileExtensionFromImageFormat(ImageFormat Format)
+		/// <param name="format">Format.</param>
+		private static string GetFileExtensionFromImageFormat(ImageFormat format)
 		{
-			switch (Format)
+			switch (format)
 			{
 				case ImageFormat.PNG:
 					return "png";
@@ -239,12 +239,12 @@ namespace Everlook.UI
 		/// <param name="e">E.</param>
 		protected void OnExportMipToggleClicked(object sender, ToggledArgs e)
 		{
-			TreeIter Iter;
-			this.MipLevelListStore.GetIterFromString(out Iter, e.Path);
+			TreeIter iter;
+			this.MipLevelListStore.GetIterFromString(out iter, e.Path);
 
-			bool currentValue = (bool) this.MipLevelListStore.GetValue(Iter, 0);
+			bool currentValue = (bool) this.MipLevelListStore.GetValue(iter, 0);
 
-			this.MipLevelListStore.SetValue(Iter, 0, !currentValue);
+			this.MipLevelListStore.SetValue(iter, 0, !currentValue);
 		}
 
 		/// <summary>
@@ -252,7 +252,7 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		protected void OnOKButtonClicked(object sender, EventArgs e)
+		protected void OnOkButtonClicked(object sender, EventArgs e)
 		{
 			RunExport();
 		}

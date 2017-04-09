@@ -76,7 +76,7 @@ namespace Everlook.UI
 		/// <summary>
 		/// Task scheduler for the UI thread. This allows task-based code to have very simple UI callbacks.
 		/// </summary>
-		private readonly TaskScheduler UIThreadScheduler;
+		private readonly TaskScheduler UiThreadScheduler;
 
 		/// <summary>
 		/// Creates an instance of the MainWindow class, loading the glade XML UI as needed.
@@ -98,7 +98,7 @@ namespace Everlook.UI
 			builder.Autoconnect(this);
 			this.DeleteEvent += OnDeleteEvent;
 
-			this.UIThreadScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+			this.UiThreadScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
 			this.ViewportWidget = new GLWidget
 			{
@@ -373,8 +373,8 @@ namespace Everlook.UI
 				$"Loading \"{modelName}\"...");
 
 			Task.Factory.StartNew(() => referenceLoadingRoutine(fileReference))
-				.ContinueWith(modelLoadTask => createRenderableDelegate(modelLoadTask.Result, fileReference), this.UIThreadScheduler)
-				.ContinueWith(createRenderableTask => this.RenderingEngine.SetRenderTarget(createRenderableTask.Result), this.UIThreadScheduler)
+				.ContinueWith(modelLoadTask => createRenderableDelegate(modelLoadTask.Result, fileReference), this.UiThreadScheduler)
+				.ContinueWith(createRenderableTask => this.RenderingEngine.SetRenderTarget(createRenderableTask.Result), this.UiThreadScheduler)
 				.ContinueWith
 				(
 					result =>
@@ -383,7 +383,7 @@ namespace Everlook.UI
 						this.MainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
 						EnableControlPage(associatedControlPage);
 					},
-					this.UIThreadScheduler
+					this.UiThreadScheduler
 				);
 		}
 
@@ -452,10 +452,10 @@ namespace Everlook.UI
 				return stopCalling;
 			}
 
-			if (this.RenderingEngine.HasRenderTarget || this.viewportHasPendingRedraw)
+			if (this.RenderingEngine.HasRenderTarget || this.ViewportHasPendingRedraw)
 			{
 				this.RenderingEngine.RenderFrame();
-				this.viewportHasPendingRedraw = false;
+				this.ViewportHasPendingRedraw = false;
 			}
 
 			return keepCalling;
@@ -468,7 +468,7 @@ namespace Everlook.UI
 		/// <param name="args">The configuration arguments.</param>
 		private void OnViewportConfigured(object o, ConfigureEventArgs args)
 		{
-			this.viewportHasPendingRedraw = true;
+			this.ViewportHasPendingRedraw = true;
 		}
 
 		/// <summary>
