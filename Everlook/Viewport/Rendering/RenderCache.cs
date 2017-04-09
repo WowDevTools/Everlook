@@ -162,7 +162,7 @@ namespace Everlook.Viewport.Rendering
 				catch (GraphicsErrorException gex)
 				{
 					Log.Warn($"GraphicsErrorException in CreateCachedTexture (failed to create DXT texture): {gex.Message}\n" +
-					         $"The texture will be loaded as a bitmap instead.");
+					          "The texture will be loaded as a bitmap instead.");
 				}
 				finally
 				{
@@ -373,8 +373,24 @@ namespace Everlook.Viewport.Rendering
 			return shaderSource;
 		}
 
+		/// <summary>
+		/// Loads the specified compressed image (in <see cref="BLP"/> format) into a native OpenGL texture.
+		/// </summary>
+		/// <param name="textureID">The ID of the texture to load the image into.</param>
+		/// <param name="compressedImage">The compressed image to load.</param>
+		/// <exception cref="ArgumentException">
+		/// Thrown if the image format does not match the pixel format.
+		/// </exception>
+		/// <exception cref="ArgumentNullException">
+		/// Thrown if the input image is null.
+		/// </exception>
 		private static void LoadDXTTexture(int textureID, BLP compressedImage)
 		{
+			if (compressedImage == null)
+			{
+				throw new ArgumentNullException(nameof(compressedImage));
+			}
+
 			GL.BindTexture(TextureTarget.Texture2D, textureID);
 
 			// Load the set of raw compressed mipmaps
@@ -418,6 +434,12 @@ namespace Everlook.Viewport.Rendering
 			}
 		}
 
+		/// <summary>
+		/// Loads the specified bitmap texture into a native OpenGL texure. This will also generate mipmaps for the
+		/// texture.
+		/// </summary>
+		/// <param name="textureID">The ID of the texture to load the image into.</param>
+		/// <param name="texture">The texture bitmap to load.</param>
 		private static void LoadBitmapTexture(int textureID, Bitmap texture)
 		{
 			GL.BindTexture(TextureTarget.Texture2D, textureID);
