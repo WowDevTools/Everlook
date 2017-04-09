@@ -1,5 +1,5 @@
 ﻿//
-//  IconManager.cs
+//  Program.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -33,7 +33,7 @@ using log4net;
 namespace Everlook.Utility
 {
 	/// <summary>
-	/// Handles loading and providing of embedded GTK icons.
+	/// Handles loading and providing embedded GTK icons.
 	/// </summary>
 	public static class IconManager
 	{
@@ -69,10 +69,36 @@ namespace Everlook.Utility
 				string iconName = manifestNameParts.ElementAt(manifestNameParts.Length - 2);
 
 
-				Pixbuf iconBuffer = AssetManager.LoadEmbeddedImage(manifestIconName, 16, 16);
+				Pixbuf iconBuffer = LoadEmbeddedImage(manifestIconName);
 				if (iconBuffer != null)
 				{
 					IconTheme.AddBuiltinIcon(iconName, 16, iconBuffer);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Loads an embedded image from the resource manifest of a specified width and height.
+		/// </summary>
+		/// <param name="resourceName">The name of the resource to load.</param>
+		/// <param name="width">The width of the output <see cref="Pixbuf"/>.</param>
+		/// <param name="height">The height of the output <see cref="Pixbuf"/>.</param>
+		/// <returns>A pixel buffer containing the image.</returns>
+		private static Pixbuf LoadEmbeddedImage(string resourceName, int width = 16, int height = 16)
+		{
+			using (Stream vectorStream =
+				Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+			{
+				if (vectorStream == null)
+				{
+					return null;
+				}
+
+				using (MemoryStream ms = new MemoryStream())
+				{
+					vectorStream.CopyTo(ms);
+
+					return new Pixbuf(ms.ToArray(), width, height);
 				}
 			}
 		}

@@ -96,7 +96,6 @@
     <Compile Include="UI\MainWindowElements.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utility\AssetManager.cs" />
     <Compile Include="Utility\DirectoryHelpers.cs" />
     <Compile Include="Utility\IconManager.cs" />
     <Compile Include="Utility\DataLoadingDelegates.cs" />
