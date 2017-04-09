@@ -485,38 +485,40 @@ namespace Everlook.UI
 				return stopCalling;
 			}
 
-			if (this.FiletreeBuilder.EnumeratedReferences.Count > 0)
+			if (this.FiletreeBuilder.EnumeratedReferences.Count <= 0)
 			{
-				// There's content to be added to the UI
-				// Get the last reference in the list.
-				FileReference newContent = this.FiletreeBuilder.EnumeratedReferences.Last();
-
-				if (newContent == null)
-				{
-					this.FiletreeBuilder.EnumeratedReferences.RemoveAt(this.FiletreeBuilder.EnumeratedReferences.Count - 1);
-					return keepCalling;
-				}
-
-				if (newContent.IsFile)
-				{
-					this.FiletreeBuilder.NodeStorage.AddFileNode(newContent);
-				}
-				else if (newContent.IsDirectory)
-				{
-					TreePath pathToParent = this.FiletreeBuilder.NodeStorage.GetPath(newContent.ParentReference.ReferenceIter);
-					bool isParentExpanded = this.GameExplorerTreeView.GetRowExpanded(pathToParent);
-					if (isParentExpanded && newContent.State == ReferenceState.NotEnumerated)
-					{
-						// This references was added to the UI after the user had opened the previous folder.
-						// Therefore, it should be submitted back to the UI for enumeration.
-						this.FiletreeBuilder.SubmitWork(newContent);
-					}
-
-					this.FiletreeBuilder.NodeStorage.AddDirectoryNode(newContent);
-				}
-
-				this.FiletreeBuilder.EnumeratedReferences.Remove(newContent);
+				return keepCalling;
 			}
+
+			// There's content to be added to the UI
+			// Get the last reference in the list.
+			FileReference newContent = this.FiletreeBuilder.EnumeratedReferences.Last();
+
+			if (newContent == null)
+			{
+				this.FiletreeBuilder.EnumeratedReferences.RemoveAt(this.FiletreeBuilder.EnumeratedReferences.Count - 1);
+				return keepCalling;
+			}
+
+			if (newContent.IsFile)
+			{
+				this.FiletreeBuilder.NodeStorage.AddFileNode(newContent);
+			}
+			else if (newContent.IsDirectory)
+			{
+				TreePath pathToParent = this.FiletreeBuilder.NodeStorage.GetPath(newContent.ParentReference.ReferenceIter);
+				bool isParentExpanded = this.GameExplorerTreeView.GetRowExpanded(pathToParent);
+				if (isParentExpanded && newContent.State == ReferenceState.NotEnumerated)
+				{
+					// This references was added to the UI after the user had opened the previous folder.
+					// Therefore, it should be submitted back to the UI for enumeration.
+					this.FiletreeBuilder.SubmitWork(newContent);
+				}
+
+				this.FiletreeBuilder.NodeStorage.AddDirectoryNode(newContent);
+			}
+
+			this.FiletreeBuilder.EnumeratedReferences.Remove(newContent);
 
 			return keepCalling;
 		}
@@ -529,34 +531,19 @@ namespace Everlook.UI
 		private void OnExportItemContextItemActivated(object sender, EventArgs e)
 		{
 			FileReference fileReference = GetSelectedReference();
-			if (!string.IsNullOrEmpty(fileReference?.FilePath))
+			if (string.IsNullOrEmpty(fileReference?.FilePath))
 			{
+				return;
+			}
 
-				WarcraftFileType fileType = fileReference.GetReferencedFileType();
-				switch (fileType)
+			WarcraftFileType fileType = fileReference.GetReferencedFileType();
+			switch (fileType)
+			{
+				case WarcraftFileType.Directory:
 				{
-					case WarcraftFileType.Directory:
+					if (fileReference.IsFullyEnumerated)
 					{
-						if (fileReference.IsFullyEnumerated)
-						{
-							using (EverlookDirectoryExportDialog exportDialog = EverlookDirectoryExportDialog.Create(fileReference))
-							{
-								if (exportDialog.Run() == (int)ResponseType.Ok)
-								{
-									exportDialog.RunExport();
-								}
-								exportDialog.Destroy();
-							}
-						}
-						else
-						{
-							// TODO: Implement wait message when the directory and its subdirectories have not yet been enumerated.
-						}
-						break;
-					}
-					case WarcraftFileType.BinaryImage:
-					{
-						using (EverlookImageExportDialog exportDialog = EverlookImageExportDialog.Create(fileReference))
+						using (EverlookDirectoryExportDialog exportDialog = EverlookDirectoryExportDialog.Create(fileReference))
 						{
 							if (exportDialog.Run() == (int)ResponseType.Ok)
 							{
@@ -564,8 +551,24 @@ namespace Everlook.UI
 							}
 							exportDialog.Destroy();
 						}
-						break;
 					}
+					else
+					{
+						// TODO: Implement wait message when the directory and its subdirectories have not yet been enumerated.
+					}
+					break;
+				}
+				case WarcraftFileType.BinaryImage:
+				{
+					using (EverlookImageExportDialog exportDialog = EverlookImageExportDialog.Create(fileReference))
+					{
+						if (exportDialog.Run() == (int)ResponseType.Ok)
+						{
+							exportDialog.RunExport();
+						}
+						exportDialog.Destroy();
+					}
+					break;
 				}
 			}
 		}
@@ -782,52 +785,48 @@ namespace Everlook.UI
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
 			FileReference fileReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
-			if (fileReference != null && fileReference.IsFile)
+			if (string.IsNullOrEmpty(fileReference?.FilePath) || !fileReference.IsFile)
 			{
-				if (string.IsNullOrEmpty(fileReference.FilePath))
+				return;
+			}
+			switch (fileReference.GetReferencedFileType())
+			{
+				case WarcraftFileType.BinaryImage:
 				{
-					return;
+					BeginLoadingFile(fileReference,
+						DataLoadingRoutines.LoadBinaryImage,
+						DataLoadingRoutines.CreateRenderableBinaryImage,
+						ControlPage.Image);
+
+					break;
 				}
-
-				switch (fileReference.GetReferencedFileType())
+				case WarcraftFileType.WorldObjectModel:
 				{
-					case WarcraftFileType.BinaryImage:
-					{
-						BeginLoadingFile(fileReference,
-							DataLoadingRoutines.LoadBinaryImage,
-							DataLoadingRoutines.CreateRenderableBinaryImage,
-							ControlPage.Image);
+					BeginLoadingFile(fileReference,
+						DataLoadingRoutines.LoadWorldModel,
+						DataLoadingRoutines.CreateRenderableWorldModel,
+						ControlPage.Model);
 
-						break;
-					}
-					case WarcraftFileType.WorldObjectModel:
-					{
-						BeginLoadingFile(fileReference,
-							DataLoadingRoutines.LoadWorldModel,
-							DataLoadingRoutines.CreateRenderableWorldModel,
-							ControlPage.Model);
+					break;
+				}
+				case WarcraftFileType.WorldObjectModelGroup:
+				{
+					BeginLoadingFile(fileReference,
+						DataLoadingRoutines.LoadWorldModelGroup,
+						DataLoadingRoutines.CreateRenderableWorldModel,
+						ControlPage.Model);
 
-						break;
-					}
-					case WarcraftFileType.WorldObjectModelGroup:
-					{
-						BeginLoadingFile(fileReference,
-							DataLoadingRoutines.LoadWorldModelGroup,
-							DataLoadingRoutines.CreateRenderableWorldModel,
-							ControlPage.Model);
-
-						break;
-					}
-					case WarcraftFileType.GIFImage:
-					case WarcraftFileType.PNGImage:
-					case WarcraftFileType.JPGImage:
-					{
-						BeginLoadingFile(fileReference,
-							DataLoadingRoutines.LoadBitmapImage,
-							DataLoadingRoutines.CreateRenderableBitmapImage,
-							ControlPage.Image);
-						break;
-					}
+					break;
+				}
+				case WarcraftFileType.GIFImage:
+				case WarcraftFileType.PNGImage:
+				case WarcraftFileType.JPGImage:
+				{
+					BeginLoadingFile(fileReference,
+						DataLoadingRoutines.LoadBitmapImage,
+						DataLoadingRoutines.CreateRenderableBitmapImage,
+						ControlPage.Image);
+					break;
 				}
 			}
 		}
