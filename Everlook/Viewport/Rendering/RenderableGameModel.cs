@@ -184,8 +184,8 @@ namespace Everlook.Viewport.Rendering
 				40);
 
 			// Simple: Render all skins
-			MDXView bestLOD = this.Model.LODViews.First();
-			foreach (MDXSubmesh submesh in bestLOD.Submeshes)
+			MDXSkin firstSkin = this.Model.Skins.First();
+			foreach (MDXSkinSection skinSection in firstSkin.Submeshes)
 			{
 
 			}

@@ -20,7 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using Warcraft.BLP;
-using Warcraft.Core;
+using Warcraft.Core.Structures;
 
 namespace Everlook.Viewport.Rendering
 {

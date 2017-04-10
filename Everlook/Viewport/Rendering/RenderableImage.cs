@@ -5,7 +5,7 @@ using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using Warcraft.Core;
+using Warcraft.Core.Structures;
 
 namespace Everlook.Viewport.Rendering
 {

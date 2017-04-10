@@ -31,7 +31,7 @@ using log4net;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Warcraft.BLP;
-using Warcraft.Core;
+using Warcraft.Core.Structures;
 using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 using SysPixelFormat = System.Drawing.Imaging.PixelFormat;
 

@@ -25,7 +25,7 @@ using Everlook.Explorer;
 using Gdk;
 using OpenTK;
 using SlimTK;
-using Warcraft.Core;
+using Warcraft.Core.Structures;
 
 namespace Everlook.Utility
 {

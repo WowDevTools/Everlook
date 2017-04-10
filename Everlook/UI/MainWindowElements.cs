@@ -36,6 +36,7 @@ namespace Everlook.UI
 		[UIElement] private readonly ToolButton PreferencesButton;
 
 		[UIElement] private readonly Alignment ViewportAlignment;
+		private readonly MenuToolButton ViewportMenuButton;
 		private readonly GLWidget ViewportWidget;
 		private bool ViewportHasPendingRedraw;
 

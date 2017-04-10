@@ -593,6 +593,7 @@ namespace Everlook.UI
 			{
 				string filename = IOPath.GetFileName(cleanFilepath);
 				exportpath = this.Config.GetDefaultExportDirectory() + filename;
+				Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
 			}
 
 			byte[] file = fileReference.Extract();
