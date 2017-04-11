@@ -238,7 +238,7 @@ namespace Everlook.Viewport.Rendering
 				float[] boundingBoxVertices = modelGroup.GetBoundingBox()
 					.ToOpenGLBoundingBox()
 					.GetCorners()
-					.Select(v => v.AsWarcraftVector().Flatten())
+					.Select(v => v.AsSIMDVector().Flatten())
 					.SelectMany(f => f)
 					.ToArray();
 
