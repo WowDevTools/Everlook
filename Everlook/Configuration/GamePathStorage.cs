@@ -23,6 +23,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using Warcraft.Core;
+using Warcraft.Core.Extensions;
 
 namespace Everlook.Configuration
 {

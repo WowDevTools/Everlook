@@ -35,6 +35,7 @@ using OpenTK.Graphics.OpenGL;
 using SlimTK;
 using Warcraft.BLP;
 using Warcraft.Core;
+using Warcraft.Core.Extensions;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
 using Warcraft.WMO.GroupFile.Chunks;
