@@ -19,10 +19,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
 using System;
 using System.IO;
 using System.Collections.Generic;
-using Warcraft.Core;
 using Warcraft.Core.Extensions;
 
 namespace Everlook.Configuration
@@ -42,7 +42,7 @@ namespace Everlook.Configuration
 		/// <summary>
 		/// A static instance of the path storage class.
 		/// </summary>
-		public static GamePathStorage Instance = new GamePathStorage();
+		public static readonly GamePathStorage Instance = new GamePathStorage();
 
 		/// <summary>
 		/// Gets the stored game paths.
@@ -54,10 +54,10 @@ namespace Everlook.Configuration
 		{
 			if (!File.Exists(GetPathStoragePath()))
 			{
-				string storageDirectory = Directory.GetParent (GetPathStoragePath ()).FullName;
+				string storageDirectory = Directory.GetParent(GetPathStoragePath()).FullName;
 				if (!Directory.Exists(storageDirectory))
 				{
-					Directory.CreateDirectory (storageDirectory);
+					Directory.CreateDirectory(storageDirectory);
 				}
 
 				File.Create(GetPathStoragePath()).Close();
@@ -156,4 +156,3 @@ namespace Everlook.Configuration
 		}
 	}
 }
-
