@@ -234,7 +234,11 @@ namespace Everlook.Explorer
 
 			if (this.CachedPackageDirectories.Count > 0)
 			{
-				this.WorkQueue.Clear();
+				lock (this.WorkQueue)
+				{
+					this.WorkQueue.Clear();
+				}
+
 				this.NodeStorage.Clear();
 			}
 
@@ -311,12 +315,15 @@ namespace Everlook.Explorer
 		{
 			while (this.ShouldProcessWork)
 			{
-				if (this.ArePackageGroupsLoaded && this.WorkQueue.Count > 0)
+				lock (this.WorkQueue)
 				{
-					// Grab the first item in the queue and queue it up
-					FileReference targetReference = this.WorkQueue.First();
-					ThreadPool.QueueUserWorkItem(EnumerateFilesAndFolders, targetReference);
-					this.WorkQueue.Remove(targetReference);
+					if (this.ArePackageGroupsLoaded && this.WorkQueue.Count > 0)
+					{
+						// Grab the first item in the queue and queue it up
+						FileReference targetReference = this.WorkQueue.First();
+						ThreadPool.QueueUserWorkItem(EnumerateFilesAndFolders, targetReference);
+						this.WorkQueue.Remove(targetReference);
+					}
 				}
 			}
 		}
@@ -328,14 +335,20 @@ namespace Everlook.Explorer
 		/// <param name="reference">Reference.</param>
 		public void SubmitWork(FileReference reference)
 		{
-			if (!this.WorkQueue.Contains(reference) && reference.State == ReferenceState.NotEnumerated)
+			lock (this.WorkQueue)
 			{
-				reference.State = ReferenceState.Enumerating;
-				this.WorkQueue.Add(reference);
-			}
-			else if (reference.State == ReferenceState.Enumerating)
-			{
-				this.WaitQueue.Add(reference);
+				if (!this.WorkQueue.Contains(reference) && reference.State == ReferenceState.NotEnumerated)
+				{
+					reference.State = ReferenceState.Enumerating;
+					this.WorkQueue.Add(reference);
+				}
+				else if (reference.State == ReferenceState.Enumerating)
+				{
+					lock (this.WaitQueue)
+					{
+						this.WaitQueue.Add(reference);
+					}
+				}
 			}
 		}
 
@@ -450,12 +463,14 @@ namespace Everlook.Explorer
 		{
 			while (this.ShouldProcessWork)
 			{
-				List<FileReference> readyReferences = this.WaitQueue.Where(t => t.ParentReference?.State == ReferenceState.Enumerated).ToList();
-
-				foreach (FileReference readyReference in readyReferences)
+				lock (this.WaitQueue)
 				{
-					this.WaitQueue.Remove(readyReference);
-					SubmitWork(readyReference);
+					List<FileReference> readyReferences = this.WaitQueue.Where(t => t.ParentReference?.State == ReferenceState.Enumerated).ToList();
+					foreach (FileReference readyReference in readyReferences)
+					{
+						this.WaitQueue.Remove(readyReference);
+						SubmitWork(readyReference);
+					}
 				}
 			}
 		}

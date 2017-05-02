@@ -31,6 +31,7 @@ using OpenTK.Graphics.OpenGL;
 using Warcraft.Core.Extensions;
 using Warcraft.MDX;
 using Warcraft.MDX.Geometry;
+using Warcraft.MDX.Visual;
 
 namespace Everlook.Viewport.Rendering
 {
@@ -71,6 +72,8 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		private readonly Dictionary<string, int> TextureLookup = new Dictionary<string, int>();
 
+		private readonly Dictionary<MDXSkin, int> SkinIndexArrayLookup = new Dictionary<MDXSkin, int>();
+
 		private int VertexBufferID;
 
 		private int SimpleShaderID;
@@ -108,6 +111,24 @@ namespace Everlook.Viewport.Rendering
 				BufferUsageHint.StaticDraw);
 
 			// TODO: Textures
+
+			// TODO: Per-skin array index buffers
+			foreach (MDXSkin skin in this.Model.Skins)
+			{
+				int skinIndexBuffer = GL.GenBuffer();
+				ushort[] absoluteTriangleVertexIndices = skin.Triangles.Select(relativeIndex => skin.VertexIndices[relativeIndex]).ToArray();
+
+				GL.BindBuffer(BufferTarget.ElementArrayBuffer, skinIndexBuffer);
+				GL.BufferData
+				(
+					BufferTarget.ElementArrayBuffer,
+					absoluteTriangleVertexIndices.Length * sizeof(ushort),
+					absoluteTriangleVertexIndices,
+					BufferUsageHint.StaticDraw
+				);
+
+				this.SkinIndexArrayLookup.Add(skin, skinIndexBuffer);
+			}
 
 			this.IsInitialized = true;
 		}
@@ -183,11 +204,9 @@ namespace Everlook.Viewport.Rendering
 				40,
 				40);
 
-			// Simple: Render all skins
-			MDXSkin firstSkin = this.Model.Skins.First();
-			foreach (MDXSkinSection skinSection in firstSkin.Submeshes)
+			foreach (MDXSkinSection skinSection in this.Model.Skins.First().Sections)
 			{
-
+				skinSection.
 			}
 		}
 

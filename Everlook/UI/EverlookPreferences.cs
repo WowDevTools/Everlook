@@ -124,7 +124,7 @@ namespace Everlook.UI
 
 			if (!string.IsNullOrEmpty(this.Config.GetDefaultExportDirectory()))
 			{
-				this.DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(this.Config.GetDefaultExportDirectory());
+				this.DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(new Uri(this.Config.GetDefaultExportDirectory()).AbsoluteUri);
 			}
 
 			this.DefaultModelExportFormatComboBox.Active = (int) this.Config.GetDefaultModelFormat();
@@ -159,9 +159,9 @@ namespace Everlook.UI
 				exportPathURI = new Uri(this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri);
 			}*/
 
-			string exportPath = this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri;
-
+			string exportPath = this.DefaultExportDirectoryFileChooserButton.CurrentFolderFile.Uri.LocalPath;
 			this.Config.SetDefaultExportDirectory(exportPath);
+
 			this.Config.SetDefaultModelFormat((ModelFormat) this.DefaultModelExportFormatComboBox.Active);
 			this.Config.SetDefaultImageFormat((ImageFormat) this.DefaultImageExportFormatComboBox.Active);
 			this.Config.SetDefaultAudioFormat((AudioFormat) this.DefaultAudioExportFormatComboBox.Active);

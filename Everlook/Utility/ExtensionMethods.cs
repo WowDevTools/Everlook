@@ -90,9 +90,9 @@ namespace Everlook.Utility
 		/// <summary>
 		/// Converts the current Warcraft vector to an OpenGL vector structure.
 		/// </summary>
-		public static Vector3 ToOpenGLVector(this System.Numerics.Vector3 vector3f)
+		public static Vector3 ToOpenGLVector(this System.Numerics.Vector3 vector3)
 		{
-			return new Vector3(vector3f.X, vector3f.Y, vector3f.Z);
+			return new Vector3(vector3.X, vector3.Y, vector3.Z);
 		}
 
 		/// <summary>
