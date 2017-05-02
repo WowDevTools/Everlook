@@ -124,7 +124,7 @@ namespace Everlook.UI
 
 			if (!string.IsNullOrEmpty(this.Config.GetDefaultExportDirectory()))
 			{
-				this.DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(new Uri(this.Config.GetDefaultExportDirectory()).AbsoluteUri);
+				this.DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(new Uri(new Uri("file://"), this.Config.GetDefaultExportDirectory()).AbsoluteUri);
 			}
 
 			this.DefaultModelExportFormatComboBox.Active = (int) this.Config.GetDefaultModelFormat();

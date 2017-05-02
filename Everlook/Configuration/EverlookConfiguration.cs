@@ -66,7 +66,7 @@ namespace Everlook.Configuration
 					data["General"].AddKey("ViewportBackgroundColour", "rgb(133, 146, 173)");
 					data["General"].AddKey("bShowUnknownFilesWhenFiltering", "true");
 
-					data["Export"].AddKey("DefaultExportDirectory", "./Export");
+					data["Export"].AddKey("DefaultExportDirectory", "Export");
 
 					KeyData modelExportKeyData = new KeyData("DefaultExportModelFormat")
 					{

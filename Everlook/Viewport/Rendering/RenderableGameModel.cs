@@ -204,10 +204,7 @@ namespace Everlook.Viewport.Rendering
 				40,
 				40);
 
-			foreach (MDXSkinSection skinSection in this.Model.Skins.First().Sections)
-			{
-				skinSection.
-			}
+
 		}
 
 		/// <summary>
