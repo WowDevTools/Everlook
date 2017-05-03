@@ -366,31 +366,34 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Gets the <see cref="TreePath"/> of the specified <see cref="TreeIter"/>.
+		/// Gets the <see cref="TreePath"/> of the specified <see cref="FileReference"/>.
 		/// </summary>
-		/// <param name="iter">The iter to get the path for.</param>
+		/// <param name="reference">The referece to get the path for.</param>
 		/// <returns>The TreePath of the iter.</returns>
-		public TreePath GetPath(TreeIter iter)
+		public TreePath GetPath(FileReference reference)
 		{
+			TreeIter iter = reference.ReferenceIter;
 			TreePath storePath = this.FiletreeStore.GetPath(iter);
-			if (storePath != null)
+			TreePath visiblePath = GetSorterPathFromStorePath(storePath);
+
+			return visiblePath;
+		}
+
+		/// <summary>
+		/// Gets the <see cref="TreePath"/> of the specified <see cref="FileReference"/> in the
+		/// virtual tree.
+		/// </summary>
+		/// <param name="reference"></param>
+		/// <returns></returns>
+		public TreePath GetVirtualPath(FileReference reference)
+		{
+			if (reference is VirtualFileReference)
 			{
-				return storePath;
+				return GetPath(reference);
 			}
 
-			TreePath filterPath = this.FiletreeStore.GetPath(GetStoreIterFromFilterIter(iter));
-			if (filterPath != null)
-			{
-				return filterPath;
-			}
-
-			TreePath sorterPath = this.FiletreeStore.GetPath(GetStoreIterFromSorterIter(iter));
-			if (sorterPath != null)
-			{
-				return sorterPath;
-			}
-
-			return null;
+			VirtualFileReference virtualReference = GetVirtualReference(reference);
+			return GetPath(virtualReference);
 		}
 
 		/// <summary>
@@ -438,6 +441,29 @@ namespace Everlook.Explorer
 		public TreeIter GetStoreIterFromFilterIter(TreeIter filterIter)
 		{
 			return this.FiletreeFilter.ConvertIterToChildIter(filterIter);
+		}
+
+		/// <summary>
+		/// Gets a <see cref="TreeIter"/> that's valid for the <see cref="FiletreeSorter"/> from a TreeIter
+		/// valid for the <see cref="FiletreeStore"/>.
+		/// </summary>
+		/// <param name="storePath"></param>
+		/// <returns></returns>
+		public TreePath GetSorterPathFromStorePath(TreePath storePath)
+		{
+			TreePath filterPath = this.FiletreeFilter.ConvertChildPathToPath(storePath);
+			return GetSorterPathFromFilterPath(filterPath);
+		}
+
+		/// <summary>
+		/// Gets a <see cref="TreeIter"/> that's valid for the <see cref="FiletreeSorter"/> from a TreeIter
+		/// valid for the <see cref="FiletreeFilter"/>.
+		/// </summary>
+		/// <param name="filterPath"></param>
+		/// <returns></returns>
+		public TreePath GetSorterPathFromFilterPath(TreePath filterPath)
+		{
+			return this.FiletreeSorter.ConvertChildPathToPath(filterPath);
 		}
 	}
 }

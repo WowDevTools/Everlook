@@ -31,6 +31,7 @@ using OpenTK.Graphics.OpenGL;
 using Warcraft.Core.Extensions;
 using Warcraft.MDX;
 using Warcraft.MDX.Geometry;
+using Warcraft.MDX.Geometry.Skin;
 using Warcraft.MDX.Visual;
 
 namespace Everlook.Viewport.Rendering
@@ -232,7 +233,7 @@ namespace Everlook.Viewport.Rendering
 		/// <see cref="RenderableGameModel"/> was occupying.</remarks>
 		public void Dispose()
 		{
-			this.Model.Dispose();
+
 		}
 
 		/// <summary>

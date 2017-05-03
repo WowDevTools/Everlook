@@ -63,9 +63,9 @@ namespace Everlook.Explorer
 
 		/// <summary>
 		/// A list of enumerated references. This list acts as an intermediate location where the UI can fetch results
-		/// when it's idle.
+		/// when it's idle, using <see cref="GetLastCompletedWorkOrder"/>.
 		/// </summary>
-		public readonly List<FileReference> EnumeratedReferences = new List<FileReference>();
+		private readonly List<FileReference> EnumeratedReferences = new List<FileReference>();
 
 		private ReferenceEnumeratedEventArgs PackageGroupAddedArgs;
 		private ReferenceEnumeratedEventArgs PackageEnumeratedArgs;
@@ -106,11 +106,6 @@ namespace Everlook.Explorer
 		private readonly Thread EnumerationLoopThread;
 
 		/// <summary>
-		/// The main resubmission loop thread. Takes waiting references and adds them back to the work queue.
-		/// </summary>
-		private readonly Thread ResubmissionLoopThread;
-
-		/// <summary>
 		/// Whether or not the explorer builder should currently process any work. Acts as an on/off switch
 		/// for the main background thread.
 		/// </summary>
@@ -136,18 +131,10 @@ namespace Everlook.Explorer
 		{
 			this.NodeStorage = inExplorerStore;
 
-			ThreadPool.SetMinThreads(10, 4);
-
 			this.EnumerationLoopThread = new Thread(EnumerationLoop)
 			{
 				Name = "EnumerationLoop",
 				Priority = ThreadPriority.AboveNormal,
-				IsBackground = true
-			};
-
-			this.ResubmissionLoopThread = new Thread(ResubmissionLoop)
-			{
-				Name = "ResubmissionLoop",
 				IsBackground = true
 			};
 
@@ -171,11 +158,6 @@ namespace Everlook.Explorer
 
 				this.EnumerationLoopThread.Start();
 			}
-
-			if (!this.ResubmissionLoopThread.IsAlive)
-			{
-				this.ResubmissionLoopThread.Start();
-			}
 		}
 
 		/// <summary>
@@ -188,11 +170,6 @@ namespace Everlook.Explorer
 			if (this.EnumerationLoopThread.IsAlive)
 			{
 				this.EnumerationLoopThread.Join();
-			}
-
-			if (this.ResubmissionLoopThread.IsAlive)
-			{
-				this.ResubmissionLoopThread.Join();
 			}
 		}
 
@@ -325,6 +302,17 @@ namespace Everlook.Explorer
 						this.WorkQueue.Remove(targetReference);
 					}
 				}
+
+				lock (this.WaitQueue)
+				{
+					List<FileReference> readyReferences = this.WaitQueue.Where(t => t.ParentReference?.State == ReferenceState.Enumerated).ToList();
+					foreach (FileReference readyReference in readyReferences)
+					{
+						this.WaitQueue.Remove(readyReference);
+						SubmitWork(readyReference);
+						Log.Debug($"Resubmitting reference {readyReference}.");
+					}
+				}
 			}
 		}
 
@@ -341,14 +329,59 @@ namespace Everlook.Explorer
 				{
 					reference.State = ReferenceState.Enumerating;
 					this.WorkQueue.Add(reference);
+
+					return;
 				}
-				else if (reference.State == ReferenceState.Enumerating)
+
+				Log.Debug($"Refused reference \"{reference}\" from the work queue. In work queue: {this.WorkQueue.Contains(reference)}, state: {reference.State}");
+			}
+
+			lock (this.WaitQueue)
+			{
+				if (!this.WaitQueue.Contains(reference) && reference.State == ReferenceState.NotEnumerated)
 				{
-					lock (this.WaitQueue)
-					{
-						this.WaitQueue.Add(reference);
-					}
+					this.WaitQueue.Add(reference);
+					return;
 				}
+
+				Log.Debug($"Refused reference \"{reference}\" from the waiting queue. In work queue: {this.WorkQueue.Contains(reference)}, state: {reference.State}");
+			}
+		}
+
+		/// <summary>
+		/// Gets the most recently completed work order.
+		/// </summary>
+		/// <returns></returns>
+		public FileReference GetLastCompletedWorkOrder()
+		{
+			lock (this.EnumeratedReferenceQueueLock)
+			{
+				return this.EnumeratedReferences.Last();
+			}
+		}
+
+		/// <summary>
+		/// Gets the number of completed work orders.
+		/// </summary>
+		/// <returns></returns>
+		public int GetCompletedWorkOrderCount()
+		{
+			lock (this.EnumeratedReferenceQueueLock)
+			{
+				return this.EnumeratedReferences.Count;
+			}
+		}
+
+		/// <summary>
+		/// Marks a work order as consumed by the UI, removing it from the list of completed orders.
+		/// </summary>
+		/// <param name="fileReference"></param>
+		/// <returns></returns>
+		public bool MarkWorkOrderAsConsumed(FileReference fileReference)
+		{
+			lock (this.EnumeratedReferenceQueueLock)
+			{
+				return this.EnumeratedReferences.Remove(fileReference);
 			}
 		}
 
@@ -452,26 +485,6 @@ namespace Everlook.Explorer
 			{
 				Log.Error("No listfile was found for the package referenced by the item reference being enumerated.");
 				throw new InvalidDataException("No listfile was found for the package referenced by this item reference.");
-			}
-		}
-
-		/// <summary>
-		/// The resubmission loop handles waiting references whose parents are currently enumerating. When the parents
-		/// are finished, they are readded to the work queue.
-		/// </summary>
-		private void ResubmissionLoop()
-		{
-			while (this.ShouldProcessWork)
-			{
-				lock (this.WaitQueue)
-				{
-					List<FileReference> readyReferences = this.WaitQueue.Where(t => t.ParentReference?.State == ReferenceState.Enumerated).ToList();
-					foreach (FileReference readyReference in readyReferences)
-					{
-						this.WaitQueue.Remove(readyReference);
-						SubmitWork(readyReference);
-					}
-				}
 			}
 		}
 

@@ -485,18 +485,19 @@ namespace Everlook.UI
 				return stopCalling;
 			}
 
-			if (this.FiletreeBuilder.EnumeratedReferences.Count <= 0)
+			if (this.FiletreeBuilder.GetCompletedWorkOrderCount() <= 0)
 			{
 				return keepCalling;
 			}
 
 			// There's content to be added to the UI
 			// Get the last reference in the list.
-			FileReference newContent = this.FiletreeBuilder.EnumeratedReferences.Last();
+			FileReference newContent = this.FiletreeBuilder.GetLastCompletedWorkOrder();
 
 			if (newContent == null)
 			{
-				this.FiletreeBuilder.EnumeratedReferences.RemoveAt(this.FiletreeBuilder.EnumeratedReferences.Count - 1);
+				Log.Debug("Refused completed work order. Reference was null.");
+				//this.FiletreeBuilder.EnumeratedReferences.RemoveAt(this.FiletreeBuilder.EnumeratedReferences.Count - 1);
 				return keepCalling;
 			}
 
@@ -506,19 +507,30 @@ namespace Everlook.UI
 			}
 			else if (newContent.IsDirectory)
 			{
-				TreePath pathToParent = this.FiletreeBuilder.NodeStorage.GetPath(newContent.ParentReference.ReferenceIter);
-				bool isParentExpanded = this.GameExplorerTreeView.GetRowExpanded(pathToParent);
-				if (isParentExpanded && newContent.State == ReferenceState.NotEnumerated)
-				{
-					// This references was added to the UI after the user had opened the previous folder.
-					// Therefore, it should be submitted back to the UI for enumeration.
-					this.FiletreeBuilder.SubmitWork(newContent);
-				}
+				// TODO: I've no idea why this doesn't work. Whenever this is done, it breaks the sorting of the treemodel
+				// TODO: and starts breaking down. It is tied to converting a path in the sorter (somehow)
+				/*
+				TreePath pathToParent = this.FiletreeBuilder.NodeStorage.GetPath(newContent.ParentReference);
+				TreePath pathToVirtualParent = this.FiletreeBuilder.NodeStorage.GetVirtualPath(newContent.ParentReference);
 
+				bool isParentExpanded = this.GameExplorerTreeView.GetRowExpanded(pathToParent);
+				bool isVirtualParentExpanded = this.GameExplorerTreeView.GetRowExpanded(pathToVirtualParent);
+
+				if (isParentExpanded || isVirtualParentExpanded)
+				{
+					if (newContent.State == ReferenceState.NotEnumerated)
+					{
+						// This references was added to the UI after the user had opened the previous folder.
+						// Therefore, it should be submitted back to the UI for enumeration.
+						this.FiletreeBuilder.SubmitWork(newContent);
+						Log.Debug($"Refused completed work order {newContent}. The reference was not enumerated, but the parent is open. Returning reference to queue.");
+					}
+				}
+				*/
 				this.FiletreeBuilder.NodeStorage.AddDirectoryNode(newContent);
 			}
 
-			this.FiletreeBuilder.EnumeratedReferences.Remove(newContent);
+			this.FiletreeBuilder.MarkWorkOrderAsConsumed(newContent);
 
 			return keepCalling;
 		}
@@ -702,9 +714,10 @@ namespace Everlook.UI
 			FileReference parentReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromPath(e.Path);
 			foreach (FileReference childReference in parentReference.ChildReferences)
 			{
-				if (childReference.IsDirectory && childReference.State != ReferenceState.Enumerated)
+				if (childReference.IsDirectory && childReference.State != ReferenceState.Enumerated) // TODO: Investigate if Enumerated should be used here
 				{
 					this.FiletreeBuilder.SubmitWork(childReference);
+					Log.Debug($"Submitting new reference {childReference}. Parent {parentReference} was opened.");
 				}
 			}
 		}
@@ -770,7 +783,7 @@ namespace Everlook.UI
 			}
 			else
 			{
-				this.GameExplorerTreeView.ExpandRow(this.FiletreeBuilder.NodeStorage.GetPath(selectedIter), false);
+				this.GameExplorerTreeView.ExpandRow(this.FiletreeBuilder.NodeStorage.GetPath(fileReference), false);
 			}
 		}
 

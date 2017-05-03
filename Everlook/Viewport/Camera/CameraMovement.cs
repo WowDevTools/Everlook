@@ -21,6 +21,8 @@
 //
 
 using System;
+using GLib;
+using log4net;
 using OpenTK;
 using OpenTK.Input;
 
@@ -33,6 +35,11 @@ namespace Everlook.Viewport.Camera
 	/// </summary>
 	public class CameraMovement
 	{
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(CameraMovement));
+
 		private readonly ViewportCamera Camera;
 
 		/// <summary>
@@ -102,6 +109,8 @@ namespace Everlook.Viewport.Camera
 		/// </summary>
 		public void CalculateMovement(float deltaMouseX, float deltaMouseY, float deltaTime)
 		{
+			Log.Debug($"Moving: DeltaTime is {deltaTime}");
+
 			// Perform radial movement
 			RotateHorizontal(deltaMouseX * DefaultTurningSpeed * deltaTime);
 			RotateVertical(deltaMouseY * DefaultTurningSpeed * deltaTime);
