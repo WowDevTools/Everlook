@@ -109,8 +109,6 @@ namespace Everlook.Viewport.Camera
 		/// </summary>
 		public void CalculateMovement(float deltaMouseX, float deltaMouseY, float deltaTime)
 		{
-			Log.Debug($"Moving: DeltaTime is {deltaTime}");
-
 			// Perform radial movement
 			RotateHorizontal(deltaMouseX * DefaultTurningSpeed * deltaTime);
 			RotateVertical(deltaMouseY * DefaultTurningSpeed * deltaTime);

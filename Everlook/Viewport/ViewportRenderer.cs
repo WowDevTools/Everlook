@@ -236,7 +236,6 @@ namespace Everlook.Viewport
 				}
 
 				this.FrameWatch.Stop();
-				Log.Debug($"Frame: Time is {this.FrameWatch.Elapsed.Milliseconds}");
 				this.DeltaTime = (float) this.FrameWatch.Elapsed.TotalMilliseconds / 1000;
 			}
 		}

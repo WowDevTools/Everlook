@@ -36,6 +36,7 @@ using SlimTK;
 using Warcraft.BLP;
 using Warcraft.Core;
 using Warcraft.Core.Extensions;
+using Warcraft.Core.Shading.Blending;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
 using Warcraft.WMO.GroupFile.Chunks;
@@ -489,7 +490,7 @@ namespace Everlook.Viewport.Rendering
 				GL.Enable(EnableCap.CullFace);
 			}
 
-			if (modelMaterial.BlendMode == BlendingMode.Transparent)
+			if (modelMaterial.BlendMode == BlendingMode.AlphaKey)
 			{
 				GL.Enable(EnableCap.Blend);
 			}
