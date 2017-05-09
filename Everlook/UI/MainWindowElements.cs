@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System.Collections.Generic;
 using Gtk;
 using OpenTK;
 using UIElement = Gtk.Builder.ObjectAttribute;
@@ -52,8 +53,9 @@ namespace Everlook.UI
 		/*
 			Game explorer elements
 		*/
-		[UIElement] private readonly TreeView GameExplorerTreeView;
-		[UIElement] private readonly TreeStore GameExplorerTreeStore;
+		[UIElement] private readonly Notebook GameTabNotebook;
+		private readonly List<GameTab> GameTabs;
+
 		[UIElement] private readonly TreeModelFilter GameExplorerTreeFilter;
 		[UIElement] private readonly TreeModelSort GameExplorerTreeSorter;
 

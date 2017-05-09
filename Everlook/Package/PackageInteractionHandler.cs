@@ -157,7 +157,7 @@ namespace Everlook.Package
 		/// <param name="filePath">Reference path.</param>
 		public byte[] ExtractFile(string filePath)
 		{
-			FileReference fileReference = new FileReference(null, null, "", filePath);
+			FileReference fileReference = new FileReference(null, "", filePath);
 			return ExtractReference(fileReference);
 		}
 
@@ -189,7 +189,7 @@ namespace Everlook.Package
 		/// <param name="filePath">Reference path.</param>
 		public bool ContainsFile(string filePath)
 		{
-			FileReference fileReference = new FileReference(null, null, "", filePath);
+			FileReference fileReference = new FileReference(null, "", filePath);
 			return ContainsFile(fileReference);
 		}
 
@@ -200,7 +200,7 @@ namespace Everlook.Package
 		/// <param name="filePath">Reference path.</param>
 		public MPQFileInfo GetFileInfo(string filePath)
 		{
-			FileReference fileReference = new FileReference(null, null, "", filePath);
+			FileReference fileReference = new FileReference(null, "", filePath);
 			return GetReferenceInfo(fileReference);
 		}
 

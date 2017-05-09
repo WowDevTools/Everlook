@@ -43,23 +43,7 @@
       </row>
     </data>
   </object>
-  <object class="GtkTreeStore" id="GameExplorerTreeStore">
-    <columns>
-      <!-- column-name itemIcon -->
-      <column type="GdkPixbuf"/>
-      <!-- column-name itemName -->
-      <column type="gchararray"/>
-      <!-- column-name itemPackage -->
-      <column type="gchararray"/>
-      <!-- column-name itemTooltip -->
-      <column type="gchararray"/>
-      <!-- column-name itemType -->
-      <column type="gint"/>
-    </columns>
-  </object>
-  <object class="GtkTreeModelFilter" id="GameExplorerTreeFilter">
-    <property name="child_model">GameExplorerTreeStore</property>
-  </object>
+  <object class="GtkTreeModelFilter" id="GameExplorerTreeFilter"/>
   <object class="GtkTreeModelSort" id="GameExplorerTreeSorter">
     <property name="model">GameExplorerTreeFilter</property>
   </object>
@@ -226,42 +210,24 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <child>
-                                          <object class="GtkScrolledWindow" id="ScrolledGameExplorerWindow">
+                                          <object class="GtkNotebook" id="GameTabNotebook">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
-                                            <property name="shadow_type">etched-in</property>
+                                            <property name="tab_pos">left</property>
+                                            <property name="scrollable">True</property>
                                             <child>
-                                              <object class="GtkTreeView" id="GameExplorerTreeView">
+                                              <placeholder/>
+                                            </child>
+                                            <child type="tab">
+                                              <object class="GtkLabel" id="label8">
                                                 <property name="visible">True</property>
-                                                <property name="can_focus">True</property>
-                                                <property name="hexpand">False</property>
-                                                <property name="vexpand">False</property>
-                                                <property name="model">GameExplorerTreeSorter</property>
-                                                <property name="search_column">0</property>
-                                                <property name="enable_tree_lines">True</property>
-                                                <property name="tooltip_column">3</property>
-                                                <child internal-child="selection">
-                                                  <object class="GtkTreeSelection" id="treeview-selection"/>
-                                                </child>
-                                                <child>
-                                                  <object class="GtkTreeViewColumn" id="DataFilesColumn">
-                                                    <property name="spacing">4</property>
-                                                    <property name="title" translatable="yes">Data Files</property>
-                                                    <child>
-                                                      <object class="GtkCellRendererPixbuf" id="iconRenderer"/>
-                                                      <attributes>
-                                                        <attribute name="pixbuf">0</attribute>
-                                                      </attributes>
-                                                    </child>
-                                                    <child>
-                                                      <object class="GtkCellRendererText" id="nameRenderer"/>
-                                                      <attributes>
-                                                        <attribute name="text">1</attribute>
-                                                      </attributes>
-                                                    </child>
-                                                  </object>
-                                                </child>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">Default</property>
+                                                <property name="wrap">True</property>
                                               </object>
+                                              <packing>
+                                                <property name="tab_fill">False</property>
+                                              </packing>
                                             </child>
                                           </object>
                                         </child>

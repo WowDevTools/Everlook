@@ -30,6 +30,7 @@ using Everlook.Configuration;
 using Everlook.Explorer;
 using log4net;
 using Warcraft.Core;
+using FileNode = liblistfile.NodeTree.Node;
 
 namespace Everlook.Package
 {
@@ -139,6 +140,19 @@ namespace Everlook.Package
 		}
 
 		/// <summary>
+		/// Creates a <see cref="FileReference"/> from file node.
+		/// </summary>
+		/// <param name="node"></param>
+		/// <returns></returns>
+		public FileReference CreateReferenceFromNode(FileNode node)
+		{
+			FileReference reference = new FileReference(this);
+
+			// TODO: Construct live reference from node
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
 		/// Gets the reference info for the specified reference. This method gets the most recent info for the file from
 		/// overriding packages.
 		/// </summary>
@@ -155,7 +169,6 @@ namespace Everlook.Package
 			}
 			return null;
 		}
-
 
 		/// <summary>
 		/// Gets the file info for the specified reference in its specific package. If the file does not exist in
@@ -257,7 +270,7 @@ namespace Everlook.Package
 		/// <param name="filePath">Reference path.</param>
 		public byte[] ExtractFile(string filePath)
 		{
-			FileReference fileReference = new FileReference(this, null, "", filePath);
+			FileReference fileReference = new FileReference(this, "", filePath);
 			return ExtractReference(fileReference);
 		}
 
@@ -298,7 +311,7 @@ namespace Everlook.Package
 		/// <param name="filePath">Reference path.</param>
 		public bool ContainsFile(string filePath)
 		{
-			FileReference fileReference = new FileReference(this, null, "", filePath);
+			FileReference fileReference = new FileReference(this, "", filePath);
 			return DoesReferenceExist(fileReference);
 		}
 
@@ -309,7 +322,7 @@ namespace Everlook.Package
 		/// <param name="filePath">Reference path.</param>
 		public MPQFileInfo GetFileInfo(string filePath)
 		{
-			FileReference fileReference = new FileReference(this, null, "", filePath);
+			FileReference fileReference = new FileReference(this, "", filePath);
 			return GetReferenceInfo(fileReference);
 		}
 

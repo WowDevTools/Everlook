@@ -22,7 +22,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Everlook.Configuration;
 using Everlook.Explorer;
@@ -32,6 +31,7 @@ using Everlook.Viewport.Rendering.Interfaces;
 using Gdk;
 using GLib;
 using Gtk;
+using liblistfile.NodeTree;
 using log4net;
 using OpenTK;
 using OpenTK.Graphics;
@@ -39,6 +39,7 @@ using OpenTK.Input;
 using Warcraft.Core;
 using Application = Gtk.Application;
 using IOPath = System.IO.Path;
+using FileNode = liblistfile.NodeTree.Node;
 
 namespace Everlook.UI
 {
@@ -62,11 +63,6 @@ namespace Everlook.UI
 		/// Background viewport renderer. Handles all rendering in the viewport.
 		/// </summary>
 		private readonly ViewportRenderer RenderingEngine;
-
-		/// <summary>
-		/// Background file explorer tree builder. Handles enumeration of files in the archives.
-		/// </summary>
-		private readonly ExplorerBuilder FiletreeBuilder;
 
 		/// <summary>
 		/// Whether or not the program is shutting down. This is used to remove callbacks and events.
@@ -134,14 +130,10 @@ namespace Everlook.UI
 			this.ViewportAlignment.Add(this.ViewportWidget);
 			this.ViewportAlignment.ShowAll();
 
-			// Add a staggered idle handler for adding enumerated items to the interface
-			//Timeout.Add(1, OnIdle, Priority.DefaultIdle);
-			Idle.Add(OnIdle, Priority.DefaultIdle);
-
 			this.AboutButton.Clicked += OnAboutButtonClicked;
 			this.PreferencesButton.Clicked += OnPreferencesButtonClicked;
 
-			this.GameExplorerTreeView.RowExpanded += OnGameExplorerRowExpanded;
+			// TODO: For each game tab
 			this.GameExplorerTreeView.RowActivated += OnGameExplorerRowActivated;
 			this.GameExplorerTreeView.Selection.Changed += OnGameExplorerSelectionChanged;
 			this.GameExplorerTreeView.ButtonPressEvent += OnGameExplorerButtonPressed;
@@ -159,25 +151,11 @@ namespace Everlook.UI
 
 			this.RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
 
-			this.FiletreeBuilder = new ExplorerBuilder
-			(
-				new ExplorerStore
-				(
-					this.GameExplorerTreeStore,
-					this.GameExplorerTreeFilter,
-					this.GameExplorerTreeSorter
-				)
-			);
-			this.FiletreeBuilder.PackageGroupAdded += OnPackageGroupAdded;
-			this.FiletreeBuilder.PackageEnumerated += OnPackageEnumerated;
-			this.FiletreeBuilder.Start();
-
 			/*
 				Set up item control sections to default states
 			*/
 
 			EnableControlPage(ControlPage.None);
-
 		}
 
 		/// <summary>
@@ -288,8 +266,8 @@ namespace Everlook.UI
 			const int sortAWithB = 0;
 			const int sortAAfterB = 1;
 
-			NodeType typeofA = (NodeType)model.GetValue(iterA, 4);
-			NodeType typeofB = (NodeType)model.GetValue(iterB, 4);
+			NodeType typeofA = ((FileNode)model.GetValue(iterA, 0)).Type;
+			NodeType typeofB = ((FileNode)model.GetValue(iterB, 0)).Type;
 
 			if (typeofA < typeofB)
 			{
@@ -327,6 +305,7 @@ namespace Everlook.UI
 		private FileReference GetSelectedReference()
 		{
 			TreeIter selectedIter;
+			// TODO: By current game tab
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
 			return this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
@@ -339,11 +318,6 @@ namespace Everlook.UI
 		private void ReloadRuntimeValues()
 		{
 			this.ViewportWidget.OverrideBackgroundColor(StateFlags.Normal, this.Config.GetViewportBackgroundColour());
-
-			if (this.FiletreeBuilder.HasPackageDirectoryChanged())
-			{
-				this.FiletreeBuilder.Reload();
-			}
 		}
 
 		/// <summary>
@@ -401,17 +375,19 @@ namespace Everlook.UI
 			}
 
 			// Right click is pressed
-			if (args.Event.Type == EventType.ButtonPress && args.Event.Button == 3)
+			if (args.Event.Type != EventType.ButtonPress || args.Event.Button != 3)
 			{
-				// Hide the mouse pointer
-				this.Window.Cursor = new Cursor(CursorType.BlankCursor);
-
-				this.ViewportWidget.GrabFocus();
-
-				this.RenderingEngine.WantsToMove = true;
-				this.RenderingEngine.InitialMouseX = Mouse.GetCursorState().X;
-				this.RenderingEngine.InitialMouseY = Mouse.GetCursorState().Y;
+				return;
 			}
+
+			// Hide the mouse pointer
+			this.Window.Cursor = new Cursor(CursorType.BlankCursor);
+
+			this.ViewportWidget.GrabFocus();
+
+			this.RenderingEngine.WantsToMove = true;
+			this.RenderingEngine.InitialMouseX = Mouse.GetCursorState().X;
+			this.RenderingEngine.InitialMouseY = Mouse.GetCursorState().Y;
 		}
 
 		/// <summary>
@@ -423,13 +399,15 @@ namespace Everlook.UI
 		private void OnViewportButtonReleased(object o, ButtonReleaseEventArgs args)
 		{
 			// Right click is released
-			if (args.Event.Type == EventType.ButtonRelease && args.Event.Button == 3)
+			if (args.Event.Type != EventType.ButtonRelease || args.Event.Button != 3)
 			{
-				// Return the mouse pointer to its original appearance
-				this.Window.Cursor = new Cursor(CursorType.Arrow);
-				GrabFocus();
-				this.RenderingEngine.WantsToMove = false;
+				return;
 			}
+
+			// Return the mouse pointer to its original appearance
+			this.Window.Cursor = new Cursor(CursorType.Arrow);
+			GrabFocus();
+			this.RenderingEngine.WantsToMove = false;
 		}
 
 		/// <summary>
@@ -472,70 +450,6 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
-		/// Idle functionality. This code is called as a way of lazily loading rows into the UI
-		/// without causing lockups due to sheer data volume.
-		/// </summary>
-		private bool OnIdle()
-		{
-			const bool keepCalling = true;
-			const bool stopCalling = false;
-
-			if (this.IsShuttingDown)
-			{
-				return stopCalling;
-			}
-
-			if (this.FiletreeBuilder.GetCompletedWorkOrderCount() <= 0)
-			{
-				return keepCalling;
-			}
-
-			// There's content to be added to the UI
-			// Get the last reference in the list.
-			FileReference newContent = this.FiletreeBuilder.GetLastCompletedWorkOrder();
-
-			if (newContent == null)
-			{
-				Log.Debug("Refused completed work order. Reference was null.");
-				//this.FiletreeBuilder.EnumeratedReferences.RemoveAt(this.FiletreeBuilder.EnumeratedReferences.Count - 1);
-				return keepCalling;
-			}
-
-			if (newContent.IsFile)
-			{
-				this.FiletreeBuilder.NodeStorage.AddFileNode(newContent);
-			}
-			else if (newContent.IsDirectory)
-			{
-				// TODO: I've no idea why this doesn't work. Whenever this is done, it breaks the sorting of the treemodel
-				// TODO: and starts breaking down. It is tied to converting a path in the sorter (somehow)
-				/*
-				TreePath pathToParent = this.FiletreeBuilder.NodeStorage.GetPath(newContent.ParentReference);
-				TreePath pathToVirtualParent = this.FiletreeBuilder.NodeStorage.GetVirtualPath(newContent.ParentReference);
-
-				bool isParentExpanded = this.GameExplorerTreeView.GetRowExpanded(pathToParent);
-				bool isVirtualParentExpanded = this.GameExplorerTreeView.GetRowExpanded(pathToVirtualParent);
-
-				if (isParentExpanded || isVirtualParentExpanded)
-				{
-					if (newContent.State == ReferenceState.NotEnumerated)
-					{
-						// This references was added to the UI after the user had opened the previous folder.
-						// Therefore, it should be submitted back to the UI for enumeration.
-						this.FiletreeBuilder.SubmitWork(newContent);
-						Log.Debug($"Refused completed work order {newContent}. The reference was not enumerated, but the parent is open. Returning reference to queue.");
-					}
-				}
-				*/
-				this.FiletreeBuilder.NodeStorage.AddDirectoryNode(newContent);
-			}
-
-			this.FiletreeBuilder.MarkWorkOrderAsConsumed(newContent);
-
-			return keepCalling;
-		}
-
-		/// <summary>
 		/// Handles the export item context item activated event.
 		/// </summary>
 		/// <param name="sender">Sender.</param>
@@ -553,20 +467,13 @@ namespace Everlook.UI
 			{
 				case WarcraftFileType.Directory:
 				{
-					if (fileReference.IsFullyEnumerated)
+					using (EverlookDirectoryExportDialog exportDialog = EverlookDirectoryExportDialog.Create(fileReference))
 					{
-						using (EverlookDirectoryExportDialog exportDialog = EverlookDirectoryExportDialog.Create(fileReference))
+						if (exportDialog.Run() == (int)ResponseType.Ok)
 						{
-							if (exportDialog.Run() == (int)ResponseType.Ok)
-							{
-								exportDialog.RunExport();
-							}
-							exportDialog.Destroy();
+							exportDialog.RunExport();
 						}
-					}
-					else
-					{
-						// TODO: Implement wait message when the directory and its subdirectories have not yet been enumerated.
+						exportDialog.Destroy();
 					}
 					break;
 				}
@@ -623,6 +530,8 @@ namespace Everlook.UI
 		private void OnOpenContextItemActivated(object sender, EventArgs e)
 		{
 			TreeIter selectedIter;
+
+			// TODO: By current game tab
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 			FileReference fileReference = GetSelectedReference();
 			if (!fileReference.IsFile)
@@ -642,8 +551,11 @@ namespace Everlook.UI
 			Clipboard clipboard = Clipboard.Get(Atom.Intern("CLIPBOARD", false));
 
 			TreeIter selectedIter;
+
+			// TODO: By current game tab
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
+			// TODO: Get name from selected node and set clipboard
 			clipboard.Text = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter).FilePath;
 		}
 
@@ -703,26 +615,6 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
-		/// Handles expansion of rows in the game explorer, enumerating any subfolders and
-		/// files present under that row.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		private void OnGameExplorerRowExpanded(object sender, RowExpandedArgs e)
-		{
-			// Whenever a row is expanded, enumerate the subfolders of that row.
-			FileReference parentReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromPath(e.Path);
-			foreach (FileReference childReference in parentReference.ChildReferences)
-			{
-				if (childReference.IsDirectory && childReference.State != ReferenceState.Enumerated) // TODO: Investigate if Enumerated should be used here
-				{
-					this.FiletreeBuilder.SubmitWork(childReference);
-					Log.Debug($"Submitting new reference {childReference}. Parent {parentReference} was opened.");
-				}
-			}
-		}
-
-		/// <summary>
 		/// Handles double-clicking on files in the explorer.
 		/// </summary>
 		/// <param name="o">The sending object.</param>
@@ -730,6 +622,7 @@ namespace Everlook.UI
 		private void OnGameExplorerRowActivated(object o, RowActivatedArgs args)
 		{
 			TreeIter selectedIter;
+			// TODO: By current game tab
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
 			FileReference fileReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
@@ -783,6 +676,7 @@ namespace Everlook.UI
 			}
 			else
 			{
+				// TODO: By current game tab
 				this.GameExplorerTreeView.ExpandRow(this.FiletreeBuilder.NodeStorage.GetPath(fileReference), false);
 			}
 		}
@@ -796,6 +690,8 @@ namespace Everlook.UI
 		private void OnGameExplorerSelectionChanged(object sender, EventArgs e)
 		{
 			TreeIter selectedIter;
+
+			// TODO: By current game tab
 			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
 
 			FileReference fileReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
@@ -854,11 +750,14 @@ namespace Everlook.UI
 		private void OnGameExplorerButtonPressed(object sender, ButtonPressEventArgs e)
 		{
 			TreePath path;
+
+			// TODO: By current game tab
 			this.GameExplorerTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out path);
 
 			FileReference currentFileReference = null;
 			if (path != null)
 			{
+				// TODO: Get from current treeview
 				currentFileReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromPath(path);
 			}
 
@@ -914,6 +813,7 @@ namespace Everlook.UI
 			{
 				TreeIter iter;
 				this.ExportQueueListStore.GetIterFromString(out iter, path.ToString());
+				// TODO: Rework export queue
 				currentReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(iter);
 			}
 
@@ -947,32 +847,6 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
-		/// Handles the package group added event from the explorer builder.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		private void OnPackageGroupAdded(object sender, ReferenceEnumeratedEventArgs e)
-		{
-			Application.Invoke(delegate
-			{
-				this.FiletreeBuilder.NodeStorage.AddPackageGroupNode(e.Reference);
-			});
-		}
-
-		/// <summary>
-		/// Handles the package enumerated event from the explorer builder.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		private void OnPackageEnumerated(object sender, ReferenceEnumeratedEventArgs e)
-		{
-			Application.Invoke(delegate
-			{
-				this.FiletreeBuilder.NodeStorage.AddPackageNode(e.Reference);
-			});
-		}
-
-		/// <summary>
 		/// Handles application shutdown procedures - terminating render threads, cleaning
 		/// up the UI, etc.
 		/// </summary>
@@ -981,12 +855,6 @@ namespace Everlook.UI
 		private void OnDeleteEvent(object sender, DeleteEventArgs a)
 		{
 			this.IsShuttingDown = true;
-
-			if (this.FiletreeBuilder.IsActive)
-			{
-				this.FiletreeBuilder.Stop();
-				this.FiletreeBuilder.Dispose();
-			}
 
 			this.RenderingEngine.SetRenderTarget(null);
 			this.RenderingEngine.Dispose();

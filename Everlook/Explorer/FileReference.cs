@@ -23,10 +23,8 @@
 using System;
 using Warcraft.Core;
 using System.IO;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Everlook.Package;
-using Gtk;
 using Warcraft.MPQ.FileInfo;
 
 namespace Everlook.Explorer
@@ -37,22 +35,6 @@ namespace Everlook.Explorer
 	/// </summary>
 	public class FileReference : IEquatable<FileReference>
 	{
-		/// <summary>
-		/// Gets or sets the parent reference.
-		/// </summary>
-		/// <value>The parent reference.</value>
-		public FileReference ParentReference { get; protected set; }
-
-		/// <summary>
-		/// The <see cref="TreeIter"/> this FileReference maps to.
-		/// </summary>
-		public TreeIter ReferenceIter { get; set; }
-
-		/// <summary>
-		/// Contains a list of references that have this reference as a parent.
-		/// </summary>
-		public readonly List<FileReference> ChildReferences = new List<FileReference>();
-
 		/// <summary>
 		/// Gets or sets the group this reference belongs to.
 		/// </summary>
@@ -72,15 +54,6 @@ namespace Everlook.Explorer
 		public virtual string FilePath { get; set; } = "";
 
 		/// <summary>
-		/// The current state of the item reference.
-		///</summary>
-		public ReferenceState State
-		{
-			get;
-			set;
-		} = ReferenceState.NotEnumerated;
-
-		/// <summary>
 		/// Gets the file info of this reference.
 		/// </summary>
 		/// <value>The file info.</value>
@@ -96,38 +69,6 @@ namespace Everlook.Explorer
 				{
 					return null;
 				}
-			}
-		}
-
-		/// <summary>
-		/// Walks through this reference's children and checks whether or not all of them have had their
-		/// children enumerated. Depending on the depth of the item, this may be an expensive operation.
-		/// </summary>
-		/// <value><c>true</c> if this instance is fully enumerated; otherwise, <c>false</c>.</value>
-		public bool IsFullyEnumerated
-		{
-			get
-			{
-				if (this.State != ReferenceState.Enumerated)
-				{
-					return false;
-				}
-
-				bool areChildrenEnumerated = true;
-				foreach (FileReference childReference in this.ChildReferences)
-				{
-					if (childReference.IsDirectory)
-					{
-						if (childReference.State != ReferenceState.Enumerated)
-						{
-							return false;
-						}
-
-						areChildrenEnumerated = areChildrenEnumerated & childReference.IsFullyEnumerated;
-					}
-				}
-
-				return areChildrenEnumerated;
 			}
 		}
 
@@ -190,29 +131,12 @@ namespace Everlook.Explorer
 		/// <param name="inParentReference">The parent of this item reference.</param>
 		/// <param name="inPackageName">The name of the package this reference belongs to.</param>
 		/// <param name="inFilePath">The complete file path this reference points to.</param>
-		public FileReference(PackageGroup inPackageGroup, FileReference inParentReference, string inPackageName, string inFilePath)
+		public FileReference(PackageGroup inPackageGroup, string inPackageName, string inFilePath)
 			: this(inPackageGroup)
 		{
-			this.ParentReference = inParentReference;
 			this.PackageName = inPackageName;
 			this.FilePath = inFilePath;
 		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="FileReference"/> class by
-		/// appending the provided subpath to the provided refererence's file path.
-		/// </summary>
-		/// <param name="inPackageGroup">The package group this reference belongs to.</param>
-		/// <param name="inParentReference">In reference.</param>
-		/// <param name="subPath">Sub directory.</param>
-		public FileReference(PackageGroup inPackageGroup, FileReference inParentReference, string subPath)
-			: this(inPackageGroup)
-		{
-			this.ParentReference = inParentReference;
-			this.PackageName = inParentReference.PackageName;
-			this.FilePath = inParentReference.FilePath + subPath;
-		}
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileReference"/> class.
 		/// </summary>
@@ -223,47 +147,11 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Determines whether or not this <see cref="FileReference"/> has been added to the UI
-		/// by seeing if its associated <see cref="TreeIter"/> is zero (the default) or not.
-		/// </summary>
-		/// <returns></returns>
-		public bool HasBeenAddedToTheUI()
-		{
-			return !this.ReferenceIter.Equals(TreeIter.Zero);
-		}
-
-		/// <summary>
 		/// Extracts this instance from the package group it is associated with.
 		/// </summary>
 		public virtual byte[] Extract()
 		{
 			return this.PackageGroup.ExtractUnversionedReference(this);
-		}
-
-		/// <summary>
-		/// Gets the name of the referenced item.
-		/// </summary>
-		/// <returns>The referenced item name.</returns>
-		public virtual string GetReferencedItemName()
-		{
-			string itemName;
-			if (this.ParentReference == null || string.IsNullOrEmpty(this.ParentReference.FilePath))
-			{
-				itemName = this.FilePath;
-			}
-			else
-			{
-				itemName = this.FilePath.Substring(this.ParentReference.FilePath.Length);
-			}
-
-			if (this.IsDirectory)
-			{
-				// Remove the trailing slash from directory names.
-				int slashIndex = itemName.LastIndexOf("\\", StringComparison.Ordinal);
-				itemName = itemName.Substring(0, slashIndex);
-			}
-
-			return itemName;
 		}
 
 		/// <summary>
@@ -423,26 +311,12 @@ namespace Everlook.Explorer
 		{
 			if (other != null)
 			{
-				bool parentsEqual = false;
-				if (this.ParentReference != null && other.ParentReference != null)
-				{
-					parentsEqual = this.ParentReference.Equals(other.ParentReference);
-				}
-				else if (this.ParentReference == null && other.ParentReference == null)
-				{
-					parentsEqual = true;
-				}
-
 				return
-					parentsEqual &&
 					this.PackageGroup == other.PackageGroup &&
 					this.PackageName == other.PackageName &&
 					this.FilePath == other.FilePath;
 			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
 
 		#endregion
@@ -462,22 +336,12 @@ namespace Everlook.Explorer
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()
 		{
-			if (this.ParentReference != null)
-			{
-				return (this.PackageName.GetHashCode() +
-						this.FilePath.GetHashCode() +
-						this.ParentReference.GetHashCode() +
-						this.PackageGroup.GroupName.GetHashCode()
-				).GetHashCode();
-			}
-			else
-			{
-				return (this.PackageName.GetHashCode() +
-						this.FilePath.GetHashCode() +
-						0 +
-						this.PackageGroup.GroupName.GetHashCode()
-				).GetHashCode();
-			}
+			return (
+				this.PackageName.GetHashCode() +
+				this.FilePath.GetHashCode() +
+				this.PackageGroup.GroupName.GetHashCode()
+			).GetHashCode();
+
 		}
 	}
 }
