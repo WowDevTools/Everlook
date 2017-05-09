@@ -25,9 +25,11 @@ using System.Globalization;
 using System.IO;
 using Everlook.UI;
 using Everlook.Utility;
-using Gtk;
+using GLib;
 using log4net;
 using OpenTK;
+using Application = Gtk.Application;
+using FileNode = liblistfile.NodeTree.Node;
 
 namespace Everlook
 {
@@ -65,7 +67,11 @@ namespace Everlook
 			Log.Info("Initializing GTK...");
 
 			// Bind any unhandled exceptions in the GTK UI so that they are logged.
-			GLib.ExceptionManager.UnhandledException += OnGLibUnhandledException;
+			ExceptionManager.UnhandledException += OnGLibUnhandledException;
+
+			Log.Info("Registering treeview types with the native backend...");
+			GType type = (GType) typeof(FileNode);
+			GType.Register(type, typeof(FileNode));
 
 			// GTK
 			IconManager.LoadEmbeddedIcons();
@@ -79,7 +85,7 @@ namespace Everlook
 		/// Passes any unhandled exceptions from the GTK UI to the generic handler.
 		/// </summary>
 		/// <param name="args">The event object containing the information about the exception.</param>
-		private static void OnGLibUnhandledException(GLib.UnhandledExceptionArgs args)
+		private static void OnGLibUnhandledException(UnhandledExceptionArgs args)
 		{
 			OnUnhandledException(null, args);
 		}
