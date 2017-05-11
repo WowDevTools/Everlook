@@ -531,6 +531,12 @@ namespace Everlook.UI
 
 			TreePath path;
 			this.ExportQueueTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out path);
+
+			if (path == null)
+			{
+				return;
+			}
+
 			TreeIter iter;
 			this.ExportQueueListStore.GetIter(out iter, path);
 

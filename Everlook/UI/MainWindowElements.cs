@@ -55,7 +55,7 @@ namespace Everlook.UI
 			Game explorer elements
 		*/
 		[UIElement] private readonly Notebook GameTabNotebook;
-		private readonly List<GamePage> GamePages;
+		private readonly List<GamePage> GamePages = new List<GamePage>();
 
 		/*
 			General item control elements

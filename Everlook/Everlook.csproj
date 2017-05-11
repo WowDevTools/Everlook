@@ -86,6 +86,10 @@
     <Compile Include="UI\EverlookDirectoryExportDialogElements.cs">
       <DependentUpon>EverlookDirectoryExportDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\EverlookGameLoadingDialog.cs" />
+    <Compile Include="UI\EverlookGameLoadingDialogElements.cs">
+      <DependentUpon>EverlookGameLoadingDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\EverlookImageExportDialog.cs" />
     <Compile Include="UI\EverlookImageExportDialogElements.cs">
       <DependentUpon>EverlookImageExportDialog.cs</DependentUpon>
