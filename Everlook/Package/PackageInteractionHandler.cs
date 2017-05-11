@@ -106,7 +106,7 @@ namespace Everlook.Package
 				return false;
 			}
 
-			return this.Package.ContainsFile(fileReference.FilePath);
+			return ContainsFile(fileReference.FilePath);
 		}
 
 		/// <summary>
@@ -122,7 +122,7 @@ namespace Everlook.Package
 
 			try
 			{
-				return this.Package.ExtractFile(fileReference.FilePath);
+				return ExtractFile(fileReference.FilePath);
 			}
 			catch (InvalidFileSectorTableException fex)
 			{
@@ -145,7 +145,7 @@ namespace Everlook.Package
 				return null;
 			}
 
-			return this.Package.GetFileInfo(fileReference.FilePath);
+			return GetFileInfo(fileReference.FilePath);
 		}
 
 		#region IPackage implementation
@@ -157,8 +157,7 @@ namespace Everlook.Package
 		/// <param name="filePath">Reference path.</param>
 		public byte[] ExtractFile(string filePath)
 		{
-			FileReference fileReference = new FileReference(null, "", filePath);
-			return ExtractReference(fileReference);
+			return this.Package.ExtractFile(filePath);
 		}
 
 		/// <summary>
@@ -189,8 +188,7 @@ namespace Everlook.Package
 		/// <param name="filePath">Reference path.</param>
 		public bool ContainsFile(string filePath)
 		{
-			FileReference fileReference = new FileReference(null, "", filePath);
-			return ContainsFile(fileReference);
+			return this.Package.ContainsFile(filePath);
 		}
 
 		/// <summary>
@@ -200,8 +198,7 @@ namespace Everlook.Package
 		/// <param name="filePath">Reference path.</param>
 		public MPQFileInfo GetFileInfo(string filePath)
 		{
-			FileReference fileReference = new FileReference(null, "", filePath);
-			return GetReferenceInfo(fileReference);
+			return this.Package.GetFileInfo(filePath);
 		}
 
 		#endregion

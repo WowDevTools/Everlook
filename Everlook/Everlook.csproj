@@ -27,6 +27,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>GTK3;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -73,6 +74,8 @@
   <ItemGroup>
     <Compile Include="Explorer\FileReference.cs" />
     <Compile Include="Explorer\FileTreeModel.cs" />
+    <Compile Include="Explorer\GameLoader.cs" />
+    <Compile Include="Explorer\GamePage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\EverlookConfiguration.cs" />

@@ -22,11 +22,15 @@
 
 using System;
 using System.Linq;
+using System.Text;
+using Everlook.Package;
 using GLib;
 using Gtk;
 using liblistfile;
+using liblistfile.NodeTree;
 using Object = GLib.Object;
 using FileNode = liblistfile.NodeTree.Node;
+using Node = Gtk.Node;
 
 namespace Everlook.Explorer
 {
@@ -70,6 +74,64 @@ namespace Everlook.Explorer
 		public string GetNodeName(FileNode node)
 		{
 			return this.Tree.GetNodeName(node);
+		}
+
+		/// <summary>
+		/// Gets the package the given node belongs to.
+		/// </summary>
+		/// <param name="node"></param>
+		/// <returns></returns>
+		public string GetNodePackage(FileNode node)
+		{
+			FileNode currentNode = node;
+			while (!node.Type.HasFlag(NodeType.Package) || !node.Type.HasFlag(NodeType.Meta))
+			{
+				currentNode = this.Tree.GetNode((ulong)node.ParentOffset);
+			}
+
+			return GetNodeName(currentNode);
+		}
+
+		/// <summary>
+		/// Gets the absolute file path of a node within the archive.
+		/// </summary>
+		/// <param name="node"></param>
+		/// <returns></returns>
+		public string GetNodeFilePath(FileNode node)
+		{
+			StringBuilder sb = new StringBuilder();
+
+			FileNode currentNode = node;
+			while (!node.Type.HasFlag(NodeType.Package) || !node.Type.HasFlag(NodeType.Meta))
+			{
+				sb.Append(GetNodeName(currentNode));
+
+				if (currentNode.Type.HasFlag(NodeType.Directory))
+				{
+					sb.Append('\\');
+				}
+
+				currentNode = this.Tree.GetNode((ulong)node.ParentOffset);
+			}
+
+			return sb.ToString();
+		}
+
+		/// <summary>
+		/// Gets a <see cref="FileReference"/> from a given iter in the tree.
+		/// </summary>
+		/// <param name="packageGroup"></param>
+		/// <param name="iter"></param>
+		/// <returns></returns>
+		public FileReference GetReferenceByIter(PackageGroup packageGroup, TreeIter iter)
+		{
+			FileNode node = this.Tree.GetNode((ulong) iter.UserData);
+			if (node == null)
+			{
+				return null;
+			}
+
+			return new FileReference(packageGroup, node, GetNodePackage(node), GetNodeFilePath(node));
 		}
 
 		/// <summary>

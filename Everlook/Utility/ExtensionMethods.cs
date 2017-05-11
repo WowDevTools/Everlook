@@ -35,6 +35,18 @@ namespace Everlook.Utility
 	public static class ExtensionMethods
 	{
 		/// <summary>
+		/// Clears all pages from a notebook.
+		/// </summary>
+		/// <param name="notebook"></param>
+		public static void ClearPages(this Gtk.Notebook notebook)
+		{
+			while (notebook.NPages > 0)
+			{
+				notebook.RemovePage(-1);
+			}
+		}
+
+		/// <summary>
 		/// Converts any non-native path separators to the current native path separator,
 		/// e.g backslashes to forwardslashes on *nix, and vice versa.
 		/// </summary>
@@ -46,10 +58,8 @@ namespace Everlook.Utility
 			{
 				return inputPath.Replace('\\', '/');
 			}
-			else
-			{
-				return inputPath.Replace('/', '\\');
-			}
+
+			return inputPath.Replace('/', '\\');
 		}
 
 		/// <summary>
@@ -63,10 +73,8 @@ namespace Everlook.Utility
 			{
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		/// <summary>

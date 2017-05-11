@@ -21,6 +21,7 @@
 //
 
 using System.Collections.Generic;
+using Everlook.Explorer;
 using Gtk;
 using OpenTK;
 using UIElement = Gtk.Builder.ObjectAttribute;
@@ -54,10 +55,7 @@ namespace Everlook.UI
 			Game explorer elements
 		*/
 		[UIElement] private readonly Notebook GameTabNotebook;
-		private readonly List<GameTab> GameTabs;
-
-		[UIElement] private readonly TreeModelFilter GameExplorerTreeFilter;
-		[UIElement] private readonly TreeModelSort GameExplorerTreeSorter;
+		private readonly List<GamePage> GamePages;
 
 		[UIElement] private readonly Menu FileContextMenu;
 		[UIElement] private readonly ImageMenuItem ExtractItem;

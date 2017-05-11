@@ -133,13 +133,13 @@ namespace Everlook.UI
 			this.AboutButton.Clicked += OnAboutButtonClicked;
 			this.PreferencesButton.Clicked += OnPreferencesButtonClicked;
 
-			// TODO: For each game tab
-			this.GameExplorerTreeView.RowActivated += OnGameExplorerRowActivated;
-			this.GameExplorerTreeView.Selection.Changed += OnGameExplorerSelectionChanged;
-			this.GameExplorerTreeView.ButtonPressEvent += OnGameExplorerButtonPressed;
+			this.GameTabNotebook.ClearPages();
 
-			this.GameExplorerTreeSorter.SetSortFunc(1, SortGameExplorerRow);
-			this.GameExplorerTreeSorter.SetSortColumnId(1, SortType.Descending);
+			foreach (GamePage gamePage in this.GamePages)
+			{
+				gamePage.Tree.Selection.Changed += OnGameExplorerSelectionChanged;
+				gamePage.Tree.ButtonPressEvent += OnGameExplorerButtonPressed;
+			}
 
 			this.ExportQueueTreeView.ButtonPressEvent += OnExportQueueButtonPressed;
 
@@ -249,53 +249,6 @@ namespace Everlook.UI
 					}
 				}
 			}
-		}
-
-		/// <summary>
-		/// Sorts the game explorer row. If <paramref name="iterA"/> should be sorted before
-		/// <paramref name="iterB"/>
-		/// </summary>
-		/// <returns>The sorting priority of the row. This value can be -1, 0 or 1 if
-		/// A sorts before B, A sorts with B or A sorts after B, respectively.</returns>
-		/// <param name="model">Model.</param>
-		/// <param name="iterA">Iter a.</param>
-		/// <param name="iterB">Iter b.</param>
-		private static int SortGameExplorerRow(ITreeModel model, TreeIter iterA, TreeIter iterB)
-		{
-			const int sortABeforeB = -1;
-			const int sortAWithB = 0;
-			const int sortAAfterB = 1;
-
-			NodeType typeofA = ((FileNode)model.GetValue(iterA, 0)).Type;
-			NodeType typeofB = ((FileNode)model.GetValue(iterB, 0)).Type;
-
-			if (typeofA < typeofB)
-			{
-				return sortAAfterB;
-			}
-			if (typeofA > typeofB)
-			{
-				return sortABeforeB;
-			}
-
-			string aComparisonString = (string)model.GetValue(iterA, 1);
-
-			string bComparisonString = (string)model.GetValue(iterB, 1);
-
-			int result = string.CompareOrdinal(aComparisonString, bComparisonString);
-
-			if (result <= sortABeforeB)
-			{
-				return sortAAfterB;
-			}
-
-			if (result >= sortAAfterB)
-			{
-				return sortABeforeB;
-			}
-
-			return sortAWithB;
-
 		}
 
 		/// <summary>
@@ -611,73 +564,6 @@ namespace Everlook.UI
 				}
 
 				preferencesDialog.Destroy();
-			}
-		}
-
-		/// <summary>
-		/// Handles double-clicking on files in the explorer.
-		/// </summary>
-		/// <param name="o">The sending object.</param>
-		/// <param name="args">Arguments describing the row that was activated.</param>
-		private void OnGameExplorerRowActivated(object o, RowActivatedArgs args)
-		{
-			TreeIter selectedIter;
-			// TODO: By current game tab
-			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
-
-			FileReference fileReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
-			if (fileReference == null)
-			{
-				return;
-			}
-
-			if (fileReference.IsFile)
-			{
-				if (string.IsNullOrEmpty(fileReference.FilePath))
-				{
-					return;
-				}
-
-				switch (fileReference.GetReferencedFileType())
-				{
-					// Warcraft-typed standard files
-					case WarcraftFileType.AddonManifest:
-					case WarcraftFileType.AddonManifestSignature:
-					case WarcraftFileType.ConfigurationFile:
-					case WarcraftFileType.Hashmap:
-					case WarcraftFileType.XML:
-					case WarcraftFileType.INI:
-					case WarcraftFileType.PDF:
-					case WarcraftFileType.HTML:
-					{
-						byte[] fileData = fileReference.Extract();
-						if (fileData != null)
-						{
-							// create a temporary file and write the data to it.
-							string tempPath = IOPath.GetTempPath() + fileReference.Filename;
-							if (File.Exists(tempPath))
-							{
-								File.Delete(tempPath);
-							}
-
-							using (Stream tempStream = File.Open(tempPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Read))
-							{
-								tempStream.Write(fileData, 0, fileData.Length);
-								tempStream.Flush();
-							}
-
-							// Hand off the file to the operating system.
-							System.Diagnostics.Process.Start(tempPath);
-						}
-
-						break;
-					}
-				}
-			}
-			else
-			{
-				// TODO: By current game tab
-				this.GameExplorerTreeView.ExpandRow(this.FiletreeBuilder.NodeStorage.GetPath(fileReference), false);
 			}
 		}
 
