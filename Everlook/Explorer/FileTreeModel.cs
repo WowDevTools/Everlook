@@ -135,6 +135,19 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
+		/// Gets a <see cref="FileReference"/> from a given path in the tree.
+		/// </summary>
+		/// <param name="packageGroup"></param>
+		/// <param name="path"></param>
+		/// <returns></returns>
+		public FileReference GetReferenceByPath(PackageGroup packageGroup, TreePath path)
+		{
+			TreeIter iter;
+			GetIter(out iter, path);
+			return GetReferenceByIter(packageGroup, iter);
+		}
+
+		/// <summary>
 		/// Gets the type of the given column.
 		/// </summary>
 		/// <param name="index"></param>

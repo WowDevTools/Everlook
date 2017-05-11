@@ -57,13 +57,6 @@ namespace Everlook.UI
 		[UIElement] private readonly Notebook GameTabNotebook;
 		private readonly List<GamePage> GamePages;
 
-		[UIElement] private readonly Menu FileContextMenu;
-		[UIElement] private readonly ImageMenuItem ExtractItem;
-		[UIElement] private readonly ImageMenuItem ExportItem;
-		[UIElement] private readonly ImageMenuItem OpenItem;
-		[UIElement] private readonly ImageMenuItem CopyItem;
-		[UIElement] private readonly ImageMenuItem QueueItem;
-
 		/*
 			General item control elements
 		*/

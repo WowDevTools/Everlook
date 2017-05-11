@@ -137,18 +137,12 @@ namespace Everlook.UI
 
 			foreach (GamePage gamePage in this.GamePages)
 			{
-				gamePage.Tree.Selection.Changed += OnGameExplorerSelectionChanged;
-				gamePage.Tree.ButtonPressEvent += OnGameExplorerButtonPressed;
+				gamePage.FileLoadRequested += OnFileLoadRequested;
+				gamePage.ExportItemRequested += OnExportItemRequested;
+				gamePage.EnqueueFileExportRequested += OnEnqueueItemRequested;
 			}
 
 			this.ExportQueueTreeView.ButtonPressEvent += OnExportQueueButtonPressed;
-
-			this.ExtractItem.Activated += OnExtractContextItemActivated;
-			this.ExportItem.Activated += OnExportItemContextItemActivated;
-			this.OpenItem.Activated += OnOpenContextItemActivated;
-			this.CopyItem.Activated += OnCopyContextItemActivated;
-			this.QueueItem.Activated += OnQueueContextItemActivated;
-
 			this.RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
 
 			/*
@@ -249,19 +243,6 @@ namespace Everlook.UI
 					}
 				}
 			}
-		}
-
-		/// <summary>
-		/// Gets the current <see cref="FileReference"/> that is selected in the tree view.
-		/// </summary>
-		/// <returns></returns>
-		private FileReference GetSelectedReference()
-		{
-			TreeIter selectedIter;
-			// TODO: By current game tab
-			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
-
-			return this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
 		}
 
 		/// <summary>
@@ -405,21 +386,16 @@ namespace Everlook.UI
 		/// <summary>
 		/// Handles the export item context item activated event.
 		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		private void OnExportItemContextItemActivated(object sender, EventArgs e)
+		/// <param name="page">Sender.</param>
+		/// <param name="fileReference">E.</param>
+		private static void OnExportItemRequested(GamePage page, FileReference fileReference)
 		{
-			FileReference fileReference = GetSelectedReference();
-			if (string.IsNullOrEmpty(fileReference?.FilePath))
-			{
-				return;
-			}
-
-			WarcraftFileType fileType = fileReference.GetReferencedFileType();
-			switch (fileType)
+			// TODO: Create a better exporter (EverlookExporter.Export(<>)?)
+			switch (fileReference.GetReferencedFileType())
 			{
 				case WarcraftFileType.Directory:
 				{
+					/*
 					using (EverlookDirectoryExportDialog exportDialog = EverlookDirectoryExportDialog.Create(fileReference))
 					{
 						if (exportDialog.Run() == (int)ResponseType.Ok)
@@ -428,6 +404,7 @@ namespace Everlook.UI
 						}
 						exportDialog.Destroy();
 					}
+					*/
 					break;
 				}
 				case WarcraftFileType.BinaryImage:
@@ -446,94 +423,15 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
-		/// Handles extraction of files from the archive triggered by a context menu press.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		private void OnExtractContextItemActivated(object sender, EventArgs e)
-		{
-			FileReference fileReference = GetSelectedReference();
-
-			string cleanFilepath = fileReference.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
-			string exportpath;
-			if (this.Config.GetShouldKeepFileDirectoryStructure())
-			{
-				exportpath = this.Config.GetDefaultExportDirectory() + cleanFilepath;
-				Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
-			}
-			else
-			{
-				string filename = IOPath.GetFileName(cleanFilepath);
-				exportpath = this.Config.GetDefaultExportDirectory() + filename;
-				Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
-			}
-
-			byte[] file = fileReference.Extract();
-			if (file != null)
-			{
-				File.WriteAllBytes(exportpath, file);
-			}
-		}
-
-		/// <summary>
-		/// Handles opening of files from the archive triggered by a context menu press.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		private void OnOpenContextItemActivated(object sender, EventArgs e)
-		{
-			TreeIter selectedIter;
-
-			// TODO: By current game tab
-			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
-			FileReference fileReference = GetSelectedReference();
-			if (!fileReference.IsFile)
-			{
-				this.GameExplorerTreeView.ExpandRow(this.GameExplorerTreeSorter.GetPath(selectedIter), false);
-			}
-		}
-
-		/// <summary>
-		/// Handles copying of the file path of a selected item in the archive, triggered by a
-		/// context menu press.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		private void OnCopyContextItemActivated(object sender, EventArgs e)
-		{
-			Clipboard clipboard = Clipboard.Get(Atom.Intern("CLIPBOARD", false));
-
-			TreeIter selectedIter;
-
-			// TODO: By current game tab
-			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
-
-			// TODO: Get name from selected node and set clipboard
-			clipboard.Text = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter).FilePath;
-		}
-
-		/// <summary>
 		/// Handles queueing of a selected file in the archive, triggered by a context
 		/// menu press.
 		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		private void OnQueueContextItemActivated(object sender, EventArgs e)
+		/// <param name="page">Sender.</param>
+		/// <param name="fileReference">E.</param>
+		private void OnEnqueueItemRequested(GamePage page, FileReference fileReference)
 		{
-			FileReference fileReference = GetSelectedReference();
-
-			string cleanFilepath = fileReference.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
-
-			if (string.IsNullOrEmpty(cleanFilepath))
-			{
-				cleanFilepath = fileReference.PackageName;
-			}
-			else if (string.IsNullOrEmpty(IOPath.GetFileName(cleanFilepath)))
-			{
-				cleanFilepath = Directory.GetParent(cleanFilepath).FullName.Replace(Directory.GetCurrentDirectory(), "");
-			}
-
-			this.ExportQueueListStore.AppendValues(cleanFilepath, cleanFilepath, "Queued");
+			// TODO: pixbuf for the export status
+			this.ExportQueueListStore.AppendValues(fileReference, null);
 		}
 
 		/// <summary>
@@ -571,20 +469,10 @@ namespace Everlook.UI
 		/// Handles selection of files in the game explorer, displaying them to the user and routing
 		/// whatever rendering functionality the file needs to the viewport.
 		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		private void OnGameExplorerSelectionChanged(object sender, EventArgs e)
+		/// <param name="page">The <see cref="GamePage"/> in which the event originated.</param>
+		/// <param name="fileReference">The file reference to load.</param>
+		private void OnFileLoadRequested(GamePage page, FileReference fileReference)
 		{
-			TreeIter selectedIter;
-
-			// TODO: By current game tab
-			this.GameExplorerTreeView.Selection.GetSelected(out selectedIter);
-
-			FileReference fileReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(selectedIter);
-			if (string.IsNullOrEmpty(fileReference?.FilePath) || !fileReference.IsFile)
-			{
-				return;
-			}
 			switch (fileReference.GetReferencedFileType())
 			{
 				case WarcraftFileType.BinaryImage:
@@ -628,62 +516,6 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
-		/// Handles context menu spawning for the game explorer.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		[ConnectBefore]
-		private void OnGameExplorerButtonPressed(object sender, ButtonPressEventArgs e)
-		{
-			TreePath path;
-
-			// TODO: By current game tab
-			this.GameExplorerTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out path);
-
-			FileReference currentFileReference = null;
-			if (path != null)
-			{
-				// TODO: Get from current treeview
-				currentFileReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromPath(path);
-			}
-
-			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
-			{
-				if (string.IsNullOrEmpty(currentFileReference?.FilePath))
-				{
-					this.ExtractItem.Sensitive = false;
-					this.ExportItem.Sensitive = false;
-					this.OpenItem.Sensitive = false;
-					this.QueueItem.Sensitive = false;
-					this.CopyItem.Sensitive = false;
-				}
-				else
-				{
-					if (!currentFileReference.IsFile)
-					{
-						this.ExtractItem.Sensitive = false;
-						this.ExportItem.Sensitive = true;
-						this.OpenItem.Sensitive = true;
-						this.QueueItem.Sensitive = true;
-						this.CopyItem.Sensitive = true;
-					}
-					else
-					{
-						this.ExtractItem.Sensitive = true;
-						this.ExportItem.Sensitive = true;
-						this.OpenItem.Sensitive = true;
-						this.QueueItem.Sensitive = true;
-						this.CopyItem.Sensitive = true;
-					}
-				}
-
-
-				this.FileContextMenu.ShowAll();
-				this.FileContextMenu.Popup();
-			}
-		}
-
-		/// <summary>
 		/// Handles context menu spawning for the export queue.
 		/// </summary>
 		/// <param name="sender">Sender.</param>
@@ -691,32 +523,30 @@ namespace Everlook.UI
 		[ConnectBefore]
 		private void OnExportQueueButtonPressed(object sender, ButtonPressEventArgs e)
 		{
+			if (e.Event.Type != EventType.ButtonPress || e.Event.Button != 3)
+			{
+				// Return if not a right click
+				return;
+			}
+
 			TreePath path;
 			this.ExportQueueTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out path);
+			TreeIter iter;
+			this.ExportQueueListStore.GetIter(out iter, path);
 
-			FileReference currentReference = null;
-			if (path != null)
+			FileReference queuedReference = (FileReference)this.ExportQueueListStore.GetValue(iter, 0);
+
+			if (string.IsNullOrEmpty(queuedReference?.FilePath))
 			{
-				TreeIter iter;
-				this.ExportQueueListStore.GetIterFromString(out iter, path.ToString());
-				// TODO: Rework export queue
-				currentReference = this.FiletreeBuilder.NodeStorage.GetItemReferenceFromIter(iter);
+				this.RemoveQueueItem.Sensitive = false;
+			}
+			else
+			{
+				this.RemoveQueueItem.Sensitive = true;
 			}
 
-			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
-			{
-				if (string.IsNullOrEmpty(currentReference?.FilePath))
-				{
-					this.RemoveQueueItem.Sensitive = false;
-				}
-				else
-				{
-					this.RemoveQueueItem.Sensitive = true;
-				}
-
-				this.QueueContextMenu.ShowAll();
-				this.QueueContextMenu.Popup();
-			}
+			this.QueueContextMenu.ShowAll();
+			this.QueueContextMenu.Popup();
 		}
 
 		/// <summary>
@@ -728,7 +558,6 @@ namespace Everlook.UI
 		{
 			TreeIter selectedIter;
 			this.ExportQueueTreeView.Selection.GetSelected(out selectedIter);
-
 			this.ExportQueueListStore.Remove(ref selectedIter);
 		}
 

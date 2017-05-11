@@ -99,6 +99,7 @@
     <Compile Include="UI\MainWindowElements.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utility\CommunicationDelegates.cs" />
     <Compile Include="Utility\DirectoryHelpers.cs" />
     <Compile Include="Utility\IconManager.cs" />
     <Compile Include="Utility\DataLoadingDelegates.cs" />
@@ -124,7 +125,6 @@
     <Compile Include="Package\PackageGroup.cs" />
     <Compile Include="Explorer\FilterType.cs" />
     <Compile Include="Configuration\GamePathStorage.cs" />
-    <Compile Include="Configuration\BundledListfiles.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -186,9 +186,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Listfiles\*.olc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Everlook.exe.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -9,12 +9,10 @@
   </object>
   <object class="GtkListStore" id="ExportQueueListStore">
     <columns>
-      <!-- column-name itemName -->
-      <column type="gchararray"/>
-      <!-- column-name itemPath -->
-      <column type="gchararray"/>
-      <!-- column-name itemStatus -->
-      <column type="gchararray"/>
+      <!-- column-name fileReference -->
+      <column type="GObject"/>
+      <!-- column-name exportStatus -->
+      <column type="GdkPixbuf"/>
     </columns>
   </object>
   <object class="GtkListStore" id="FileFilterListStore">
@@ -42,10 +40,6 @@
         <col id="0" translatable="yes">Terrain (*.adt | *.wdt | *.wdl)</col>
       </row>
     </data>
-  </object>
-  <object class="GtkTreeModelFilter" id="GameExplorerTreeFilter"/>
-  <object class="GtkTreeModelSort" id="GameExplorerTreeSorter">
-    <property name="model">GameExplorerTreeFilter</property>
   </object>
   <object class="GtkListStore" id="MipLevelListStore">
     <columns>
@@ -815,9 +809,6 @@
                                                             <property name="sort_column_id">0</property>
                                                             <child>
                                                             <object class="GtkCellRendererText" id="filenameCellRenderer"/>
-                                                            <attributes>
-                                                            <attribute name="text">0</attribute>
-                                                            </attributes>
                                                             </child>
                                                           </object>
                                                         </child>
@@ -827,9 +818,9 @@
                                                             <property name="sizing">fixed</property>
                                                             <property name="title" translatable="yes">Status</property>
                                                             <child>
-                                                            <object class="GtkCellRendererText" id="fileStatusCellRenderer"/>
+                                                            <object class="GtkCellRendererPixbuf" id="fileStatusCellRenderer"/>
                                                             <attributes>
-                                                            <attribute name="text">2</attribute>
+                                                            <attribute name="pixbuf">1</attribute>
                                                             </attributes>
                                                             </child>
                                                           </object>
@@ -1026,76 +1017,6 @@ Any bugs in the software or underlying libraries should be reported to the distr
         <property name="use_underline">True</property>
         <property name="draw_as_radio">True</property>
         <property name="group">FreeFlightItem</property>
-      </object>
-    </child>
-  </object>
-  <object class="GtkImage" id="image1">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-convert</property>
-    <property name="icon_size">1</property>
-  </object>
-  <object class="GtkImage" id="image2">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-convert</property>
-  </object>
-  <object class="GtkMenu" id="FileContextMenu">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkImageMenuItem" id="ExtractItem">
-        <property name="label">gtk-save</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="tooltip_text" translatable="yes">Extract the currently selected item from the archive</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="ExportItem">
-        <property name="label" translatable="yes">Export</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="image">image2</property>
-        <property name="use_stock">False</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="OpenItem">
-        <property name="label">gtk-open</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="tooltip_text" translatable="yes">Opens the currently selected item in its associated program.</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="QueueItem">
-        <property name="label" translatable="yes">Queue</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="tooltip_text" translatable="yes">Queues the current item for batch extraction</property>
-        <property name="image">image1</property>
-        <property name="use_stock">False</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="separator">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="CopyItem">
-        <property name="label">gtk-copy</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="tooltip_text" translatable="yes">Copies the path of the currently selected item</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
       </object>
     </child>
   </object>

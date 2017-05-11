@@ -29,6 +29,7 @@ using Gdk;
 using GLib;
 using Gtk;
 using log4net;
+using Warcraft.Core;
 
 namespace Everlook.Utility
 {
@@ -37,6 +38,8 @@ namespace Everlook.Utility
 	/// </summary>
 	public static class IconManager
 	{
+		private static Dictionary<Tuple<string, int>, Pixbuf> IconCache = new Dictionary<Tuple<string, int>, Pixbuf>();
+
 		/// <summary>
 		/// Logger instance for this class.
 		/// </summary>
@@ -131,71 +134,103 @@ namespace Everlook.Utility
 		/// <param name="file">Reference.</param>
 		public static Pixbuf GetIconForFiletype(string file)
 		{
-			Pixbuf icon = GetIcon(Stock.File);
-			file = file.ToLower();
+			return GetIconForFiletype(FileInfoUtilities.GetFileType(file));
+		}
 
-			if (file.EndsWith(".m2"))
+		/// <summary>
+		/// Gets the icon that would best represent the provided file. This is
+		/// usually the mimetype.
+		/// </summary>
+		/// <returns>The icon for the filetype.</returns>
+		/// <param name="fileType">The file type.</param>
+		public static Pixbuf GetIconForFiletype(WarcraftFileType fileType)
+		{
+			switch (fileType)
 			{
-				icon = GetIcon("Blender-Armature-Icon");
+				case WarcraftFileType.Directory:
+				{
+					return GetIcon(Stock.Directory);
+				}
+				case WarcraftFileType.MoPaQArchive:
+				{
+					return GetIcon("package-x-generic");
+				}
+				case WarcraftFileType.INI:
+				case WarcraftFileType.ConfigurationFile:
+				{
+					return GetIcon("text-x-script");
+				}
+				case WarcraftFileType.TerrainTable:
+				case WarcraftFileType.DatabaseContainer:
+				case WarcraftFileType.Hashmap:
+				{
+					return GetIcon("x-office-spreadsheet");
+				}
+				case WarcraftFileType.TerrainWater:
+				case WarcraftFileType.TerrainLiquid:
+				{
+					return GetIcon("Blender-Wave-Icon");
+				}
+				case WarcraftFileType.TerrainLevel:
+				{
+					return GetIcon("text-x-generic-template");
+				}
+				case WarcraftFileType.TerrainData:
+				{
+					return GetIcon("Blender-Planet-Icon");
+				}
+				case WarcraftFileType.GameObjectModel:
+				{
+					return GetIcon("Blender-Armature-Icon");
+				}
+				case WarcraftFileType.WorldObjectModel:
+				case WarcraftFileType.WorldObjectModelGroup:
+				{
+					return GetIcon("Blender-Object-Icon");
+				}
+				case WarcraftFileType.WaveAudio:
+				case WarcraftFileType.MP3Audio:
+				{
+					return GetIcon("audio-x-generic");
+				}
+				case WarcraftFileType.Text:
+				case WarcraftFileType.Subtitles:
+				case WarcraftFileType.XML:
+				{
+					return GetIcon("text-x-generic");
+				}
+				case WarcraftFileType.BinaryImage:
+				case WarcraftFileType.JPGImage:
+				case WarcraftFileType.GIFImage:
+				case WarcraftFileType.PNGImage:
+				{
+					return GetIcon("image-x-generic");
+				}
+				case WarcraftFileType.PDF:
+				{
+					return GetIcon("x-office-address-book");
+				}
+				case WarcraftFileType.HTML:
+				{
+					return GetIcon("text-html");
+				}
+				case WarcraftFileType.Assembly:
+				{
+					return GetIcon("application-x-executable");
+				}
+				case WarcraftFileType.Font:
+				{
+					return GetIcon("font-x-generic");
+				}
+				case WarcraftFileType.Unknown:
+				case WarcraftFileType.Shader:
+				case WarcraftFileType.AddonManifest:
+				case WarcraftFileType.AddonManifestSignature:
+				default:
+				{
+					return GetIcon(Stock.File);
+				}
 			}
-			else if (file.EndsWith(".wmo"))
-			{
-				icon = GetIcon("Blender-Object-Icon");
-			}
-			else if (file.EndsWith(".adt"))
-			{
-				icon = GetIcon("Blender-Planet-Icon");
-			}
-			else if (file.EndsWith(".wlw") || file.EndsWith(".wlq") || file.EndsWith(".wlm"))
-			{
-				icon = GetIcon("Blender-Wave-Icon");
-			}
-			else if (file.EndsWith(".blp") || file.EndsWith(".jpg") || file.EndsWith(".gif") || file.EndsWith(".png"))
-			{
-				icon = GetIcon("image-x-generic");
-			}
-			else if (file.EndsWith(".wav") || file.EndsWith(".mp3") || file.EndsWith(".ogg"))
-			{
-				icon = GetIcon("audio-x-generic");
-			}
-			else if (file.EndsWith(".txt"))
-			{
-				icon = GetIcon("text-x-generic");
-			}
-			else if (file.EndsWith(".dbc") || file.EndsWith(".wdt"))
-			{
-				icon = GetIcon("x-office-spreadsheet");
-			}
-			else if (file.EndsWith(".exe") || file.EndsWith(".dll") || file.EndsWith(".zmp"))
-			{
-				icon = GetIcon("application-x-executable");
-			}
-			else if (file.EndsWith(".wtf") || file.EndsWith(".ini"))
-			{
-				icon = GetIcon("text-x-script");
-			}
-			else if (file.EndsWith(".html") || file.EndsWith(".url"))
-			{
-				icon = GetIcon("text-html");
-			}
-			else if (file.EndsWith(".pdf"))
-			{
-				icon = GetIcon("x-office-address-book");
-			}
-			else if (file.EndsWith(".ttf"))
-			{
-				icon = GetIcon("font-x-generic");
-			}
-			else if (file.EndsWith(".wdl"))
-			{
-				icon = GetIcon("text-x-generic-template");
-			}
-			else if (file.EndsWith(".sbt") || file.EndsWith(".xml"))
-			{
-				icon = GetIcon("text-x-generic");
-			}
-
-			return icon;
 		}
 
 		/// <summary>
@@ -211,7 +246,15 @@ namespace Everlook.Utility
 		/// <returns></returns>
 		private static Pixbuf LoadIconPixbuf(string iconName, int size = 16)
 		{
-			return IconTheme.Default.LoadIcon(iconName, size, IconLookupFlags.UseBuiltin);
+			Tuple<string, int> key = new Tuple<string, int>(iconName, size);
+			if (!IconCache.ContainsKey(key))
+			{
+				Pixbuf icon = IconTheme.Default.LoadIcon(iconName, size, IconLookupFlags.UseBuiltin);
+				IconCache.Add(key, icon);
+			}
+
+			return IconCache[key];
+
 		}
 	}
 }
