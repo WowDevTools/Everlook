@@ -8,6 +8,7 @@ before_build:
   - msiexec /i C:\projects\everlook\gtk-sharp-3.msi /qn
   - git config --global url."https://github.com/".insteadOf "git@github.com:"
   - git submodule update --init --recursive
+  - nuget restore
 platform: x86
 build:
   parallel: true
