@@ -3,7 +3,7 @@ configuration:
   - Release
 init:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-  - git config --global url."https://github.com/".insteadOf 'git@github.com:'
+  - git config --global url.https://github.com/.insteadOf git@github.com:
 before_build:
   - curl -fsS -o gtk-sharp-3.msi http://gemmei.acc.umu.se/pub/GNOME/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi
   - msiexec /i C:\projects\everlook\gtk-sharp-3.msi /qn
