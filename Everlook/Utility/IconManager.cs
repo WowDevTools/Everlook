@@ -38,7 +38,7 @@ namespace Everlook.Utility
 	/// </summary>
 	public static class IconManager
 	{
-		private static Dictionary<Tuple<string, int>, Pixbuf> IconCache = new Dictionary<Tuple<string, int>, Pixbuf>();
+		private static Dictionary<(string iconName, int iconSize), Pixbuf> IconCache = new Dictionary<(string iconName, int iconSize), Pixbuf>();
 
 		/// <summary>
 		/// Logger instance for this class.
@@ -246,7 +246,7 @@ namespace Everlook.Utility
 		/// <returns></returns>
 		private static Pixbuf LoadIconPixbuf(string iconName, int size = 16)
 		{
-			Tuple<string, int> key = new Tuple<string, int>(iconName, size);
+			var key = (iconName, size);
 			if (!IconCache.ContainsKey(key))
 			{
 				Pixbuf icon = IconTheme.Default.LoadIcon(iconName, size, IconLookupFlags.UseBuiltin);

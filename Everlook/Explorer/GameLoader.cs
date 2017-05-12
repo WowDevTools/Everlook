@@ -20,7 +20,7 @@ namespace Everlook.Explorer
 			this.Dictionary = new ListfileDictionary(File.ReadAllBytes("Dictionary/dictionary.dic"));
 		}
 
-		public Tuple<PackageGroup, OptimizedNodeTree> LoadGame(string gamePath)
+		public (PackageGroup packageGroup, OptimizedNodeTree nodeTree) LoadGame(string gamePath)
 		{
 			List<string> packagePaths = Directory.EnumerateFiles(gamePath, "*",
 					SearchOption.AllDirectories)
@@ -37,20 +37,20 @@ namespace Everlook.Explorer
 			if (!File.Exists(packageTreeFilePath))
 			{
 				// Generate tree, TODO: callbacks to the UI reporting progress
-				List<Tuple<string, IPackage>> packages = new List<Tuple<string, IPackage>>();
+				List<(string packageName, IPackage package)> packages = new List<(string packageName, IPackage package)>();
 				foreach (string packagePath in packagePaths)
 				{
 					PackageInteractionHandler package = new PackageInteractionHandler(packagePath);
-					packages.Add(new Tuple<string, IPackage>(Path.GetFileNameWithoutExtension(packagePath), package));
+					packages.Add((Path.GetFileNameWithoutExtension(packagePath), package));
 				}
 
 				MultiPackageNodeTreeBuilder multiBuilder = new MultiPackageNodeTreeBuilder(this.Dictionary);
 				foreach (var packageInfo in packages)
 				{
-					Console.WriteLine($"Consuming package: {packageInfo.Item1}");
+					Console.WriteLine($"Consuming package: {packageInfo.packageName}");
 
-					multiBuilder.ConsumePackage(packageInfo.Item1, packageInfo.Item2);
-					packageGroup.AddPackage((PackageInteractionHandler)packageInfo.Item2);
+					multiBuilder.ConsumePackage(packageInfo.packageName, packageInfo.package);
+					packageGroup.AddPackage((PackageInteractionHandler)packageInfo.package);
 				}
 
 				multiBuilder.Build();
@@ -65,7 +65,7 @@ namespace Everlook.Explorer
 				nodeTree = new OptimizedNodeTree(File.OpenRead(packageTreeFilePath));
 			}
 
-			return new Tuple<PackageGroup, OptimizedNodeTree>(packageGroup, nodeTree);
+			return (packageGroup, nodeTree);
 		}
 
 		private static string GeneratePackageSetHash(IEnumerable<string> packagePaths)

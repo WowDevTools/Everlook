@@ -44,18 +44,12 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// The flags of the model.
 		/// </summary>
-		public TreeModelFlags Flags
-		{
-			get { return TreeModelFlags.ItersPersist; }
-		}
+		public TreeModelFlags Flags => TreeModelFlags.ItersPersist;
 
 		/// <summary>
 		/// The number of columns in the model.
 		/// </summary>
-		public int NColumns
-		{
-			get { return 1; }
-		}
+		public int NColumns => 1;
 
 		/// <summary>
 		/// Creates a new <see cref="FileTreeModel"/> and attaches it to an <see cref="OptimizedNodeTree"/>.

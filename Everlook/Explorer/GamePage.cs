@@ -26,7 +26,6 @@ using Everlook.Configuration;
 using Everlook.Package;
 using Everlook.Utility;
 using Gdk;
-using GLib;
 using static Everlook.Utility.CommunicationDelegates;
 using Gtk;
 using liblistfile;
@@ -115,9 +114,11 @@ namespace Everlook.Explorer
 			this.NodeIconRenderer = new CellRendererPixbuf();
 			this.NodeNameRenderer = new CellRendererText();
 
-			TreeViewColumn column = new TreeViewColumn();
-			column.Title = "Data Files";
-			column.Spacing = 4;
+			TreeViewColumn column = new TreeViewColumn
+			{
+				Title = "Data Files",
+				Spacing = 4
+			};
 			column.PackStart(this.NodeIconRenderer, true);
 			column.PackStart(this.NodeNameRenderer, true);
 
@@ -238,10 +239,7 @@ namespace Everlook.Explorer
 		/// <param name="eventArgs"></param>
 		private void OnQueueForExportRequested(object sender, EventArgs eventArgs)
 		{
-			TreeIter selectedIter;
-			this.Tree.Selection.GetSelected(out selectedIter);
-
-			FileReference fileReference = this.TreeModel.GetReferenceByIter(this.Packages, selectedIter);
+			FileReference fileReference = GetSelectedReference();
 			if (fileReference == null)
 			{
 				return;
@@ -257,10 +255,7 @@ namespace Everlook.Explorer
 		/// <param name="eventArgs"></param>
 		private void OnExportItemRequested(object sender, EventArgs eventArgs)
 		{
-			TreeIter selectedIter;
-            this.Tree.Selection.GetSelected(out selectedIter);
-
-            FileReference fileReference = this.TreeModel.GetReferenceByIter(this.Packages, selectedIter);
+			FileReference fileReference = GetSelectedReference();
             if (fileReference == null)
             {
                 return;
@@ -278,10 +273,7 @@ namespace Everlook.Explorer
 		/// <param name="eventArgs">E.</param>
 		private void OnOpenItem(object sender, EventArgs eventArgs)
 		{
-			TreeIter selectedIter;
-            this.Tree.Selection.GetSelected(out selectedIter);
-
-            FileReference fileReference = this.TreeModel.GetReferenceByIter(this.Packages, selectedIter);
+			FileReference fileReference = GetSelectedReference();
             if (fileReference == null)
             {
                 return;
@@ -293,6 +285,9 @@ namespace Everlook.Explorer
 			}
 			else
 			{
+				TreeIter selectedIter;
+				this.Tree.Selection.GetSelected(out selectedIter);
+
 				this.Tree.ExpandRow(this.TreeModel.GetPath(selectedIter), false);
 			}
 		}
@@ -305,10 +300,7 @@ namespace Everlook.Explorer
 		/// <param name="eventArgs">E.</param>
 		private void OnCopyPath(object sender, EventArgs eventArgs)
 		{
-			TreeIter selectedIter;
-			this.Tree.Selection.GetSelected(out selectedIter);
-
-			FileReference fileReference = this.TreeModel.GetReferenceByIter(this.Packages, selectedIter);
+			FileReference fileReference = GetSelectedReference();
 			if (fileReference == null)
 			{
 				return;
@@ -322,13 +314,10 @@ namespace Everlook.Explorer
 		/// Handles extraction of files from the archive triggered by a context menu press.
 		/// </summary>
 		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
+		/// <param name="eventArgs">E.</param>
 		private void OnSaveItem(object sender, EventArgs eventArgs)
 		{
-			TreeIter selectedIter;
-			this.Tree.Selection.GetSelected(out selectedIter);
-
-			FileReference fileReference = this.TreeModel.GetReferenceByIter(this.Packages, selectedIter);
+			FileReference fileReference = GetSelectedReference();
 			if (fileReference == null)
 			{
 				return;
@@ -371,38 +360,40 @@ namespace Everlook.Explorer
 			TreePath path;
 	        this.Tree.GetPathAtPos((int)args.Event.X, (int)args.Event.Y, out path);
 
-	        FileReference currentFileReference = null;
-	        if (path != null)
-	        {
-	            currentFileReference = this.TreeModel.GetReferenceByPath(this.Packages, path);
-	        }
-
-			if (string.IsNullOrEmpty(currentFileReference?.FilePath))
+			if (path == null)
 			{
 				this.SaveItem.Sensitive = false;
 				this.ExportItem.Sensitive = false;
 				this.OpenItem.Sensitive = false;
 				this.QueueForExportItem.Sensitive = false;
 				this.CopyPathItem.Sensitive = false;
+				return;
+			}
+
+			FileReference currentFileReference = this.TreeModel.GetReferenceByPath(this.Packages, path);
+			if (currentFileReference.IsDirectory)
+			{
+				this.SaveItem.Sensitive = false;
+				this.ExportItem.Sensitive = true;
+				this.OpenItem.Sensitive = true;
+				this.QueueForExportItem.Sensitive = true;
+				this.CopyPathItem.Sensitive = true;
+			}
+			else if (currentFileReference.IsFile)
+			{
+				this.SaveItem.Sensitive = true;
+				this.ExportItem.Sensitive = true;
+				this.OpenItem.Sensitive = true;
+				this.QueueForExportItem.Sensitive = true;
+				this.CopyPathItem.Sensitive = true;
 			}
 			else
 			{
-				if (!currentFileReference.IsFile)
-				{
-					this.SaveItem.Sensitive = false;
-					this.ExportItem.Sensitive = true;
-					this.OpenItem.Sensitive = true;
-					this.QueueForExportItem.Sensitive = true;
-					this.CopyPathItem.Sensitive = true;
-				}
-				else
-				{
-					this.SaveItem.Sensitive = true;
-					this.ExportItem.Sensitive = true;
-					this.OpenItem.Sensitive = true;
-					this.QueueForExportItem.Sensitive = true;
-					this.CopyPathItem.Sensitive = true;
-				}
+				this.SaveItem.Sensitive = false;
+				this.ExportItem.Sensitive = false;
+				this.OpenItem.Sensitive = true;
+				this.QueueForExportItem.Sensitive = false;
+				this.CopyPathItem.Sensitive = false;
 			}
 
 			this.TreeContextMenu.ShowAll();
@@ -417,10 +408,7 @@ namespace Everlook.Explorer
 		/// <param name="e"></param>
 		private void OnSelectionChanged(object sender, EventArgs e)
 		{
-			TreeIter selectedIter;
-            this.Tree.Selection.GetSelected(out selectedIter);
-
-            FileReference fileReference = this.TreeModel.GetReferenceByIter(this.Packages, selectedIter);
+			FileReference fileReference = GetSelectedReference();
 			if (fileReference == null)
 			{
 				return;
@@ -439,10 +427,7 @@ namespace Everlook.Explorer
 		/// <param name="args">Arguments describing the row that was activated.</param>
 		private void OnRowActivated(object o, RowActivatedArgs args)
 		{
-			TreeIter selectedIter;
-            this.Tree.Selection.GetSelected(out selectedIter);
-
-            FileReference fileReference = this.TreeModel.GetReferenceByIter(this.Packages, selectedIter);
+			FileReference fileReference = GetSelectedReference();
             if (fileReference == null)
             {
                 return;
@@ -456,6 +441,18 @@ namespace Everlook.Explorer
             {
                 this.Tree.ExpandRow(args.Path, false);
             }
+		}
+
+		/// <summary>
+		/// Gets the reference which maps to the currently selected node.
+		/// </summary>
+		/// <returns></returns>
+		private FileReference GetSelectedReference()
+		{
+			TreeIter selectedIter;
+			this.Tree.Selection.GetSelected(out selectedIter);
+
+			return this.TreeModel.GetReferenceByIter(this.Packages, selectedIter);
 		}
 
 		/// <summary>
@@ -500,33 +497,6 @@ namespace Everlook.Explorer
 					break;
 				}
 			}
-		}
-
-		/// <summary>
-		/// Requests the loading of the specified <see cref="FileReference"/> in the main UI.
-		/// </summary>
-		/// <param name="fileReference"></param>
-		private void RequestFileLoad(FileReference fileReference)
-		{
-			this.FileLoadRequested?.Invoke(this, fileReference);
-		}
-
-		/// <summary>
-		/// Requests the exporting of the specified <see cref="FileReference"/> in the main UI.
-		/// </summary>
-		/// <param name="fileReference"></param>
-		private void RequestFileExport(FileReference fileReference)
-		{
-			this.ExportItemRequested?.Invoke(this, fileReference);
-		}
-
-		/// <summary>
-		/// Requests the enqueueing for export of the specified <see cref="FileReference"/> in the main UI.
-		/// </summary>
-		/// <param name="fileReference"></param>
-		private void RequestEnqueueFileExport(FileReference fileReference)
-		{
-			this.EnqueueFileExportRequested?.Invoke(this, fileReference);
 		}
 
 		/// <summary>
@@ -575,6 +545,33 @@ namespace Everlook.Explorer
 			}
 
 			return sortAWithB;
+		}
+
+		/// <summary>
+		/// Requests the loading of the specified <see cref="FileReference"/> in the main UI.
+		/// </summary>
+		/// <param name="fileReference"></param>
+		private void RequestFileLoad(FileReference fileReference)
+		{
+			this.FileLoadRequested?.Invoke(this, fileReference);
+		}
+
+		/// <summary>
+		/// Requests the exporting of the specified <see cref="FileReference"/> in the main UI.
+		/// </summary>
+		/// <param name="fileReference"></param>
+		private void RequestFileExport(FileReference fileReference)
+		{
+			this.ExportItemRequested?.Invoke(this, fileReference);
+		}
+
+		/// <summary>
+		/// Requests the enqueueing for export of the specified <see cref="FileReference"/> in the main UI.
+		/// </summary>
+		/// <param name="fileReference"></param>
+		private void RequestEnqueueFileExport(FileReference fileReference)
+		{
+			this.EnqueueFileExportRequested?.Invoke(this, fileReference);
 		}
 
 		/// <summary>
