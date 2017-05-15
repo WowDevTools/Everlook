@@ -167,8 +167,7 @@ namespace Everlook.Explorer
 				});
 
 				// Load packages
-				packageGroup = await PackageGroup.LoadAsync(packageSetHash, gamePath, ct, progress);
-
+				packageGroup = await PackageGroup.LoadAsync(gameAlias, packageSetHash, gamePath, ct, progress);
 
 				progress?.Report(new GameLoadingProgress
 				{

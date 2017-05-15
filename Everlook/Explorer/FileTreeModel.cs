@@ -96,14 +96,14 @@ namespace Everlook.Explorer
 			StringBuilder sb = new StringBuilder();
 
 			FileNode currentNode = node;
-			while (!(node.Type.HasFlag(NodeType.Package) || currentNode.Type.HasFlag(NodeType.Meta)))
+			while (!(currentNode.Type.HasFlag(NodeType.Package) || currentNode.Type.HasFlag(NodeType.Meta)))
 			{
-				sb.Append(GetNodeName(currentNode));
-
 				if (currentNode.Type.HasFlag(NodeType.Directory))
 				{
-					sb.Append('\\');
+					sb.Insert(0, '\\');
 				}
+
+				sb.Insert(0, GetNodeName(currentNode));
 
 				currentNode = this.Tree.GetNode((ulong)currentNode.ParentOffset);
 			}

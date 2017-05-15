@@ -246,6 +246,7 @@ namespace Everlook.UI
 					this.GameTabNotebook.ClearPages();
 				}
 			}
+
 			dialog.Destroy();
 		}
 
@@ -253,6 +254,10 @@ namespace Everlook.UI
 		{
 			GamePage page = new GamePage(group, nodeTree);
 			page.Alias = alias;
+
+			page.FileLoadRequested += OnFileLoadRequested;
+			page.ExportItemRequested += OnExportItemRequested;
+			page.EnqueueFileExportRequested += OnEnqueueItemRequested;
 
 			this.GamePages.Add(page);
 			this.GameTabNotebook.AppendPage(page.PageWidget, new Label(page.Alias));
@@ -586,7 +591,8 @@ namespace Everlook.UI
 		/// <param name="fileReference">The file reference to load.</param>
 		private void OnFileLoadRequested(GamePage page, FileReference fileReference)
 		{
-			switch (fileReference.GetReferencedFileType())
+			WarcraftFileType referencedType = fileReference.GetReferencedFileType();
+			switch (referencedType)
 			{
 				case WarcraftFileType.BinaryImage:
 				{

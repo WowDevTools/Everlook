@@ -91,11 +91,12 @@ namespace Everlook.Package
 		/// <summary>
 		/// Creates a new package group, and asynchronously loads all of the packages in the provided directory.
 		/// </summary>
+		/// <param name="alias">The alias of the package group that's being loaded.</param>
 		/// <param name="groupName">The name of the group that is to be created.</param>
 		/// <param name="packageDirectory">The directory where the packages to load are.</param>
 		/// <param name="ct">A <see cref="CancellationToken"/> which can be used to cancel the operation.</param>
 		/// <returns></returns>
-		public static async Task<PackageGroup> LoadAsync(string groupName, string packageDirectory,
+		public static async Task<PackageGroup> LoadAsync(string alias, string groupName, string packageDirectory,
 			CancellationToken ct = new CancellationToken(),
 			IProgress<GameLoadingProgress> progress = null)
 		{
@@ -108,8 +109,8 @@ namespace Everlook.Package
 				.ToList();
 
 			// Internal counters for progress reporting
-			int completedSteps = 0;
-			int totalSteps = packagePaths.Count;
+			double completedSteps = 0;
+			double totalSteps = packagePaths.Count;
 			foreach (string packagePath in packagePaths)
 			{
 				ct.ThrowIfCancellationRequested();
@@ -118,8 +119,9 @@ namespace Everlook.Package
 				{
 					progress?.Report(new GameLoadingProgress
 					{
-						CompletionPercentage = (completedSteps / totalSteps) * 100,
-						State = GameLoadingState.LoadingPackages
+						CompletionPercentage = completedSteps / totalSteps,
+						State = GameLoadingState.LoadingPackages,
+						Alias = alias
 					});
 
 					PackageInteractionHandler handler = await PackageInteractionHandler.LoadAsync(packagePath);
