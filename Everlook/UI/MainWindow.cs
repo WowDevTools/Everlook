@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Everlook.Configuration;
@@ -228,6 +229,13 @@ namespace Everlook.UI
 			{
 				try
 				{
+					if (this.GamePages.Any(p => p.Alias == gameTarget.Alias))
+					{
+						// TODO: Kind of a dirty solution
+						// Already loaded, go to next
+						continue;
+					}
+
 					(PackageGroup group, OptimizedNodeTree nodeTree) = await loader.LoadGameAsync
 					(
 						gameTarget.Alias,

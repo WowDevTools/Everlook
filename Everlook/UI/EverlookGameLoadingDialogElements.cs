@@ -28,6 +28,7 @@ namespace Everlook.UI
 	public partial class EverlookGameLoadingDialog
 	{
 		[UIElement] public readonly Label GameLoadingDialogLabel;
+		[UIElement] public readonly Label AdditionalInfoLabel;
 		[UIElement] public readonly Button CancelGameLoadingButton;
 		[UIElement] public readonly ProgressBar GameLoadingProgressBar;
 	}

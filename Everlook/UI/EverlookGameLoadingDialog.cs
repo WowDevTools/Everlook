@@ -21,12 +21,19 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Gtk;
-
+using Action = System.Action;
 namespace Everlook.UI
 {
-	public partial class EverlookGameLoadingDialog : Dialog
+	public partial class EverlookGameLoadingDialog : Gtk.Dialog
 	{
+		private readonly List<string> Jokes = new List<string>();
+
 		public static EverlookGameLoadingDialog Create(Window parent)
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookGameLoadingDialog.glade", null);
@@ -37,6 +44,25 @@ namespace Everlook.UI
 		{
 			builder.Autoconnect(this);
 			this.TransientFor = parent;
+
+			using (Stream shaderStream =
+				Assembly.GetExecutingAssembly().GetManifestResourceStream("Everlook.Content.jokes.txt"))
+			{
+				if (shaderStream == null)
+				{
+					return;
+				}
+
+				using (StreamReader sr = new StreamReader(shaderStream))
+				{
+					while (sr.BaseStream.Length > sr.BaseStream.Position)
+					{
+						this.Jokes.Add(sr.ReadLine());
+					}
+				}
+			}
+
+			this.AdditionalInfoLabel.Text = this.Jokes[new Random().Next(this.Jokes.Count)];
 		}
 	}
 }
