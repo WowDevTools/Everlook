@@ -27,15 +27,16 @@ namespace Everlook.UI
 {
 	public partial class EverlookGameLoadingDialog : Dialog
 	{
-		public static EverlookGameLoadingDialog Create()
+		public static EverlookGameLoadingDialog Create(Window parent)
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookGameLoadingDialog.glade", null);
-			return new EverlookGameLoadingDialog(builder, builder.GetObject("GameLoadingDialog").Handle);
+			return new EverlookGameLoadingDialog(builder, builder.GetObject("GameLoadingDialog").Handle, parent);
 		}
 
-		private EverlookGameLoadingDialog(Builder builder, IntPtr handle) : base(handle)
+		private EverlookGameLoadingDialog(Builder builder, IntPtr handle, Window parent) : base(handle)
 		{
 			builder.Autoconnect(this);
+			this.TransientFor = parent;
 		}
 	}
 }

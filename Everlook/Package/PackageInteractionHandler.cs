@@ -24,6 +24,7 @@ using Warcraft.MPQ;
 using System.IO;
 using Warcraft.MPQ.FileInfo;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Everlook.Explorer;
 using liblistfile;
 using log4net;
@@ -49,6 +50,7 @@ namespace Everlook.Package
 		public string PackagePath
 		{
 			get;
+			private set;
 		}
 
 		/// <summary>
@@ -57,14 +59,47 @@ namespace Everlook.Package
 		/// <value>The name of the package.</value>
 		public string PackageName => Path.GetFileNameWithoutExtension(this.PackagePath);
 
-		private readonly MPQ Package;
-		private byte[] ArchiveHashTableHash;
+		private MPQ Package;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Package.PackageInteractionHandler"/> class.
+		///
+		/// </summary>
+		/// <param name="packagePath"></param>
+		/// <returns></returns>
+		public static async Task<PackageInteractionHandler> LoadAsync(string packagePath)
+		{
+			PackageInteractionHandler handler = new PackageInteractionHandler();
+			await Task.Run(() => handler.Load(packagePath));
+
+			return handler;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Everlook.Package.PackageInteractionHandler"/> class. This
+		/// does not initialize or load any package information. Use <see cref="Load"/> to fill the handler, or
+		/// <see cref="LoadAsync"/> to create it asynchronously.
+		/// </summary>
+		public PackageInteractionHandler()
+		{
+
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Everlook.Package.PackageInteractionHandler"/> class and loads
+		/// the package at the provided path.
 		/// </summary>
 		/// <param name="inPackagePath">In package path.</param>
 		public PackageInteractionHandler(string inPackagePath)
+		{
+			Load(inPackagePath);
+		}
+
+		/// <summary>
+		/// Loads the package at the specified path, binding it to the handler.
+		/// </summary>
+		/// <param name="inPackagePath"></param>
+		/// <exception cref="FileNotFoundException"></exception>
+		public void Load(string inPackagePath)
 		{
 			if (File.Exists(inPackagePath))
 			{
@@ -76,22 +111,6 @@ namespace Everlook.Package
 			}
 
 			this.PackagePath = inPackagePath;
-		}
-
-		/// <summary>
-		/// Gets the MD5 hash of the hash table of this package.
-		/// </summary>
-		/// <returns>The hash table hash.</returns>
-		public byte[] GetHashTableHash()
-		{
-			// Check if we've already computed the hash. The package interaction handler is,
-			// in a sense, immutable, so there's no need to to it more than once.
-			if (this.ArchiveHashTableHash == null)
-			{
-				this.ArchiveHashTableHash = this.Package.ArchiveHashTable.Serialize().ComputeHash();
-			}
-
-			return this.ArchiveHashTableHash;
 		}
 
 		/// <summary>

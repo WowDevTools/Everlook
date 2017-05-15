@@ -27,21 +27,24 @@ namespace Everlook.UI
 {
 	public partial class EverlookPreferences
 	{
-		[UIElement] FileChooserDialog GameSelectionFileChooserDialog;
-		[UIElement] TreeView GamePathSelectionTreeView;
-		[UIElement] ListStore GamePathListStore;
-		[UIElement] Button AddPathButton;
-		[UIElement] Button RemovePathButton;
+		[UIElement] private Dialog NewGamePathDialog;
+		[UIElement] private Entry AliasEntry;
+		[UIElement] private FileChooserButton PathChooser;
 
-		[UIElement] ColorButton ViewportColourButton;
-		//[UIPart] CheckButton ShowUnknownFilesCheckButton;
+		[UIElement] private TreeView GamePathSelectionTreeView;
+		[UIElement] private ListStore GamePathListStore;
+		[UIElement] private Button AddPathButton;
+		[UIElement] private Button RemovePathButton;
 
-		[UIElement] FileChooserButton DefaultExportDirectoryFileChooserButton;
-		[UIElement] ComboBox DefaultModelExportFormatComboBox;
-		[UIElement] ComboBox DefaultImageExportFormatComboBox;
-		[UIElement] ComboBox DefaultAudioExportFormatComboBox;
-		[UIElement] CheckButton KeepDirectoryStructureCheckButton;
+		[UIElement] private ColorButton ViewportColourButton;
+		//[UIElement] CheckButton ShowUnknownFilesCheckButton;
 
-		[UIElement] CheckButton SendStatsCheckButton;
+		[UIElement] private FileChooserButton DefaultExportDirectoryFileChooserButton;
+		[UIElement] private ComboBox DefaultModelExportFormatComboBox;
+		[UIElement] private ComboBox DefaultImageExportFormatComboBox;
+		[UIElement] private ComboBox DefaultAudioExportFormatComboBox;
+		[UIElement] private CheckButton KeepDirectoryStructureCheckButton;
+
+		[UIElement] private CheckButton SendStatsCheckButton;
 	}
 }

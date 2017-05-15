@@ -24,6 +24,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Warcraft.MPQ.FileInfo;
 using Warcraft.MPQ;
 using Everlook.Explorer;
@@ -68,29 +70,7 @@ namespace Everlook.Package
 
 			this.GroupName = groupName;
 
-			// Grab all packages in the game directory
-			List<string> packagePaths = Directory.EnumerateFiles(rootPackageDirectory, "*.*", SearchOption.AllDirectories)
-				.OrderBy(a => a)
-				.Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ"))
-				.ToList();
-
-			foreach (string packagePath in packagePaths)
-			{
-				try
-				{
-					this.Packages.Add(new PackageInteractionHandler(packagePath));
-				}
-				catch (FileLoadException fex)
-				{
-					Log.Warn($"FileLoadException for package \"{packagePath}\": {fex.Message}\n" +
-					         $"Please report this on GitHub or via email.");
-				}
-				catch (NotImplementedException nex)
-				{
-					Log.Warn($"NotImplementedException for package \"{packagePath}\": {nex.Message}\n" +
-					         $"There's a good chance your game version isn't supported yet.");
-				}
-			}
+			LoadPackagesFromPath(rootPackageDirectory);
 		}
 
 		/// <summary>
@@ -106,6 +86,91 @@ namespace Everlook.Package
 			}
 
 			this.GroupName = groupName;
+		}
+
+		/// <summary>
+		/// Creates a new package group, and asynchronously loads all of the packages in the provided directory.
+		/// </summary>
+		/// <param name="groupName">The name of the group that is to be created.</param>
+		/// <param name="packageDirectory">The directory where the packages to load are.</param>
+		/// <param name="ct">A <see cref="CancellationToken"/> which can be used to cancel the operation.</param>
+		/// <returns></returns>
+		public static async Task<PackageGroup> LoadAsync(string groupName, string packageDirectory,
+			CancellationToken ct = new CancellationToken(),
+			IProgress<GameLoadingProgress> progress = null)
+		{
+			PackageGroup group = new PackageGroup(groupName);
+
+			// Grab all packages in the game directory
+			List<string> packagePaths = Directory.EnumerateFiles(packageDirectory, "*.*", SearchOption.AllDirectories)
+				.Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ"))
+				.OrderBy(a => a)
+				.ToList();
+
+			// Internal counters for progress reporting
+			int completedSteps = 0;
+			int totalSteps = packagePaths.Count;
+			foreach (string packagePath in packagePaths)
+			{
+				ct.ThrowIfCancellationRequested();
+
+				try
+				{
+					progress?.Report(new GameLoadingProgress
+					{
+						CompletionPercentage = (completedSteps / totalSteps) * 100,
+						State = GameLoadingState.LoadingPackages
+					});
+
+					PackageInteractionHandler handler = await PackageInteractionHandler.LoadAsync(packagePath);
+					group.AddPackage(handler);
+
+					++completedSteps;
+				}
+				catch (FileLoadException fex)
+				{
+					Log.Warn($"FileLoadException for package \"{packagePath}\": {fex.Message}\n" +
+					         $"Please report this on GitHub or via email.");
+				}
+				catch (NotImplementedException nex)
+				{
+					Log.Warn($"NotImplementedException for package \"{packagePath}\": {nex.Message}\n" +
+					         $"There's a good chance your game version isn't supported yet.");
+				}
+			}
+
+			return group;
+		}
+
+		/// <summary>
+		/// Loads all packages in the specified path into the package group.
+		/// </summary>
+		/// <param name="path"></param>
+		public void LoadPackagesFromPath(string path)
+		{
+			// Grab all packages in the game directory
+			List<string> packagePaths = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
+				.Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ"))
+				.OrderBy(a => a)
+				.ToList();
+
+			foreach (string packagePath in packagePaths)
+			{
+				try
+				{
+					AddPackage(new PackageInteractionHandler(packagePath));
+				}
+				catch (FileLoadException fex)
+				{
+					Log.Warn($"FileLoadException for package \"{packagePath}\": {fex.Message}\n" +
+					         $"Please report this on GitHub or via email.");
+				}
+				catch (NotImplementedException nex)
+				{
+					Log.Warn($"NotImplementedException for package \"{packagePath}\": {nex.Message}\n" +
+					         $"There's a good chance your game version isn't supported yet.");
+				}
+			}
 		}
 
 		/// <summary>

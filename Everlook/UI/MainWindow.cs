@@ -21,17 +21,18 @@
 //
 
 using System;
-using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Everlook.Configuration;
 using Everlook.Explorer;
+using Everlook.Package;
 using Everlook.Utility;
 using Everlook.Viewport;
 using Everlook.Viewport.Rendering.Interfaces;
 using Gdk;
 using GLib;
 using Gtk;
-using liblistfile.NodeTree;
+using liblistfile;
 using log4net;
 using OpenTK;
 using OpenTK.Graphics;
@@ -93,6 +94,7 @@ namespace Everlook.UI
 		{
 			builder.Autoconnect(this);
 			this.DeleteEvent += OnDeleteEvent;
+			this.Shown += OnMainWindowShown;
 
 			this.UiThreadScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
@@ -150,6 +152,113 @@ namespace Everlook.UI
 			*/
 
 			EnableControlPage(ControlPage.None);
+		}
+
+		/// <summary>
+		/// Performs any actions which should occur after the window is visible to the user.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		/// <exception cref="NotImplementedException"></exception>
+		private async void OnMainWindowShown(object sender, EventArgs e)
+		{
+			// Load games
+			await LoadGames();
+		}
+
+		private async Task LoadGames()
+		{
+			GameLoader loader = new GameLoader();
+			CancellationTokenSource cts = new CancellationTokenSource();
+			EverlookGameLoadingDialog dialog = EverlookGameLoadingDialog.Create(this);
+
+			dialog.CancelGameLoadingButton.Pressed += (o, args) =>
+			{
+				dialog.GameLoadingDialogLabel.Text = "Cancelling...";
+				dialog.CancelGameLoadingButton.Sensitive = false;
+
+				cts.Cancel();
+			};
+
+			Progress<GameLoadingProgress> progress = new Progress<GameLoadingProgress>(loadingProgress =>
+			{
+				dialog.GameLoadingProgressBar.Fraction = loadingProgress.CompletionPercentage;
+
+				string statusText = "";
+				switch (loadingProgress.State)
+				{
+					case GameLoadingState.SettingUp:
+					{
+						statusText = "Setting up...";
+						break;
+					}
+					case GameLoadingState.Loading:
+					{
+						statusText = "Loading...";
+						break;
+					}
+					case GameLoadingState.LoadingPackages:
+					{
+						statusText = "Loading packages...";
+						break;
+					}
+					case GameLoadingState.LoadingNodeTree:
+					{
+						statusText = "Loading node tree...";
+						break;
+					}
+					case GameLoadingState.LoadingDictionary:
+					{
+						statusText = "Loading dictionary for node generation...";
+						break;
+					}
+					case GameLoadingState.BuildingNodeTree:
+					{
+						statusText = "Building node tree..";
+						break;
+					}
+				}
+
+				dialog.GameLoadingDialogLabel.Text = loadingProgress.Alias + " - " + statusText;
+			});
+
+			dialog.ShowAll();
+
+			foreach (var gameTarget in GamePathStorage.Instance.GamePaths)
+			{
+				try
+				{
+					(PackageGroup group, OptimizedNodeTree nodeTree) = await loader.LoadGameAsync
+					(
+						gameTarget.Alias,
+						gameTarget.Path,
+						cts.Token,
+						progress
+					);
+
+					AddGamePage(gameTarget.Alias, group, nodeTree);
+				}
+				catch (OperationCanceledException ocex)
+				{
+					Log.Info("Cancelled game loading operation.");
+
+					this.GamePages.Clear();
+					this.GameTabNotebook.ClearPages();
+				}
+			}
+			dialog.Destroy();
+		}
+
+		private void AddGamePage(string alias, PackageGroup group, OptimizedNodeTree nodeTree)
+		{
+			GamePage page = new GamePage(group, nodeTree);
+			page.Alias = alias;
+
+			this.GamePages.Add(page);
+			this.GameTabNotebook.AppendPage(page.PageWidget, new Label(page.Alias));
+			this.GameTabNotebook.SetTabReorderable(page.PageWidget, true);
+
+			this.GameTabNotebook.ShowAll();
 		}
 
 		/// <summary>
@@ -249,9 +358,13 @@ namespace Everlook.UI
 		/// Reloads visible runtime values that the user can change in the preferences, such as the colour
 		/// of the viewport or the loaded packages.
 		/// </summary>
-		private void ReloadRuntimeValues()
+		private async void ReloadRuntimeValues()
 		{
 			this.ViewportWidget.OverrideBackgroundColor(StateFlags.Normal, this.Config.GetViewportBackgroundColour());
+
+			this.GamePages.Clear();
+			this.GameTabNotebook.ClearPages();
+			await LoadGames();
 		}
 
 		/// <summary>

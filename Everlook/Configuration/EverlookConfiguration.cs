@@ -147,7 +147,8 @@ namespace Everlook.Configuration
 					// Makes the GameDirectory option obsolete.
 					if (data["General"].ContainsKey("GameDirectory"))
 					{
-						GamePathStorage.Instance.StorePath(data["General"]["GameDirectory"]);
+						// May 15th, 2017 - Added path aliasing, breaking support for path import
+						//GamePathStorage.Instance.StorePath(data["General"]["GameDirectory"]);
 						data["General"].RemoveKey("GameDirectory");
 					}
 

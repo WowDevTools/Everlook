@@ -1,5 +1,5 @@
 ﻿//
-//  EverlookGameLoadingDialog.cs
+//  GameLoadingProgress.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -20,15 +20,26 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Gtk;
-using UIElement = Gtk.Builder.ObjectAttribute;
-
-namespace Everlook.UI
+namespace Everlook.Explorer
 {
-	public partial class EverlookGameLoadingDialog
+	/// <summary>
+	/// Container for progress reporting of a load operation for a game.
+	/// </summary>
+	public struct GameLoadingProgress
 	{
-		[UIElement] public readonly Label GameLoadingDialogLabel;
-		[UIElement] public readonly Button CancelGameLoadingButton;
-		[UIElement] public readonly ProgressBar GameLoadingProgressBar;
+		/// <summary>
+		/// The overall completion percentage.
+		/// </summary>
+		public double CompletionPercentage;
+
+		/// <summary>
+		/// The state of the load operation at the time of reporting.
+		/// </summary>
+		public GameLoadingState State;
+
+		/// <summary>
+		/// The alias of the game which is being loaded.
+		/// </summary>
+		public string Alias;
 	}
 }

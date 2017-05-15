@@ -1,5 +1,5 @@
 ﻿//
-//  EverlookGameLoadingDialog.cs
+//  GameLoadingState.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -20,15 +20,15 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Gtk;
-using UIElement = Gtk.Builder.ObjectAttribute;
-
-namespace Everlook.UI
+namespace Everlook.Explorer
 {
-	public partial class EverlookGameLoadingDialog
+	public enum GameLoadingState
 	{
-		[UIElement] public readonly Label GameLoadingDialogLabel;
-		[UIElement] public readonly Button CancelGameLoadingButton;
-		[UIElement] public readonly ProgressBar GameLoadingProgressBar;
+		SettingUp,
+		Loading,
+		LoadingPackages,
+		LoadingNodeTree,
+		LoadingDictionary,
+		BuildingNodeTree
 	}
 }

@@ -78,6 +78,8 @@
     <Compile Include="Explorer\FileReference.cs" />
     <Compile Include="Explorer\FileTreeModel.cs" />
     <Compile Include="Explorer\GameLoader.cs" />
+    <Compile Include="Explorer\GameLoadingProgress.cs" />
+    <Compile Include="Explorer\GameLoadingState.cs" />
     <Compile Include="Explorer\GamePage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -196,6 +198,7 @@
     <Content Include="Everlook.exe.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="interfaces\EverlookGameLoadingDialog.glade" />
     <Content Include="OpenTK.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

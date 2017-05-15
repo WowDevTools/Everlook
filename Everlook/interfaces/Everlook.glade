@@ -41,12 +41,6 @@
       </row>
     </data>
   </object>
-  <object class="GtkListStore" id="MipLevelListStore">
-    <columns>
-      <!-- column-name mipDescription -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
   <object class="GtkWindow" id="MainWindow">
     <property name="width_request">940</property>
     <property name="height_request">712</property>
@@ -158,10 +152,26 @@
           </packing>
         </child>
         <child>
+          <object class="GtkAlignment" id="alignment12">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkSeparator" id="separator5">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkAlignment" id="UpperBoxAlignment">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="bottom_padding">4</property>
             <child>
               <object class="GtkBox" id="UpperBox">
                 <property name="visible">True</property>
@@ -174,6 +184,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="position">256</property>
+                    <property name="position_set">True</property>
                     <child>
                       <object class="GtkAlignment" id="GameExplorerAlignment">
                         <property name="visible">True</property>
@@ -182,20 +193,40 @@
                         <property name="vexpand">True</property>
                         <property name="xalign">0</property>
                         <property name="yalign">0</property>
+                        <property name="bottom_padding">4</property>
                         <property name="left_padding">4</property>
+                        <property name="right_padding">4</property>
                         <child>
-                          <object class="GtkFrame" id="GameExplorerFrame">
+                          <object class="GtkBox" id="box7">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label_xalign">0.070000000298023224</property>
-                            <property name="shadow_type">none</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <object class="GtkAlignment" id="alignment8">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="xalign">0</property>
+                                <child>
+                                  <object class="GtkLabel" id="label5">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Game Explorer</property>
+                                    <property name="xalign">0</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
                             <child>
                               <object class="GtkAlignment" id="alignment7">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="left_padding">12</property>
                                 <child>
-                                  <object class="GtkBox" id="box7">
+                                  <object class="GtkBox" id="box9">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="orientation">vertical</property>
@@ -203,6 +234,8 @@
                                       <object class="GtkAlignment" id="alignment9">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
+                                        <property name="top_padding">4</property>
+                                        <property name="bottom_padding">4</property>
                                         <child>
                                           <object class="GtkNotebook" id="GameTabNotebook">
                                             <property name="visible">True</property>
@@ -239,7 +272,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkAlignment" id="alignment8">
+                                      <object class="GtkAlignment" id="alignment11">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <child>
@@ -267,13 +300,11 @@
                                   </object>
                                 </child>
                               </object>
-                            </child>
-                            <child type="label">
-                              <object class="GtkLabel" id="label7">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">File Explorer</property>
-                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
                             </child>
                           </object>
                         </child>
@@ -291,28 +322,21 @@
                         <property name="vexpand">True</property>
                         <property name="orientation">vertical</property>
                         <property name="position">428</property>
+                        <property name="position_set">True</property>
                         <child>
-                          <object class="GtkOverlay" id="ViewportOverlay">
+                          <object class="GtkAlignment" id="ViewportAlignment">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="hexpand">True</property>
+                            <property name="vexpand">True</property>
+                            <property name="xalign">1</property>
+                            <property name="yalign">0</property>
+                            <property name="top_padding">21</property>
+                            <property name="bottom_padding">4</property>
+                            <property name="left_padding">4</property>
+                            <property name="right_padding">4</property>
                             <child>
-                              <object class="GtkAlignment" id="ViewportAlignment">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="hexpand">True</property>
-                                <property name="vexpand">True</property>
-                                <property name="xalign">1</property>
-                                <property name="yalign">0</property>
-                                <property name="top_padding">17</property>
-                                <property name="left_padding">4</property>
-                                <property name="right_padding">8</property>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="index">-1</property>
-                              </packing>
+                              <placeholder/>
                             </child>
                           </object>
                           <packing>
@@ -324,6 +348,10 @@
                           <object class="GtkAlignment" id="LowerBoxAlignment">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="top_padding">4</property>
+                            <property name="bottom_padding">4</property>
+                            <property name="left_padding">4</property>
+                            <property name="right_padding">4</property>
                             <child>
                               <object class="GtkBox" id="LowerBox">
                                 <property name="visible">True</property>
@@ -333,6 +361,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="position">350</property>
+                                    <property name="position_set">True</property>
                                     <child>
                                       <object class="GtkAlignment" id="ItemControlAlignment">
                                         <property name="visible">True</property>
@@ -341,47 +370,56 @@
                                         <property name="vexpand">True</property>
                                         <property name="xalign">0</property>
                                         <property name="yalign">1</property>
+                                        <property name="right_padding">4</property>
                                         <child>
                                           <object class="GtkNotebook" id="ItemControlNotebook">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <child>
-                                              <object class="GtkBox" id="box1">
+                                              <object class="GtkAlignment" id="ImageControlAlignment">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
-                                                <property name="orientation">vertical</property>
+                                                <property name="top_padding">4</property>
+                                                <property name="bottom_padding">4</property>
+                                                <property name="left_padding">4</property>
+                                                <property name="right_padding">4</property>
                                                 <child>
-                                                  <object class="GtkBox" id="box4">
+                                                  <object class="GtkBox" id="box1">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
+                                                    <property name="orientation">vertical</property>
                                                     <child>
-                                                      <object class="GtkAlignment" id="MipLevelLabelAlignment">
+                                                      <object class="GtkBox" id="box4">
                                                         <property name="visible">True</property>
                                                         <property name="can_focus">False</property>
-                                                        <property name="bottom_padding">4</property>
-                                                        <property name="left_padding">4</property>
                                                         <child>
-                                                          <object class="GtkLabel" id="MipLevelLabel">
+                                                          <object class="GtkAlignment" id="MipLevelLabelAlignment">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="bottom_padding">4</property>
+                                                            <property name="left_padding">4</property>
+                                                            <child>
+                                                            <object class="GtkLabel" id="MipLevelLabel">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             <property name="label" translatable="yes">Mipmap Level: </property>
+                                                            </object>
+                                                            </child>
                                                           </object>
+                                                          <packing>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">0</property>
+                                                          </packing>
                                                         </child>
-                                                      </object>
-                                                      <packing>
-                                                        <property name="expand">False</property>
-                                                        <property name="fill">True</property>
-                                                        <property name="position">0</property>
-                                                      </packing>
-                                                    </child>
-                                                    <child>
-                                                      <object class="GtkAlignment" id="MipLevelComboBoxAlignment">
-                                                        <property name="width_request">192</property>
-                                                        <property name="visible">True</property>
-                                                        <property name="can_focus">False</property>
-                                                        <property name="bottom_padding">4</property>
                                                         <child>
-                                                          <object class="GtkComboBox" id="MipLevelComboBox">
+                                                          <object class="GtkAlignment" id="MipLevelComboBoxAlignment">
+                                                            <property name="width_request">192</property>
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="bottom_padding">4</property>
+                                                            <child>
+                                                            <object class="GtkComboBox" id="MipLevelComboBox">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             <property name="model">MipLevelListStore</property>
@@ -391,122 +429,124 @@
                                                             <attribute name="text">0</attribute>
                                                             </attributes>
                                                             </child>
+                                                            </object>
+                                                            </child>
+                                                          </object>
+                                                          <packing>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="pack_type">end</property>
+                                                            <property name="position">1</property>
+                                                          </packing>
+                                                        </child>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">False</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">0</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkSeparator" id="separator3">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">False</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">1</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkAlignment" id="RenderAlphaCheckButtonAlignment">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <property name="top_padding">4</property>
+                                                        <child>
+                                                          <object class="GtkCheckButton" id="RenderAlphaCheckButton">
+                                                            <property name="label" translatable="yes">Alpha</property>
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="receives_default">False</property>
+                                                            <property name="xalign">0</property>
+                                                            <property name="active">True</property>
+                                                            <property name="draw_indicator">True</property>
                                                           </object>
                                                         </child>
                                                       </object>
                                                       <packing>
                                                         <property name="expand">False</property>
                                                         <property name="fill">True</property>
-                                                        <property name="pack_type">end</property>
-                                                        <property name="position">1</property>
+                                                        <property name="position">2</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkAlignment" id="RenderRedCheckButtonAlignment">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <child>
+                                                          <object class="GtkCheckButton" id="RenderRedCheckButton">
+                                                            <property name="label" translatable="yes">Red</property>
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="receives_default">False</property>
+                                                            <property name="xalign">0</property>
+                                                            <property name="active">True</property>
+                                                            <property name="draw_indicator">True</property>
+                                                          </object>
+                                                        </child>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">False</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">3</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkAlignment" id="RenderGreenCheckButtonAlignment">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <child>
+                                                          <object class="GtkCheckButton" id="RenderGreenCheckButton">
+                                                            <property name="label" translatable="yes">Green</property>
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="receives_default">False</property>
+                                                            <property name="xalign">0</property>
+                                                            <property name="active">True</property>
+                                                            <property name="draw_indicator">True</property>
+                                                          </object>
+                                                        </child>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">False</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">4</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkAlignment" id="RenderBlueCheckButtonAlignment">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <child>
+                                                          <object class="GtkCheckButton" id="RenderBlueCheckButton">
+                                                            <property name="label" translatable="yes">Blue</property>
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="receives_default">False</property>
+                                                            <property name="xalign">0</property>
+                                                            <property name="active">True</property>
+                                                            <property name="draw_indicator">True</property>
+                                                          </object>
+                                                        </child>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">False</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">5</property>
                                                       </packing>
                                                     </child>
                                                   </object>
-                                                  <packing>
-                                                    <property name="expand">False</property>
-                                                    <property name="fill">True</property>
-                                                    <property name="position">0</property>
-                                                  </packing>
-                                                </child>
-                                                <child>
-                                                  <object class="GtkSeparator" id="separator3">
-                                                    <property name="visible">True</property>
-                                                    <property name="can_focus">False</property>
-                                                  </object>
-                                                  <packing>
-                                                    <property name="expand">False</property>
-                                                    <property name="fill">True</property>
-                                                    <property name="position">1</property>
-                                                  </packing>
-                                                </child>
-                                                <child>
-                                                  <object class="GtkAlignment" id="RenderAlphaCheckButtonAlignment">
-                                                    <property name="visible">True</property>
-                                                    <property name="can_focus">False</property>
-                                                    <property name="top_padding">4</property>
-                                                    <child>
-                                                      <object class="GtkCheckButton" id="RenderAlphaCheckButton">
-                                                        <property name="label" translatable="yes">Alpha</property>
-                                                        <property name="visible">True</property>
-                                                        <property name="can_focus">True</property>
-                                                        <property name="receives_default">False</property>
-                                                        <property name="xalign">0</property>
-                                                        <property name="active">True</property>
-                                                        <property name="draw_indicator">True</property>
-                                                      </object>
-                                                    </child>
-                                                  </object>
-                                                  <packing>
-                                                    <property name="expand">False</property>
-                                                    <property name="fill">True</property>
-                                                    <property name="position">2</property>
-                                                  </packing>
-                                                </child>
-                                                <child>
-                                                  <object class="GtkAlignment" id="RenderRedCheckButtonAlignment">
-                                                    <property name="visible">True</property>
-                                                    <property name="can_focus">False</property>
-                                                    <child>
-                                                      <object class="GtkCheckButton" id="RenderRedCheckButton">
-                                                        <property name="label" translatable="yes">Red</property>
-                                                        <property name="visible">True</property>
-                                                        <property name="can_focus">True</property>
-                                                        <property name="receives_default">False</property>
-                                                        <property name="xalign">0</property>
-                                                        <property name="active">True</property>
-                                                        <property name="draw_indicator">True</property>
-                                                      </object>
-                                                    </child>
-                                                  </object>
-                                                  <packing>
-                                                    <property name="expand">False</property>
-                                                    <property name="fill">True</property>
-                                                    <property name="position">3</property>
-                                                  </packing>
-                                                </child>
-                                                <child>
-                                                  <object class="GtkAlignment" id="RenderGreenCheckButtonAlignment">
-                                                    <property name="visible">True</property>
-                                                    <property name="can_focus">False</property>
-                                                    <child>
-                                                      <object class="GtkCheckButton" id="RenderGreenCheckButton">
-                                                        <property name="label" translatable="yes">Green</property>
-                                                        <property name="visible">True</property>
-                                                        <property name="can_focus">True</property>
-                                                        <property name="receives_default">False</property>
-                                                        <property name="xalign">0</property>
-                                                        <property name="active">True</property>
-                                                        <property name="draw_indicator">True</property>
-                                                      </object>
-                                                    </child>
-                                                  </object>
-                                                  <packing>
-                                                    <property name="expand">False</property>
-                                                    <property name="fill">True</property>
-                                                    <property name="position">4</property>
-                                                  </packing>
-                                                </child>
-                                                <child>
-                                                  <object class="GtkAlignment" id="RenderBlueCheckButtonAlignment">
-                                                    <property name="visible">True</property>
-                                                    <property name="can_focus">False</property>
-                                                    <child>
-                                                      <object class="GtkCheckButton" id="RenderBlueCheckButton">
-                                                        <property name="label" translatable="yes">Blue</property>
-                                                        <property name="visible">True</property>
-                                                        <property name="can_focus">True</property>
-                                                        <property name="receives_default">False</property>
-                                                        <property name="xalign">0</property>
-                                                        <property name="active">True</property>
-                                                        <property name="draw_indicator">True</property>
-                                                      </object>
-                                                    </child>
-                                                  </object>
-                                                  <packing>
-                                                    <property name="expand">False</property>
-                                                    <property name="fill">True</property>
-                                                    <property name="position">5</property>
-                                                  </packing>
                                                 </child>
                                               </object>
                                             </child>
@@ -521,18 +561,28 @@
                                               </packing>
                                             </child>
                                             <child>
-                                              <object class="GtkBox" id="box2">
+                                              <object class="GtkAlignment" id="ModelControlAlignment">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
-                                                <property name="orientation">vertical</property>
+                                                <property name="top_padding">4</property>
+                                                <property name="bottom_padding">4</property>
+                                                <property name="left_padding">4</property>
+                                                <property name="right_padding">4</property>
                                                 <child>
-                                                  <placeholder/>
-                                                </child>
-                                                <child>
-                                                  <placeholder/>
-                                                </child>
-                                                <child>
-                                                  <placeholder/>
+                                                  <object class="GtkBox" id="box2">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="orientation">vertical</property>
+                                                    <child>
+                                                      <placeholder/>
+                                                    </child>
+                                                    <child>
+                                                      <placeholder/>
+                                                    </child>
+                                                    <child>
+                                                      <placeholder/>
+                                                    </child>
+                                                  </object>
                                                 </child>
                                               </object>
                                               <packing>
@@ -551,18 +601,28 @@
                                               </packing>
                                             </child>
                                             <child>
-                                              <object class="GtkBox" id="box3">
+                                              <object class="GtkAlignment" id="AnimationControlAlignment">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
-                                                <property name="orientation">vertical</property>
+                                                <property name="top_padding">4</property>
+                                                <property name="bottom_padding">4</property>
+                                                <property name="left_padding">4</property>
+                                                <property name="right_padding">4</property>
                                                 <child>
-                                                  <placeholder/>
-                                                </child>
-                                                <child>
-                                                  <placeholder/>
-                                                </child>
-                                                <child>
-                                                  <placeholder/>
+                                                  <object class="GtkBox" id="box3">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="orientation">vertical</property>
+                                                    <child>
+                                                      <placeholder/>
+                                                    </child>
+                                                    <child>
+                                                      <placeholder/>
+                                                    </child>
+                                                    <child>
+                                                      <placeholder/>
+                                                    </child>
+                                                  </object>
                                                 </child>
                                               </object>
                                               <packing>
@@ -581,24 +641,32 @@
                                               </packing>
                                             </child>
                                             <child>
-                                              <object class="GtkBox" id="box5">
+                                              <object class="GtkAlignment" id="AudioControlAlignment">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
-                                                <property name="orientation">vertical</property>
+                                                <property name="top_padding">4</property>
+                                                <property name="bottom_padding">4</property>
+                                                <property name="left_padding">4</property>
+                                                <property name="right_padding">4</property>
                                                 <child>
-                                                  <object class="GtkBox" id="box6">
+                                                  <object class="GtkBox" id="box5">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
-                                                    <property name="spacing">12</property>
+                                                    <property name="orientation">vertical</property>
                                                     <child>
-                                                      <object class="GtkAlignment" id="alignment1">
-                                                        <property name="width_request">88</property>
+                                                      <object class="GtkBox" id="box6">
                                                         <property name="visible">True</property>
                                                         <property name="can_focus">False</property>
-                                                        <property name="top_padding">4</property>
-                                                        <property name="left_padding">8</property>
+                                                        <property name="spacing">12</property>
                                                         <child>
-                                                          <object class="GtkButton" id="AudioPreviousButton">
+                                                          <object class="GtkAlignment" id="alignment1">
+                                                            <property name="width_request">88</property>
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="top_padding">4</property>
+                                                            <property name="left_padding">8</property>
+                                                            <child>
+                                                            <object class="GtkButton" id="AudioPreviousButton">
                                                             <property name="label">gtk-media-previous</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
@@ -608,23 +676,23 @@
                                                             <property name="yalign">0.51999998092651367</property>
                                                             <property name="image_position">bottom</property>
                                                             <property name="always_show_image">True</property>
+                                                            </object>
+                                                            </child>
                                                           </object>
+                                                          <packing>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">False</property>
+                                                            <property name="position">0</property>
+                                                          </packing>
                                                         </child>
-                                                      </object>
-                                                      <packing>
-                                                        <property name="expand">False</property>
-                                                        <property name="fill">False</property>
-                                                        <property name="position">0</property>
-                                                      </packing>
-                                                    </child>
-                                                    <child>
-                                                      <object class="GtkAlignment" id="alignment2">
-                                                        <property name="width_request">80</property>
-                                                        <property name="visible">True</property>
-                                                        <property name="can_focus">False</property>
-                                                        <property name="top_padding">4</property>
                                                         <child>
-                                                          <object class="GtkButton" id="AudioPlayPauseButton">
+                                                          <object class="GtkAlignment" id="alignment2">
+                                                            <property name="width_request">80</property>
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="top_padding">4</property>
+                                                            <child>
+                                                            <object class="GtkButton" id="AudioPlayPauseButton">
                                                             <property name="label">gtk-media-play</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
@@ -632,23 +700,23 @@
                                                             <property name="use_stock">True</property>
                                                             <property name="image_position">bottom</property>
                                                             <property name="always_show_image">True</property>
+                                                            </object>
+                                                            </child>
                                                           </object>
+                                                          <packing>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">False</property>
+                                                            <property name="position">1</property>
+                                                          </packing>
                                                         </child>
-                                                      </object>
-                                                      <packing>
-                                                        <property name="expand">False</property>
-                                                        <property name="fill">False</property>
-                                                        <property name="position">1</property>
-                                                      </packing>
-                                                    </child>
-                                                    <child>
-                                                      <object class="GtkAlignment" id="alignment3">
-                                                        <property name="width_request">80</property>
-                                                        <property name="visible">True</property>
-                                                        <property name="can_focus">False</property>
-                                                        <property name="top_padding">4</property>
                                                         <child>
-                                                          <object class="GtkButton" id="AudioNextButton">
+                                                          <object class="GtkAlignment" id="alignment3">
+                                                            <property name="width_request">80</property>
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="top_padding">4</property>
+                                                            <child>
+                                                            <object class="GtkButton" id="AudioNextButton">
                                                             <property name="label">gtk-media-next</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
@@ -656,6 +724,56 @@
                                                             <property name="use_stock">True</property>
                                                             <property name="image_position">bottom</property>
                                                             <property name="always_show_image">True</property>
+                                                            </object>
+                                                            </child>
+                                                          </object>
+                                                          <packing>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">2</property>
+                                                          </packing>
+                                                        </child>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">False</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">0</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkAlignment" id="alignment5">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <property name="top_padding">8</property>
+                                                        <property name="bottom_padding">8</property>
+                                                        <property name="left_padding">8</property>
+                                                        <property name="right_padding">8</property>
+                                                        <child>
+                                                          <object class="GtkSeparator" id="separator4">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                          </object>
+                                                        </child>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">False</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">1</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkAlignment" id="alignment4">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <property name="left_padding">8</property>
+                                                        <child>
+                                                          <object class="GtkCheckButton" id="AudioLoopCheckButton">
+                                                            <property name="label" translatable="yes">Loop</property>
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="receives_default">False</property>
+                                                            <property name="xalign">0</property>
+                                                            <property name="draw_indicator">True</property>
                                                           </object>
                                                         </child>
                                                       </object>
@@ -665,80 +783,32 @@
                                                         <property name="position">2</property>
                                                       </packing>
                                                     </child>
-                                                  </object>
-                                                  <packing>
-                                                    <property name="expand">False</property>
-                                                    <property name="fill">True</property>
-                                                    <property name="position">0</property>
-                                                  </packing>
-                                                </child>
-                                                <child>
-                                                  <object class="GtkAlignment" id="alignment5">
-                                                    <property name="visible">True</property>
-                                                    <property name="can_focus">False</property>
-                                                    <property name="top_padding">8</property>
-                                                    <property name="bottom_padding">8</property>
-                                                    <property name="left_padding">8</property>
-                                                    <property name="right_padding">8</property>
                                                     <child>
-                                                      <object class="GtkSeparator" id="separator4">
+                                                      <object class="GtkAlignment" id="AudioSliderAlignment">
                                                         <property name="visible">True</property>
                                                         <property name="can_focus">False</property>
-                                                      </object>
-                                                    </child>
-                                                  </object>
-                                                  <packing>
-                                                    <property name="expand">False</property>
-                                                    <property name="fill">True</property>
-                                                    <property name="position">1</property>
-                                                  </packing>
-                                                </child>
-                                                <child>
-                                                  <object class="GtkAlignment" id="alignment4">
-                                                    <property name="visible">True</property>
-                                                    <property name="can_focus">False</property>
-                                                    <property name="left_padding">8</property>
-                                                    <child>
-                                                      <object class="GtkCheckButton" id="AudioLoopCheckButton">
-                                                        <property name="label" translatable="yes">Loop</property>
-                                                        <property name="visible">True</property>
-                                                        <property name="can_focus">True</property>
-                                                        <property name="receives_default">False</property>
                                                         <property name="xalign">0</property>
-                                                        <property name="draw_indicator">True</property>
+                                                        <property name="xscale">0.75</property>
+                                                        <property name="left_padding">8</property>
+                                                        <child>
+                                                          <object class="GtkScale" id="AudioSlider">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="adjustment">AudioSliderAdjustment</property>
+                                                            <property name="show_fill_level">True</property>
+                                                            <property name="fill_level">0</property>
+                                                            <property name="round_digits">3</property>
+                                                          </object>
+                                                        </child>
                                                       </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="pack_type">end</property>
+                                                        <property name="position">3</property>
+                                                      </packing>
                                                     </child>
                                                   </object>
-                                                  <packing>
-                                                    <property name="expand">False</property>
-                                                    <property name="fill">True</property>
-                                                    <property name="position">2</property>
-                                                  </packing>
-                                                </child>
-                                                <child>
-                                                  <object class="GtkAlignment" id="AudioSliderAlignment">
-                                                    <property name="visible">True</property>
-                                                    <property name="can_focus">False</property>
-                                                    <property name="xalign">0</property>
-                                                    <property name="xscale">0.75</property>
-                                                    <property name="left_padding">8</property>
-                                                    <child>
-                                                      <object class="GtkScale" id="AudioSlider">
-                                                        <property name="visible">True</property>
-                                                        <property name="can_focus">True</property>
-                                                        <property name="adjustment">AudioSliderAdjustment</property>
-                                                        <property name="show_fill_level">True</property>
-                                                        <property name="fill_level">0</property>
-                                                        <property name="round_digits">3</property>
-                                                      </object>
-                                                    </child>
-                                                  </object>
-                                                  <packing>
-                                                    <property name="expand">True</property>
-                                                    <property name="fill">True</property>
-                                                    <property name="pack_type">end</property>
-                                                    <property name="position">3</property>
-                                                  </packing>
                                                 </child>
                                               </object>
                                               <packing>
@@ -774,18 +844,36 @@
                                         <property name="vexpand">True</property>
                                         <property name="xalign">1</property>
                                         <property name="yalign">1</property>
-                                        <property name="right_padding">4</property>
+                                        <property name="left_padding">4</property>
                                         <child>
-                                          <object class="GtkFrame" id="ExportQueueFrame">
+                                          <object class="GtkBox" id="box10">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
-                                            <property name="label_xalign">0.05000000074505806</property>
-                                            <property name="shadow_type">none</property>
+                                            <property name="orientation">vertical</property>
                                             <child>
                                               <object class="GtkAlignment" id="alignment6">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
-                                                <property name="left_padding">12</property>
+                                                <property name="xalign">0</property>
+                                                <child>
+                                                  <object class="GtkLabel" id="label6">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="label" translatable="yes">Export Queue</property>
+                                                    <property name="xalign">0</property>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkAlignment" id="alignment14">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <child>
                                                   <object class="GtkScrolledWindow" id="ExportQueueScrolledWindow">
                                                     <property name="visible">True</property>
@@ -802,7 +890,7 @@
                                                         <property name="search_column">0</property>
                                                         <property name="fixed_height_mode">True</property>
                                                         <child internal-child="selection">
-                                                          <object class="GtkTreeSelection" id="treeview-selection3"/>
+                                                          <object class="GtkTreeSelection" id="treeview-selection"/>
                                                         </child>
                                                         <child>
                                                           <object class="GtkTreeViewColumn" id="itemFilenameColumn">
@@ -836,13 +924,11 @@
                                                   </object>
                                                 </child>
                                               </object>
-                                            </child>
-                                            <child type="label">
-                                              <object class="GtkLabel" id="label6">
-                                                <property name="visible">True</property>
-                                                <property name="can_focus">False</property>
-                                                <property name="label" translatable="yes">Export Queue</property>
-                                              </object>
+                                              <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">1</property>
+                                              </packing>
                                             </child>
                                           </object>
                                         </child>
@@ -886,7 +972,24 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkAlignment" id="alignment13">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkSeparator" id="separator6">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
           </packing>
         </child>
         <child>
@@ -936,7 +1039,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>
@@ -984,6 +1087,12 @@ Any bugs in the software or underlying libraries should be reported to the distr
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkListStore" id="MipLevelListStore">
+    <columns>
+      <!-- column-name mipDescription -->
+      <column type="gchararray"/>
+    </columns>
   </object>
   <object class="GtkMenu" id="QueueContextMenu">
     <property name="visible">True</property>

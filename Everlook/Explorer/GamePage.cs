@@ -102,30 +102,52 @@ namespace Everlook.Explorer
 			this.TreeModel = new FileTreeModel(nodeTree);
 
 			this.TreeAlignment = new Alignment(0.5f, 0.5f, 1.0f, 1.0f);
+			this.TreeAlignment.TopPadding = 1;
+			this.TreeAlignment.BottomPadding = 1;
 
-			this.TreeFilter = new TreeModelFilter(new TreeModelAdapter(this.TreeModel), new TreePath());
+			this.TreeFilter = new TreeModelFilter(new TreeModelAdapter(this.TreeModel), null);
+			this.TreeFilter.VisibleFunc = TreeModelVisibilityFunc;
+			this.TreeFilter.Refilter();
+
 			this.TreeSorter = new TreeModelSort(this.TreeFilter);
 
 			this.TreeSorter.SetSortFunc(0, SortGameTreeRow);
 			this.TreeSorter.SetSortColumnId(0, SortType.Descending);
 
-			this.Tree = new TreeView(this.TreeSorter);
+			this.Tree = new TreeView(this.TreeSorter)
+			{
+				HeadersVisible = true,
+				EnableTreeLines = true
+			};
 
-			this.NodeIconRenderer = new CellRendererPixbuf();
-			this.NodeNameRenderer = new CellRendererText();
+			this.NodeIconRenderer = new CellRendererPixbuf
+			{
+				Xalign = 0.0f
+			};
+			this.NodeNameRenderer = new CellRendererText
+			{
+				Xalign = 0.0f
+			};
 
 			TreeViewColumn column = new TreeViewColumn
 			{
 				Title = "Data Files",
 				Spacing = 4
 			};
-			column.PackStart(this.NodeIconRenderer, true);
-			column.PackStart(this.NodeNameRenderer, true);
+			column.PackStart(this.NodeIconRenderer, false);
+			column.PackStart(this.NodeNameRenderer, false);
 
 			column.SetCellDataFunc(this.NodeIconRenderer, RenderNodeIcon);
 			column.SetCellDataFunc(this.NodeNameRenderer, RenderNodeName);
 
-			this.TreeAlignment.Add(this.Tree);
+			this.Tree.AppendColumn(column);
+
+			ScrolledWindow sw = new ScrolledWindow
+			{
+				this.Tree
+			};
+
+			this.TreeAlignment.Add(sw);
 
 			this.Tree.RowActivated += OnRowActivated;
 			this.Tree.ButtonPressEvent += OnButtonPressed;
@@ -170,6 +192,13 @@ namespace Everlook.Explorer
 			};
 			this.CopyPathItem.Activated += OnCopyPath;
 			this.TreeContextMenu.Add(this.CopyPathItem);
+
+			this.TreeAlignment.ShowAll();
+		}
+
+		private bool TreeModelVisibilityFunc(ITreeModel model, TreeIter iter)
+		{
+			return true;
 		}
 
 		/// <summary>
@@ -180,7 +209,7 @@ namespace Everlook.Explorer
 		/// <param name="model"></param>
 		/// <param name="iter"></param>
 		/// <exception cref="NotImplementedException"></exception>
-		private static void RenderNodeIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
+		private void RenderNodeIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			CellRendererPixbuf cellIcon = cell as CellRendererPixbuf;
 			FileNode node = (FileNode) model.GetValue(iter, 0);
@@ -193,6 +222,24 @@ namespace Everlook.Explorer
 			if (node.Type.HasFlag(NodeType.Directory))
 			{
 				cellIcon.Pixbuf = IconManager.GetIconForFiletype(WarcraftFileType.Directory);
+				return;
+			}
+
+			if (node.Type.HasFlag(NodeType.Deleted))
+			{
+				cellIcon.Pixbuf = IconManager.GetIcon("package-broken");
+				return;
+			}
+
+			if (node.Type.HasFlag(NodeType.Meta) && this.TreeModel.GetNodeName(node) == "Packages")
+			{
+				cellIcon.Pixbuf = IconManager.GetIcon("applications-other");
+				return;
+			}
+
+			if (node.Type.HasFlag(NodeType.Package))
+			{
+				cellIcon.Pixbuf = IconManager.GetIcon("package-x-generic");
 				return;
 			}
 
@@ -222,13 +269,12 @@ namespace Everlook.Explorer
 			if (node.Type.HasFlag(NodeType.Deleted))
 			{
 				cellText.Style = Style.Italic;
-				cellText.ForegroundRgba = new RGBA
-				{
-					Red = 1.0,
-					Green = 0.0,
-					Blue = 0.0,
-					Alpha = 1.0
-				};
+				cellText.Foreground = "#D74328";
+			}
+			else
+			{
+				cellText.Style = Style.Normal;
+				cellText.Foreground = null;
 			}
 		}
 
@@ -452,7 +498,10 @@ namespace Everlook.Explorer
 			TreeIter selectedIter;
 			this.Tree.Selection.GetSelected(out selectedIter);
 
-			return this.TreeModel.GetReferenceByIter(this.Packages, selectedIter);
+			TreeIter filterIter = this.TreeSorter.ConvertIterToChildIter(selectedIter);
+			TreeIter modeliter = this.TreeFilter.ConvertIterToChildIter(filterIter);
+
+			return this.TreeModel.GetReferenceByIter(this.Packages, modeliter);
 		}
 
 		/// <summary>
@@ -518,6 +567,19 @@ namespace Everlook.Explorer
 
 			NodeType typeofA = nodeA.Type;
 			NodeType typeofB = nodeB.Type;
+
+			// Special case for meta nodes - if A is a meta node, but B is not
+			if (typeofA.HasFlag(NodeType.Meta) && !typeofB.HasFlag(NodeType.Meta))
+			{
+				// Then it should always sort after B
+				return sortAAfterB;
+			}
+
+			if (typeofB.HasFlag(NodeType.Meta) && !typeofA.HasFlag(NodeType.Meta))
+			{
+				// Then it should always sort before B
+				return sortABeforeB;
+			}
 
 			if (typeofA < typeofB)
 			{

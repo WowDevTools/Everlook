@@ -78,9 +78,9 @@ namespace Everlook.Explorer
 		public string GetNodePackage(FileNode node)
 		{
 			FileNode currentNode = node;
-			while (!node.Type.HasFlag(NodeType.Package) || !node.Type.HasFlag(NodeType.Meta))
+			while (!(currentNode.Type.HasFlag(NodeType.Package) || currentNode.Type.HasFlag(NodeType.Meta)))
 			{
-				currentNode = this.Tree.GetNode((ulong)node.ParentOffset);
+				currentNode = this.Tree.GetNode((ulong)currentNode.ParentOffset);
 			}
 
 			return GetNodeName(currentNode);
@@ -96,7 +96,7 @@ namespace Everlook.Explorer
 			StringBuilder sb = new StringBuilder();
 
 			FileNode currentNode = node;
-			while (!node.Type.HasFlag(NodeType.Package) || !node.Type.HasFlag(NodeType.Meta))
+			while (!(node.Type.HasFlag(NodeType.Package) || currentNode.Type.HasFlag(NodeType.Meta)))
 			{
 				sb.Append(GetNodeName(currentNode));
 
@@ -105,7 +105,7 @@ namespace Everlook.Explorer
 					sb.Append('\\');
 				}
 
-				currentNode = this.Tree.GetNode((ulong)node.ParentOffset);
+				currentNode = this.Tree.GetNode((ulong)currentNode.ParentOffset);
 			}
 
 			return sb.ToString();
@@ -119,6 +119,11 @@ namespace Everlook.Explorer
 		/// <returns></returns>
 		public FileReference GetReferenceByIter(PackageGroup packageGroup, TreeIter iter)
 		{
+			if ((long)iter.UserData > this.Tree.TreeReader.BaseStream.Length)
+			{
+				return null;
+			}
+
 			FileNode node = this.Tree.GetNode((ulong) iter.UserData);
 			if (node == null)
 			{
