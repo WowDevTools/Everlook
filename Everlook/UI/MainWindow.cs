@@ -241,9 +241,6 @@ namespace Everlook.UI
 				catch (OperationCanceledException ocex)
 				{
 					Log.Info("Cancelled game loading operation.");
-
-					this.GamePages.Clear();
-					this.GameTabNotebook.ClearPages();
 				}
 			}
 

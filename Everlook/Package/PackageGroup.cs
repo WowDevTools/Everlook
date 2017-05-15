@@ -95,6 +95,7 @@ namespace Everlook.Package
 		/// <param name="groupName">The name of the group that is to be created.</param>
 		/// <param name="packageDirectory">The directory where the packages to load are.</param>
 		/// <param name="ct">A <see cref="CancellationToken"/> which can be used to cancel the operation.</param>
+		/// <param name="progress">The progress reporting object.</param>
 		/// <returns></returns>
 		public static async Task<PackageGroup> LoadAsync(string alias, string groupName, string packageDirectory,
 			CancellationToken ct = new CancellationToken(),
