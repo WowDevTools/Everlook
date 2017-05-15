@@ -26,7 +26,6 @@ using Warcraft.MPQ.FileInfo;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Everlook.Explorer;
-using liblistfile;
 using log4net;
 using Warcraft.Core;
 

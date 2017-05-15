@@ -30,7 +30,6 @@ using liblistfile;
 using liblistfile.NodeTree;
 using Object = GLib.Object;
 using FileNode = liblistfile.NodeTree.Node;
-using Node = Gtk.Node;
 
 namespace Everlook.Explorer
 {
