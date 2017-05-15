@@ -23,6 +23,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using log4net;
 using Warcraft.Core.Extensions;
 
 namespace Everlook.Configuration
@@ -39,6 +40,12 @@ namespace Everlook.Configuration
 	{
 		private readonly object StorageLock = new object();
 
+
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(GamePathStorage));
+
 		/// <summary>
 		/// A static instance of the path storage class.
 		/// </summary>
@@ -48,7 +55,7 @@ namespace Everlook.Configuration
 		/// Gets the stored game paths.
 		/// </summary>
 		/// <value>The game paths.</value>
-		public List<string> GamePaths => ReadStoredPaths();
+		public List<(string Alias, string Path)> GamePaths => ReadStoredPaths();
 
 		private GamePathStorage()
 		{
@@ -67,10 +74,11 @@ namespace Everlook.Configuration
 		/// <summary>
 		/// Stores a provided path in the path storage.
 		/// </summary>
+		/// <param name="alias">The alias of the path which is displayed in the UI.</param>
 		/// <param name="pathToStore">Path to store.</param>
-		public void StorePath(string pathToStore)
+		public void StorePath(string alias, string pathToStore)
 		{
-			if (!this.GamePaths.Contains(pathToStore))
+			if (!this.GamePaths.Contains((alias, pathToStore)))
 			{
 				lock (this.StorageLock)
 				{
@@ -78,6 +86,7 @@ namespace Everlook.Configuration
 					{
 						using (BinaryWriter bw = new BinaryWriter(fs))
 						{
+							bw.WriteNullTerminatedString(alias);
 							bw.WriteNullTerminatedString(pathToStore);
 							bw.Flush();
 						}
@@ -89,24 +98,26 @@ namespace Everlook.Configuration
 		/// <summary>
 		/// Removes a path that's been stored.
 		/// </summary>
+		/// <param name="alias">The alias of the path.</param>
 		/// <param name="pathToRemove">Path to remove.</param>
-		public void RemoveStoredPath(string pathToRemove)
+		public void RemoveStoredPath(string alias, string pathToRemove)
 		{
-			List<string> storedPaths = this.GamePaths;
-			if (storedPaths.Contains(pathToRemove))
+			List<(string Alias, string Path)> storedPaths = this.GamePaths;
+			if (storedPaths.Contains((alias, pathToRemove)))
 			{
 				ClearPaths();
 				lock (this.StorageLock)
 				{
-					storedPaths.Remove(pathToRemove);
+					storedPaths.Remove((alias, pathToRemove));
 
 					using (FileStream fs = File.OpenWrite(GetPathStoragePath()))
 					{
 						using (BinaryWriter bw = new BinaryWriter(fs))
 						{
-							foreach (string pathToStoreAgain in storedPaths)
+							foreach ((string remainingAlias, string remainingPath) in storedPaths)
 							{
-								bw.WriteNullTerminatedString(pathToStoreAgain);
+								bw.WriteNullTerminatedString(remainingAlias);
+								bw.WriteNullTerminatedString(remainingPath);
 								bw.Flush();
 							}
 						}
@@ -115,20 +126,28 @@ namespace Everlook.Configuration
 			}
 		}
 
-		private List<string> ReadStoredPaths()
+		private List<(string Alias, string Path)> ReadStoredPaths()
 		{
-			List<string> storedPaths = new List<string>();
+			List<(string, string)> storedPaths = new List<(string, string)>();
 			lock (this.StorageLock)
 			{
-				using (FileStream fs = File.OpenRead(GetPathStoragePath()))
+				try
 				{
-					using (BinaryReader br = new BinaryReader(fs))
+					using (FileStream fs = File.OpenRead(GetPathStoragePath()))
 					{
-						while (br.BaseStream.Position != br.BaseStream.Length)
+						using (BinaryReader br = new BinaryReader(fs))
 						{
-							storedPaths.Add(br.ReadNullTerminatedString());
+							while (br.BaseStream.Position != br.BaseStream.Length)
+							{
+								storedPaths.Add((br.ReadNullTerminatedString(), br.ReadNullTerminatedString()));
+							}
 						}
 					}
+				}
+				catch (EndOfStreamException e)
+				{
+					File.Delete(GetPathStoragePath());
+					Log.Warn("Failed to read the stored paths with a fatal error. Deleting path store.", e);
 				}
 			}
 

@@ -24,12 +24,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Warcraft.MPQ.FileInfo;
 using Warcraft.MPQ;
-using Everlook.Configuration;
 using Everlook.Explorer;
 using log4net;
-using Warcraft.Core;
+using FileNode = liblistfile.NodeTree.Node;
 
 namespace Everlook.Package
 {
@@ -53,47 +54,81 @@ namespace Everlook.Package
 		public readonly string GroupName;
 
 		/// <summary>
-		/// The root package directory.
-		/// </summary>
-		private readonly string RootPackageDirectory;
-
-		/// <summary>
 		/// The packages handled by this package group.
 		/// </summary>
 		private readonly List<PackageInteractionHandler> Packages = new List<PackageInteractionHandler>();
 
 		/// <summary>
-		/// The package listfiles.
-		/// Key: The package name.
-		/// Value: A list of all files present in the package.
-		/// </summary>
-		public readonly Dictionary<string, List<string>> PackageListfiles = new Dictionary<string, List<string>>();
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Package.PackageGroup"/> class.
 		/// </summary>
-		public PackageGroup(string inGroupName, string inRootPackageDirectory)
+		public PackageGroup(string groupName, string rootPackageDirectory)
 		{
-			if (string.IsNullOrEmpty(inGroupName))
+			if (string.IsNullOrEmpty(groupName))
 			{
-				throw new ArgumentNullException(inGroupName, "A package group must be provided with a name.");
+				throw new ArgumentNullException(groupName, "A package group must be provided with a name.");
 			}
 
-			this.RootPackageDirectory = inRootPackageDirectory;
+			this.GroupName = groupName;
 
-			this.GroupName = inGroupName;
+			LoadPackagesFromPath(rootPackageDirectory);
+		}
+
+		/// <summary>
+		/// Creates a new, empty package group.
+		/// </summary>
+		/// <param name="groupName"></param>
+		/// <exception cref="ArgumentNullException"></exception>
+		public PackageGroup(string groupName)
+		{
+			if (string.IsNullOrEmpty(groupName))
+			{
+				throw new ArgumentNullException(groupName, "A package group must be provided with a name.");
+			}
+
+			this.GroupName = groupName;
+		}
+
+		/// <summary>
+		/// Creates a new package group, and asynchronously loads all of the packages in the provided directory.
+		/// </summary>
+		/// <param name="alias">The alias of the package group that's being loaded.</param>
+		/// <param name="groupName">The name of the group that is to be created.</param>
+		/// <param name="packageDirectory">The directory where the packages to load are.</param>
+		/// <param name="ct">A <see cref="CancellationToken"/> which can be used to cancel the operation.</param>
+		/// <param name="progress">The progress reporting object.</param>
+		/// <returns></returns>
+		public static async Task<PackageGroup> LoadAsync(string alias, string groupName, string packageDirectory,
+			CancellationToken ct = new CancellationToken(),
+			IProgress<GameLoadingProgress> progress = null)
+		{
+			PackageGroup group = new PackageGroup(groupName);
 
 			// Grab all packages in the game directory
-			List<string> packagePaths = Directory.EnumerateFiles(this.RootPackageDirectory, "*.*", SearchOption.AllDirectories)
-				.OrderBy(a => a)
+			List<string> packagePaths = Directory.EnumerateFiles(packageDirectory, "*.*", SearchOption.AllDirectories)
 				.Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ"))
+				.OrderBy(a => a)
 				.ToList();
 
+			// Internal counters for progress reporting
+			double completedSteps = 0;
+			double totalSteps = packagePaths.Count;
 			foreach (string packagePath in packagePaths)
 			{
+				ct.ThrowIfCancellationRequested();
+
 				try
 				{
-					this.Packages.Add(new PackageInteractionHandler(packagePath));
+					progress?.Report(new GameLoadingProgress
+					{
+						CompletionPercentage = completedSteps / totalSteps,
+						State = GameLoadingState.LoadingPackages,
+						Alias = alias
+					});
+
+					PackageInteractionHandler handler = await PackageInteractionHandler.LoadAsync(packagePath);
+					group.AddPackage(handler);
+
+					++completedSteps;
 				}
 				catch (FileLoadException fex)
 				{
@@ -107,35 +142,58 @@ namespace Everlook.Package
 				}
 			}
 
-			foreach (PackageInteractionHandler package in this.Packages)
+			return group;
+		}
+
+		/// <summary>
+		/// Loads all packages in the specified path into the package group.
+		/// </summary>
+		/// <param name="path"></param>
+		public void LoadPackagesFromPath(string path)
+		{
+			// Grab all packages in the game directory
+			List<string> packagePaths = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
+				.Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ"))
+				.OrderBy(a => a)
+				.ToList();
+
+			foreach (string packagePath in packagePaths)
 			{
-				if (BundledListfiles.Instance.HasListfileForPackage(package))
+				try
 				{
-					this.PackageListfiles.Add(package.PackageName, BundledListfiles.Instance.GetBundledListfile(package));
+					AddPackage(new PackageInteractionHandler(packagePath));
 				}
-				else
+				catch (FileLoadException fex)
 				{
-					// Try lazy loading the listfile, since we may be the first package to request it.
-					if (BundledListfiles.Instance.LoadListfileByPackage(package))
-					{
-						this.PackageListfiles.Add(package.PackageName, BundledListfiles.Instance.GetBundledListfile(package));
-					}
-					else
-					{
-						try
-						{
-							this.PackageListfiles.Add(package.PackageName, package.GetFileList());
-						}
-						catch (InvalidFileSectorTableException fex)
-						{
-							Log.Warn($"The listfile in the package {package.PackageName} could not be extracted due to " +
-							         $"an invalid sector offset table (the exception states that \"{fex.Message}\".\n" +
-							         $"It is likely that the archive is corrupted, or that it has been maliciously " +
-							         $"zeroed.");
-						}
-					}
+					Log.Warn($"FileLoadException for package \"{packagePath}\": {fex.Message}\n" +
+					         $"Please report this on GitHub or via email.");
+				}
+				catch (NotImplementedException nex)
+				{
+					Log.Warn($"NotImplementedException for package \"{packagePath}\": {nex.Message}\n" +
+					         $"There's a good chance your game version isn't supported yet.");
 				}
 			}
+		}
+
+		/// <summary>
+		/// Adds a package to the package group.
+		/// </summary>
+		/// <param name="package"></param>
+		/// <exception cref="ArgumentNullException"></exception>
+		public void AddPackage(PackageInteractionHandler package)
+		{
+			if (package == null)
+			{
+				throw new ArgumentNullException(nameof(package));
+			}
+
+			if (this.Packages.Contains(package))
+			{
+				return;
+			}
+
+			this.Packages.Add(package);
 		}
 
 		/// <summary>
@@ -146,16 +204,8 @@ namespace Everlook.Package
 		/// <param name="fileReference">Reference reference.</param>
 		public MPQFileInfo GetReferenceInfo(FileReference fileReference)
 		{
-			for (int i = this.Packages.Count - 1; i >= 0; --i)
-			{
-				if (this.Packages[i].ContainsFile(fileReference))
-				{
-					return this.Packages[i].GetReferenceInfo(fileReference);
-				}
-			}
-			return null;
+			return GetFileInfo(fileReference.FilePath);
 		}
-
 
 		/// <summary>
 		/// Gets the file info for the specified reference in its specific package. If the file does not exist in
@@ -163,7 +213,7 @@ namespace Everlook.Package
 		/// </summary>
 		/// <returns>The reference info.</returns>
 		/// <param name="fileReference">Reference reference.</param>
-		public MPQFileInfo GetUnversionedReferenceInfo(FileReference fileReference)
+		public MPQFileInfo GetVersionedReferenceInfo(FileReference fileReference)
 		{
 			PackageInteractionHandler package = GetPackageByName(fileReference.PackageName);
 			if (package != null)
@@ -180,7 +230,7 @@ namespace Everlook.Package
 		/// </summary>
 		/// <returns>The unversioned file or null.</returns>
 		/// <param name="fileReference">Reference reference.</param>
-		public byte[] ExtractUnversionedReference(FileReference fileReference)
+		public byte[] ExtractVersionedReference(FileReference fileReference)
 		{
 			PackageInteractionHandler package = GetPackageByName(fileReference.PackageName);
 			if (package != null)
@@ -188,7 +238,7 @@ namespace Everlook.Package
 				return package.ExtractReference(fileReference);
 			}
 
-			return null;
+			return ExtractReference(fileReference);
 		}
 
 		/// <summary>
@@ -202,14 +252,7 @@ namespace Everlook.Package
 		/// <param name="fileReference">Reference reference.</param>
 		public byte[] ExtractReference(FileReference fileReference)
 		{
-			for (int i = this.Packages.Count - 1; i >= 0; --i)
-			{
-				if (this.Packages[i].ContainsFile(fileReference))
-				{
-					return this.Packages[i].ExtractReference(fileReference);
-				}
-			}
-			return null;
+			return ExtractFile(fileReference.FilePath);
 		}
 
 		/// <summary>
@@ -217,17 +260,9 @@ namespace Everlook.Package
 		/// </summary>
 		/// <returns><c>true</c>, if reference exist was doesed, <c>false</c> otherwise.</returns>
 		/// <param name="fileReference">Reference reference.</param>
-		public bool DoesReferenceExist(FileReference fileReference)
+		public bool ContainsReference(FileReference fileReference)
 		{
-			for (int i = this.Packages.Count - 1; i >= 0; --i)
-			{
-				if (this.Packages[i].ContainsFile(fileReference))
-				{
-					return true;
-				}
-			}
-
-			return false;
+			return ContainsFile(fileReference.FilePath);
 		}
 
 		/// <summary>
@@ -257,8 +292,14 @@ namespace Everlook.Package
 		/// <param name="filePath">Reference path.</param>
 		public byte[] ExtractFile(string filePath)
 		{
-			FileReference fileReference = new FileReference(this, null, "", filePath);
-			return ExtractReference(fileReference);
+			for (int i = this.Packages.Count - 1; i >= 0; --i)
+			{
+				if (this.Packages[i].ContainsFile(filePath))
+				{
+					return this.Packages[i].ExtractFile(filePath);
+				}
+			}
+			return null;
 		}
 
 		/// <summary>
@@ -268,7 +309,7 @@ namespace Everlook.Package
 		/// <c>false</c>
 		public bool HasFileList()
 		{
-			return this.PackageListfiles.Count > 0;
+			return false;
 		}
 
 		/// <summary>
@@ -278,16 +319,7 @@ namespace Everlook.Package
 		/// <returns>The listfile.</returns>
 		public List<string> GetFileList()
 		{
-			// Merge all listfiles in the package lists.
-
-			List<List<string>> listFiles = new List<List<string>>();
-
-			foreach (KeyValuePair<string, List<string>> listPair in this.PackageListfiles)
-			{
-				listFiles.Add(listPair.Value);
-			}
-
-			return listFiles.SelectMany(t => t).Distinct().ToList();
+			return null;
 		}
 
 		/// <summary>
@@ -298,8 +330,15 @@ namespace Everlook.Package
 		/// <param name="filePath">Reference path.</param>
 		public bool ContainsFile(string filePath)
 		{
-			FileReference fileReference = new FileReference(this, null, "", filePath);
-			return DoesReferenceExist(fileReference);
+			for (int i = this.Packages.Count - 1; i >= 0; --i)
+			{
+				if (this.Packages[i].ContainsFile(filePath))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -309,8 +348,14 @@ namespace Everlook.Package
 		/// <param name="filePath">Reference path.</param>
 		public MPQFileInfo GetFileInfo(string filePath)
 		{
-			FileReference fileReference = new FileReference(this, null, "", filePath);
-			return GetReferenceInfo(fileReference);
+			for (int i = this.Packages.Count - 1; i >= 0; --i)
+			{
+				if (this.Packages[i].ContainsFile(filePath))
+				{
+					return this.Packages[i].GetFileInfo(filePath);
+				}
+			}
+			return null;
 		}
 
 		/// <summary>
@@ -325,13 +370,10 @@ namespace Everlook.Package
 			if (other != null)
 			{
 				return this.GroupName.Equals(other.GroupName) &&
-				this.RootPackageDirectory.Equals(other.RootPackageDirectory) &&
 				this.Packages.Equals(other.Packages);
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -348,7 +390,7 @@ namespace Everlook.Package
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()
 		{
-			return (this.GroupName.GetHashCode() + this.RootPackageDirectory.GetHashCode() + this.Packages.GetHashCode()).GetHashCode();
+			return (this.GroupName.GetHashCode() + this.Packages.GetHashCode()).GetHashCode();
 		}
 
 		#endregion

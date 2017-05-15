@@ -20,6 +20,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System.Collections.Generic;
+using Everlook.Explorer;
 using Gtk;
 using OpenTK;
 using UIElement = Gtk.Builder.ObjectAttribute;
@@ -52,17 +54,8 @@ namespace Everlook.UI
 		/*
 			Game explorer elements
 		*/
-		[UIElement] private readonly TreeView GameExplorerTreeView;
-		[UIElement] private readonly TreeStore GameExplorerTreeStore;
-		[UIElement] private readonly TreeModelFilter GameExplorerTreeFilter;
-		[UIElement] private readonly TreeModelSort GameExplorerTreeSorter;
-
-		[UIElement] private readonly Menu FileContextMenu;
-		[UIElement] private readonly ImageMenuItem ExtractItem;
-		[UIElement] private readonly ImageMenuItem ExportItem;
-		[UIElement] private readonly ImageMenuItem OpenItem;
-		[UIElement] private readonly ImageMenuItem CopyItem;
-		[UIElement] private readonly ImageMenuItem QueueItem;
+		[UIElement] private readonly Notebook GameTabNotebook;
+		private readonly List<GamePage> GamePages = new List<GamePage>();
 
 		/*
 			General item control elements

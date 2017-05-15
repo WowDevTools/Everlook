@@ -23,11 +23,10 @@
 using System;
 using Warcraft.Core;
 using System.IO;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using Everlook.Package;
-using Gtk;
+using liblistfile.NodeTree;
 using Warcraft.MPQ.FileInfo;
+using FileNode = liblistfile.NodeTree.Node;
 
 namespace Everlook.Explorer
 {
@@ -38,53 +37,33 @@ namespace Everlook.Explorer
 	public class FileReference : IEquatable<FileReference>
 	{
 		/// <summary>
-		/// Gets or sets the parent reference.
-		/// </summary>
-		/// <value>The parent reference.</value>
-		public FileReference ParentReference { get; protected set; }
-
-		/// <summary>
-		/// The <see cref="TreeIter"/> this FileReference maps to.
-		/// </summary>
-		public TreeIter ReferenceIter { get; set; }
-
-		/// <summary>
-		/// Contains a list of references that have this reference as a parent.
-		/// </summary>
-		public readonly List<FileReference> ChildReferences = new List<FileReference>();
-
-		/// <summary>
-		/// Gets or sets the group this reference belongs to.
+		/// Gets the group this reference belongs to.
 		/// </summary>
 		/// <value>The group.</value>
-		public PackageGroup PackageGroup { get; protected set; }
+		public PackageGroup PackageGroup { get; }
 
 		/// <summary>
-		/// Gets or sets the name of the package where the file is stored.
+		/// Gets the node this reference maps to.
+		/// </summary>
+		public FileNode Node { get; }
+
+		/// <summary>
+		/// Gets the name of the package where the file is stored.
 		/// </summary>
 		/// <value>The name of the package.</value>
-		public virtual string PackageName { get; set; } = "";
+		public string PackageName { get; } = "";
 
 		/// <summary>
-		/// Gets or sets the file path of the file inside the package.
+		/// Gets the file path of the file inside the package.
 		/// </summary>
 		/// <value>The file path.</value>
-		public virtual string FilePath { get; set; } = "";
-
-		/// <summary>
-		/// The current state of the item reference.
-		///</summary>
-		public ReferenceState State
-		{
-			get;
-			set;
-		} = ReferenceState.NotEnumerated;
+		public string FilePath { get; } = "";
 
 		/// <summary>
 		/// Gets the file info of this reference.
 		/// </summary>
 		/// <value>The file info.</value>
-		public virtual MPQFileInfo ReferenceInfo
+		public MPQFileInfo ReferenceInfo
 		{
 			get
 			{
@@ -92,42 +71,8 @@ namespace Everlook.Explorer
 				{
 					return this.PackageGroup.GetReferenceInfo(this);
 				}
-				else
-				{
-					return null;
-				}
-			}
-		}
 
-		/// <summary>
-		/// Walks through this reference's children and checks whether or not all of them have had their
-		/// children enumerated. Depending on the depth of the item, this may be an expensive operation.
-		/// </summary>
-		/// <value><c>true</c> if this instance is fully enumerated; otherwise, <c>false</c>.</value>
-		public bool IsFullyEnumerated
-		{
-			get
-			{
-				if (this.State != ReferenceState.Enumerated)
-				{
-					return false;
-				}
-
-				bool areChildrenEnumerated = true;
-				foreach (FileReference childReference in this.ChildReferences)
-				{
-					if (childReference.IsDirectory)
-					{
-						if (childReference.State != ReferenceState.Enumerated)
-						{
-							return false;
-						}
-
-						areChildrenEnumerated = areChildrenEnumerated & childReference.IsFullyEnumerated;
-					}
-				}
-
-				return areChildrenEnumerated;
+				return null;
 			}
 		}
 
@@ -135,40 +80,25 @@ namespace Everlook.Explorer
 		/// Gets a value indicating whether this reference is deleted in package it is stored in.
 		/// </summary>
 		/// <value><c>true</c> if this instance is deleted in package; otherwise, <c>false</c>.</value>
-		public virtual bool IsDeletedInPackage
-		{
-			get
-			{
-				if (this.ReferenceInfo != null && this.IsFile)
-				{
-					return this.ReferenceInfo.IsDeleted;
-				}
-				else if (this.IsDirectory)
-				{
-					return false;
-				}
-
-				return false;
-			}
-		}
+		public bool IsDeletedInPackage => this.Node.Type.HasFlag(NodeType.Deleted);
 
 		/// <summary>
 		/// Gets a value indicating whether this or not this reference is a package reference.
 		/// </summary>
 		/// <value><c>true</c> if this reference is a package; otherwise, <c>false</c>.</value>
-		public virtual bool IsPackage => !string.IsNullOrEmpty(this.PackageName) && string.IsNullOrEmpty(this.FilePath);
+		public bool IsPackage => this.Node.Type.HasFlag(NodeType.Package);
 
 		/// <summary>
 		/// Gets a value indicating whether this reference is a directory.
 		/// </summary>
 		/// <value><c>true</c> if this instance is directory; otherwise, <c>false</c>.</value>
-		public bool IsDirectory => !string.IsNullOrEmpty(this.FilePath) && GetReferencedFileType() == WarcraftFileType.Directory;
+		public bool IsDirectory => this.Node.Type.HasFlag(NodeType.Directory);
 
 		/// <summary>
 		/// Gets a value indicating whether this reference is a file.
 		/// </summary>
 		/// <value><c>true</c> if this instance is file; otherwise, <c>false</c>.</value>
-		public bool IsFile => !string.IsNullOrEmpty(this.FilePath) && (GetReferencedFileType() != WarcraftFileType.Directory);
+		public bool IsFile => this.Node.Type.HasFlag(NodeType.File);
 
 		/// <summary>
 		/// The name of the file.
@@ -177,93 +107,33 @@ namespace Everlook.Explorer
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileReference"/> class.
-		/// This creates a new, empty item reference.
 		/// </summary>
-		protected FileReference()
+		/// <param name="packageGroup">The package group this reference belongs to.</param>
+		/// <param name="node">The node object in the tree that this reference points to.</param>
+		/// <param name="packageName">The name of the package this reference belongs to.</param>
+		/// <param name="filePath">The complete file path this reference points to.</param>
+		public FileReference(PackageGroup packageGroup, Node node, string packageName, string filePath)
+			: this(packageGroup)
 		{
+			this.PackageName = packageName;
+			this.FilePath = filePath.Replace('/', '\\');
+			this.Node = node;
 		}
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileReference"/> class.
 		/// </summary>
-		/// <param name="inPackageGroup">The package group this reference belongs to.</param>
-		/// <param name="inParentReference">The parent of this item reference.</param>
-		/// <param name="inPackageName">The name of the package this reference belongs to.</param>
-		/// <param name="inFilePath">The complete file path this reference points to.</param>
-		public FileReference(PackageGroup inPackageGroup, FileReference inParentReference, string inPackageName, string inFilePath)
-			: this(inPackageGroup)
+		/// <param name="packageGroup">PackageGroup.</param>
+		public FileReference(PackageGroup packageGroup)
 		{
-			this.ParentReference = inParentReference;
-			this.PackageName = inPackageName;
-			this.FilePath = inFilePath;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="FileReference"/> class by
-		/// appending the provided subpath to the provided refererence's file path.
-		/// </summary>
-		/// <param name="inPackageGroup">The package group this reference belongs to.</param>
-		/// <param name="inParentReference">In reference.</param>
-		/// <param name="subPath">Sub directory.</param>
-		public FileReference(PackageGroup inPackageGroup, FileReference inParentReference, string subPath)
-			: this(inPackageGroup)
-		{
-			this.ParentReference = inParentReference;
-			this.PackageName = inParentReference.PackageName;
-			this.FilePath = inParentReference.FilePath + subPath;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="FileReference"/> class.
-		/// </summary>
-		/// <param name="inPackageGroup">PackageGroup.</param>
-		public FileReference(PackageGroup inPackageGroup)
-		{
-			this.PackageGroup = inPackageGroup;
-		}
-
-		/// <summary>
-		/// Determines whether or not this <see cref="FileReference"/> has been added to the UI
-		/// by seeing if its associated <see cref="TreeIter"/> is zero (the default) or not.
-		/// </summary>
-		/// <returns></returns>
-		public bool HasBeenAddedToTheUI()
-		{
-			return !this.ReferenceIter.Equals(TreeIter.Zero);
+			this.PackageGroup = packageGroup;
 		}
 
 		/// <summary>
 		/// Extracts this instance from the package group it is associated with.
 		/// </summary>
-		public virtual byte[] Extract()
+		public byte[] Extract()
 		{
-			return this.PackageGroup.ExtractUnversionedReference(this);
-		}
-
-		/// <summary>
-		/// Gets the name of the referenced item.
-		/// </summary>
-		/// <returns>The referenced item name.</returns>
-		public virtual string GetReferencedItemName()
-		{
-			string itemName;
-			if (this.ParentReference == null || string.IsNullOrEmpty(this.ParentReference.FilePath))
-			{
-				itemName = this.FilePath;
-			}
-			else
-			{
-				itemName = this.FilePath.Substring(this.ParentReference.FilePath.Length);
-			}
-
-			if (this.IsDirectory)
-			{
-				// Remove the trailing slash from directory names.
-				int slashIndex = itemName.LastIndexOf("\\", StringComparison.Ordinal);
-				itemName = itemName.Substring(0, slashIndex);
-			}
-
-			return itemName;
+			return this.PackageGroup.ExtractVersionedReference(this);
 		}
 
 		/// <summary>
@@ -272,131 +142,7 @@ namespace Everlook.Explorer
 		/// <returns>The referenced file type.</returns>
 		public WarcraftFileType GetReferencedFileType()
 		{
-			string itemPath = this.FilePath.ToLower();
-			if (!itemPath.EndsWith("\\"))
-			{
-				string fileExtension = Path.GetExtension(itemPath).Replace(".", "");
-
-				switch (fileExtension)
-				{
-					case "mpq":
-					{
-						return WarcraftFileType.MoPaQArchive;
-					}
-					case "toc":
-					{
-						return WarcraftFileType.AddonManifest;
-					}
-					case "sig":
-					{
-						return WarcraftFileType.AddonManifestSignature;
-					}
-					case "wtf":
-					{
-						return WarcraftFileType.ConfigurationFile;
-					}
-					case "dbc":
-					{
-						return WarcraftFileType.DatabaseContainer;
-					}
-					case "bls":
-					{
-						return WarcraftFileType.Shader;
-					}
-					case "wlw":
-					{
-						return WarcraftFileType.TerrainWater;
-					}
-					case "wlq":
-					{
-						return WarcraftFileType.TerrainLiquid;
-					}
-					case "wdl":
-					{
-						return WarcraftFileType.TerrainLiquid;
-					}
-					case "wdt":
-					{
-						return WarcraftFileType.TerrainTable;
-					}
-					case "adt":
-					{
-						return WarcraftFileType.TerrainData;
-					}
-					case "blp":
-					{
-						return WarcraftFileType.BinaryImage;
-					}
-					case "trs":
-					{
-						return WarcraftFileType.Hashmap;
-					}
-					case "m2":
-					case "mdx":
-					{
-						return WarcraftFileType.GameObjectModel;
-					}
-					case "wmo":
-					{
-						Regex groupDetectRegex = new Regex("(.+_[0-9]{3}.wmo)", RegexOptions.Multiline);
-
-						if (groupDetectRegex.IsMatch(itemPath))
-						{
-							return WarcraftFileType.WorldObjectModelGroup;
-						}
-						else
-						{
-							return WarcraftFileType.WorldObjectModel;
-						}
-					}
-					case "mp3":
-					{
-						return WarcraftFileType.MP3Audio;
-					}
-					case "wav":
-					{
-						return WarcraftFileType.WaveAudio;
-					}
-					case "xml":
-					{
-						return WarcraftFileType.XML;
-					}
-					case "jpg":
-					case "jpeg":
-					{
-						return WarcraftFileType.JPGImage;
-					}
-					case "gif":
-					{
-						return WarcraftFileType.GIFImage;
-					}
-					case "png":
-					{
-						return WarcraftFileType.PNGImage;
-					}
-					case "ini":
-					{
-						return WarcraftFileType.INI;
-					}
-					case "pdf":
-					{
-						return WarcraftFileType.PDF;
-					}
-					case "htm":
-					case "html":
-					{
-						return WarcraftFileType.HTML;
-					}
-					default:
-					{
-						return WarcraftFileType.Unknown;
-					}
-				}
-			}
-			else
-			{
-				return WarcraftFileType.Directory;
-			}
+			return FileInfoUtilities.GetFileType(this.FilePath);
 		}
 
 		#region IEquatable implementation
@@ -423,26 +169,12 @@ namespace Everlook.Explorer
 		{
 			if (other != null)
 			{
-				bool parentsEqual = false;
-				if (this.ParentReference != null && other.ParentReference != null)
-				{
-					parentsEqual = this.ParentReference.Equals(other.ParentReference);
-				}
-				else if (this.ParentReference == null && other.ParentReference == null)
-				{
-					parentsEqual = true;
-				}
-
 				return
-					parentsEqual &&
-					this.PackageGroup == other.PackageGroup &&
+					this.PackageGroup.Equals(other.PackageGroup) &&
 					this.PackageName == other.PackageName &&
 					this.FilePath == other.FilePath;
 			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
 
 		#endregion
@@ -462,22 +194,12 @@ namespace Everlook.Explorer
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()
 		{
-			if (this.ParentReference != null)
-			{
-				return (this.PackageName.GetHashCode() +
-						this.FilePath.GetHashCode() +
-						this.ParentReference.GetHashCode() +
-						this.PackageGroup.GroupName.GetHashCode()
-				).GetHashCode();
-			}
-			else
-			{
-				return (this.PackageName.GetHashCode() +
-						this.FilePath.GetHashCode() +
-						0 +
-						this.PackageGroup.GroupName.GetHashCode()
-				).GetHashCode();
-			}
+			return (
+				this.PackageName.GetHashCode() +
+				this.FilePath.GetHashCode() +
+				this.PackageGroup.GroupName.GetHashCode()
+			).GetHashCode();
+
 		}
 	}
 }

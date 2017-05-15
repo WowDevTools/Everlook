@@ -21,10 +21,8 @@
 //
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Everlook.Configuration;
 using Everlook.Explorer;
-using Everlook.Utility;
 using Gdk;
 using Gtk;
 
@@ -81,10 +79,11 @@ namespace Everlook.UI
 
 		private void LoadInformation()
 		{
-			this.Title = "Export Directory | " + this.ExportTarget.GetReferencedItemName();
+			this.Title = "Export Directory | " + this.ExportTarget.Filename;
 			this.ExportDirectoryFileChooserButton.SetFilename(this.Config.GetDefaultExportDirectory());
 
 			// Load all references
+			/*
 			foreach (FileReference childReference in this.ExportTarget.ChildReferences)
 			{
 				// TODO: Support recursive folder export
@@ -98,6 +97,7 @@ namespace Everlook.UI
 					}
 				}
 			}
+			*/
 		}
 
 		/// <summary>
@@ -105,6 +105,7 @@ namespace Everlook.UI
 		/// </summary>
 		public void RunExport()
 		{
+			/*
 			this.ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
 			{
 				bool bShouldExport = (bool) this.ItemExportListStore.GetValue(iter, 0);
@@ -137,6 +138,7 @@ namespace Everlook.UI
 
 				return false;
 			});
+			*/
 		}
 
 		/// <summary>

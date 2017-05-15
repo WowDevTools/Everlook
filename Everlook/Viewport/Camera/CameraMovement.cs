@@ -21,7 +21,6 @@
 //
 
 using System;
-using GLib;
 using log4net;
 using OpenTK;
 using OpenTK.Input;

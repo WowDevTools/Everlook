@@ -28,6 +28,7 @@ using Everlook.Export.Model;
 using Everlook.Export.Image;
 using Everlook.Export.Audio;
 using System.IO;
+using Key = Gdk.Key;
 
 namespace Everlook.UI
 {
@@ -61,7 +62,43 @@ namespace Everlook.UI
 			this.AddPathButton.Clicked += OnAddPathButtonClicked;
 			this.RemovePathButton.Clicked += OnRemovePathButtonClicked;
 
+			this.GamePathSelectionTreeView.KeyPressEvent += OnKeyPressedGamePathTreeView;
+
+			this.AliasEntry.Changed += OnAliasEntryChanged;
+
+			// Handle enter key presses in the path dialog
+			this.NewGamePathDialog.KeyPressEvent += (o, args) =>
+			{
+				if (this.AliasEntry.Text.Length > 0)
+				{
+					this.NewGamePathDialog.Respond(ResponseType.Ok);
+				}
+			};
+
 			LoadPreferences();
+		}
+
+		/// <summary>
+		/// Handles deletion of rows in the treeview by keyboard shortcut.
+		/// </summary>
+		/// <param name="o"></param>
+		/// <param name="args"></param>
+		private void OnKeyPressedGamePathTreeView(object o, KeyPressEventArgs args)
+		{
+			if (args.Event.Key == Key.Delete)
+			{
+				OnRemovePathButtonClicked(o, args);
+			}
+		}
+
+		/// <summary>
+		/// Handles setting the sensitivity of the confirmation button in the path addition dialog.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="eventArgs"></param>
+		private void OnAliasEntryChanged(object sender, EventArgs eventArgs)
+		{
+			this.NewGamePathDialog.SetResponseSensitive(ResponseType.Ok, !string.IsNullOrEmpty(this.AliasEntry.Text));
 		}
 
 		/// <summary>
@@ -72,19 +109,30 @@ namespace Everlook.UI
 		private void OnAddPathButtonClicked(object sender, EventArgs e)
 		{
 			Uri defaultLocation = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-			this.GameSelectionFileChooserDialog.SetCurrentFolderUri(defaultLocation.ToString());
-			if (this.GameSelectionFileChooserDialog.Run() == (int)ResponseType.Ok)
-			{
-				Uri uriToStore = new Uri(this.GameSelectionFileChooserDialog.CurrentFolderUri);
+			this.PathChooser.SetCurrentFolderUri(defaultLocation.ToString());
 
-				if (Directory.Exists(uriToStore.LocalPath))
+			switch ((ResponseType)this.NewGamePathDialog.Run())
+			{
+				case ResponseType.Ok:
 				{
-					this.GamePathListStore.AppendValues(uriToStore.LocalPath);
-					GamePathStorage.Instance.StorePath(uriToStore.LocalPath);
+					string alias = this.AliasEntry.Text;
+					Uri uriToStore = new Uri(this.PathChooser.CurrentFolderUri);
+
+					if (Directory.Exists(uriToStore.LocalPath))
+					{
+						this.GamePathListStore.AppendValues(alias, uriToStore.LocalPath);
+						GamePathStorage.Instance.StorePath(alias, uriToStore.LocalPath);
+					}
+
+					this.NewGamePathDialog.Hide();
+					break;
+				}
+				default:
+				{
+					this.NewGamePathDialog.Hide();
+					break;
 				}
 			}
-
-			this.GameSelectionFileChooserDialog.Hide();
 		}
 
 		/// <summary>
@@ -102,8 +150,9 @@ namespace Everlook.UI
 				return;
 			}
 
-			string gamePath = (string) this.GamePathListStore.GetValue(selectedIter, 0);
-			GamePathStorage.Instance.RemoveStoredPath(gamePath);
+			string alias = (string) this.GamePathListStore.GetValue(selectedIter, 0);
+			string path = (string) this.GamePathListStore.GetValue(selectedIter, 1);
+			GamePathStorage.Instance.RemoveStoredPath(alias, path);
 			this.GamePathListStore.Remove(ref selectedIter);
 		}
 
@@ -112,11 +161,11 @@ namespace Everlook.UI
 		/// </summary>
 		private void LoadPreferences()
 		{
-			foreach (string gamePath in GamePathStorage.Instance.GamePaths)
+			foreach ((string alias, string gamePath) in GamePathStorage.Instance.GamePaths)
 			{
 				if (Directory.Exists(gamePath))
 				{
-					this.GamePathListStore.AppendValues(gamePath);
+					this.GamePathListStore.AppendValues(alias, gamePath);
 				}
 			}
 
@@ -141,8 +190,9 @@ namespace Everlook.UI
 		{
 			this.GamePathListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
 				{
-					string gamePath = (string)model.GetValue(iter, 0);
-					GamePathStorage.Instance.StorePath(gamePath);
+					string alias = (string)model.GetValue(iter, 0);
+					string gamePath = (string)model.GetValue(iter, 1);
+					GamePathStorage.Instance.StorePath(alias, gamePath);
 
 					return false;
 				});
