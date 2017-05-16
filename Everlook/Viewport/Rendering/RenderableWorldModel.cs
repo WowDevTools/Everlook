@@ -348,12 +348,6 @@ namespace Everlook.Viewport.Rendering
 			int indexBufferID = this.VertexIndexBufferLookup[modelGroup];
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, indexBufferID);
 
-			GL.UseProgram(this.CurrentShaderID);
-
-			// Send the model matrix to the shader
-			int projectionShaderVariableHandle = GL.GetUniformLocation(this.CurrentShaderID, "ModelViewProjection");
-			GL.UniformMatrix4(projectionShaderVariableHandle, false, ref modelViewProjection);
-
 			// Render all the different materials (opaque first, transparent after)
 			foreach (RenderBatch renderBatch in modelGroup.GetRenderBatches()
 				.OrderBy(batch => batch.MaterialIndex)
@@ -362,6 +356,12 @@ namespace Everlook.Viewport.Rendering
 				// TODO: Render based on the shader. For now, simple rendering of diffuse texture
 				ModelMaterial modelMaterial = this.Model.GetMaterial(renderBatch.MaterialIndex);
 				EnableMaterial(modelMaterial);
+
+				GL.UseProgram(this.CurrentShaderID);
+
+				// Send the model matrix to the shader
+				int projectionShaderVariableHandle = GL.GetUniformLocation(this.CurrentShaderID, "ModelViewProjection");
+				GL.UniformMatrix4(projectionShaderVariableHandle, false, ref modelViewProjection);
 
 				int textureID = this.Cache.GetCachedTexture(modelMaterial.Texture0);
 
