@@ -28,6 +28,7 @@ using Everlook.Export.Model;
 using Everlook.Export.Image;
 using Everlook.Export.Audio;
 using System.IO;
+using GLib;
 using Key = Gdk.Key;
 
 namespace Everlook.UI
@@ -67,15 +68,29 @@ namespace Everlook.UI
 			this.AliasEntry.Changed += OnAliasEntryChanged;
 
 			// Handle enter key presses in the path dialog
-			this.NewGamePathDialog.KeyPressEvent += (o, args) =>
-			{
-				if (this.AliasEntry.Text.Length > 0)
-				{
-					this.NewGamePathDialog.Respond(ResponseType.Ok);
-				}
-			};
+			this.NewGamePathDialog.KeyPressEvent += OnKeyPressedNewPathDialog;
+			this.AliasEntry.KeyPressEvent += OnKeyPressedNewPathDialog;
 
 			LoadPreferences();
+		}
+
+		/// <summary>
+		/// Handles enter key presses in the path dialog.
+		/// </summary>
+		/// <param name="o"></param>
+		/// <param name="args"></param>
+		[ConnectBefore]
+		private void OnKeyPressedNewPathDialog(object o, KeyPressEventArgs args)
+		{
+			if (args.Event.Key != Key.ISO_Enter || args.Event.Key != Key.KP_Enter || args.Event.Key != Key.Return)
+			{
+				return;
+			}
+
+			if (this.AliasEntry.Text.Length > 0)
+			{
+				this.NewGamePathDialog.Respond(ResponseType.Ok);
+			}
 		}
 
 		/// <summary>

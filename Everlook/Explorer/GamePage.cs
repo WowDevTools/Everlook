@@ -28,6 +28,7 @@ using Everlook.Configuration;
 using Everlook.Package;
 using Everlook.Utility;
 using Gdk;
+using GLib;
 using static Everlook.Utility.CommunicationDelegates;
 using Gtk;
 using liblistfile;
@@ -167,27 +168,45 @@ namespace Everlook.Explorer
 			this.TreeContextMenu = new Menu();
 
 			// Save item context button
-			this.SaveItem = new ImageMenuItem(Stock.Save);
+			this.SaveItem = new ImageMenuItem
+			{
+				UseStock = true,
+				Label = Stock.Save,
+				CanFocus = false,
+				TooltipText = "Save the currently selected item to disk.",
+				UseUnderline = true
+			};
 			this.SaveItem.Activated += OnSaveItem;
 			this.TreeContextMenu.Add(this.SaveItem);
 
 			// Export item context button
 			this.ExportItem = new ImageMenuItem("Export")
 			{
-				Image = new Image(Stock.Convert)
+				Image = new Image(Stock.Convert, IconSize.Button),
+				CanFocus = false,
+				TooltipText = "Exports the currently selected item to another format.",
 			};
 			this.ExportItem.Activated += OnExportItemRequested;
 			this.TreeContextMenu.Add(this.ExportItem);
 
 			// Open item context button
-			this.OpenItem = new ImageMenuItem(Stock.Open);
+			this.OpenItem = new ImageMenuItem()
+			{
+				UseStock = true,
+				Label = Stock.Open,
+				CanFocus = false,
+				TooltipText = "Open the currently selected item.",
+				UseUnderline = true
+			};
 			this.OpenItem.Activated += OnOpenItem;
 			this.TreeContextMenu.Add(this.OpenItem);
 
 			// Queue for export context button
 			this.QueueForExportItem = new ImageMenuItem("Queue for export")
 			{
-				Image = new Image(Stock.Convert)
+				Image = new Image(Stock.Convert, IconSize.Button),
+				CanFocus = false,
+				TooltipText = "Queues the currently selected item for batch export.",
 			};
 			this.QueueForExportItem.Activated += OnQueueForExportRequested;
 			this.TreeContextMenu.Add(this.QueueForExportItem);
@@ -199,7 +218,9 @@ namespace Everlook.Explorer
 			// Copy path context button
 			this.CopyPathItem = new ImageMenuItem("Copy path")
 			{
-				Image = new Image(Stock.Copy)
+				Image = new Image(Stock.Copy, IconSize.Button),
+				CanFocus = false,
+				TooltipText = "Copy the path of the currently selected item.",
 			};
 			this.CopyPathItem.Activated += OnCopyPath;
 			this.TreeContextMenu.Add(this.CopyPathItem);
@@ -468,6 +489,7 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <param name="o"></param>
 		/// <param name="args"></param>
+		[ConnectBefore]
 		private void OnButtonPressed(object o, ButtonPressEventArgs args)
 		{
 			if (args.Event.Type != EventType.ButtonPress || args.Event.Button != 3)
