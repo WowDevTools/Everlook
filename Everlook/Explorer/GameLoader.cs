@@ -31,12 +31,18 @@ using System.Threading.Tasks;
 using Everlook.Package;
 using liblistfile;
 using liblistfile.NodeTree;
+using log4net;
 using Warcraft.MPQ;
 
 namespace Everlook.Explorer
 {
 	public class GameLoader
 	{
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(GameLoader));
+
 		/// <summary>
 		/// A dictionary used for generating node trees.
 		/// </summary>
@@ -91,8 +97,41 @@ namespace Everlook.Explorer
 			string packageTreeFilePath = Path.Combine(gamePath, packageTreeFilename);
 
 			PackageGroup packageGroup = new PackageGroup(packageSetHash);
-			OptimizedNodeTree nodeTree;
-			if (!File.Exists(packageTreeFilePath))
+			OptimizedNodeTree nodeTree = null;
+
+			bool generateTree = true;
+			if (File.Exists(packageTreeFilePath))
+			{
+				progress?.Report(new GameLoadingProgress
+				{
+					CompletionPercentage = 0,
+					State = GameLoadingState.LoadingNodeTree,
+					Alias = gameAlias
+				});
+
+				try
+				{
+					// Load tree
+					nodeTree = new OptimizedNodeTree(packageTreeFilePath);
+					generateTree = false;
+				}
+				catch (ArgumentException aex)
+				{
+					// TODO: Implement separate exceptions
+					if (aex.Message.Contains("Unseekable"))
+					{
+						throw;
+					}
+
+					if (aex.Message.Contains("Unsupported"))
+					{
+						Log.Info("Unsupported node tree version present. Deleting and regenerating.");
+						File.Delete(packageTreeFilePath);
+					}
+				}
+			}
+
+			if (generateTree)
 			{
 				// Internal counters for progress reporting
 				double completedSteps = 0;
@@ -151,33 +190,25 @@ namespace Everlook.Explorer
 
 				// Build node tree
 				multiBuilder.Build();
-				nodeTree = multiBuilder.CreateTree();
 
 				// Save it to disk
-				File.WriteAllBytes(packageTreeFilePath, nodeTree.Serialize());
+				File.WriteAllBytes(packageTreeFilePath, multiBuilder.CreateTree());
+
+				nodeTree = new OptimizedNodeTree(packageTreeFilePath);
 			}
 			else
 			{
 				progress?.Report(new GameLoadingProgress
 				{
-					CompletionPercentage = 0,
+					CompletionPercentage = 1,
 					State = GameLoadingState.LoadingPackages,
 					Alias = gameAlias
 				});
 
 				// Load packages
 				packageGroup = await PackageGroup.LoadAsync(gameAlias, packageSetHash, gamePath, ct, progress);
-
-				progress?.Report(new GameLoadingProgress
-				{
-					CompletionPercentage = 1,
-					State = GameLoadingState.LoadingNodeTree,
-					Alias = gameAlias
-				});
-
-				// Load tree
-				nodeTree = new OptimizedNodeTree(File.OpenRead(packageTreeFilePath));
 			}
+
 
 			progress?.Report(new GameLoadingProgress
 			{

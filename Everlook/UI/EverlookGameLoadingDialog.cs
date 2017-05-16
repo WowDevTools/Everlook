@@ -24,10 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Gtk;
-using Action = System.Action;
 namespace Everlook.UI
 {
 	public partial class EverlookGameLoadingDialog : Gtk.Dialog
@@ -62,6 +59,14 @@ namespace Everlook.UI
 				}
 			}
 
+			RefreshJoke();
+		}
+
+		/// <summary>
+		/// Picks a new random joke to display, and replaces the current one.
+		/// </summary>
+		public void RefreshJoke()
+		{
 			this.AdditionalInfoLabel.Text = this.Jokes[new Random().Next(this.Jokes.Count)];
 		}
 	}

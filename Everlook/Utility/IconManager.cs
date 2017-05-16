@@ -210,7 +210,7 @@ namespace Everlook.Utility
 				{
 					return GetIcon("x-office-address-book");
 				}
-				case WarcraftFileType.HTML:
+				case WarcraftFileType.Web:
 				{
 					return GetIcon("text-html");
 				}

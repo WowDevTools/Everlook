@@ -20,7 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using System.Collections.Generic;
+using Warcraft.Core;
 
 namespace Everlook.Explorer
 {
@@ -70,146 +70,99 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <returns>The extension list for the provided filter category.</returns>
 		/// <param name="filterCategory">The category to get.</param>
-		public static List<string> GetExtensionList(this FilterType filterCategory)
+		public static WarcraftFileType GetFileTypeSet(this FilterType filterCategory)
 		{
 			switch (filterCategory)
 			{
 				case FilterType.Models:
-					{
-						return ModelTypeExtensions;
-					}
+				{
+					return ModelTypes;
+				}
 				case FilterType.Textures:
-					{
-						return TextureTypeExtensions;
-					}
+				{
+					return TextureTypes;
+				}
 				case FilterType.Audio:
-					{
-						return AudioTypeExtensions;
-					}
+				{
+					return AudioTypes;
+				}
 				case FilterType.Data:
-					{
-						return DataTypeExtensions;
-					}
+				{
+					return DataTypes;
+				}
 				case FilterType.Terrain:
-					{
-						return TerrainTypeExtensions;
-					}
+				{
+					return TerrainTypes;
+				}
 				default:
-					{
-						return null;
-					}
+				{
+					return WarcraftFileType.Unknown;
+				}
 			}
-		}
-
-		/// <summary>
-		/// Determines whether or not the provided extension is present in any of the categories registered in this class.
-		/// </summary>
-		/// <returns><c>true</c> if the extension is unknown; otherwise, <c>false</c>.</returns>
-		/// <param name="extension">Extension.</param>
-		public static bool IsExtensionUnknown(string extension)
-		{
-			return ModelTypeExtensions.Contains(extension)
-			|| TextureTypeExtensions.Contains(extension)
-			|| AudioTypeExtensions.Contains(extension)
-			|| DataTypeExtensions.Contains(extension)
-			|| TerrainTypeExtensions.Contains(extension);
 		}
 
 		/// <summary>
 		/// Reference extensions for model-related file types.
 		/// </summary>
-		public static readonly List<string> ModelTypeExtensions = new List<string>
-		{
-			"m2",
-			"wmo",
-			"mdx",
-			"anim",
-			"phys",
-			"bone",
-
-			// Shaders are included in this set, as they are directly tied to models.
-			"bls",
-			"wfx"
-		};
+		public const WarcraftFileType ModelTypes =
+			WarcraftFileType.GameObjectModel |
+			WarcraftFileType.WorldObjectModel |
+			WarcraftFileType.WorldObjectModelGroup |
+			WarcraftFileType.Shader |
+			WarcraftFileType.Animation |
+			WarcraftFileType.Physics |
+			WarcraftFileType.Skeleton;
 
 		/// <summary>
 		/// Reference extensions for texture and image file types.
 		/// </summary>
-		public static readonly List<string> TextureTypeExtensions = new List<string>
-		{
-			"blp",
-			"tga",
-			"gif",
-			"png",
-			"bmp",
-
-			// Shaders are included in this set, as they are directly tied to textures.
-			"bls",
-			"wfx",
-
-			// TRS hashmaps are included in this set, as they are directly tied to minimap textures.
-			"trs"
-		};
+		public const WarcraftFileType TextureTypes =
+			WarcraftFileType.BinaryImage |
+			WarcraftFileType.TargaImage |
+			WarcraftFileType.GIFImage |
+			WarcraftFileType.PNGImage |
+			WarcraftFileType.BitmapImage |
+			WarcraftFileType.IconImage |
+			WarcraftFileType.Shader |
+			WarcraftFileType.Hashmap;
 
 		/// <summary>
 		/// Reference extensions for audio filetypes.
 		/// </summary>
-		public static readonly List<string> AudioTypeExtensions = new List<string>
-		{
-			"mp3",
-			"wma",
-			"wav",
-			"ogg"
-		};
+		public const WarcraftFileType AudioTypes =
+			WarcraftFileType.MP3Audio |
+			WarcraftFileType.WMAAudio |
+			WarcraftFileType.WaveAudio |
+			WarcraftFileType.VorbisAudio;
 
 		/// <summary>
 		/// Reference extensions for data storage filetypes.
 		/// </summary>
-		public static readonly List<string> DataTypeExtensions = new List<string>
-		{
-			"wdb",
-			"adb",
-			"tbl",
-			"dbc",
-			"dbc2",
-			"db",
-			"wtf",
-			"toc",
-			"zmp",
-			"sbt",
-			"trs",
+		public const WarcraftFileType DataTypes =
+			WarcraftFileType.DatabaseContainer |
+			WarcraftFileType.DataCache |
+			WarcraftFileType.ConfigurationFile |
+			WarcraftFileType.AddonManifest |
+			WarcraftFileType.AddonManifestSignature |
+			WarcraftFileType.Assembly |
+			WarcraftFileType.Hashmap |
+			WarcraftFileType.Web |
+			WarcraftFileType.PDF |
+			WarcraftFileType.INI |
+			WarcraftFileType.XML |
+			WarcraftFileType.Script;
 
-			// This extension list comes with a bunch of normal-ish filetypes that are packed into
-			// some archives as a backup for the client and launcher.
-			"lua",
-			"html",
-			"pdf",
-			"exe",
-			"dll",
-			"xml",
-			"js",
-			"css",
-			"plist",
-			"icns",
-			"xib",
-			"nib",
-			"ini"
-		};
 
 		/// <summary>
 		/// Reference extensions for terrain-related file types.
 		/// </summary>
-		public static readonly List<string> TerrainTypeExtensions = new List<string>
-		{
-			"adt",
-			"wdt",
-			"wdl",
-			"wlm",
-			"wlq",
-			"wlw",
-			"lit",
-			"def",
-		};
+		public const WarcraftFileType TerrainTypes =
+			WarcraftFileType.TerrainData |
+			WarcraftFileType.TerrainLevel |
+			WarcraftFileType.TerrainLiquid |
+			WarcraftFileType.TerrainTable |
+			WarcraftFileType.TerrainWater |
+			WarcraftFileType.Lighting;
 	}
 }
 

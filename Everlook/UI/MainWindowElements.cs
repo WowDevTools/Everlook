@@ -42,6 +42,8 @@ namespace Everlook.UI
 		private readonly GLWidget ViewportWidget;
 		private bool ViewportHasPendingRedraw;
 
+		[UIElement] private readonly ComboBox FileFilterComboBox;
+
 		/*
 			Export queue elements
 		*/

@@ -22,6 +22,8 @@
 
 using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Everlook.Configuration;
 using Everlook.Package;
 using Everlook.Utility;
@@ -92,6 +94,16 @@ namespace Everlook.Explorer
 		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
 
 		/// <summary>
+		/// The currently filtered file types.
+		/// </summary>
+		private WarcraftFileType FilteredFileTypes;
+
+		/// <summary>
+		/// Whether or not to filter based on the filtered file types.
+		/// </summary>
+		private bool IsFiltered;
+
+		/// <summary>
 		/// Creates a new <see cref="GamePage"/> for the given package group and node tree.
 		/// </summary>
 		/// <param name="packageGroup"></param>
@@ -107,7 +119,6 @@ namespace Everlook.Explorer
 
 			this.TreeFilter = new TreeModelFilter(new TreeModelAdapter(this.TreeModel), null);
 			this.TreeFilter.VisibleFunc = TreeModelVisibilityFunc;
-			this.TreeFilter.Refilter();
 
 			this.TreeSorter = new TreeModelSort(this.TreeFilter);
 
@@ -196,9 +207,71 @@ namespace Everlook.Explorer
 			this.TreeAlignment.ShowAll();
 		}
 
+		/// <summary>
+		/// Sets the tree sensitivity, i.e, if the user can interact with it.
+		/// </summary>
+		/// <param name="sensitive"></param>
+		public void SetTreeSensitivity(bool sensitive)
+		{
+			this.Tree.Sensitive = sensitive;
+		}
+
+		/// <summary>
+		/// Sets the filter of the tree view and asynchronously refilters it.
+		/// </summary>
+		/// <param name="filteredFileTypes"></param>
+		/// <returns></returns>
+		public void SetFilter(WarcraftFileType filteredFileTypes)
+		{
+			this.FilteredFileTypes = filteredFileTypes;
+		}
+
+		/// <summary>
+		/// Sets whether or not the tree is filtered.
+		/// </summary>
+		/// <param name="isFiltered">True if the tree should be filtered by the set file types, false otherwise.</param>
+		/// <returns></returns>
+		public void SetFilterState(bool isFiltered)
+		{
+			this.IsFiltered = isFiltered;
+		}
+
+		/// <summary>
+		/// Asynchronously refilters the node tree.
+		/// </summary>
+		/// <returns></returns>
+		public async Task RefilterAsync()
+		{
+			await Task.Factory.StartNew(() =>
+			{
+				this.TreeFilter.Refilter();
+			}, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+		}
+
+		/// <summary>
+		/// This function is used internally by the tree filter to determine which rows are visible and which are not.
+		/// </summary>
+		/// <param name="model"></param>
+		/// <param name="iter"></param>
+		/// <returns></returns>
 		private bool TreeModelVisibilityFunc(ITreeModel model, TreeIter iter)
 		{
-			return true;
+			if (!this.IsFiltered)
+			{
+				return true;
+			}
+
+			FileNode node = (FileNode)model.GetValue(iter, 0);
+			WarcraftFileType nodeTypes = node.FileType;
+
+			// If the file types of the node and the filtered types overlap in any way, then it should
+			// be displayed.
+			if ((nodeTypes & this.FilteredFileTypes) != 0)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -521,7 +594,7 @@ namespace Everlook.Explorer
 				case WarcraftFileType.XML:
 				case WarcraftFileType.INI:
 				case WarcraftFileType.PDF:
-				case WarcraftFileType.HTML:
+				case WarcraftFileType.Web:
 				{
 					byte[] fileData = fileReference.Extract();
 					if (fileData != null)

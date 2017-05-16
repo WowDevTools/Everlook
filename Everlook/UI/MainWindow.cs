@@ -138,21 +138,63 @@ namespace Everlook.UI
 
 			this.GameTabNotebook.ClearPages();
 
-			foreach (GamePage gamePage in this.GamePages)
-			{
-				gamePage.FileLoadRequested += OnFileLoadRequested;
-				gamePage.ExportItemRequested += OnExportItemRequested;
-				gamePage.EnqueueFileExportRequested += OnEnqueueItemRequested;
-			}
 
 			this.ExportQueueTreeView.ButtonPressEvent += OnExportQueueButtonPressed;
 			this.RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
+
+			this.FileFilterComboBox.Changed += OnFilterChanged;
 
 			/*
 				Set up item control sections to default states
 			*/
 
 			EnableControlPage(ControlPage.None);
+		}
+
+		/// <summary>
+		/// Handles updating the filter state for the game pages when the user changes it in the UI.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private async void OnFilterChanged(object sender, EventArgs e)
+		{
+			ComboBox box = sender as ComboBox;
+			if (box == null)
+			{
+				return;
+			}
+
+			this.StatusSpinner.Active = true;
+			uint refilterStatusContextID = this.MainStatusBar.GetContextId("refreshFilter");
+			uint refilterStatusMessageID = this.MainStatusBar.Push(refilterStatusContextID,
+				"Refiltering node trees...");
+
+			FilterType filterType = (FilterType)box.Active;
+			foreach (GamePage page in this.GamePages)
+			{
+				if (filterType == FilterType.All)
+				{
+					page.SetFilterState(false);
+
+					page.SetTreeSensitivity(false);
+					await page.RefilterAsync();
+					//page.Refilter();
+					page.SetTreeSensitivity(true);
+				}
+				else
+				{
+					page.SetFilterState(true);
+					page.SetFilter(filterType.GetFileTypeSet());
+
+					page.SetTreeSensitivity(false);
+					await page.RefilterAsync();
+					//page.Refilter();
+					page.SetTreeSensitivity(true);
+				}
+			}
+
+			this.StatusSpinner.Active = false;
+			this.MainStatusBar.Remove(refilterStatusContextID, refilterStatusMessageID);
 		}
 
 		/// <summary>
@@ -225,6 +267,12 @@ namespace Everlook.UI
 
 			dialog.ShowAll();
 
+			uint jokeTimeout = GLib.Timeout.Add(6000, () =>
+			{
+				dialog.RefreshJoke();
+				return true;
+			});
+
 			foreach (var gameTarget in GamePathStorage.Instance.GamePaths)
 			{
 				try
@@ -252,6 +300,7 @@ namespace Everlook.UI
 				}
 			}
 
+			GLib.Timeout.Remove(jokeTimeout);
 			dialog.Destroy();
 		}
 
