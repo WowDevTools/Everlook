@@ -814,8 +814,9 @@ namespace Everlook.UI
 
 			this.RenderingEngine.SetRenderTarget(null);
 			this.RenderingEngine.Dispose();
-
 			this.ViewportWidget.Destroy();
+
+			Idle.Remove(OnIdleRenderFrame);
 
 			Application.Quit();
 			a.RetVal = true;
