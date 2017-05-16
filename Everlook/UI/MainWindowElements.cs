@@ -73,6 +73,7 @@ namespace Everlook.UI
 		[UIElement] private readonly CheckButton RenderGreenCheckButton;
 		[UIElement] private readonly CheckButton RenderBlueCheckButton;
 
+		[UIElement] private readonly Label MipCountLabel;
 
 		/*
 			Status bar elements

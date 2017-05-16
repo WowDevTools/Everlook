@@ -29,6 +29,7 @@ using Everlook.Explorer;
 using Everlook.Package;
 using Everlook.Utility;
 using Everlook.Viewport;
+using Everlook.Viewport.Rendering;
 using Everlook.Viewport.Rendering.Interfaces;
 using Gdk;
 using GLib;
@@ -149,6 +150,54 @@ namespace Everlook.UI
 			*/
 
 			EnableControlPage(ControlPage.None);
+
+			/*
+				Bind item control events
+			*/
+
+			this.RenderAlphaCheckButton.Toggled += (sender, args) =>
+			{
+				RenderableImage image = this.RenderingEngine.RenderTarget as RenderableImage;
+				if (image == null)
+				{
+					return;
+				}
+
+				image.ChannelMask.W = this.RenderAlphaCheckButton.Active ? 1.0f : 0.0f;
+			};
+
+			this.RenderRedCheckButton.Toggled += (sender, args) =>
+			{
+				RenderableImage image = this.RenderingEngine.RenderTarget as RenderableImage;
+				if (image == null)
+				{
+					return;
+				}
+
+				image.ChannelMask.X = this.RenderRedCheckButton.Active ? 1.0f : 0.0f;
+			};
+
+			this.RenderGreenCheckButton.Toggled += (sender, args) =>
+			{
+				RenderableImage image = this.RenderingEngine.RenderTarget as RenderableImage;
+				if (image == null)
+				{
+					return;
+				}
+
+				image.ChannelMask.Y = this.RenderGreenCheckButton.Active ? 1.0f : 0.0f;
+			};
+
+			this.RenderBlueCheckButton.Toggled += (sender, args) =>
+			{
+				RenderableImage image = this.RenderingEngine.RenderTarget as RenderableImage;
+				if (image == null)
+				{
+					return;
+				}
+
+				image.ChannelMask.Z = this.RenderBlueCheckButton.Active ? 1.0f : 0.0f;
+			};
 		}
 
 		/// <summary>
@@ -357,10 +406,23 @@ namespace Everlook.UI
 				{
 					case ControlPage.Image:
 					{
+						RenderableImage image = this.RenderingEngine.RenderTarget as RenderableImage;
+						if (image == null)
+						{
+							return;
+						}
+
+						this.MipCountLabel.Text = image.MipCount.ToString();
+
 						this.RenderAlphaCheckButton.Sensitive = true;
 						this.RenderRedCheckButton.Sensitive = true;
 						this.RenderGreenCheckButton.Sensitive = true;
 						this.RenderBlueCheckButton.Sensitive = true;
+
+						this.RenderAlphaCheckButton.Active = image.ChannelMask.W > 0;
+						this.RenderRedCheckButton.Active = image.ChannelMask.X > 0;
+						this.RenderGreenCheckButton.Active = image.ChannelMask.Y > 0;
+						this.RenderBlueCheckButton.Active = image.ChannelMask.Z > 0;
 						break;
 					}
 					case ControlPage.Model:
@@ -453,7 +515,7 @@ namespace Everlook.UI
 				$"Loading \"{modelName}\"...");
 
 			Task.Factory.StartNew(() => referenceLoadingRoutine(fileReference))
-				.ContinueWith(modelLoadTask => createRenderableDelegate(modelLoadTask.Result, fileReference), this.UiThreadScheduler)
+				.ContinueWith(itemLoadTask => createRenderableDelegate(itemLoadTask.Result, fileReference), this.UiThreadScheduler)
 				.ContinueWith(createRenderableTask => this.RenderingEngine.SetRenderTarget(createRenderableTask.Result), this.UiThreadScheduler)
 				.ContinueWith
 				(

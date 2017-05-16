@@ -5,6 +5,7 @@ using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using Warcraft.Core.Extensions;
 using Warcraft.Core.Structures;
 
 namespace Everlook.Viewport.Rendering
@@ -74,6 +75,35 @@ namespace Everlook.Viewport.Rendering
 		public ProjectionType Projection => ProjectionType.Orthographic;
 
 		/// <summary>
+		/// A vector that is multiplied with the final texture sampling.
+		/// </summary>
+		public Vector4 ChannelMask;
+
+		public uint MipCount => GetNumReasonableMipLevels();
+
+		/// <summary>
+		/// TODO: Put this in Warcraft.Core instead
+		/// </summary>
+		/// <returns></returns>
+		private uint GetNumReasonableMipLevels()
+		{
+			uint smallestXRes = GetResolution().X;
+            uint smallestYRes = GetResolution().Y;
+
+            uint mipLevels = 0;
+            while (smallestXRes > 1 && smallestYRes > 1)
+            {
+                // Bisect the resolution using the current number of mip levels.
+                smallestXRes = smallestXRes / (uint)Math.Pow(2, mipLevels);
+                smallestYRes = smallestYRes / (uint)Math.Pow(2, mipLevels);
+
+                ++mipLevels;
+            }
+
+            return mipLevels.Clamp<uint>(0, 15);
+		}
+
+		/// <summary>
 		/// Initializes the required data for rendering.
 		/// </summary>
 		public void Initialize()
@@ -90,8 +120,10 @@ namespace Everlook.Viewport.Rendering
 
 			this.ImageTransform = new Transform(
 				new Vector3(0.0f, 0.0f, 0.0f),
-				OpenTK.Quaternion.FromAxisAngle(Vector3.UnitX, 0.0f),
+				Quaternion.FromAxisAngle(Vector3.UnitX, 0.0f),
 				new Vector3(1.0f, 1.0f, 1.0f));
+
+			this.ChannelMask = Vector4.One;
 
 			this.IsInitialized = true;
 		}
@@ -151,6 +183,10 @@ namespace Everlook.Viewport.Rendering
 				false,
 				0,
 				0);
+
+			// Set the channel mask
+			int channelMaskVariableHandle = GL.GetUniformLocation(this.ImageShaderID, "channelMask");
+			GL.Uniform4(channelMaskVariableHandle, this.ChannelMask);
 
 			// Set the texture ID as a uniform sampler in unit 0
 			GL.ActiveTexture(TextureUnit.Texture0);

@@ -69,7 +69,7 @@ namespace Everlook.Viewport
 		/// The current rendering target. This is an object capable of being shown in an
 		/// OpenGL viewport.
 		/// </summary>
-		private IRenderable RenderTarget;
+		public IRenderable RenderTarget { get; private set; }
 
 		/// <summary>
 		/// The camera viewpoint of the observer.
