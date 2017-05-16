@@ -37,7 +37,13 @@ namespace Everlook.Viewport.Rendering.Core
 		/// A shader capable of rendering a group inside a World Model. This shader does not support
 		/// any animation.
 		/// </summary>
-		UnlitWorldModel,
+		UnlitWorldModelOpaque,
+
+		/// <summary>
+		/// A shader capable of rendering a group inside a world model, and discarding fragments based on the alpha
+		/// value.
+		/// </summary>
+		UnlitWorldModelAlphaKey,
 
 		/// <summary>
 		/// A shader capable of rendering a simple game model. This shader does not support any animation.

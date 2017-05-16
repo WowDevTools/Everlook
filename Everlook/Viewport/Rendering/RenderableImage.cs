@@ -79,6 +79,9 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public Vector4 ChannelMask;
 
+		/// <summary>
+		/// The number of mipmap levels for this image.
+		/// </summary>
 		public uint MipCount => GetNumReasonableMipLevels();
 
 		/// <summary>

@@ -7,7 +7,7 @@ before_build:
   - curl -fsS -o gtk-sharp-3.msi http://gemmei.acc.umu.se/pub/GNOME/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi
   - msiexec /i C:\projects\everlook\gtk-sharp-3.msi /qn
   - git submodule update --init --recursive
-  - nuget restore
+  - nuget restore Everlook.sln
 platform: x86
 build:
   parallel: true

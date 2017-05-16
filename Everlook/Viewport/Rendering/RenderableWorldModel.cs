@@ -99,13 +99,12 @@ namespace Everlook.Viewport.Rendering
 
 		private int BoundingBoxVertexIndexBufferID;
 
-		private int SimpleShaderID;
-		private int BoundingBoxShaderID;
-
 		/// <summary>
 		/// Returns a value which represents whether or not the current renderable has been initialized.
 		/// </summary>
 		public bool IsInitialized { get; set; }
+
+		private int CurrentShaderID;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableWorldModel"/> class.
@@ -132,25 +131,6 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Initialize()
 		{
-			// Load and cache a simple, unlit shader
-			if (this.Cache.HasCachedShader(EverlookShader.UnlitWorldModel))
-			{
-				this.SimpleShaderID = this.Cache.GetCachedShader(EverlookShader.UnlitWorldModel);
-			}
-			else
-			{
-				this.SimpleShaderID = this.Cache.CreateCachedShader(EverlookShader.UnlitWorldModel);
-			}
-
-			if (this.Cache.HasCachedShader(EverlookShader.BoundingBox))
-			{
-				this.BoundingBoxShaderID = this.Cache.GetCachedShader(EverlookShader.BoundingBox);
-			}
-			else
-			{
-				this.BoundingBoxShaderID = this.Cache.CreateCachedShader(EverlookShader.BoundingBox);
-			}
-
 			// TODO: Load and cache doodads in their respective sets
 
 			// TODO: Load and cache sound emitters
@@ -298,7 +278,6 @@ namespace Everlook.Viewport.Rendering
 			foreach (ModelGroup modelGroup in this.Model.Groups
 				.OrderByDescending(modelGroup => VectorMath.Distance(camera.Position, modelGroup.GetPosition().AsOpenTKVector())))
 			{
-
 				RenderGroup(modelGroup, modelViewProjection);
 
 				// Now, draw the model's bounding box
@@ -331,8 +310,6 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		private void RenderGroup(ModelGroup modelGroup, Matrix4 modelViewProjection)
 		{
-			GL.UseProgram(this.SimpleShaderID);
-
 			// Render the object
 			// Send the vertices to the shader
 			GL.EnableVertexAttribArray(0);
@@ -371,8 +348,10 @@ namespace Everlook.Viewport.Rendering
 			int indexBufferID = this.VertexIndexBufferLookup[modelGroup];
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, indexBufferID);
 
+			GL.UseProgram(this.CurrentShaderID);
+
 			// Send the model matrix to the shader
-			int projectionShaderVariableHandle = GL.GetUniformLocation(this.SimpleShaderID, "ModelViewProjection");
+			int projectionShaderVariableHandle = GL.GetUniformLocation(this.CurrentShaderID, "ModelViewProjection");
 			GL.UniformMatrix4(projectionShaderVariableHandle, false, ref modelViewProjection);
 
 			// Render all the different materials (opaque first, transparent after)
@@ -389,7 +368,7 @@ namespace Everlook.Viewport.Rendering
 				// Set the texture ID as a uniform sampler in unit 0
 				GL.ActiveTexture(TextureUnit.Texture0);
 				GL.BindTexture(TextureTarget.Texture2D, textureID);
-				int textureVariableHandle = GL.GetUniformLocation(this.SimpleShaderID, "texture0");
+				int textureVariableHandle = GL.GetUniformLocation(this.CurrentShaderID, "texture0");
 				int textureUnit = 0;
 				GL.Uniform1(textureVariableHandle, 1, ref textureUnit);
 
@@ -407,7 +386,9 @@ namespace Everlook.Viewport.Rendering
 
 		private void RenderBoundingBox(ModelGroup modelGroup, Matrix4 modelViewProjection, Color4 colour)
 		{
-			GL.UseProgram(this.BoundingBoxShaderID);
+			int shaderID = this.Cache.GetShader(EverlookShader.BoundingBox);
+
+			GL.UseProgram(shaderID);
 			GL.Disable(EnableCap.CullFace);
 
 			// Render the object
@@ -426,11 +407,11 @@ namespace Everlook.Viewport.Rendering
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.BoundingBoxVertexIndexBufferID);
 
 			// Send the model matrix to the shader
-			int projectionShaderVariableHandle = GL.GetUniformLocation(this.BoundingBoxShaderID, "ModelViewProjection");
+			int projectionShaderVariableHandle = GL.GetUniformLocation(shaderID, "ModelViewProjection");
 			GL.UniformMatrix4(projectionShaderVariableHandle, false, ref modelViewProjection);
 
 			// Send the box colour to the shader
-			int boxColourShaderVariableHandle = GL.GetUniformLocation(this.BoundingBoxShaderID, "boxColour");
+			int boxColourShaderVariableHandle = GL.GetUniformLocation(shaderID, "boxColour");
 			GL.Uniform4(boxColourShaderVariableHandle, colour);
 
 			// Now draw the box
@@ -490,13 +471,27 @@ namespace Everlook.Viewport.Rendering
 				GL.Enable(EnableCap.CullFace);
 			}
 
-			if (modelMaterial.BlendMode == BlendingMode.AlphaKey)
+			if (BlendingState.EnableBlending[modelMaterial.BlendMode])
 			{
 				GL.Enable(EnableCap.Blend);
 			}
 			else
 			{
 				GL.Disable(EnableCap.Blend);
+			}
+
+			switch (modelMaterial.BlendMode)
+			{
+				case BlendingMode.Opaque:
+				{
+					this.CurrentShaderID = this.Cache.GetShader(EverlookShader.UnlitWorldModelOpaque);
+					break;
+				}
+				case BlendingMode.AlphaKey:
+				{
+					this.CurrentShaderID = this.Cache.GetShader(EverlookShader.UnlitWorldModelAlphaKey);
+					break;
+				}
 			}
 		}
 

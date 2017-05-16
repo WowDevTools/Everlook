@@ -419,10 +419,10 @@ namespace Everlook.UI
 						this.RenderGreenCheckButton.Sensitive = true;
 						this.RenderBlueCheckButton.Sensitive = true;
 
-						this.RenderAlphaCheckButton.Active = image.ChannelMask.W > 0;
-						this.RenderRedCheckButton.Active = image.ChannelMask.X > 0;
-						this.RenderGreenCheckButton.Active = image.ChannelMask.Y > 0;
-						this.RenderBlueCheckButton.Active = image.ChannelMask.Z > 0;
+						image.ChannelMask.W = this.RenderAlphaCheckButton.Active ? 1.0f : 0.0f;
+						image.ChannelMask.X = this.RenderRedCheckButton.Active ? 1.0f : 0.0f;
+						image.ChannelMask.Y = this.RenderGreenCheckButton.Active ? 1.0f : 0.0f;
+						image.ChannelMask.Z = this.RenderBlueCheckButton.Active ? 1.0f : 0.0f;
 						break;
 					}
 					case ControlPage.Model:

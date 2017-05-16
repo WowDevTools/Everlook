@@ -76,6 +76,22 @@ namespace Everlook.Viewport.Rendering
 		}
 
 		/// <summary>
+		/// Gets the native OpenGL ID for the specified shader.
+		/// </summary>
+		/// <param name="shader"></param>
+		/// <returns></returns>
+		public int GetShader(EverlookShader shader)
+		{
+			if (HasCachedShader(shader))
+			{
+				return GetCachedShader(shader);
+			}
+
+			return CreateCachedShader(shader);
+		}
+
+
+		/// <summary>
 		/// Loads and creates a fallback texture which is used if a texture fails to load.
 		/// </summary>
 		private static int CreateFallbackTexture()
@@ -261,10 +277,16 @@ namespace Everlook.Viewport.Rendering
 					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.PlainImage.PlainImageFragment.glsl");
 					break;
 				}
-				case EverlookShader.UnlitWorldModel:
+				case EverlookShader.UnlitWorldModelOpaque:
 				{
 					vertexShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelVertex.glsl");
-					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelFragment.glsl");
+					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelFragment_Opaque.glsl");
+					break;
+				}
+				case EverlookShader.UnlitWorldModelAlphaKey:
+				{
+					vertexShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelVertex.glsl");
+					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelFragment_AlphaKey.glsl");
 					break;
 				}
 				case EverlookShader.BoundingBox:

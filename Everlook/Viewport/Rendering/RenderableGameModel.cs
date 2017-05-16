@@ -87,7 +87,7 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Initialize()
 		{
-			if (this.Cache.HasCachedShader(EverlookShader.UnlitWorldModel))
+			if (this.Cache.HasCachedShader(EverlookShader.UnlitWorldModelOpaque))
 			{
 				this.SimpleShaderID = this.Cache.GetCachedShader(EverlookShader.UnlitGameModel);
 			}
