@@ -1,10 +1,11 @@
 version: 1.0.{build}
 configuration:
   - Release
+install:
+    - ps: git config --global url."https://github.com/".insteadOf "git@github.com:"
 before_build:
   - curl -fsS -o gtk-sharp-3.msi http://gemmei.acc.umu.se/pub/GNOME/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi
   - msiexec /i C:\projects\everlook\gtk-sharp-3.msi /qn
-  - git config --global url."https://github.com/".insteadOf "git@github.com:"
   - git submodule update --init --recursive
   - nuget restore
 platform: x86

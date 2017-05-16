@@ -2,6 +2,8 @@ language: csharp
 solution: Everlook.sln
 sudo: required
 dist: trusty
+git:
+    submodules: false
 before_install:
     - git config --global url."https://github.com/".insteadOf "git@github.com:"
     - git submodule update --init --recursive
