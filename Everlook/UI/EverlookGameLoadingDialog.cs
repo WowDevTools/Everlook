@@ -54,7 +54,8 @@ namespace Everlook.UI
 				{
 					while (sr.BaseStream.Length > sr.BaseStream.Position)
 					{
-						this.Jokes.Add(sr.ReadLine());
+						// Add italics to all jokes. Jokes are in Pango markup format
+						this.Jokes.Add("<i>" + sr.ReadLine() + "</i>");
 					}
 				}
 			}
@@ -67,7 +68,7 @@ namespace Everlook.UI
 		/// </summary>
 		public void RefreshJoke()
 		{
-			this.AdditionalInfoLabel.Text = this.Jokes[new Random().Next(this.Jokes.Count)];
+			this.AdditionalInfoLabel.Markup = this.Jokes[new Random().Next(this.Jokes.Count)];
 		}
 	}
 }

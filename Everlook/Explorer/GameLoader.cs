@@ -36,6 +36,10 @@ using Warcraft.MPQ;
 
 namespace Everlook.Explorer
 {
+	/// <summary>
+	/// Handler class for loading games from disk. This class will load sets of packages and their node trees, and
+	/// generate new trees if none are found.
+	/// </summary>
 	public class GameLoader
 	{
 		/// <summary>
@@ -51,10 +55,14 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Loads the bundled dictionary from disk.
 		/// </summary>
+		/// <param name="ct"></param>
 		/// <returns></returns>
-		private static async Task<ListfileDictionary> LoadDictionary()
+		private static async Task<ListfileDictionary> LoadDictionaryAsync(CancellationToken ct = new CancellationToken())
 		{
-			return await Task.Run(() => new ListfileDictionary(File.ReadAllBytes("Dictionary/dictionary.dic")));
+			ListfileDictionary dict = new ListfileDictionary();
+			await dict.LoadFromStreamAsync(File.OpenRead("Dictionary/dictionary.dic"), ct);
+
+			return dict;
 		}
 
 		///  <summary>
@@ -166,7 +174,7 @@ namespace Everlook.Explorer
 						Alias = gameAlias
 					});
 
-					this.Dictionary = await LoadDictionary();
+					this.Dictionary = await LoadDictionaryAsync(ct);
 				}
 
 				// Generate node tree
@@ -182,7 +190,7 @@ namespace Everlook.Explorer
 						Alias = gameAlias
 					});
 
-					await multiBuilder.ConsumePackageAsync(packageInfo.packageName, packageInfo.package);
+					await multiBuilder.ConsumePackageAsync(packageInfo.packageName, packageInfo.package, ct);
 					packageGroup.AddPackage((PackageInteractionHandler)packageInfo.package);
 
 					++completedSteps;

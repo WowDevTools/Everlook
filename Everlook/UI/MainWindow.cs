@@ -139,7 +139,6 @@ namespace Everlook.UI
 
 			this.GameTabNotebook.ClearPages();
 
-
 			this.ExportQueueTreeView.ButtonPressEvent += OnExportQueueButtonPressed;
 			this.RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
 

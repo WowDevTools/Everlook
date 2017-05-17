@@ -17,7 +17,7 @@ Break the chains of love!
 Thank god for him.
 The right tool for the job. Maybe.
 There are only two hard things in programming: cache invalidation and loading screen jokes.
-Did someone say [Thunderfury, Blessed Blade of the Windseeker]?
+Did someone say <span foreground="#ff8000">[Thunderfury, Blessed Blade of the Windseeker]</span>?
 what are coords for mankriks wife
 ENERGIA!
 Give me my rock'n'roll today!
@@ -74,7 +74,7 @@ Waiting for the Hearthstone game to end...
 Murloc Pally <3
 Z͌̐͆̾ͨ͒ͬ̽ͧͪͬ̓ͫ̔̏̈́̚҉̸̨̪̫̬̭͈̳͍̫̺̥̲̖͢͢ͅẠ̢̠̲̮̤͙̳̖̠͔̗͎̲̩͙͎̟͉̉͋͋̍ͥ͢͡L̢̼̱̟̪͖̺̯̥͖̯͇̤̟̘̺͚ͪͦ̍͊̔͒͂̒̓́ͨ͛͌̎͟G̢̳̩͈̱͚̤̬̥͉͇͉̖̟͈̙͚ͩ̐̊̋̓̑͂̋̄̐ͥ̒̚͜͡ͅƠ̷̴͕̖͔̞̙ͮͣ́̾ͣ̂ͣ̋̈ͥ̑ͬ̓͛̏̋ͬ̉̀͞
 DON'T PANIC
-Bubblehearth
+Bubblehearthing...
 For Kane!
 Tiberium is the answer!
 The explorer rewrite was merely a setback.
@@ -164,8 +164,8 @@ Five curses and spite live in each gnome...
 That's the World of Warcraft that you play!
 Our tank is in Darkshore, our healer in Mulgore...
 I'm out of mana, I can't heal anything!
-[SERVER] The server will shut down in 15:00 for regularly scheduled maintenance.
-[Dirge]
+<span foreground="yellow">[SERVER] The server will shut down in 15:00 for regularly scheduled maintenance.</span>
+<span foreground="#b048f8">[Dirge]</span>
 Beer of wonder, beer delight, beer that makes us laugh and fight...
 Don't make me get my main!
 I'd rather have lunch with a fat ogre than to spend one moment with an elf!
@@ -179,3 +179,6 @@ a/s/l?
 Everything you know is wrong - just forget the words and sing along!
 THERE ARE FOUR LIGHTS.
 I'm a tour guide on loading cruise ride - Skipper Dan is the name!
+BURNING INSECTS...
+To get to the secret cow level, pick a Tauren. It's not very hard, you know?
+Whales like gnomes, right?
