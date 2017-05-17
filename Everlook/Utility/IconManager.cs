@@ -155,11 +155,6 @@ namespace Everlook.Utility
 				{
 					return GetIcon("package-x-generic");
 				}
-				case WarcraftFileType.INI:
-				case WarcraftFileType.ConfigurationFile:
-				{
-					return GetIcon("text-x-script");
-				}
 				case WarcraftFileType.TerrainTable:
 				case WarcraftFileType.DatabaseContainer:
 				case WarcraftFileType.Hashmap:
@@ -190,12 +185,16 @@ namespace Everlook.Utility
 				}
 				case WarcraftFileType.WaveAudio:
 				case WarcraftFileType.MP3Audio:
+				case WarcraftFileType.VorbisAudio:
+				case WarcraftFileType.WMAAudio:
 				{
 					return GetIcon("audio-x-generic");
 				}
 				case WarcraftFileType.Text:
 				case WarcraftFileType.Subtitles:
 				case WarcraftFileType.XML:
+				case WarcraftFileType.AddonManifest:
+				case WarcraftFileType.AddonManifestSignature:
 				{
 					return GetIcon("text-x-generic");
 				}
@@ -203,6 +202,9 @@ namespace Everlook.Utility
 				case WarcraftFileType.JPGImage:
 				case WarcraftFileType.GIFImage:
 				case WarcraftFileType.PNGImage:
+				case WarcraftFileType.IconImage:
+				case WarcraftFileType.TargaImage:
+				case WarcraftFileType.BitmapImage:
 				{
 					return GetIcon("image-x-generic");
 				}
@@ -222,10 +224,37 @@ namespace Everlook.Utility
 				{
 					return GetIcon("font-x-generic");
 				}
-				case WarcraftFileType.Unknown:
+				case WarcraftFileType.Animation:
+				{
+					return GetIcon("Blender-JumpingToon-Icon");
+				}
+				case WarcraftFileType.Physics:
+				{
+					return GetIcon("Blender-Deform-Icon");
+				}
+				case WarcraftFileType.Skeleton:
+				{
+					return GetIcon("Blender-Skeleton-Icon");
+				}
+				case WarcraftFileType.DataCache:
+				{
+					return GetIcon("text-x-sql");
+				}
+				case WarcraftFileType.INI:
+				case WarcraftFileType.ConfigurationFile:
+				case WarcraftFileType.Script:
+				{
+					return GetIcon("utilities-terminal");
+				}
+				case WarcraftFileType.Lighting:
+				{
+					return GetIcon("Blender-Sun-Icon");
+				}
 				case WarcraftFileType.Shader:
-				case WarcraftFileType.AddonManifest:
-				case WarcraftFileType.AddonManifestSignature:
+				{
+					return GetIcon("Blender-Shader-Icon");
+				}
+				case WarcraftFileType.Unknown:
 				default:
 				{
 					return GetIcon(Stock.File);

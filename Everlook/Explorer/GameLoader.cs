@@ -158,8 +158,15 @@ namespace Everlook.Explorer
 						Alias = gameAlias
 					});
 
-					PackageInteractionHandler package = await PackageInteractionHandler.LoadAsync(packagePath);
-					packages.Add((Path.GetFileNameWithoutExtension(packagePath), package));
+					try
+					{
+						PackageInteractionHandler package = await PackageInteractionHandler.LoadAsync(packagePath);
+						packages.Add((Path.GetFileNameWithoutExtension(packagePath), package));
+					}
+					catch (FileLoadException fex)
+					{
+						Log.Warn($"Failed to load archive {Path.GetFileNameWithoutExtension(packagePath)}: {fex.Message}");
+					}
 
 					++completedSteps;
 				}

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="36.124443mm"
+   height="36.124443mm"
+   viewBox="0 0 128 127.99999"
+   id="svg16364"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="Blender-Skeleton-Icon.svg">
+  <defs
+     id="defs16366">
+    <linearGradient
+       id="linearGradient10069">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop10071" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop10073" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient319">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop320" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="1"
+         id="stop321" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient19425">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop19427" />
+      <stop
+         id="stop19431"
+         offset="0.63109845"
+         style="stop-color:#fffffe;stop-opacity:0.65789473;" />
+      <stop
+         style="stop-color:#fffffe;stop-opacity:0.0000000;"
+         offset="1.0000000"
+         id="stop19429" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient31456">
+      <stop
+         style="stop-color:#2b1600;stop-opacity:1;"
+         offset="0"
+         id="stop31458" />
+      <stop
+         style="stop-color:#6e3900;stop-opacity:0;"
+         offset="1"
+         id="stop31460" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient319"
+       id="linearGradient41172"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0.01612278,0)"
+       x1="268.21783"
+       y1="200.66605"
+       x2="284.9375"
+       y2="224.1875" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10069"
+       id="radialGradient41174"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.25,0,0,1.375,-66.483877,-73.5)"
+       cx="269.99997"
+       cy="197"
+       fx="269.99997"
+       fy="197"
+       r="2" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.959798"
+     inkscape:cx="23.887742"
+     inkscape:cy="69.023394"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1440"
+     inkscape:window-height="873"
+     inkscape:window-x="3360"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       position="116.42009,116.16754"
+       orientation="-0.70710678,0.70710678"
+       id="guide16466" />
+    <sodipodi:guide
+       position="112.88455,63.387071"
+       orientation="0,1"
+       id="guide16468" />
+    <sodipodi:guide
+       position="67.175148,82.832507"
+       orientation="1,0"
+       id="guide16470" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata16369">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="Layer 3">
+    <g
+       style="display:inline;enable-background:new"
+       id="g41146"
+       transform="matrix(8.0000005,0,0,8.0000005,-2104.0001,-1552.0001)">
+      <rect
+         style="display:inline;overflow:visible;visibility:visible;opacity:0;fill:#b3b3b3;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.79999995;marker:none;enable-background:accumulate"
+         id="rect41148"
+         width="16"
+         height="16"
+         x="263"
+         y="194" />
+      <g
+         id="g41150"
+         transform="translate(0,-1)">
+        <path
+           id="path41152"
+           style="fill:none;stroke:#000000;stroke-width:3.20000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 270.51612,199.5 -0.0161,2 1.75,4 1.25,3 m -3,-7 -1.75,4 -1.25,3"
+           sodipodi:nodetypes="ccccccc"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\BLENDER ICONSET\blender-cvs-windows\.blender\.blender\icons\jendrzych's iconset.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:connector-curvature="0" />
+        <rect
+           style="fill:none;stroke:#000000;stroke-width:1.29999995;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           id="rect41154"
+           width="2"
+           height="2"
+           x="270.01611"
+           y="196"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\BLENDER ICONSET\blender-cvs-windows\.blender\.blender\icons\jendrzych's iconset.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <path
+           inkscape:export-ydpi="90"
+           inkscape:export-xdpi="90"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\BLENDER ICONSET\blender-cvs-windows\.blender\.blender\icons\jendrzych's iconset.png"
+           sodipodi:nodetypes="ccccccc"
+           d="m 270.51612,199.5 3,0 2.75,0 m -11.5,0 2.75,0 3,0"
+           style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="path23087"
+           inkscape:connector-curvature="0" />
+        <path
+           sodipodi:nodetypes="ccccccccccccc"
+           d="m 270.51612,199.5 -0.0161,2 1.75,4 1.25,3 m -3,-7 -1.75,4 -1.25,3 m 3.01612,-9 3,0 2.75,0 m -11.5,0 2.75,0 3,0"
+           style="fill:none;stroke:url(#linearGradient41172);stroke-width:1.70000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="path41157"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\BLENDER ICONSET\blender-cvs-windows\.blender\.blender\icons\jendrzych's iconset.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:connector-curvature="0" />
+        <rect
+           y="196"
+           x="269.76608"
+           height="2.75"
+           width="2.4999998"
+           id="rect41159"
+           style="opacity:0.5;fill:none;stroke:url(#radialGradient41174);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\BLENDER ICONSET\blender-cvs-windows\.blender\.blender\icons\jendrzych's iconset.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <rect
+           y="196"
+           x="270.01611"
+           height="2"
+           width="2"
+           id="rect41161"
+           style="fill:#ececec;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\BLENDER ICONSET\blender-cvs-windows\.blender\.blender\icons\jendrzych's iconset.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+      </g>
+    </g>
+  </g>
+</svg>

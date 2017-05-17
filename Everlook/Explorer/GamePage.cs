@@ -498,10 +498,13 @@ namespace Everlook.Explorer
 				return;
 			}
 
-			TreePath path;
-	        this.Tree.GetPathAtPos((int)args.Event.X, (int)args.Event.Y, out path);
+			TreePath sorterPath;
+	        this.Tree.GetPathAtPos((int)args.Event.X, (int)args.Event.Y, out sorterPath);
+			TreePath filterPath = this.TreeSorter.ConvertPathToChildPath(sorterPath);
+			TreePath modelPath = this.TreeFilter.ConvertPathToChildPath(filterPath);
 
-			if (path == null)
+
+			if (modelPath == null)
 			{
 				this.SaveItem.Sensitive = false;
 				this.ExportItem.Sensitive = false;
@@ -511,7 +514,7 @@ namespace Everlook.Explorer
 				return;
 			}
 
-			FileReference currentFileReference = this.TreeModel.GetReferenceByPath(this.Packages, path);
+			FileReference currentFileReference = this.TreeModel.GetReferenceByPath(this.Packages, modelPath);
 			if (currentFileReference.IsDirectory)
 			{
 				this.SaveItem.Sensitive = false;
@@ -617,6 +620,19 @@ namespace Everlook.Explorer
 				case WarcraftFileType.INI:
 				case WarcraftFileType.PDF:
 				case WarcraftFileType.Web:
+				case WarcraftFileType.Text:
+				case WarcraftFileType.WaveAudio:
+				case WarcraftFileType.MP3Audio:
+				case WarcraftFileType.WMAAudio:
+				case WarcraftFileType.VorbisAudio:
+				case WarcraftFileType.BitmapImage:
+				case WarcraftFileType.GIFImage:
+				case WarcraftFileType.JPGImage:
+				case WarcraftFileType.PNGImage:
+				case WarcraftFileType.TargaImage:
+				case WarcraftFileType.Subtitles:
+				case WarcraftFileType.Font:
+				case WarcraftFileType.Script:
 				{
 					byte[] fileData = fileReference.Extract();
 					if (fileData != null)

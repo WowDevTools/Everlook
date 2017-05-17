@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="36.124443mm"
+   height="36.124443mm"
+   viewBox="0 0 128 127.99999"
+   id="svg16364"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="Blender-Deform-Icon.svg">
+  <defs
+     id="defs16366">
+    <linearGradient
+       id="linearGradient10069">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop10071" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop10073" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient319">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop320" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="1"
+         id="stop321" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient19425"
+       id="radialGradient12116"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.1378252,-0.2988982,2.5269117,1.1651875,-1830.2675,-33.64056)"
+       cx="1662.2664"
+       cy="722.19189"
+       fx="1662.2664"
+       fy="722.19189"
+       r="5.5" />
+    <linearGradient
+       id="linearGradient19425">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop19427" />
+      <stop
+         id="stop19431"
+         offset="0.63109845"
+         style="stop-color:#fffffe;stop-opacity:0.65789473;" />
+      <stop
+         style="stop-color:#fffffe;stop-opacity:0.0000000;"
+         offset="1.0000000"
+         id="stop19429" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient31456"
+       id="linearGradient12114"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-1438.0001,-418)"
+       x1="1663.8125"
+       y1="722"
+       x2="1661.8125"
+       y2="726.37006" />
+    <linearGradient
+       id="linearGradient31456">
+      <stop
+         style="stop-color:#2b1600;stop-opacity:1;"
+         offset="0"
+         id="stop31458" />
+      <stop
+         style="stop-color:#6e3900;stop-opacity:0;"
+         offset="1"
+         id="stop31460" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient319"
+       id="linearGradient12118"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.8167109,0,0,0.8433415,-1397.7474,-388.72044)"
+       x1="1984.5453"
+       y1="828.21777"
+       x2="1978.11"
+       y2="829.35315" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.959798"
+     inkscape:cx="68.460723"
+     inkscape:cy="69.52847"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1440"
+     inkscape:window-height="873"
+     inkscape:window-x="3360"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       position="116.42009,116.16754"
+       orientation="-0.70710678,0.70710678"
+       id="guide16466" />
+    <sodipodi:guide
+       position="112.88455,63.387071"
+       orientation="0,1"
+       id="guide16468" />
+    <sodipodi:guide
+       position="67.175148,82.832507"
+       orientation="1,0"
+       id="guide16470" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata16369">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="Layer 3">
+    <g
+       style="display:inline;enable-background:new"
+       id="g12053"
+       transform="matrix(8.0000005,0,0,8.0000005,-1720.0001,-2416.0002)">
+      <rect
+         y="302"
+         x="-231"
+         height="16"
+         width="16"
+         id="rect12012"
+         style="display:inline;overflow:visible;visibility:visible;opacity:0;fill:#b3b3b3;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.79999995;marker:none;enable-background:accumulate"
+         transform="scale(-1,1)" />
+      <g
+         id="g12045">
+        <path
+           sodipodi:nodetypes="ccccc"
+           style="display:inline;overflow:visible;visibility:visible;opacity:0.9;fill:#552200;fill-opacity:1;fill-rule:evenodd;stroke:#2b1600;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
+           d="m 218,313.25 c -0.99997,-6.5 5.99997,-2.75 4.99994,-9.25 l 5.00003,2 c 1,7 -6,2 -5,10 L 218,313.25 Z"
+           id="path12014"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\4.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-ydpi="90"
+           inkscape:export-xdpi="90"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\4.png"
+           id="path12016"
+           d="m 218,313.25 c -0.99997,-6.5 5.99997,-3.25 4.99994,-9.25 l 5.00003,2 c 1,7 -6,2 -5,10 L 218,313.25 Z"
+           style="display:inline;overflow:visible;visibility:visible;opacity:0.95;fill:#ff9f37;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.06666696px;marker:none;enable-background:accumulate"
+           sodipodi:nodetypes="ccccc"
+           inkscape:connector-curvature="0" />
+        <path
+           sodipodi:nodetypes="ccccc"
+           style="display:inline;overflow:visible;visibility:visible;opacity:0.75;fill:url(#radialGradient12116);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.88812488px;marker:none;enable-background:accumulate"
+           d="m 218,313.25 c -0.99997,-6.5 5.99997,-3.25 4.99994,-9.25 l 5.00003,2 c 1,7 -6,2 -5,10 L 218,313.25 Z"
+           id="path12020"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\4.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-ydpi="90"
+           inkscape:export-xdpi="90"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\4.png"
+           id="path12018"
+           d="m 218,313.25 c -0.99997,-6.5 5.99997,-3.25 4.99994,-9.25 l 5.00003,2 c 1,7 -6,2 -5,10 L 218,313.25 Z"
+           style="display:inline;overflow:visible;visibility:visible;opacity:0.7;fill:url(#linearGradient12114);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.88812488px;marker:none;enable-background:accumulate"
+           sodipodi:nodetypes="ccccc"
+           inkscape:connector-curvature="0" />
+        <path
+           sodipodi:nodetypes="cccc"
+           style="display:inline;overflow:visible;visibility:visible;opacity:0.75;fill:none;stroke:url(#linearGradient12118);stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
+           d="m 223.24994,304.5 4.25003,1.75 c 1,5.75 -5.50003,2 -5.08025,8.84783 l -4.04773,-2.23212"
+           id="path12022"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\4.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-ydpi="90"
+           inkscape:export-xdpi="90"
+           inkscape:export-filename="C:\Documents and Settings\Tata\Pulpit\4.png"
+           id="path12024"
+           d="m 223.24994,304.5 4.25003,1.75"
+           style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
+           sodipodi:nodetypes="cc"
+           inkscape:connector-curvature="0" />
+      </g>
+    </g>
+  </g>
+</svg>
