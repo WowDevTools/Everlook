@@ -190,27 +190,44 @@ namespace Everlook.Utility
 				{
 					return GetIcon("audio-x-generic");
 				}
-				case WarcraftFileType.Text:
 				case WarcraftFileType.Subtitles:
-				case WarcraftFileType.XML:
+				{
+					return GetIcon("gnome-subtitles");
+				}
+				case WarcraftFileType.Text:
 				case WarcraftFileType.AddonManifest:
 				case WarcraftFileType.AddonManifestSignature:
 				{
 					return GetIcon("text-x-generic");
 				}
-				case WarcraftFileType.BinaryImage:
-				case WarcraftFileType.JPGImage:
 				case WarcraftFileType.GIFImage:
+				{
+					return GetIcon("image-gif");
+				}
 				case WarcraftFileType.PNGImage:
+				{
+					return GetIcon("image-png");
+				}
+				case WarcraftFileType.JPGImage:
+				{
+					return GetIcon("image-jpeg");
+				}
 				case WarcraftFileType.IconImage:
-				case WarcraftFileType.TargaImage:
+				{
+					return GetIcon("image-x-ico");
+				}
 				case WarcraftFileType.BitmapImage:
+				{
+					return GetIcon("image-bmp");
+				}
+				case WarcraftFileType.BinaryImage:
+				case WarcraftFileType.TargaImage:
 				{
 					return GetIcon("image-x-generic");
 				}
 				case WarcraftFileType.PDF:
 				{
-					return GetIcon("x-office-address-book");
+					return GetIcon("application-pdf");
 				}
 				case WarcraftFileType.Web:
 				{
@@ -253,6 +270,10 @@ namespace Everlook.Utility
 				case WarcraftFileType.Shader:
 				{
 					return GetIcon("Blender-Shader-Icon");
+				}
+				case WarcraftFileType.XML:
+				{
+					return GetIcon("text-xml");
 				}
 				case WarcraftFileType.Unknown:
 				default:
