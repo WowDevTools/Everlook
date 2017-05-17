@@ -26,6 +26,10 @@ using Gtk;
 using OpenTK;
 using UIElement = Gtk.Builder.ObjectAttribute;
 
+// ReSharper disable UnassignedReadonlyField
+#pragma warning disable 649
+#pragma warning disable 1591
+
 namespace Everlook.UI
 {
 	public sealed partial class MainWindow
@@ -38,7 +42,6 @@ namespace Everlook.UI
 		[UIElement] private readonly ToolButton PreferencesButton;
 
 		[UIElement] private readonly Alignment ViewportAlignment;
-		private readonly MenuToolButton ViewportMenuButton;
 		private readonly GLWidget ViewportWidget;
 		private bool ViewportHasPendingRedraw;
 

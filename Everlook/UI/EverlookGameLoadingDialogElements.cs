@@ -23,13 +23,17 @@
 using Gtk;
 using UIElement = Gtk.Builder.ObjectAttribute;
 
+// ReSharper disable UnassignedReadonlyField
+#pragma warning disable 649
+#pragma warning disable 1591
+
 namespace Everlook.UI
 {
 	public partial class EverlookGameLoadingDialog
 	{
-		[UIElement] public readonly Label GameLoadingDialogLabel;
-		[UIElement] public readonly Label AdditionalInfoLabel;
-		[UIElement] public readonly Button CancelGameLoadingButton;
-		[UIElement] public readonly ProgressBar GameLoadingProgressBar;
+		[UIElement] private readonly Label GameLoadingDialogLabel;
+		[UIElement] private readonly Label AdditionalInfoLabel;
+		[UIElement] private readonly Button CancelGameLoadingButton;
+		[UIElement] private readonly ProgressBar GameLoadingProgressBar;
 	}
 }

@@ -23,28 +23,32 @@
 using Gtk;
 using UIElement = Gtk.Builder.ObjectAttribute;
 
+// ReSharper disable UnassignedReadonlyField
+#pragma warning disable 649
+#pragma warning disable 1591
+
 namespace Everlook.UI
 {
 	public partial class EverlookPreferences
 	{
-		[UIElement] private Dialog NewGamePathDialog;
-		[UIElement] private Entry AliasEntry;
-		[UIElement] private FileChooserButton PathChooser;
+		[UIElement] private readonly Dialog NewGamePathDialog;
+		[UIElement] private readonly Entry AliasEntry;
+		[UIElement] private readonly FileChooserButton PathChooser;
 
-		[UIElement] private TreeView GamePathSelectionTreeView;
-		[UIElement] private ListStore GamePathListStore;
-		[UIElement] private Button AddPathButton;
-		[UIElement] private Button RemovePathButton;
+		[UIElement] private readonly TreeView GamePathSelectionTreeView;
+		[UIElement] private readonly ListStore GamePathListStore;
+		[UIElement] private readonly Button AddPathButton;
+		[UIElement] private readonly Button RemovePathButton;
 
-		[UIElement] private ColorButton ViewportColourButton;
-		//[UIElement] CheckButton ShowUnknownFilesCheckButton;
+		[UIElement] private readonly ColorButton ViewportColourButton;
+		//[UIElement] private readonly CheckButton ShowUnknownFilesCheckButton;
 
-		[UIElement] private FileChooserButton DefaultExportDirectoryFileChooserButton;
-		[UIElement] private ComboBox DefaultModelExportFormatComboBox;
-		[UIElement] private ComboBox DefaultImageExportFormatComboBox;
-		[UIElement] private ComboBox DefaultAudioExportFormatComboBox;
-		[UIElement] private CheckButton KeepDirectoryStructureCheckButton;
+		[UIElement] private readonly FileChooserButton DefaultExportDirectoryFileChooserButton;
+		[UIElement] private readonly ComboBox DefaultModelExportFormatComboBox;
+		[UIElement] private readonly ComboBox DefaultImageExportFormatComboBox;
+		[UIElement] private readonly ComboBox DefaultAudioExportFormatComboBox;
+		[UIElement] private readonly CheckButton KeepDirectoryStructureCheckButton;
 
-		[UIElement] private CheckButton SendStatsCheckButton;
+		[UIElement] private readonly CheckButton SendStatsCheckButton;
 	}
 }

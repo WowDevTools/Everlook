@@ -24,13 +24,30 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using Gtk;
 namespace Everlook.UI
 {
+	/// <summary>
+	/// The main dialog that is shown when the program is loading games. External processes update the information
+	/// on it.
+	/// </summary>
 	public partial class EverlookGameLoadingDialog : Gtk.Dialog
 	{
+		/// <summary>
+		/// The source of the cancellation token associated with this dialog.
+		/// </summary>
+		public CancellationTokenSource CancellationSource { get;}
+
 		private readonly List<string> Jokes = new List<string>();
 
+		private readonly uint JokeTimeoutID;
+
+		/// <summary>
+		/// Creates a new dialog with the given window as its parent.
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <returns></returns>
 		public static EverlookGameLoadingDialog Create(Window parent)
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookGameLoadingDialog.glade", null);
@@ -41,6 +58,16 @@ namespace Everlook.UI
 		{
 			builder.Autoconnect(this);
 			this.TransientFor = parent;
+
+			this.CancellationSource = new CancellationTokenSource();
+
+			this.CancelGameLoadingButton.Pressed += (o, args) =>
+			{
+				this.GameLoadingDialogLabel.Text = "Cancelling...";
+				this.CancelGameLoadingButton.Sensitive = false;
+
+				this.CancellationSource.Cancel();
+			};
 
 			using (Stream shaderStream =
 				Assembly.GetExecutingAssembly().GetManifestResourceStream("Everlook.Content.jokes.txt"))
@@ -61,6 +88,12 @@ namespace Everlook.UI
 			}
 
 			RefreshJoke();
+
+			this.JokeTimeoutID = GLib.Timeout.Add(6000, () =>
+			{
+				RefreshJoke();
+				return true;
+			});
 		}
 
 		/// <summary>
@@ -69,6 +102,34 @@ namespace Everlook.UI
 		public void RefreshJoke()
 		{
 			this.AdditionalInfoLabel.Markup = this.Jokes[new Random().Next(this.Jokes.Count)];
+		}
+
+		/// <summary>
+		/// Sets the fraction of the dialog's loading bar.
+		/// </summary>
+		/// <param name="fraction"></param>
+		public void SetFraction(double fraction)
+		{
+			this.GameLoadingProgressBar.Fraction = fraction;
+		}
+
+		/// <summary>
+		/// Sets the status message of the dialog.
+		/// </summary>
+		/// <param name="statusMessage"></param>
+		public void SetStatusMessage(string statusMessage)
+		{
+			this.GameLoadingDialogLabel.Text = statusMessage;
+		}
+
+		/// <summary>
+		/// Destroys the dialog.
+		/// </summary>
+		public override void Destroy()
+		{
+			base.Destroy();
+
+			GLib.Timeout.Remove(this.JokeTimeoutID);
 		}
 	}
 }

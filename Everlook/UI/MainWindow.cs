@@ -260,20 +260,11 @@ namespace Everlook.UI
 		private async Task LoadGames()
 		{
 			GameLoader loader = new GameLoader();
-			CancellationTokenSource cts = new CancellationTokenSource();
 			EverlookGameLoadingDialog dialog = EverlookGameLoadingDialog.Create(this);
-
-			dialog.CancelGameLoadingButton.Pressed += (o, args) =>
-			{
-				dialog.GameLoadingDialogLabel.Text = "Cancelling...";
-				dialog.CancelGameLoadingButton.Sensitive = false;
-
-				cts.Cancel();
-			};
 
 			Progress<GameLoadingProgress> progress = new Progress<GameLoadingProgress>(loadingProgress =>
 			{
-				dialog.GameLoadingProgressBar.Fraction = loadingProgress.CompletionPercentage;
+				dialog.SetFraction(loadingProgress.CompletionPercentage);
 
 				string statusText = "";
 				switch (loadingProgress.State)
@@ -310,33 +301,20 @@ namespace Everlook.UI
 					}
 				}
 
-				dialog.GameLoadingDialogLabel.Text = loadingProgress.Alias + " - " + statusText;
+				dialog.SetStatusMessage(loadingProgress.Alias + " - " + statusText);
 			});
 
 			dialog.ShowAll();
-
-			uint jokeTimeout = GLib.Timeout.Add(6000, () =>
-			{
-				dialog.RefreshJoke();
-				return true;
-			});
 
 			foreach (var gameTarget in GamePathStorage.Instance.GamePaths)
 			{
 				try
 				{
-					if (this.GamePages.Any(p => p.Alias == gameTarget.Alias))
-					{
-						// TODO: Kind of a dirty solution
-						// Already loaded, go to next
-						continue;
-					}
-
 					(PackageGroup group, OptimizedNodeTree nodeTree) = await loader.LoadGameAsync
 					(
 						gameTarget.Alias,
 						gameTarget.Path,
-						cts.Token,
+						dialog.CancellationSource.Token,
 						progress
 					);
 
@@ -348,7 +326,6 @@ namespace Everlook.UI
 				}
 			}
 
-			GLib.Timeout.Remove(jokeTimeout);
 			dialog.Destroy();
 		}
 

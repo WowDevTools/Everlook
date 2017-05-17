@@ -22,19 +22,22 @@
 
 using Gtk;
 using UIElement = Gtk.Builder.ObjectAttribute;
+// ReSharper disable UnassignedReadonlyField
+#pragma warning disable 649
+#pragma warning disable 1591
 
 namespace Everlook.UI
 {
 	public sealed partial class EverlookDirectoryExportDialog
 	{
-		[UIElement] ListStore ItemExportListStore;
-		[UIElement] TreeView ItemListingTreeView;
-		[UIElement] CellRendererToggle ExportItemToggleRenderer;
+		[UIElement] private readonly ListStore ItemExportListStore;
+		[UIElement] private readonly TreeView ItemListingTreeView;
+		[UIElement] private readonly CellRendererToggle ExportItemToggleRenderer;
 
-		[UIElement] Menu ExportPopupMenu;
-		[UIElement] ImageMenuItem SelectAllItem;
-		[UIElement] ImageMenuItem SelectNoneItem;
+		[UIElement] private readonly Menu ExportPopupMenu;
+		[UIElement] private readonly ImageMenuItem SelectAllItem;
+		[UIElement] private readonly ImageMenuItem SelectNoneItem;
 
-		[UIElement] FileChooserButton ExportDirectoryFileChooserButton;
+		[UIElement] private readonly FileChooserButton ExportDirectoryFileChooserButton;
 	}
 }
