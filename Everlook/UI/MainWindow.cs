@@ -52,7 +52,7 @@ namespace Everlook.UI
 	/// Main UI class for Everlook. The "partial" qualifier is not strictly needed, but prevents the compiler from
 	/// generating errors about the autoconnected members that relate to UI elements.
 	/// </summary>
-	public sealed partial class MainWindow: Gtk.Window
+	public sealed partial class MainWindow : Gtk.Window
 	{
 		/// <summary>
 		/// Logger instance for this class.
@@ -123,12 +123,12 @@ namespace Everlook.UI
 			};
 
 			this.ViewportWidget.Events |=
-            				EventMask.ButtonPressMask |
-            				EventMask.ButtonReleaseMask |
-				            EventMask.EnterNotifyMask |
-				            EventMask.LeaveNotifyMask |
-            				EventMask.KeyPressMask |
-            				EventMask.KeyReleaseMask;
+				EventMask.ButtonPressMask |
+				EventMask.ButtonReleaseMask |
+				EventMask.EnterNotifyMask |
+				EventMask.LeaveNotifyMask |
+				EventMask.KeyPressMask |
+				EventMask.KeyReleaseMask;
 
 			this.ViewportWidget.Initialized += delegate
 			{
@@ -153,18 +153,20 @@ namespace Everlook.UI
 			this.GameTabNotebook.ClearPages();
 
 			this.ExportQueueTreeView.ButtonPressEvent += OnExportQueueButtonPressed;
-			this.ExportQueueTreeView.GetColumn(0).SetCellDataFunc
-			(
-				this.ExportQueueTreeView.GetColumn(0).Cells[0],
-				RenderExportQueueReferenceIcon
-			);
+			this.ExportQueueTreeView.GetColumn(0)
+				.SetCellDataFunc
+				(
+					this.ExportQueueTreeView.GetColumn(0).Cells[0],
+					RenderExportQueueReferenceIcon
+				);
 
 			this.ExportQueueTreeView.GetColumn(0).Expand = true;
-			this.ExportQueueTreeView.GetColumn(0).SetCellDataFunc
-			(
-				this.ExportQueueTreeView.GetColumn(0).Cells[1],
-				RenderExportQueueReferenceName
-			);
+			this.ExportQueueTreeView.GetColumn(0)
+				.SetCellDataFunc
+				(
+					this.ExportQueueTreeView.GetColumn(0).Cells[1],
+					RenderExportQueueReferenceName
+				);
 			this.RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
 
 			this.FileFilterComboBox.Changed += OnFilterChanged;
@@ -237,8 +239,8 @@ namespace Everlook.UI
 				this.ViewportPaned.Position =
 					this.ViewportPaned.AllocatedHeight +
 					this.LowerBoxPaned.AllocatedHeight +
-					(int)this.ViewportAlignment.BottomPadding +
-					(int)this.LowerBoxAlignment.TopPadding;
+					(int) this.ViewportAlignment.BottomPadding +
+					(int) this.LowerBoxAlignment.TopPadding;
 			}
 
 			this.ViewportHasPendingRedraw = true;
@@ -276,15 +278,16 @@ namespace Everlook.UI
 		/// <param name="cell"></param>
 		/// <param name="model"></param>
 		/// <param name="iter"></param>
-		private void RenderExportQueueReferenceName(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
+		private static void RenderExportQueueReferenceName(TreeViewColumn column, CellRenderer cell, ITreeModel model,
+			TreeIter iter)
 		{
 			CellRendererText cellText = cell as CellRendererText;
 			FileReference reference = (FileReference) model.GetValue(iter, 0);
 
-	        if (reference == null || cellText == null)
-	        {
-	            return;
-	        }
+			if (reference == null || cellText == null)
+			{
+				return;
+			}
 
 			cellText.Text = reference.FilePath.Replace('\\', IOPath.DirectorySeparatorChar);
 		}
@@ -296,15 +299,16 @@ namespace Everlook.UI
 		/// <param name="cell"></param>
 		/// <param name="model"></param>
 		/// <param name="iter"></param>
-		private static void RenderExportQueueReferenceIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
+		private static void RenderExportQueueReferenceIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model,
+			TreeIter iter)
 		{
 			CellRendererPixbuf cellIcon = cell as CellRendererPixbuf;
-            FileReference reference = (FileReference) model.GetValue(iter, 0);
+			FileReference reference = (FileReference) model.GetValue(iter, 0);
 
-            if (reference == null || cellIcon == null)
-            {
-                return;
-            }
+			if (reference == null || cellIcon == null)
+			{
+				return;
+			}
 
 			if (reference.Node.Type.HasFlag(NodeType.Directory))
 			{
@@ -333,7 +337,7 @@ namespace Everlook.UI
 			uint refilterStatusMessageID = this.MainStatusBar.Push(refilterStatusContextID,
 				"Refiltering node trees...");
 
-			FilterType filterType = (FilterType)box.Active;
+			FilterType filterType = (FilterType) box.Active;
 			foreach (GamePage page in this.GamePages)
 			{
 				if (filterType == FilterType.All)
@@ -369,57 +373,17 @@ namespace Everlook.UI
 		/// <exception cref="NotImplementedException"></exception>
 		private async void OnMainWindowShown(object sender, EventArgs e)
 		{
-			// Load games
 			await LoadGames();
 		}
 
+		/// <summary>
+		/// Loads the games stored in the preferences into the UI.
+		/// </summary>
+		/// <returns></returns>
 		private async Task LoadGames()
 		{
 			GameLoader loader = new GameLoader();
 			EverlookGameLoadingDialog dialog = EverlookGameLoadingDialog.Create(this);
-
-			Progress<GameLoadingProgress> progress = new Progress<GameLoadingProgress>(loadingProgress =>
-			{
-				dialog.SetFraction(loadingProgress.CompletionPercentage);
-
-				string statusText = "";
-				switch (loadingProgress.State)
-				{
-					case GameLoadingState.SettingUp:
-					{
-						statusText = "Setting up...";
-						break;
-					}
-					case GameLoadingState.Loading:
-					{
-						statusText = "Loading...";
-						break;
-					}
-					case GameLoadingState.LoadingPackages:
-					{
-						statusText = "Loading packages...";
-						break;
-					}
-					case GameLoadingState.LoadingNodeTree:
-					{
-						statusText = "Loading node tree...";
-						break;
-					}
-					case GameLoadingState.LoadingDictionary:
-					{
-						statusText = "Loading dictionary for node generation...";
-						break;
-					}
-					case GameLoadingState.BuildingNodeTree:
-					{
-						statusText = "Building node tree..";
-						break;
-					}
-				}
-
-				dialog.SetStatusMessage(loadingProgress.Alias + " - " + statusText);
-			});
-
 			dialog.ShowAll();
 
 			foreach (var gameTarget in GamePathStorage.Instance.GamePaths)
@@ -431,7 +395,7 @@ namespace Everlook.UI
 						gameTarget.Alias,
 						gameTarget.Path,
 						dialog.CancellationSource.Token,
-						progress
+						dialog.ProgressNotifier
 					);
 
 					AddGamePage(gameTarget.Alias, group, nodeTree);
@@ -481,7 +445,7 @@ namespace Everlook.UI
 			if (Enum.IsDefined(typeof(ControlPage), pageToEnable))
 			{
 				// Set the page
-				this.ItemControlNotebook.Page = (int)pageToEnable;
+				this.ItemControlNotebook.Page = (int) pageToEnable;
 
 				// Disable the other pages
 				foreach (ControlPage otherPage in Enum.GetValues(typeof(ControlPage)))
@@ -797,7 +761,7 @@ namespace Everlook.UI
 				{
 					using (EverlookImageExportDialog exportDialog = EverlookImageExportDialog.Create(fileReference))
 					{
-						if (exportDialog.Run() == (int)ResponseType.Ok)
+						if (exportDialog.Run() == (int) ResponseType.Ok)
 						{
 							exportDialog.RunExport();
 						}
@@ -816,7 +780,6 @@ namespace Everlook.UI
 		/// <param name="fileReference">E.</param>
 		private void OnEnqueueItemRequested(GamePage page, FileReference fileReference)
 		{
-			// TODO: pixbuf for the export status
 			this.ExportQueueListStore.AppendValues(fileReference, IconManager.GetIcon("package-downgrade"));
 		}
 
@@ -841,7 +804,7 @@ namespace Everlook.UI
 			using (EverlookPreferences preferencesDialog = EverlookPreferences.Create())
 			{
 				preferencesDialog.TransientFor = this;
-				if (preferencesDialog.Run() == (int)ResponseType.Ok)
+				if (preferencesDialog.Run() == (int) ResponseType.Ok)
 				{
 					preferencesDialog.SavePreferences();
 					ReloadRuntimeValues();
@@ -933,7 +896,7 @@ namespace Everlook.UI
 			}
 
 			TreePath path;
-			this.ExportQueueTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out path);
+			this.ExportQueueTreeView.GetPathAtPos((int) e.Event.X, (int) e.Event.Y, out path);
 
 			if (path == null)
 			{
@@ -943,7 +906,7 @@ namespace Everlook.UI
 			TreeIter iter;
 			this.ExportQueueListStore.GetIter(out iter, path);
 
-			FileReference queuedReference = (FileReference)this.ExportQueueListStore.GetValue(iter, 0);
+			FileReference queuedReference = (FileReference) this.ExportQueueListStore.GetValue(iter, 0);
 
 			if (string.IsNullOrEmpty(queuedReference?.FilePath))
 			{

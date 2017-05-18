@@ -25,7 +25,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using Everlook.Explorer;
 using Gtk;
+
 namespace Everlook.UI
 {
 	/// <summary>
@@ -37,11 +39,13 @@ namespace Everlook.UI
 		/// <summary>
 		/// The source of the cancellation token associated with this dialog.
 		/// </summary>
-		public CancellationTokenSource CancellationSource { get;}
+		public CancellationTokenSource CancellationSource { get; }
 
 		private readonly List<string> Jokes = new List<string>();
 
 		private readonly uint JokeTimeoutID;
+
+		public Progress<GameLoadingProgress> ProgressNotifier { get; }
 
 		/// <summary>
 		/// Creates a new dialog with the given window as its parent.
@@ -68,6 +72,48 @@ namespace Everlook.UI
 
 				this.CancellationSource.Cancel();
 			};
+
+			this.ProgressNotifier = new Progress<GameLoadingProgress>(loadingProgress =>
+			{
+				SetFraction(loadingProgress.CompletionPercentage);
+
+				string statusText = "";
+				switch (loadingProgress.State)
+				{
+					case GameLoadingState.SettingUp:
+					{
+						statusText = "Setting up...";
+						break;
+					}
+					case GameLoadingState.Loading:
+					{
+						statusText = "Loading...";
+						break;
+					}
+					case GameLoadingState.LoadingPackages:
+					{
+						statusText = "Loading packages...";
+						break;
+					}
+					case GameLoadingState.LoadingNodeTree:
+					{
+						statusText = "Loading node tree...";
+						break;
+					}
+					case GameLoadingState.LoadingDictionary:
+					{
+						statusText = "Loading dictionary for node generation...";
+						break;
+					}
+					case GameLoadingState.BuildingNodeTree:
+					{
+						statusText = "Building node tree..";
+						break;
+					}
+				}
+
+				SetStatusMessage(loadingProgress.Alias + " - " + statusText);
+			});
 
 			using (Stream shaderStream =
 				Assembly.GetExecutingAssembly().GetManifestResourceStream("Everlook.Content.jokes.txt"))
