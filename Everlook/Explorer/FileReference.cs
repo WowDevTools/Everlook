@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Drawing.Drawing2D;
 using Warcraft.Core;
 using System.IO;
 using Everlook.Package;
@@ -34,7 +35,7 @@ namespace Everlook.Explorer
 	/// Represents a file stored in a game package. Holds the package name and path of the file
 	/// inside the package.
 	/// </summary>
-	public class FileReference : IEquatable<FileReference>
+	public class FileReference : GLib.Object, IEquatable<FileReference>
 	{
 		/// <summary>
 		/// Gets the group this reference belongs to.
@@ -101,9 +102,11 @@ namespace Everlook.Explorer
 		public bool IsFile => this.Node.Type.HasFlag(NodeType.File);
 
 		/// <summary>
-		/// The name of the file.
+		/// The name of the file or directory.
 		/// </summary>
-		public string Filename => Path.GetFileName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar));
+		public string Filename => this.IsDirectory ?
+			Path.GetDirectoryName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar)) :
+			Path.GetFileName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar));
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileReference"/> class.

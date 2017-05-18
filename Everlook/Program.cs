@@ -23,6 +23,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using Everlook.Explorer;
 using Everlook.UI;
 using Everlook.Utility;
 using GLib;
@@ -70,8 +71,11 @@ namespace Everlook
 			ExceptionManager.UnhandledException += OnGLibUnhandledException;
 
 			Log.Info("Registering treeview types with the native backend...");
-			GType type = (GType) typeof(FileNode);
-			GType.Register(type, typeof(FileNode));
+			GType nodeType = (GType) typeof(FileNode);
+			GType.Register(nodeType, typeof(FileNode));
+
+			GType referenceType = (GType) typeof(FileReference);
+			GType.Register(referenceType, typeof(FileReference));
 
 			// GTK
 			IconManager.LoadEmbeddedIcons();

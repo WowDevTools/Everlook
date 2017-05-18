@@ -208,16 +208,19 @@ namespace Everlook.Viewport
 					// Calculate the current relative movement of the camera
 					if (this.WantsToMove)
 					{
-						int mouseX = Mouse.GetCursorState().X;
-						int mouseY = Mouse.GetCursorState().Y;
-
-						float deltaMouseX = this.InitialMouseX - mouseX;
-						float deltaMouseY = this.InitialMouseY - mouseY;
-
-						this.Movement.CalculateMovement(deltaMouseX, deltaMouseY, this.DeltaTime);
-
-						// Return the mouse to its original position
-						Mouse.SetPosition(this.InitialMouseX, this.InitialMouseY);
+						switch (this.RenderTarget.Projection)
+						{
+							case ProjectionType.Orthographic:
+							{
+								Calculate2DMovement();
+								break;
+							}
+							case ProjectionType.Perspective:
+							{
+								Calculate3DMovement();
+								break;
+							}
+						}
 					}
 
 					// Render the current object
@@ -241,12 +244,46 @@ namespace Everlook.Viewport
 		}
 
 		/// <summary>
+		/// Computes the movement of the camera in 3D space for this frame.
+		/// </summary>
+		private void Calculate2DMovement()
+		{
+			int mouseX = Mouse.GetCursorState().X;
+			int mouseY = Mouse.GetCursorState().Y;
+
+			float deltaMouseX = this.InitialMouseX - mouseX;
+			float deltaMouseY = this.InitialMouseY - mouseY;
+
+			this.Movement.Calculate2DMovement(deltaMouseX, deltaMouseY, this.DeltaTime);
+
+			// Update the initial location for the next frame
+			this.InitialMouseX = mouseX;
+			this.InitialMouseY = mouseY;
+		}
+
+		/// <summary>
+		/// Computes the movement of the camera in 3D space for this frame.
+		/// </summary>
+		private void Calculate3DMovement()
+		{
+			int mouseX = Mouse.GetCursorState().X;
+			int mouseY = Mouse.GetCursorState().Y;
+
+			float deltaMouseX = this.InitialMouseX - mouseX;
+			float deltaMouseY = this.InitialMouseY - mouseY;
+
+			this.Movement.Calculate3DMovement(deltaMouseX, deltaMouseY, this.DeltaTime);
+
+			// Return the mouse to its original position
+			Mouse.SetPosition(this.InitialMouseX, this.InitialMouseY);
+		}
+
+		/// <summary>
 		/// Determines whether or not movement is currently disabled for the rendered object.
 		/// </summary>
 		public bool IsMovementDisabled()
 		{
 			return this.RenderTarget == null ||
-			       this.RenderTarget.IsStatic ||
 			       !this.RenderTarget.IsInitialized;
 		}
 

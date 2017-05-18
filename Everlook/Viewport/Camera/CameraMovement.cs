@@ -21,9 +21,12 @@
 //
 
 using System;
+using Everlook.Viewport.Rendering.Interfaces;
 using log4net;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using Warcraft.Core.Extensions;
 
 namespace Everlook.Viewport.Camera
 {
@@ -103,10 +106,39 @@ namespace Everlook.Viewport.Camera
 		}
 
 		/// <summary>
-		/// Calculates the relative position of the observer in world space, using
-		/// input relayed from the main interface.
+		/// Calculates and applies the position of the camera in screen space, using input
+		/// relayed from the main interface. This function is used for 2D orthographic projection.
 		/// </summary>
-		public void CalculateMovement(float deltaMouseX, float deltaMouseY, float deltaTime)
+		/// <param name="deltaMouseX"></param>
+		/// <param name="deltaMouseY"></param>
+		/// <param name="deltaTime"></param>
+		public void Calculate2DMovement(float deltaMouseX, float deltaMouseY, float deltaTime)
+		{
+			const float speedMultiplier = 6.0f;
+			if (deltaMouseX < 0)
+			{
+				MoveLeft(deltaMouseX * deltaTime * DefaultMovementSpeed * speedMultiplier);
+			}
+			else
+			{
+				MoveRight(deltaMouseX * deltaTime * DefaultMovementSpeed * speedMultiplier);
+			}
+
+			if (deltaMouseY < 0)
+			{
+				MoveUp(deltaMouseY * deltaTime * DefaultMovementSpeed * speedMultiplier);
+			}
+			else
+			{
+				MoveDown(deltaMouseY * deltaTime * DefaultMovementSpeed * speedMultiplier);
+			}
+		}
+
+		/// <summary>
+		/// Calculates the relative position of the observer in world space, using
+		/// input relayed from the main interface. This function is used for 3D projection.
+		/// </summary>
+		public void Calculate3DMovement(float deltaMouseX, float deltaMouseY, float deltaTime)
 		{
 			// Perform radial movement
 			RotateHorizontal(deltaMouseX * DefaultTurningSpeed * deltaTime);

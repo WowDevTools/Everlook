@@ -35,6 +35,7 @@ using Gdk;
 using GLib;
 using Gtk;
 using liblistfile;
+using liblistfile.NodeTree;
 using log4net;
 using OpenTK;
 using OpenTK.Graphics;
@@ -43,6 +44,7 @@ using Warcraft.Core;
 using Application = Gtk.Application;
 using IOPath = System.IO.Path;
 using FileNode = liblistfile.NodeTree.Node;
+using WindowState = Gdk.WindowState;
 
 namespace Everlook.UI
 {
@@ -78,6 +80,11 @@ namespace Everlook.UI
 		private readonly TaskScheduler UiThreadScheduler;
 
 		/// <summary>
+		/// Cancellation token source for file loading operations.
+		/// </summary>
+		private CancellationTokenSource FileLoadingCancellationSource;
+
+		/// <summary>
 		/// Creates an instance of the MainWindow class, loading the glade XML UI as needed.
 		/// </summary>
 		public static MainWindow Create()
@@ -97,8 +104,10 @@ namespace Everlook.UI
 			builder.Autoconnect(this);
 			this.DeleteEvent += OnDeleteEvent;
 			this.Shown += OnMainWindowShown;
+			this.WindowStateEvent += OnWindowStateChanged;
 
 			this.UiThreadScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+			this.FileLoadingCancellationSource = new CancellationTokenSource();
 
 			this.ViewportWidget = new GLWidget
 			{
@@ -116,6 +125,8 @@ namespace Everlook.UI
 			this.ViewportWidget.Events |=
             				EventMask.ButtonPressMask |
             				EventMask.ButtonReleaseMask |
+				            EventMask.EnterNotifyMask |
+				            EventMask.LeaveNotifyMask |
             				EventMask.KeyPressMask |
             				EventMask.KeyReleaseMask;
 
@@ -128,6 +139,8 @@ namespace Everlook.UI
 
 			this.ViewportWidget.ButtonPressEvent += OnViewportButtonPressed;
 			this.ViewportWidget.ButtonReleaseEvent += OnViewportButtonReleased;
+			this.ViewportWidget.EnterNotifyEvent += OnViewportMouseEnter;
+			this.ViewportWidget.LeaveNotifyEvent += OnViewportMouseLeave;
 			this.ViewportWidget.ConfigureEvent += OnViewportConfigured;
 
 			this.RenderingEngine = new ViewportRenderer(this.ViewportWidget);
@@ -140,6 +153,18 @@ namespace Everlook.UI
 			this.GameTabNotebook.ClearPages();
 
 			this.ExportQueueTreeView.ButtonPressEvent += OnExportQueueButtonPressed;
+			this.ExportQueueTreeView.GetColumn(0).SetCellDataFunc
+			(
+				this.ExportQueueTreeView.GetColumn(0).Cells[0],
+				RenderExportQueueReferenceIcon
+			);
+
+			this.ExportQueueTreeView.GetColumn(0).Expand = true;
+			this.ExportQueueTreeView.GetColumn(0).SetCellDataFunc
+			(
+				this.ExportQueueTreeView.GetColumn(0).Cells[1],
+				RenderExportQueueReferenceName
+			);
 			this.RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
 
 			this.FileFilterComboBox.Changed += OnFilterChanged;
@@ -197,6 +222,97 @@ namespace Everlook.UI
 
 				image.ChannelMask.Z = this.RenderBlueCheckButton.Active ? 1.0f : 0.0f;
 			};
+		}
+
+		/// <summary>
+		/// Handles expansion of the viewport pane when the window is maximized.
+		/// </summary>
+		/// <param name="o"></param>
+		/// <param name="args"></param>
+		[ConnectBefore]
+		private void OnWindowStateChanged(object o, WindowStateEventArgs args)
+		{
+			if (args.Event.NewWindowState.HasFlag(WindowState.Maximized))
+			{
+				this.ViewportPaned.Position =
+					this.ViewportPaned.AllocatedHeight +
+					this.LowerBoxPaned.AllocatedHeight +
+					(int)this.ViewportAlignment.BottomPadding +
+					(int)this.LowerBoxAlignment.TopPadding;
+			}
+
+			this.ViewportHasPendingRedraw = true;
+		}
+
+		/// <summary>
+		/// Handles changing the cursor when leaving the viewport.
+		/// </summary>
+		/// <param name="o"></param>
+		/// <param name="args"></param>
+		[ConnectBefore]
+		private void OnViewportMouseLeave(object o, LeaveNotifyEventArgs args)
+		{
+			this.Window.Cursor = new Cursor(CursorType.Arrow);
+		}
+
+		/// <summary>
+		/// Handles changing the cursor when hovering over the viewport
+		/// </summary>
+		/// <param name="o"></param>
+		/// <param name="args"></param>
+		[ConnectBefore]
+		private void OnViewportMouseEnter(object o, EnterNotifyEventArgs args)
+		{
+			if (this.RenderingEngine.RenderTarget?.Projection == ProjectionType.Orthographic)
+			{
+				this.Window.Cursor = new Cursor(CursorType.Hand2);
+			}
+		}
+
+		/// <summary>
+		/// Renders the name of a file reference in the export queue.
+		/// </summary>
+		/// <param name="column"></param>
+		/// <param name="cell"></param>
+		/// <param name="model"></param>
+		/// <param name="iter"></param>
+		private void RenderExportQueueReferenceName(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
+		{
+			CellRendererText cellText = cell as CellRendererText;
+			FileReference reference = (FileReference) model.GetValue(iter, 0);
+
+	        if (reference == null || cellText == null)
+	        {
+	            return;
+	        }
+
+			cellText.Text = reference.FilePath.Replace('\\', IOPath.DirectorySeparatorChar);
+		}
+
+		/// <summary>
+		/// Renders the icon of a file reference in the export queue.
+		/// </summary>
+		/// <param name="column"></param>
+		/// <param name="cell"></param>
+		/// <param name="model"></param>
+		/// <param name="iter"></param>
+		private static void RenderExportQueueReferenceIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
+		{
+			CellRendererPixbuf cellIcon = cell as CellRendererPixbuf;
+            FileReference reference = (FileReference) model.GetValue(iter, 0);
+
+            if (reference == null || cellIcon == null)
+            {
+                return;
+            }
+
+			if (reference.Node.Type.HasFlag(NodeType.Directory))
+			{
+				cellIcon.Pixbuf = IconManager.GetIconForFiletype(WarcraftFileType.Directory);
+				return;
+			}
+
+			cellIcon.Pixbuf = IconManager.GetIconForFiletype(reference.Node.FileType);
 		}
 
 		/// <summary>
@@ -474,12 +590,14 @@ namespace Everlook.UI
 		/// <param name="referenceLoadingRoutine">A delegate which correctly loads the desired file, returning a generic type T.</param>
 		/// <param name="createRenderableDelegate">A delegate which accepts a generic type T and returns a renderable object.</param>
 		/// <param name="associatedControlPage">The control page which the file is associated with, that is, the one with relevant controls.</param>
+		/// <param name="ct">A cancellation token for this operation.</param>
 		/// <typeparam name="T">The type of model to load.</typeparam>
-		private void BeginLoadingFile<T>(
+		private async Task BeginLoadingFile<T>(
 			FileReference fileReference,
 			DataLoadingDelegates.LoadReferenceDelegate<T> referenceLoadingRoutine,
 			DataLoadingDelegates.CreateRenderableDelegate<T> createRenderableDelegate,
-			ControlPage associatedControlPage)
+			ControlPage associatedControlPage,
+			CancellationToken ct)
 		{
 			Log.Info($"Loading \"{fileReference.FilePath}\".");
 
@@ -490,19 +608,31 @@ namespace Everlook.UI
 			uint modelStatusMessageID = this.MainStatusBar.Push(modelStatusMessageContextID,
 				$"Loading \"{modelName}\"...");
 
-			Task.Factory.StartNew(() => referenceLoadingRoutine(fileReference))
-				.ContinueWith(itemLoadTask => createRenderableDelegate(itemLoadTask.Result, fileReference), this.UiThreadScheduler)
-				.ContinueWith(createRenderableTask => this.RenderingEngine.SetRenderTarget(createRenderableTask.Result), this.UiThreadScheduler)
-				.ContinueWith
-				(
-					result =>
-					{
-						this.StatusSpinner.Active = false;
-						this.MainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
-						EnableControlPage(associatedControlPage);
-					},
-					this.UiThreadScheduler
-				);
+			try
+			{
+				T item = await Task.Run(() => referenceLoadingRoutine(fileReference), ct);
+				IRenderable renderable = await Task.Factory.StartNew(() => createRenderableDelegate(item, fileReference),
+					ct,
+					TaskCreationOptions.None,
+					this.UiThreadScheduler);
+
+				if (renderable != null)
+				{
+					ct.ThrowIfCancellationRequested();
+
+					this.RenderingEngine.SetRenderTarget(renderable);
+					EnableControlPage(associatedControlPage);
+				}
+			}
+			catch (OperationCanceledException ocex)
+			{
+				Log.Info($"Cancelled loading of {fileReference.Filename}");
+			}
+			finally
+			{
+				this.StatusSpinner.Active = false;
+				this.MainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
+			}
 		}
 
 		/// <summary>
@@ -518,20 +648,43 @@ namespace Everlook.UI
 				return;
 			}
 
-			// Right click is pressed
-			if (args.Event.Type != EventType.ButtonPress || args.Event.Button != 3)
+			if (args.Event.Type != EventType.ButtonPress)
 			{
 				return;
 			}
 
-			// Hide the mouse pointer
-			this.Window.Cursor = new Cursor(CursorType.BlankCursor);
+			bool validButtonIsPressed = false;
+			if (this.RenderingEngine.RenderTarget.Projection == ProjectionType.Perspective)
+			{
+				// Exclusively check for right click
+				if (args.Event.Button == 3)
+				{
+					validButtonIsPressed = true;
+
+					// Hide the mouse pointer
+					this.Window.Cursor = new Cursor(CursorType.BlankCursor);
+				}
+			}
+			else
+			{
+				// Allow both right and left
+				if (args.Event.Button == 1 || args.Event.Button == 3)
+				{
+					validButtonIsPressed = true;
+				}
+			}
+
+			if (!validButtonIsPressed)
+			{
+				return;
+			}
 
 			this.ViewportWidget.GrabFocus();
 
-			this.RenderingEngine.WantsToMove = true;
 			this.RenderingEngine.InitialMouseX = Mouse.GetCursorState().X;
 			this.RenderingEngine.InitialMouseY = Mouse.GetCursorState().Y;
+
+			this.RenderingEngine.WantsToMove = true;
 		}
 
 		/// <summary>
@@ -542,14 +695,37 @@ namespace Everlook.UI
 		[ConnectBefore]
 		private void OnViewportButtonReleased(object o, ButtonReleaseEventArgs args)
 		{
-			// Right click is released
-			if (args.Event.Type != EventType.ButtonRelease || args.Event.Button != 3)
+			if (args.Event.Type != EventType.ButtonRelease)
 			{
 				return;
 			}
 
-			// Return the mouse pointer to its original appearance
-			this.Window.Cursor = new Cursor(CursorType.Arrow);
+			bool validButtonIsPressed = false;
+			if (this.RenderingEngine.RenderTarget?.Projection == ProjectionType.Perspective)
+			{
+				// Exclusively check for right click
+				if (args.Event.Button == 3)
+				{
+					validButtonIsPressed = true;
+
+					// Return the mouse pointer to its original appearance
+					this.Window.Cursor = new Cursor(CursorType.Arrow);
+				}
+			}
+			else
+			{
+				// Allow both right and left
+				if (args.Event.Button == 1 || args.Event.Button == 3)
+				{
+					validButtonIsPressed = true;
+				}
+			}
+
+			if (!validButtonIsPressed)
+			{
+				return;
+			}
+
 			GrabFocus();
 			this.RenderingEngine.WantsToMove = false;
 		}
@@ -641,7 +817,7 @@ namespace Everlook.UI
 		private void OnEnqueueItemRequested(GamePage page, FileReference fileReference)
 		{
 			// TODO: pixbuf for the export status
-			this.ExportQueueListStore.AppendValues(fileReference, null);
+			this.ExportQueueListStore.AppendValues(fileReference, IconManager.GetIcon("package-downgrade"));
 		}
 
 		/// <summary>
@@ -681,35 +857,47 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="page">The <see cref="GamePage"/> in which the event originated.</param>
 		/// <param name="fileReference">The file reference to load.</param>
-		private void OnFileLoadRequested(GamePage page, FileReference fileReference)
+		private async void OnFileLoadRequested(GamePage page, FileReference fileReference)
 		{
 			WarcraftFileType referencedType = fileReference.GetReferencedFileType();
 			switch (referencedType)
 			{
 				case WarcraftFileType.BinaryImage:
 				{
-					BeginLoadingFile(fileReference,
+					this.FileLoadingCancellationSource.Cancel();
+					this.FileLoadingCancellationSource = new CancellationTokenSource();
+
+					await BeginLoadingFile(fileReference,
 						DataLoadingRoutines.LoadBinaryImage,
 						DataLoadingRoutines.CreateRenderableBinaryImage,
-						ControlPage.Image);
+						ControlPage.Image,
+						this.FileLoadingCancellationSource.Token);
 
 					break;
 				}
 				case WarcraftFileType.WorldObjectModel:
 				{
-					BeginLoadingFile(fileReference,
+					this.FileLoadingCancellationSource.Cancel();
+					this.FileLoadingCancellationSource = new CancellationTokenSource();
+
+					await BeginLoadingFile(fileReference,
 						DataLoadingRoutines.LoadWorldModel,
 						DataLoadingRoutines.CreateRenderableWorldModel,
-						ControlPage.Model);
+						ControlPage.Model,
+						this.FileLoadingCancellationSource.Token);
 
 					break;
 				}
 				case WarcraftFileType.WorldObjectModelGroup:
 				{
-					BeginLoadingFile(fileReference,
+					this.FileLoadingCancellationSource.Cancel();
+					this.FileLoadingCancellationSource = new CancellationTokenSource();
+
+					await BeginLoadingFile(fileReference,
 						DataLoadingRoutines.LoadWorldModelGroup,
 						DataLoadingRoutines.CreateRenderableWorldModel,
-						ControlPage.Model);
+						ControlPage.Model,
+						this.FileLoadingCancellationSource.Token);
 
 					break;
 				}
@@ -717,10 +905,14 @@ namespace Everlook.UI
 				case WarcraftFileType.PNGImage:
 				case WarcraftFileType.JPGImage:
 				{
-					BeginLoadingFile(fileReference,
+					this.FileLoadingCancellationSource.Cancel();
+					this.FileLoadingCancellationSource = new CancellationTokenSource();
+
+					await BeginLoadingFile(fileReference,
 						DataLoadingRoutines.LoadBitmapImage,
 						DataLoadingRoutines.CreateRenderableBitmapImage,
-						ControlPage.Image);
+						ControlPage.Image,
+						this.FileLoadingCancellationSource.Token);
 					break;
 				}
 			}

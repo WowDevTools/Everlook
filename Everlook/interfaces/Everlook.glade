@@ -321,7 +321,7 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">True</property>
                         <property name="orientation">vertical</property>
-                        <property name="position">428</property>
+                        <property name="position">700</property>
                         <property name="position_set">True</property>
                         <child>
                           <object class="GtkAlignment" id="ViewportAlignment">
@@ -898,7 +898,12 @@
                                                             <property name="sort_indicator">True</property>
                                                             <property name="sort_column_id">0</property>
                                                             <child>
-                                                            <object class="GtkCellRendererText" id="filenameCellRenderer"/>
+                                                            <object class="GtkCellRendererPixbuf" id="fileIconCellRenderer"/>
+                                                            </child>
+                                                            <child>
+                                                            <object class="GtkCellRendererText" id="filenameCellRenderer">
+                                                            <property name="ellipsize">middle</property>
+                                                            </object>
                                                             </child>
                                                           </object>
                                                         </child>

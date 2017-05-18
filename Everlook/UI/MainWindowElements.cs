@@ -41,6 +41,10 @@ namespace Everlook.UI
 		[UIElement] private readonly AboutDialog AboutDialog;
 		[UIElement] private readonly ToolButton PreferencesButton;
 
+		[UIElement] private readonly Paned ViewportPaned;
+		[UIElement] private readonly Paned LowerBoxPaned;
+		[UIElement] private readonly Alignment LowerBoxAlignment;
+
 		[UIElement] private readonly Alignment ViewportAlignment;
 		private readonly GLWidget ViewportWidget;
 		private bool ViewportHasPendingRedraw;
