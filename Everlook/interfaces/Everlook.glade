@@ -65,7 +65,7 @@
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Open</property>
                 <property name="use_underline">True</property>
-                <property name="stock_id">gtk-open</property>
+                <property name="icon_name">document-open-symbolic</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -78,7 +78,7 @@
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Save File</property>
                 <property name="use_underline">True</property>
-                <property name="stock_id">gtk-save</property>
+                <property name="icon_name">document-save-symbolic</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -91,7 +91,7 @@
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Export file as..</property>
                 <property name="use_underline">True</property>
-                <property name="stock_id">gtk-save-as</property>
+                <property name="icon_name">document-save-as-symbolic</property>
               </object>
               <packing>
                 <property name="expand">False</property>
