@@ -347,11 +347,17 @@ namespace OpenTK
 		private IWindowInfo InitializeOSX()
 		{
 			IntPtr windowHandle = gdk_quartz_window_get_nswindow(this.Window.Handle);
-			return Utilities.CreateMacOSWindowInfo(windowHandle);
+			IntPtr viewHandle = gdk_quartz_window_get_nsview(this.Window.Handle);
+
+			return Utilities.CreateMacOSWindowInfo(windowHandle, viewHandle);
 		}
 
 		[SuppressUnmanagedCodeSecurity, DllImport("libgtk-3.dylib")]
 		private static extern IntPtr gdk_quartz_window_get_nswindow(IntPtr handle);
+
+		[SuppressUnmanagedCodeSecurity, DllImport("libgtk-3.dylib")]
+		private static extern IntPtr gdk_quartz_window_get_nsview(IntPtr handle);
+
 
 		#endregion
 
