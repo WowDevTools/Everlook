@@ -45,6 +45,9 @@ namespace Everlook.UI
 
 		private readonly uint JokeTimeoutID;
 
+		/// <summary>
+		/// The notifier object which can be used to update the loading dialog with new information.
+		/// </summary>
 		public Progress<GameLoadingProgress> ProgressNotifier { get; }
 
 		/// <summary>

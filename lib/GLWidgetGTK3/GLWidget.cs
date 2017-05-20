@@ -347,23 +347,17 @@ namespace OpenTK
 		private IWindowInfo InitializeOSX()
 		{
 			IntPtr windowHandle = gdk_quartz_window_get_nswindow(this.Window.Handle);
-			//IntPtr viewHandle = gdk_quartz_window_get_nsview(this.GdkWindow.Handle);
-			return Utilities.CreateMacOSCarbonWindowInfo(windowHandle, true, true);
+			return Utilities.CreateMacOSWindowInfo(windowHandle);
 		}
 
-		[SuppressUnmanagedCodeSecurity, DllImport("libgdk-quartz-2.0.0.dylib")]
+		[SuppressUnmanagedCodeSecurity, DllImport("libgtk-3.dylib")]
 		private static extern IntPtr gdk_quartz_window_get_nswindow(IntPtr handle);
-
-		[SuppressUnmanagedCodeSecurity, DllImport("libgdk-quartz-2.0.0.dylib")]
-		private static extern IntPtr gdk_quartz_window_get_nsview(IntPtr handle);
 
 		#endregion
 
 		#region X Specific Initialization
 
 		private const string UnixLibGdkName = "libgdk-3.so.0";
-
-
 		private const string UnixLibX11Name = "libX11.so.6";
 		private const string UnixLibGLName = "libGL.so.1";
 
