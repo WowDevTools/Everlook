@@ -57,20 +57,19 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="GLWidget.cs" />
+    <Compile Include="OSX\OSXWindowInfoInitializer.cs" />
+    <Compile Include="Win\WinWindowsInfoInitializer.cs" />
     <Compile Include="X11\GLXAttribute.cs" />
     <Compile Include="X11\XVisualClass.cs" />
     <Compile Include="X11\XVisualInfo.cs" />
     <Compile Include="X11\XVisualInfoMask.cs" />
+    <Compile Include="X11\XWindowInfoInitializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="OpenTK.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="OSX" />
-    <Folder Include="Win" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

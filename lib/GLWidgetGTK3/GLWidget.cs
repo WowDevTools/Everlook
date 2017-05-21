@@ -28,9 +28,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Security;
 using System.Threading;
 using System.ComponentModel;
 using OpenTK.Graphics;
@@ -39,6 +36,8 @@ using OpenTK.Platform;
 using Gtk;
 using log4net;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.OSX;
+using OpenTK.Win;
 using OpenTK.X11;
 
 namespace OpenTK
@@ -53,16 +52,16 @@ namespace OpenTK
 
 		#region Static attrs.
 
-		static int _GraphicsContextCount;
-		static bool _SharedContextInitialized;
+		private static int _GraphicsContextCount;
+		private static bool _SharedContextInitialized;
 
 		#endregion
 
 		#region Attributes
 
-		IGraphicsContext _GraphicsContext;
-		IWindowInfo _WindowInfo;
-		bool _Initialized;
+		private IGraphicsContext _GraphicsContext;
+		private IWindowInfo _WindowInfo;
+		private bool _Initialized;
 
 		#endregion
 
@@ -281,15 +280,15 @@ namespace OpenTK
 			// IWindowInfo
 			if (Configuration.RunningOnWindows)
 			{
-				this._WindowInfo = InitializeWindows();
+				this._WindowInfo = WinWindowsInfoInitializer.Initialize(this.Window.Handle);
 			}
 			else if (Configuration.RunningOnMacOS)
 			{
-				this._WindowInfo = InitializeOSX();
+				this._WindowInfo = OSXWindowInfoInitializer.Initialize(this.Window.Handle);
 			}
 			else
 			{
-				this._WindowInfo = InitializeX(graphicsMode);
+				this._WindowInfo = XWindowInfoInitializer.Initialize(graphicsMode, this.Display.Handle, this.Screen.Number, this.Window.Handle, this.RootWindow.Handle);
 			}
 
 			// GraphicsContext
@@ -347,184 +346,5 @@ namespace OpenTK
 
 			OnInitialized();
 		}
-
-		#region Windows Specific initalization
-
-		private IWindowInfo InitializeWindows()
-		{
-			IntPtr windowHandle = gdk_win32_window_get_handle(this.Window.Handle);
-			return Utilities.CreateWindowsWindowInfo(windowHandle);
-		}
-
-		[SuppressUnmanagedCodeSecurity, DllImport("libgdk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
-		private static extern IntPtr gdk_win32_window_get_handle(IntPtr w);
-
-		#endregion
-
-		#region OSX Specific Initialization
-
-		private IWindowInfo InitializeOSX()
-		{
-			IntPtr windowHandle = gdk_quartz_window_get_nswindow(this.Window.Handle);
-			IntPtr viewHandle = gdk_quartz_window_get_nsview(this.Window.Handle);
-
-			return Utilities.CreateMacOSWindowInfo(windowHandle, viewHandle);
-		}
-
-		[SuppressUnmanagedCodeSecurity, DllImport("libgtk-3.dylib")]
-		private static extern IntPtr gdk_quartz_window_get_nswindow(IntPtr handle);
-
-		[SuppressUnmanagedCodeSecurity, DllImport("libgtk-3.dylib")]
-		private static extern IntPtr gdk_quartz_window_get_nsview(IntPtr handle);
-
-		#endregion
-
-		#region X Specific Initialization
-
-		private const string UnixLibGdkName = "libgdk-3.so.0";
-		private const string UnixLibX11Name = "libX11.so.6";
-		private const string UnixLibGLName = "libGL.so.1";
-
-		private IWindowInfo InitializeX(GraphicsMode mode)
-		{
-			IntPtr display = gdk_x11_display_get_xdisplay(this.Display.Handle);
-			int screen = this.Screen.Number;
-
-			IntPtr windowHandle = gdk_x11_window_get_xid(this.Window.Handle);
-			IntPtr rootWindow = gdk_x11_window_get_xid(this.RootWindow.Handle);
-
-			IntPtr visualInfo;
-			if (mode.Index.HasValue)
-			{
-				XVisualInfo info = new XVisualInfo
-				{
-					VisualID = mode.Index.Value
-				};
-
-				int dummy;
-				visualInfo = XGetVisualInfo(display, XVisualInfoMask.ID, ref info, out dummy);
-			}
-			else
-			{
-				visualInfo = GetVisualInfo(display);
-			}
-
-			IWindowInfo retval = Utilities.CreateX11WindowInfo(display, screen, windowHandle, rootWindow, visualInfo);
-			XFree(visualInfo);
-
-			return retval;
-		}
-
-		private static IntPtr XGetVisualInfo(IntPtr display, XVisualInfoMask vinfo_mask, ref XVisualInfo template, out int nitems)
-		{
-			return XGetVisualInfoInternal(display, (IntPtr)(int)vinfo_mask, ref template, out nitems);
-		}
-
-		private IntPtr GetVisualInfo(IntPtr display)
-		{
-			try
-			{
-				int[] attributes = this.AttributeList.ToArray();
-				return glXChooseVisual(display, this.Screen.Number, attributes);
-			}
-			catch (DllNotFoundException e)
-			{
-				throw new DllNotFoundException("OpenGL dll not found!", e);
-			}
-			catch (EntryPointNotFoundException enf)
-			{
-				throw new EntryPointNotFoundException("Glx entry point not found!", enf);
-			}
-		}
-
-		private List<int> AttributeList
-		{
-			get
-			{
-				List<int> attributeList = new List<int>(24);
-
-				attributeList.Add((int)GLXAttribute.RGBA);
-
-				if (!this.SingleBuffer)
-				{
-					attributeList.Add((int)GLXAttribute.DoubleBuffer);
-				}
-
-				if (this.Stereo)
-				{
-					attributeList.Add((int)GLXAttribute.Stereo);
-				}
-
-				attributeList.Add((int)GLXAttribute.RedSize);
-				attributeList.Add(this.ColorBPP / 4); // TODO support 16-bit
-
-				attributeList.Add((int)GLXAttribute.GreenSize);
-				attributeList.Add(this.ColorBPP / 4); // TODO support 16-bit
-
-				attributeList.Add((int)GLXAttribute.BlueSize);
-				attributeList.Add(this.ColorBPP / 4); // TODO support 16-bit
-
-				attributeList.Add((int)GLXAttribute.AlphaSize);
-				attributeList.Add(this.ColorBPP / 4); // TODO support 16-bit
-
-				attributeList.Add((int)GLXAttribute.DepthSize);
-				attributeList.Add(this.DepthBPP);
-
-				attributeList.Add((int)GLXAttribute.StencilSize);
-				attributeList.Add(this.StencilBPP);
-
-				//attributeList.Add(GLX_AUX_BUFFERS);
-				//attributeList.Add(Buffers);
-
-				attributeList.Add((int)GLXAttribute.AccumRedSize);
-				attributeList.Add(this.AccumulatorBPP / 4);// TODO support 16-bit
-
-				attributeList.Add((int)GLXAttribute.AccumGreenSize);
-				attributeList.Add(this.AccumulatorBPP / 4);// TODO support 16-bit
-
-				attributeList.Add((int)GLXAttribute.AccumBlueSize);
-				attributeList.Add(this.AccumulatorBPP / 4);// TODO support 16-bit
-
-				attributeList.Add((int)GLXAttribute.AccumAlphaSize);
-				attributeList.Add(this.AccumulatorBPP / 4);// TODO support 16-bit
-
-				attributeList.Add((int)GLXAttribute.None);
-
-				return attributeList;
-			}
-		}
-
-		[DllImport(UnixLibX11Name, EntryPoint = "XGetVisualInfo")]
-		private static extern IntPtr XGetVisualInfoInternal(IntPtr display, IntPtr vinfo_mask, ref XVisualInfo template, out int nitems);
-
-		[SuppressUnmanagedCodeSecurity, DllImport(UnixLibX11Name)]
-		private static extern void XFree(IntPtr handle);
-
-		/// <summary> Returns the X resource (window or pixmap) belonging to a GdkDrawable. </summary>
-		/// <remarks> XID gdk_x11_drawable_get_xid(GdkDrawable *drawable); </remarks>
-		/// <param name="gdkDisplay"> The GdkDrawable. </param>
-		/// <returns> The ID of drawable's X resource. </returns>
-		[SuppressUnmanagedCodeSecurity, DllImport(UnixLibGdkName)]
-		private static extern IntPtr gdk_x11_drawable_get_xid(IntPtr gdkDisplay);
-
-		/// <summary> Returns the X resource (window or pixmap) belonging to a GdkDrawable. </summary>
-		/// <remarks> XID gdk_x11_drawable_get_xid(GdkDrawable *drawable); </remarks>
-		/// <param name="gdkDisplay"> The GdkDrawable. </param>
-		/// <returns> The ID of drawable's X resource. </returns>
-		[SuppressUnmanagedCodeSecurity, DllImport(UnixLibGdkName)]
-		private static extern IntPtr gdk_x11_window_get_xid(IntPtr gdkDisplay);
-
-		/// <summary> Returns the X display of a GdkDisplay. </summary>
-		/// <remarks> Display* gdk_x11_display_get_xdisplay(GdkDisplay *display); </remarks>
-		/// <param name="gdkDisplay"> The GdkDrawable. </param>
-		/// <returns> The X Display of the GdkDisplay. </returns>
-		[SuppressUnmanagedCodeSecurity, DllImport(UnixLibGdkName)]
-		private static extern IntPtr gdk_x11_display_get_xdisplay(IntPtr gdkDisplay);
-
-		[SuppressUnmanagedCodeSecurity, DllImport(UnixLibGLName)]
-		private static extern IntPtr glXChooseVisual(IntPtr display, int screen, int[] attr);
-
-		#endregion
-
 	}
 }
