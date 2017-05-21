@@ -1,27 +1,29 @@
 #region License
 //
-// The Open Toolkit Library License
+//  GLWidget.cs
 //
-// Copyright (c) 2006 - 2009 the Open Toolkit library, except where noted.
+//  The Open Toolkit Library License
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-// the Software, and to permit persons to whom the Software is furnished to do
-// so, subject to the following conditions:
+//  Copyright (c) 2006 - 2009 the Open Toolkit library, except where noted.
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights to
+//  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//  the Software, and to permit persons to whom the Software is furnished to do
+//  so, subject to the following conditions:
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+//  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+//  OTHER DEALINGS IN THE SOFTWARE.
 //
 #endregion
 
@@ -35,12 +37,19 @@ using OpenTK.Graphics;
 using OpenTK.Platform;
 
 using Gtk;
+using log4net;
+using OpenTK.Graphics.OpenGL;
+using OpenTK.X11;
 
 namespace OpenTK
 {
 	[ToolboxItem(true)]
 	public class GLWidget: DrawingArea
 	{
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(GLWidget));
 
 		#region Static attrs.
 
@@ -102,14 +111,11 @@ namespace OpenTK
 		{
 		}
 
-		/// <summary>Constructs a new GLWidget using a given GraphicsMode</summary>
-		public GLWidget(GraphicsMode graphicsMode)
-			: this(graphicsMode, 1, 0, GraphicsContextFlags.Default)
-		{
-		}
-
 		/// <summary>Constructs a new GLWidget</summary>
-		public GLWidget(GraphicsMode graphicsMode, int glVersionMajor, int glVersionMinor, GraphicsContextFlags graphicsContextFlags)
+		public GLWidget(GraphicsMode graphicsMode, 
+			int glVersionMajor = 1, 
+			int glVersionMinor = 0, 
+			GraphicsContextFlags graphicsContextFlags = GraphicsContextFlags.Default)
 		{
 			this.DoubleBuffered = false;
 
@@ -162,10 +168,7 @@ namespace OpenTK
 
 		private static void OnGraphicsContextInitialized()
 		{
-			if (GraphicsContextInitialized != null)
-			{
-				GraphicsContextInitialized(null, EventArgs.Empty);
-			}
+			GraphicsContextInitialized?.Invoke(null, EventArgs.Empty);
 		}
 
 		// Called when the first GraphicsContext is being destroyed in the case of GraphicsContext.ShareContexts == True;
@@ -173,10 +176,7 @@ namespace OpenTK
 
 		private static void OnGraphicsContextShuttingDown()
 		{
-			if (GraphicsContextShuttingDown != null)
-			{
-				GraphicsContextShuttingDown(null, EventArgs.Empty);
-			}
+			GraphicsContextShuttingDown?.Invoke(null, EventArgs.Empty);
 		}
 
 		// Called when this GLWidget has a valid GraphicsContext
@@ -184,10 +184,7 @@ namespace OpenTK
 
 		protected virtual void OnInitialized()
 		{
-			if (Initialized != null)
-			{
-				Initialized(this, EventArgs.Empty);
-			}
+			this.Initialized?.Invoke(this, EventArgs.Empty);
 		}
 
 		// Called when this GLWidget needs to render a frame
@@ -195,10 +192,7 @@ namespace OpenTK
 
 		protected virtual void OnRenderFrame()
 		{
-			if (RenderFrame != null)
-			{
-				RenderFrame(this, EventArgs.Empty);
-			}
+			this.RenderFrame?.Invoke(this, EventArgs.Empty);
 		}
 
 		// Called when this GLWidget is being Disposed
@@ -206,10 +200,7 @@ namespace OpenTK
 
 		protected virtual void OnShuttingDown()
 		{
-			if (ShuttingDown != null)
-			{
-				ShuttingDown(this, EventArgs.Empty);
-			}
+			this.ShuttingDown?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -242,10 +233,7 @@ namespace OpenTK
 		{
 			bool result = base.OnConfigureEvent(evnt);
 
-			if (this._GraphicsContext != null)
-			{
-				this._GraphicsContext.Update(this._WindowInfo);
-			}
+			this._GraphicsContext?.Update(this._WindowInfo);
 
 			return result;
 		}
@@ -277,7 +265,6 @@ namespace OpenTK
 
 			GraphicsMode graphicsMode = new GraphicsMode(colorBufferColorFormat, this.DepthBPP, this.StencilBPP, this.Samples, accumulationColorFormat, buffers, this.Stereo);
 
-
 			if (Configuration.RunningOnWindows)
 			{
 				Console.WriteLine("OpenTK running on windows");
@@ -306,7 +293,39 @@ namespace OpenTK
 			}
 
 			// GraphicsContext
-			this._GraphicsContext = new GraphicsContext(graphicsMode, this._WindowInfo, this.GLVersionMajor, this.GLVersionMinor, this.GraphicsContextFlags);
+			try
+			{
+				this._GraphicsContext = new GraphicsContext(graphicsMode, this._WindowInfo, this.GLVersionMajor, this.GLVersionMinor, this.GraphicsContextFlags);
+			}
+			catch (GraphicsException gex)
+			{
+				GraphicsContext dummyContext = new GraphicsContext
+				(
+					graphicsMode, 
+					this._WindowInfo,
+					1,
+					0,
+					GraphicsContextFlags.Default
+				);
+				dummyContext.MakeCurrent(this._WindowInfo);
+				dummyContext.LoadAll();
+
+				string version = GL.GetString(StringName.Version);
+				string glslVersion = GL.GetString(StringName.ShadingLanguageVersion);
+				string renderer = GL.GetString(StringName.Renderer);
+				string vendor = GL.GetString(StringName.Vendor);
+				Log.Error($"Failed to create a graphics context for the requested version and flag combination. \n" +
+				          $"Please note that Everlook requires at least OpenGL 3.3.\n" +
+				          $"A lesser context could be created with the following information: \n" +
+				          $"Version: {version}\n" +
+				          $"GLSL Version: {glslVersion}\n" +
+				          $"Renderer: {renderer}\n" +
+				          $"Vendor: {vendor}\n" +
+				          $"Flags: {GraphicsContextFlags.Default}");
+
+				throw;
+			}
+
 			this._GraphicsContext.MakeCurrent(this._WindowInfo);
 
 			if (GraphicsContext.ShareContexts)
@@ -338,7 +357,7 @@ namespace OpenTK
 		}
 
 		[SuppressUnmanagedCodeSecurity, DllImport("libgdk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern IntPtr gdk_win32_window_get_handle(IntPtr w);
+		private static extern IntPtr gdk_win32_window_get_handle(IntPtr w);
 
 		#endregion
 
@@ -358,7 +377,6 @@ namespace OpenTK
 		[SuppressUnmanagedCodeSecurity, DllImport("libgtk-3.dylib")]
 		private static extern IntPtr gdk_quartz_window_get_nsview(IntPtr handle);
 
-
 		#endregion
 
 		#region X Specific Initialization
@@ -366,71 +384,6 @@ namespace OpenTK
 		private const string UnixLibGdkName = "libgdk-3.so.0";
 		private const string UnixLibX11Name = "libX11.so.6";
 		private const string UnixLibGLName = "libGL.so.1";
-
-		private const int GLX_NONE = 0;
-		private const int GLX_USE_GL = 1;
-		private const int GLX_BUFFER_SIZE = 2;
-		private const int GLX_LEVEL = 3;
-		private const int GLX_RGBA = 4;
-		private const int GLX_DOUBLEBUFFER = 5;
-		private const int GLX_STEREO = 6;
-		private const int GLX_AUX_BUFFERS = 7;
-		private const int GLX_RED_SIZE = 8;
-		private const int GLX_GREEN_SIZE = 9;
-		private const int GLX_BLUE_SIZE = 10;
-		private const int GLX_ALPHA_SIZE = 11;
-		private const int GLX_DEPTH_SIZE = 12;
-		private const int GLX_STENCIL_SIZE = 13;
-		private const int GLX_ACCUM_RED_SIZE = 14;
-		private const int GLX_ACCUM_GREEN_SIZE = 15;
-		private const int GLX_ACCUM_BLUE_SIZE = 16;
-		private const int GLX_ACCUM_ALPHA_SIZE = 17;
-
-		public enum XVisualClass
-		{
-			StaticGray = 0,
-			GrayScale = 1,
-			StaticColor = 2,
-			PseudoColor = 3,
-			TrueColor = 4,
-			DirectColor = 5,
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		private struct XVisualInfo
-		{
-			public IntPtr Visual;
-			public IntPtr VisualID;
-			public int Screen;
-			public int Depth;
-			public XVisualClass Class;
-			public long RedMask;
-			public long GreenMask;
-			public long blueMask;
-			public int ColormapSize;
-			public int BitsPerRgb;
-
-			public override string ToString()
-			{
-				return $"id ({this.VisualID}), screen ({this.Screen}), depth ({this.Depth}), class ({this.Class})";
-			}
-		}
-
-		[Flags]
-		internal enum XVisualInfoMask
-		{
-			No = 0x0,
-			ID = 0x1,
-			Screen = 0x2,
-			Depth = 0x4,
-			Class = 0x8,
-			Red = 0x10,
-			Green = 0x20,
-			Blue = 0x40,
-			ColormapSize = 0x80,
-			BitsPerRGB = 0x100,
-			All = 0x1FF
-		}
 
 		private IWindowInfo InitializeX(GraphicsMode mode)
 		{
@@ -443,8 +396,11 @@ namespace OpenTK
 			IntPtr visualInfo;
 			if (mode.Index.HasValue)
 			{
-				XVisualInfo info = new XVisualInfo();
-				info.VisualID = mode.Index.Value;
+				XVisualInfo info = new XVisualInfo
+				{
+					VisualID = mode.Index.Value
+				};
+
 				int dummy;
 				visualInfo = XGetVisualInfo(display, XVisualInfoMask.ID, ref info, out dummy);
 			}
@@ -487,52 +443,52 @@ namespace OpenTK
 			{
 				List<int> attributeList = new List<int>(24);
 
-				attributeList.Add(GLX_RGBA);
+				attributeList.Add((int)GLXAttribute.RGBA);
 
 				if (!this.SingleBuffer)
 				{
-					attributeList.Add(GLX_DOUBLEBUFFER);
+					attributeList.Add((int)GLXAttribute.DoubleBuffer);
 				}
 
 				if (this.Stereo)
 				{
-					attributeList.Add(GLX_STEREO);
+					attributeList.Add((int)GLXAttribute.Stereo);
 				}
 
-				attributeList.Add(GLX_RED_SIZE);
+				attributeList.Add((int)GLXAttribute.RedSize);
 				attributeList.Add(this.ColorBPP / 4); // TODO support 16-bit
 
-				attributeList.Add(GLX_GREEN_SIZE);
+				attributeList.Add((int)GLXAttribute.GreenSize);
 				attributeList.Add(this.ColorBPP / 4); // TODO support 16-bit
 
-				attributeList.Add(GLX_BLUE_SIZE);
+				attributeList.Add((int)GLXAttribute.BlueSize);
 				attributeList.Add(this.ColorBPP / 4); // TODO support 16-bit
 
-				attributeList.Add(GLX_ALPHA_SIZE);
+				attributeList.Add((int)GLXAttribute.AlphaSize);
 				attributeList.Add(this.ColorBPP / 4); // TODO support 16-bit
 
-				attributeList.Add(GLX_DEPTH_SIZE);
+				attributeList.Add((int)GLXAttribute.DepthSize);
 				attributeList.Add(this.DepthBPP);
 
-				attributeList.Add(GLX_STENCIL_SIZE);
+				attributeList.Add((int)GLXAttribute.StencilSize);
 				attributeList.Add(this.StencilBPP);
 
 				//attributeList.Add(GLX_AUX_BUFFERS);
 				//attributeList.Add(Buffers);
 
-				attributeList.Add(GLX_ACCUM_RED_SIZE);
+				attributeList.Add((int)GLXAttribute.AccumRedSize);
 				attributeList.Add(this.AccumulatorBPP / 4);// TODO support 16-bit
 
-				attributeList.Add(GLX_ACCUM_GREEN_SIZE);
+				attributeList.Add((int)GLXAttribute.AccumGreenSize);
 				attributeList.Add(this.AccumulatorBPP / 4);// TODO support 16-bit
 
-				attributeList.Add(GLX_ACCUM_BLUE_SIZE);
+				attributeList.Add((int)GLXAttribute.AccumBlueSize);
 				attributeList.Add(this.AccumulatorBPP / 4);// TODO support 16-bit
 
-				attributeList.Add(GLX_ACCUM_ALPHA_SIZE);
+				attributeList.Add((int)GLXAttribute.AccumAlphaSize);
 				attributeList.Add(this.AccumulatorBPP / 4);// TODO support 16-bit
 
-				attributeList.Add(GLX_NONE);
+				attributeList.Add((int)GLXAttribute.None);
 
 				return attributeList;
 			}
@@ -571,5 +527,4 @@ namespace OpenTK
 		#endregion
 
 	}
-
 }
