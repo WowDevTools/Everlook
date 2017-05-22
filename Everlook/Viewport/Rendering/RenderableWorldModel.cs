@@ -70,6 +70,39 @@ namespace Everlook.Viewport.Rendering
 		public ProjectionType Projection => ProjectionType.Perspective;
 
 		/// <summary>
+		/// The default camera position for this renderable. 
+		/// </summary>
+		public Vector3 DefaultCameraPosition
+		{
+			get
+			{
+				if (!this.IsInitialized)
+				{
+					return Vector3.Zero;
+				}
+
+				if (this.Model.Groups.Count == 0)
+				{
+					return Vector3.Zero;
+				}
+
+				return 
+				(
+					this.ActorTransform.GetModelMatrix() *
+					new Vector4
+					(
+						this.Model.Groups
+						.First()
+						.GetBoundingBox()
+						.GetCenterCoordinates()
+						.AsOpenTKVector(),
+						1.0f
+					)
+				).Xyz;
+			}
+		}
+
+		/// <summary>
 		/// The model contained by this renderable world object.
 		/// </summary>
 		/// <value>The model.</value>

@@ -60,6 +60,14 @@ namespace Everlook.Viewport.Rendering.Interfaces
 		}
 
 		/// <summary>
+		/// The default camera position for this renderable. 
+		/// </summary>
+		Vector3 DefaultCameraPosition
+		{
+			get;
+		}
+
+		/// <summary>
 		/// Initializes the required data for rendering.
 		/// </summary>
 		void Initialize();

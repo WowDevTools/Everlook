@@ -142,6 +142,13 @@ namespace Everlook.Viewport.Camera
 		public void ResetPosition()
 		{
 			this.Position = new Vector3(0.0f, 0.0f, 1.0f);
+		}
+
+		/// <summary>
+		/// Resets the camera to its default rotation.
+		/// </summary>
+		public void ResetRotation()
+		{
 			this.HorizontalViewAngle = MathHelper.DegreesToRadians(180.0f);
 			this.VerticalViewAngle = MathHelper.DegreesToRadians(0.0f);
 

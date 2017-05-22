@@ -28,6 +28,7 @@ using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using SlimTK;
 using Warcraft.Core.Extensions;
 using Warcraft.MDX;
 using Warcraft.MDX.Geometry.Skin;
@@ -52,6 +53,30 @@ namespace Everlook.Viewport.Rendering
 		/// or Perspective.
 		/// </summary>
 		public ProjectionType Projection => ProjectionType.Perspective;
+
+		/// <summary>
+		/// The default camera position for this renderable. 
+		/// </summary>
+		public Vector3 DefaultCameraPosition
+		{
+			get
+			{
+				if (!this.IsInitialized)
+				{
+					return Vector3.Zero;
+				}
+
+				return 
+				(
+					this.ActorTransform.GetModelMatrix() *
+					new Vector4
+					(
+			        	this.Model.BoundingBox.GetCenterCoordinates().AsOpenTKVector(),
+				        1.0f
+					)
+				).Xyz;
+			}
+		}
 
 		/// <summary>
 		/// The model contained by this renderable game object.

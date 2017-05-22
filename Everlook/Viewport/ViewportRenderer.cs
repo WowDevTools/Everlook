@@ -300,9 +300,15 @@ namespace Everlook.Viewport
 
 				// Assign the new one
 				this.RenderTarget = inRenderable;
+
+				// Set the default camera transform
+				if (this.RenderTarget != null)
+				{
+					this.Camera.Position = this.RenderTarget.DefaultCameraPosition;
+				}
 			}
 
-			this.Camera.ResetPosition();
+			this.Camera.ResetRotation();
 		}
 
 		/// <summary>

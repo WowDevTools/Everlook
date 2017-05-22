@@ -75,6 +75,11 @@ namespace Everlook.Viewport.Rendering
 		public ProjectionType Projection => ProjectionType.Orthographic;
 
 		/// <summary>
+		/// The default camera position for this renderable. 
+		/// </summary>
+		public Vector3 DefaultCameraPosition => Vector3.Zero;
+
+		/// <summary>
 		/// A vector that is multiplied with the final texture sampling.
 		/// </summary>
 		public Vector4 ChannelMask;
