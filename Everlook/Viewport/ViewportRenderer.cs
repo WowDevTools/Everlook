@@ -74,12 +74,12 @@ namespace Everlook.Viewport
 		/// <summary>
 		/// The camera viewpoint of the observer.
 		/// </summary>
-		public ViewportCamera Camera;
+		private readonly ViewportCamera Camera;
 
 		/// <summary>
 		/// The movement component for the camera.
 		/// </summary>
-		private CameraMovement Movement;
+		private readonly CameraMovement Movement;
 
 		/// <summary>
 		/// The time taken to render the previous frame.
@@ -117,7 +117,7 @@ namespace Everlook.Viewport
 		public bool IsInitialized
 		{
 			get;
-			set;
+			private set;
 		}
 
 		/*

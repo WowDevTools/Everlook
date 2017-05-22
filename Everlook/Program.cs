@@ -64,7 +64,6 @@ namespace Everlook
 
 			Log.Info($"OpenGL initialized using the {(OpenTK.Configuration.RunningOnSdl2 ? "SDL2" : "native")} backend.");
 
-
 			Log.Info("Initializing GTK...");
 
 			// Bind any unhandled exceptions in the GTK UI so that they are logged.

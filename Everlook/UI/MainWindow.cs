@@ -21,7 +21,6 @@
 //
 
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Everlook.Configuration;
@@ -943,11 +942,12 @@ namespace Everlook.UI
 		{
 			this.IsShuttingDown = true;
 
+			Idle.Remove(OnIdleRenderFrame);
+
 			this.RenderingEngine.SetRenderTarget(null);
 			this.RenderingEngine.Dispose();
-			this.ViewportWidget.Destroy();
-
-			Idle.Remove(OnIdleRenderFrame);
+			
+			this.ViewportWidget.Dispose();
 
 			Application.Quit();
 			a.RetVal = true;
