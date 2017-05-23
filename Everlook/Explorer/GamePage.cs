@@ -79,9 +79,6 @@ namespace Everlook.Explorer
 		private readonly TreeModelSort TreeSorter;
 		private readonly TreeModelFilter TreeFilter;
 
-		private readonly CellRendererPixbuf NodeIconRenderer;
-		private readonly CellRendererText NodeNameRenderer;
-
 		private readonly Menu TreeContextMenu;
 		private readonly ImageMenuItem SaveItem;
 		private readonly ImageMenuItem ExportItem;
@@ -114,12 +111,16 @@ namespace Everlook.Explorer
 			this.Packages = packageGroup;
 			this.TreeModel = new FileTreeModel(nodeTree);
 
-			this.TreeAlignment = new Alignment(0.5f, 0.5f, 1.0f, 1.0f);
-			this.TreeAlignment.TopPadding = 1;
-			this.TreeAlignment.BottomPadding = 1;
+			this.TreeAlignment = new Alignment(0.5f, 0.5f, 1.0f, 1.0f)
+			{
+				TopPadding = 1,
+				BottomPadding = 1
+			};
 
-			this.TreeFilter = new TreeModelFilter(new TreeModelAdapter(this.TreeModel), null);
-			this.TreeFilter.VisibleFunc = TreeModelVisibilityFunc;
+			this.TreeFilter = new TreeModelFilter(new TreeModelAdapter(this.TreeModel), null)
+			{
+				VisibleFunc = TreeModelVisibilityFunc
+			};
 
 			this.TreeSorter = new TreeModelSort(this.TreeFilter);
 
@@ -132,11 +133,11 @@ namespace Everlook.Explorer
 				EnableTreeLines = true
 			};
 
-			this.NodeIconRenderer = new CellRendererPixbuf
+			CellRendererPixbuf nodeIconRenderer = new CellRendererPixbuf
 			{
 				Xalign = 0.0f
 			};
-			this.NodeNameRenderer = new CellRendererText
+			CellRendererText nodeNameRenderer = new CellRendererText
 			{
 				Xalign = 0.0f
 			};
@@ -146,11 +147,11 @@ namespace Everlook.Explorer
 				Title = "Data Files",
 				Spacing = 4
 			};
-			column.PackStart(this.NodeIconRenderer, false);
-			column.PackStart(this.NodeNameRenderer, false);
+			column.PackStart(nodeIconRenderer, false);
+			column.PackStart(nodeNameRenderer, false);
 
-			column.SetCellDataFunc(this.NodeIconRenderer, RenderNodeIcon);
-			column.SetCellDataFunc(this.NodeNameRenderer, RenderNodeName);
+			column.SetCellDataFunc(nodeIconRenderer, RenderNodeIcon);
+			column.SetCellDataFunc(nodeNameRenderer, RenderNodeName);
 
 			this.Tree.AppendColumn(column);
 
@@ -190,7 +191,7 @@ namespace Everlook.Explorer
 			this.TreeContextMenu.Add(this.ExportItem);
 
 			// Open item context button
-			this.OpenItem = new ImageMenuItem()
+			this.OpenItem = new ImageMenuItem
 			{
 				UseStock = true,
 				Label = Stock.Open,
@@ -238,7 +239,8 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Sets the filter of the tree view and asynchronously refilters it.
+		/// Sets the filter of the tree view and asynchronously refilters it. The filter is a set of 
+		/// <see cref="WarcraftFileType"/> flags.
 		/// </summary>
 		/// <param name="filteredFileTypes"></param>
 		/// <returns></returns>
