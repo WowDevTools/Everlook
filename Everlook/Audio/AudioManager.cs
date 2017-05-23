@@ -1,5 +1,5 @@
-﻿//
-//  AudioPlayer.cs
+//
+//  AudioSource.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -20,19 +20,38 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System;
+using OpenTK.Audio;
+
 namespace Everlook.Audio
 {
 	/// <summary>
-	/// Main audio handling class. Plays, pauses and queues audio tracks.
+	/// Manages the audio context of the application, and handles audio sources within it.
 	/// </summary>
-	public class AudioPlayer
+	public class AudioManager : IDisposable
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Audio.AudioPlayer"/> class.
+		/// Gets the singleton instance of the <see cref="AudioManager"/>.
 		/// </summary>
-		public AudioPlayer()
+		public static readonly AudioManager Instance = new AudioManager();
+
+		private readonly AudioContext Context;
+
+		/// <summary>
+		/// Initializes the singleton instance of the <see cref="AudioManager"/> class.
+		/// </summary>
+		protected AudioManager()
 		{
+			this.Context = new AudioContext();
+			this.Context.MakeCurrent();
+		}
+
+		/// <summary>
+		/// Disposes the audio manager.
+		/// </summary>
+		public void Dispose()
+		{
+			this.Context.Dispose();
 		}
 	}
 }
-

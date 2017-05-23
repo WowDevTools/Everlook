@@ -75,6 +75,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="Explorer\FileReference.cs" />
     <Compile Include="Explorer\FileTreeModel.cs" />
     <Compile Include="Explorer\GameLoader.cs" />
@@ -129,7 +130,7 @@
     <Compile Include="Viewport\Rendering\RenderCache.cs" />
     <Compile Include="Viewport\ViewportRenderer.cs" />
     <Compile Include="Utility\ExtensionMethods.cs" />
-    <Compile Include="Audio\AudioPlayer.cs" />
+    <Compile Include="Audio\AudioSource.cs" />
     <Compile Include="Package\PackageInteractionHandler.cs" />
     <Compile Include="Package\PackageGroup.cs" />
     <Compile Include="Explorer\FilterType.cs" />
