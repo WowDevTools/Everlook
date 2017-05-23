@@ -92,6 +92,8 @@ namespace Everlook.UI
 			Model control elements
 		*/
 
+		[UIElement] private readonly CheckButton RenderBoundsCheckButton;
+
 		/*
 			Animation control elements
 		*/

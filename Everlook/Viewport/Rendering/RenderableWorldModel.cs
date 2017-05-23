@@ -137,6 +137,11 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public bool IsInitialized { get; set; }
 
+		/// <summary>
+		/// Sets whether or not the bounding boxes of the model groups should be rendered.
+		/// </summary>
+		public bool ShouldRenderBounds { get; set; }
+
 		private int CurrentShaderID;
 
 		/// <summary>
@@ -313,18 +318,20 @@ namespace Everlook.Viewport.Rendering
 			{
 				RenderGroup(modelGroup, modelViewProjection);
 
-				// Now, draw the model's bounding box
-				BoundingBox groupBoundingBox = modelGroup.GetBoundingBox().ToOpenGLBoundingBox().Transform(ref modelViewProjection);
-				if (camera.CanSee(groupBoundingBox))
+				if (this.ShouldRenderBounds)
 				{
-					//continue;
-					RenderBoundingBox(modelGroup, modelViewProjection, Color4.LimeGreen);
+					// Now, draw the model's bounding box
+					BoundingBox groupBoundingBox = modelGroup.GetBoundingBox().ToOpenGLBoundingBox().Transform(ref modelViewProjection);
+					if (camera.CanSee(groupBoundingBox))
+					{
+						//continue;
+						RenderBoundingBox(modelGroup, modelViewProjection, Color4.LimeGreen);
+					}
+					else
+					{
+						RenderBoundingBox(modelGroup, modelViewProjection, Color4.Red);
+					}
 				}
-				else
-				{
-					RenderBoundingBox(modelGroup, modelViewProjection, Color4.Red);
-				}
-
 			}
 
 			// TODO: Summarize the render batches from each group that has the same material ID

@@ -223,6 +223,21 @@ namespace Everlook.UI
 
 				image.ChannelMask.Z = this.RenderBlueCheckButton.Active ? 1.0f : 0.0f;
 			};
+
+			this.RenderBoundsCheckButton.Toggled += (sender, args) =>
+			{
+				RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
+				if (wmo != null)
+				{
+					wmo.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
+				}
+
+				RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
+				if (mdx != null)
+				{
+					mdx.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
+				}
+			};
 		}
 
 		/// <summary>
@@ -482,6 +497,20 @@ namespace Everlook.UI
 					}
 					case ControlPage.Model:
 					{
+						this.RenderBoundsCheckButton.Sensitive = true;
+
+						RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
+						if (wmo != null)
+						{
+							wmo.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
+						}
+
+						RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
+						if (mdx != null)
+						{
+							mdx.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
+						}
+
 						break;
 					}
 					case ControlPage.Animation:
@@ -516,6 +545,7 @@ namespace Everlook.UI
 					}
 					case ControlPage.Model:
 					{
+						this.RenderBoundsCheckButton.Sensitive = false;
 						break;
 					}
 					case ControlPage.Animation:

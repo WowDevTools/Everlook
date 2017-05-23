@@ -585,7 +585,14 @@ namespace Everlook.Explorer
             }
             else
             {
-                this.Tree.ExpandRow(args.Path, false);
+	            if (this.Tree.GetRowExpanded(args.Path))
+	            {
+		            this.Tree.CollapseRow(args.Path);
+	            }
+	            else
+	            {
+		            this.Tree.ExpandRow(args.Path, false);
+	            }
             }
 		}
 

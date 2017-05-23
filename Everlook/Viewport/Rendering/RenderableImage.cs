@@ -77,7 +77,7 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// The default camera position for this renderable. 
 		/// </summary>
-		public Vector3 DefaultCameraPosition => Vector3.Zero;
+		public Vector3 DefaultCameraPosition => new Vector3(0.0f, 0.0f, 1.0f);
 
 		/// <summary>
 		/// A vector that is multiplied with the final texture sampling.

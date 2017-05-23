@@ -24,6 +24,7 @@ using System;
 using System.Diagnostics;
 using Everlook.Configuration;
 using Everlook.Viewport.Camera;
+using Everlook.Viewport.Rendering;
 using Everlook.Viewport.Rendering.Interfaces;
 using log4net;
 using OpenTK;

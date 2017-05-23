@@ -108,6 +108,11 @@ namespace Everlook.Viewport.Rendering
 		public bool IsInitialized { get; set; }
 
 		/// <summary>
+		/// Sets whether or not the bounding box of the model should be rendered.
+		/// </summary>
+		public bool ShouldRenderBounds { get; set; }
+
+		/// <summary>
 		/// Initializes the required data for rendering.
 		/// </summary>
 		public void Initialize()
