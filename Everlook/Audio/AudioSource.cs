@@ -23,10 +23,12 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Everlook.Audio.Wave;
 using Everlook.Explorer;
 using OpenTK;
 using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
+using Warcraft.Core;
 
 namespace Everlook.Audio
 {
@@ -49,70 +51,238 @@ namespace Everlook.Audio
 		public int SampleRate { get; private set; }
 
 		/// <summary>
+		/// Gets the current state of the sound source.
+		/// </summary>
+		public ALSourceState State => AL.GetSourceState(this.SoundSourceID);
+
+		/// <summary>
+		/// Gets or sets the offset of the audio source into the sound (in seconds).
+		/// </summary>
+		public float TimeOffset
+		{
+			get
+			{
+				AL.GetSource(this.SoundSourceID, ALSourcef.SecOffset, out float value);
+				return value;
+			}
+			set => AL.Source(this.SoundSourceID, ALSourcef.SecOffset, value);
+		}
+
+		/// <summary>
 		/// Gets or sets whether or not this audio source should loop.
 		/// </summary>
 		public bool Looping
 		{
-			get => this.LoopingInternal;
-			set
+			get
 			{
-				AL.Source(this.SoundSourceID, ALSourceb.Looping, value);
-				this.LoopingInternal = value;
+				AL.GetSource(this.SoundSourceID, ALSourceb.Looping, out bool value);
+				return value;
 			}
+			set => AL.Source(this.SoundSourceID, ALSourceb.Looping, value);
 		}
-		private bool LoopingInternal;
 
 		/// <summary>
 		/// Gets or sets the position of the audio source in 3D space.
 		/// </summary>
 		public Vector3 Position
 		{
-			get => this.PositionInternal;
-			set
+			get
 			{
-				AL.Source(this.SoundSourceID, ALSource3f.Position, ref value);
-				this.PositionInternal = value;
+				AL.GetSource(this.SoundSourceID, ALSource3f.Position, out Vector3 value);
+				return value;
 			}
+			set => AL.Source(this.SoundSourceID, ALSource3f.Position, ref value);
 		}
-		private Vector3 PositionInternal;
 
 		/// <summary>
-		/// Gets or sets the attenuation distance, that is, the distance beyond which the source will be silent,
-		/// of the audio source.
+		/// Gets or sets the direction of the sound cone.
 		/// </summary>
-		public float Attenuation
+		public Vector3 Direction
 		{
-			get => this.AttenuationInternal;
-			set
+			get
 			{
-				AL.Source(this.SoundSourceID, ALSourcef.MaxDistance, value);
-				this.AttenuationInternal = value;
+				AL.GetSource(this.SoundSourceID, ALSource3f.Direction, out Vector3 value);
+				return value;
 			}
+			set => AL.Source(this.SoundSourceID, ALSource3f.Direction, ref value);
 		}
-		private float AttenuationInternal;
+
+		/// <summary>
+		/// Gets or sets the velocity vector of the sound source.
+		/// </summary>
+		public Vector3 Velocity
+		{
+			get
+			{
+				AL.GetSource(this.SoundSourceID, ALSource3f.Direction, out Vector3 value);
+				return value;
+			}
+			set => AL.Source(this.SoundSourceID, ALSource3f.Direction, ref value);
+		}
 
 		/// <summary>
 		/// Gets or sets whether or not the audio position should be relative to the listener's position.
 		/// </summary>
 		public bool RelativePositioning
 		{
-			get => this.RelativePositioningInternal;
-			set
+			get
 			{
-				AL.Source(this.SoundSourceID, ALSourceb.SourceRelative, value);
-				this.RelativePositioningInternal = value;
+				AL.GetSource(this.SoundSourceID, ALSourceb.SourceRelative, out bool value);
+				return value;
 			}
+			set => AL.Source(this.SoundSourceID, ALSourceb.SourceRelative, value);
 		}
-		private bool RelativePositioningInternal;
 
-		
-		
+		/// <summary>
+		/// Gets or sets the attenuation distance, that is, the distance beyond which the source will be silent,
+		/// of the audio source. Range: [0.0f - float.PositiveInfinity] (default: float.PositiveInfinity)
+		/// </summary>
+		public float Attenuation
+		{
+			get
+			{
+				AL.GetSource(this.SoundSourceID, ALSourcef.MaxDistance, out float value);
+				return value;
+			}
+			set => AL.Source(this.SoundSourceID, ALSourcef.MaxDistance, value);
+		}
+
+		/// <summary>
+		/// Gets or sets the minimum gain for this source. Range: [0.0f - 1.0f] (default: 0.0f)
+		/// </summary>
+		public float MinGain
+		{
+			get
+			{
+				AL.GetSource(this.SoundSourceID, ALSourcef.MinGain, out float value);
+				return value;
+			}
+			set => AL.Source(this.SoundSourceID, ALSourcef.MinGain, value);
+		}
+
+		/// <summary>
+		/// Gets or sets the maximum gain for this source. Range: [0.0f - 1.0f] (default: 0.0f)
+		/// </summary>
+		public float MaxGain
+		{
+			get
+			{
+				AL.GetSource(this.SoundSourceID, ALSourcef.MaxGain, out float value);
+				return value;
+			}
+			set => AL.Source(this.SoundSourceID, ALSourcef.MaxGain, value);
+		}
+
+		/// <summary>
+		/// Gets or sets the gain outside the oriented audio cone. Range: [0.0f - 1.0f] (default: 0.0f)
+		/// </summary>
+		public float ConeOuterGain
+		{
+			get
+			{
+				AL.GetSource(this.SoundSourceID, ALSourcef.ConeOuterGain, out float value);
+				return value;
+			}
+			set => AL.Source(this.SoundSourceID, ALSourcef.ConeOuterGain, value);
+		}
+
+		/// <summary>
+		/// Gets or sets the inner angle of the oriented audio cone. Range: [0.0f - 360.0f] (default: 360.0f)
+		/// </summary>
+		public float ConeInnerAngle
+		{
+			get
+			{
+				AL.GetSource(this.SoundSourceID, ALSourcef.ConeInnerAngle, out float value);
+				return value;
+			}
+			set => AL.Source(this.SoundSourceID, ALSourcef.ConeInnerAngle, value);
+		}
+
+		/// <summary>
+		/// Gets or sets the inner angle of the oriented audio cone. Range: [0.0f - 360.0f] (default: 360.0f)
+		/// </summary>
+		public float ConeOuterAngle
+		{
+			get
+			{
+				AL.GetSource(this.SoundSourceID, ALSourcef.ConeOuterAngle, out float value);
+				return value;
+			}
+			set => AL.Source(this.SoundSourceID, ALSourcef.ConeOuterAngle, value);
+		}
+
+		/// <summary>
+		/// Gets or sets the pitch of the audio source. Range: [0.5f - 2.0f] (default 1.0f)
+		/// </summary>
+		public float Pitch
+		{
+			get
+			{
+				AL.GetSource(this.SoundSourceID, ALSourcef.Pitch, out float value);
+				return value;
+			}
+			set => AL.Source(this.SoundSourceID, ALSourcef.Pitch, value);
+		}
+
+		/// <summary>
+		/// Gets or sets the gain of the audio source. Range: [0.0f - float.PositiveInfinity]. A value of 1.0f means
+		/// unchanged. The scale is logarithmic.
+		/// </summary>
+		public float Gain
+		{
+			get
+			{
+				AL.GetSource(this.SoundSourceID, ALSourcef.Gain, out float value);
+				return value;
+			}
+			set => AL.Source(this.SoundSourceID, ALSourcef.Gain, value);
+		}
+
+		/// <summary>
+		/// Gets or sets the rolloff factor. Range: [0.0f - float.PositiveInfinity]
+		/// </summary>
+		public float RolloffFactor
+		{
+			get
+			{
+				AL.GetSource(this.SoundSourceID, ALSourcef.RolloffFactor, out float value);
+				return value;
+			}
+			set => AL.Source(this.SoundSourceID, ALSourcef.RolloffFactor, value);
+		}
+
+		/// <summary>
+		/// Gets or sets the reference distance of the source. Range: [0.0f - float.PositiveInfinity] (default 1.0f).
+		/// A value of 0.0f indicates no attenuation.
+		/// </summary>
+		public float ReferenceDistance
+		{
+			get
+			{
+				AL.GetSource(this.SoundSourceID, ALSourcef.ReferenceDistance, out float value);
+				return value;
+			}
+			set => AL.Source(this.SoundSourceID, ALSourcef.ReferenceDistance, value);
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AudioSource"/> class.
 		/// </summary>
-		public AudioSource()
+		protected AudioSource()
 		{
-			
+		}
+
+		/// <summary>
+		/// Creates a new <see cref="AudioSource"/> and registers it with the <see cref="AudioManager"/>.
+		/// </summary>
+		/// <returns></returns>
+		public static AudioSource CreateNew()
+		{
+			AudioSource source = new AudioSource();
+			AudioManager.RegisterSource(source);
+
+			return source;
 		}
 
 		/// <summary>
@@ -145,15 +315,8 @@ namespace Everlook.Audio
 		/// </summary>
 		public void Stop()
 		{
+			AL.SourceStop(this.SoundSourceID);
 			AL.SourceRewind(this.SoundSourceID);
-		}
-
-		/// <summary>
-		/// Sets the position of the audio stream (in nanoseconds from the start of the file)
-		/// </summary>
-		public void SetPosition(long nanoseconds)
-		{
-
 		}
 
 		/// <summary>
@@ -161,15 +324,30 @@ namespace Everlook.Audio
 		/// </summary>
 		/// <param name="fileReference">A file reference pointing to a sound file.</param>
 		/// <returns>An asynchronous task.</returns>
-		public async Task SetAudio(FileReference fileReference)
+		public async Task SetAudioAsync(FileReference fileReference)
 		{
+			IAudioAsset audioAsset;
+
+			// Asynchronously load audio data
+			switch (fileReference.GetReferencedFileType())
+			{
+				case WarcraftFileType.WaveAudio:
+				{
+					audioAsset = await WaveAudioAsset.LoadAsync(fileReference);
+					break;
+				}
+				default:
+				{
+					return;
+				}
+			}
+
 			// First, clear the old audio
 			ClearAudio();
 
-			// Asynchronously load audio data
-			byte[] soundData = null; // TODO 
-			this.SoundFormat = 0; // TODO
-			this.SampleRate = 0; // TODO
+			byte[] soundData = audioAsset.PCMData; 
+			this.SoundFormat = audioAsset.Format;
+			this.SampleRate = audioAsset.SampleRate;
 
 			// Create new AL data
 			this.SoundBufferID = AL.GenBuffer();
@@ -195,6 +373,7 @@ namespace Everlook.Audio
 		/// </summary>
 		public void Dispose()
 		{
+			Stop();
 			ClearAudio();
 		}
 	}

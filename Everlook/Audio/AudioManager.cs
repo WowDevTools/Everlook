@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using OpenTK.Audio;
 
 namespace Everlook.Audio
@@ -35,6 +36,11 @@ namespace Everlook.Audio
 		/// </summary>
 		public static readonly AudioManager Instance = new AudioManager();
 
+		/// <summary>
+		/// All registered sources in the manager.
+		/// </summary>
+		private readonly List<AudioSource> Sources = new List<AudioSource>();
+
 		private readonly AudioContext Context;
 
 		/// <summary>
@@ -47,10 +53,46 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
+		/// Registers an <see cref="AudioSource"/> with the manager.
+		/// </summary>
+		/// <param name="audioSource"></param>
+		public static void RegisterSource(AudioSource audioSource)
+		{
+			if (!Instance.Sources.Contains(audioSource))
+			{
+				Instance.Sources.Add(audioSource);
+			}
+		}
+
+		/// <summary>
+		/// Unregisters an <see cref="AudioSource"/> with the manager.
+		/// </summary>
+		/// <param name="audioSource"></param>
+		public static void UnregisterSource(AudioSource audioSource)
+		{
+			if (audioSource == null)
+			{
+				return;
+			}
+			
+			if (Instance.Sources.Contains(audioSource))
+			{
+				Instance.Sources.Remove(audioSource);
+			}
+
+			audioSource.Dispose();
+		}
+
+		/// <summary>
 		/// Disposes the audio manager.
 		/// </summary>
 		public void Dispose()
 		{
+			foreach (AudioSource source in this.Sources)
+			{
+				source.Dispose();
+			}
+
 			this.Context.Dispose();
 		}
 	}

@@ -23,6 +23,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Everlook.Audio;
 using Everlook.Configuration;
 using Everlook.Explorer;
 using Everlook.Package;
@@ -83,6 +84,11 @@ namespace Everlook.UI
 		/// </summary>
 		private CancellationTokenSource FileLoadingCancellationSource;
 
+		/// <summary>
+		/// A single global audio source. Used for playing individual files.
+		/// </summary>
+		private AudioSource GlobalAudio;
+		
 		/// <summary>
 		/// Creates an instance of the MainWindow class, loading the glade XML UI as needed.
 		/// </summary>
@@ -905,6 +911,18 @@ namespace Everlook.UI
 						DataLoadingRoutines.CreateRenderableBitmapImage,
 						ControlPage.Image,
 						this.FileLoadingCancellationSource.Token);
+					break;
+				}
+				case WarcraftFileType.WaveAudio:
+				{
+					AudioManager.UnregisterSource(this.GlobalAudio);
+					
+					AudioSource source = AudioSource.CreateNew();
+					await source.SetAudioAsync(fileReference);
+
+					AudioManager.RegisterSource(source);
+					
+					source.Play();
 					break;
 				}
 			}
