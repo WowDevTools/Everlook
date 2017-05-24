@@ -21,12 +21,10 @@
 //
 
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Everlook.Audio.Wave;
 using Everlook.Explorer;
 using OpenTK;
-using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 using Warcraft.Core;
 
@@ -35,7 +33,7 @@ namespace Everlook.Audio
 	/// <summary>
 	/// Represents a single audio source in 3D space.
 	/// </summary>
-	public class AudioSource : IDisposable
+	public class AudioSource : IDisposable, IEquatable<AudioSource>
 	{
 		private int SoundBufferID;
 		private int SoundSourceID;
@@ -375,6 +373,49 @@ namespace Everlook.Audio
 		{
 			Stop();
 			ClearAudio();
+		}
+
+		/// <summary>
+		/// Gets the hash code for this object.
+		/// </summary>
+		/// <returns></returns>
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash *= 23 + this.SoundBufferID;
+				hash *= 23 + this.SoundSourceID;
+
+				return hash;
+			}
+		}
+
+		/// <summary>
+		/// Determines whether or not this object is equal to another.
+		/// </summary>
+		/// <param name="other"></param>
+		/// <returns></returns>
+		public bool Equals(AudioSource other)
+		{
+			return Equals((object) other);
+		}
+
+		/// <summary>
+		/// Determines whether or not this object is equal to another.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		public override bool Equals(object obj)
+		{
+			if (!(obj is AudioSource))
+			{
+				return false;
+			}
+
+			AudioSource other = (AudioSource) obj;
+			return other.SoundSourceID == this.SoundSourceID &&
+			       other.SoundBufferID == this.SoundBufferID;
 		}
 	}
 }
