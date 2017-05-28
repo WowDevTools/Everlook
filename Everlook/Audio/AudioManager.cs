@@ -34,7 +34,7 @@ namespace Everlook.Audio
 		/// <summary>
 		/// Gets the singleton instance of the <see cref="AudioManager"/>.
 		/// </summary>
-		public static readonly AudioManager Instance = new AudioManager();
+		private static readonly AudioManager Instance = new AudioManager();
 
 		/// <summary>
 		/// All registered sources in the manager.
@@ -53,12 +53,20 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
+		/// Destructs the singleton instance of the <see cref="AudioManager"/> class.
+		/// </summary>
+		~AudioManager()
+		{
+			Dispose();
+		}
+
+		/// <summary>
 		/// Registers an <see cref="AudioSource"/> with the manager.
 		/// </summary>
 		/// <param name="audioSource"></param>
 		public static void RegisterSource(AudioSource audioSource)
 		{
-			if (!Instance.Sources.Contains(audioSource))
+			if (!IsRegistered(audioSource))
 			{
 				Instance.Sources.Add(audioSource);
 			}
@@ -74,13 +82,23 @@ namespace Everlook.Audio
 			{
 				return;
 			}
-			
-			if (Instance.Sources.Contains(audioSource))
+
+			if (IsRegistered(audioSource))
 			{
 				Instance.Sources.Remove(audioSource);
 			}
 
 			audioSource.Dispose();
+		}
+
+		/// <summary>
+		/// Determines whether or not an <see cref="AudioSource"/> is registered with the manager.
+		/// </summary>
+		/// <param name="audioSource"></param>
+		/// <returns></returns>
+		public static bool IsRegistered(AudioSource audioSource)
+		{
+			return Instance.Sources.Contains(audioSource);
 		}
 
 		/// <summary>

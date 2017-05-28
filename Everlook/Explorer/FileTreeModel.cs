@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -115,6 +116,52 @@ namespace Everlook.Explorer
 			}
 
 			return sb.ToString();
+		}
+
+		/// <summary>
+		/// Enumerates all references pointing to files under the given reference. If the reference already points to
+		/// a file, it is returned back. If it is null, nothing is returned. The search is performed as a depth-first
+		/// level scan.
+		/// </summary>
+		/// <param name="fileReference">The reference to enumerate.</param>
+		/// <returns></returns>
+		public IEnumerable<FileReference> EnumerateFilesOfReference(FileReference fileReference)
+		{
+			if (fileReference == null)
+			{
+				yield break;
+			}
+
+			if (fileReference.IsFile)
+			{
+				yield return fileReference;
+				yield break;
+			}
+
+			List<FileNode> folderNodes = new List<FileNode>{ fileReference.Node };
+
+			while (folderNodes.Count > 0)
+			{
+				FileNode folderNode = folderNodes.First();
+
+				foreach (ulong offset in folderNode.ChildOffsets)
+				{
+					FileNode childNode = this.Tree.GetNode(offset);
+
+					if (childNode.Type.HasFlag(NodeType.File))
+					{
+						yield return new FileReference(fileReference.PackageGroup, childNode, fileReference.PackageName,
+							GetNodeFilePath(childNode));
+					}
+
+					if (childNode.Type.HasFlag(NodeType.Directory))
+					{
+						folderNodes.Add(childNode);
+					}
+				}
+
+				folderNodes.Remove(folderNode);
+			}
 		}
 
 		/// <summary>

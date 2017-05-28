@@ -88,7 +88,7 @@ namespace Everlook.UI
 		/// A single global audio source. Used for playing individual files.
 		/// </summary>
 		private AudioSource GlobalAudio;
-		
+
 		/// <summary>
 		/// Creates an instance of the MainWindow class, loading the glade XML UI as needed.
 		/// </summary>
@@ -390,7 +390,6 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		/// <exception cref="NotImplementedException"></exception>
 		private async void OnMainWindowShown(object sender, EventArgs e)
 		{
 			await LoadGames();
@@ -580,7 +579,7 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
-		/// Begins loading routines for the specified fileReference, which is expected to point to a valid model.
+		/// Loads and displays the pecified fileReference in the UI, which is expected to point to a valid object.
 		/// This function takes a delegate which will correctly load the file pointed to by the FileReference,
 		/// and another delegate which will create a correct <see cref="IRenderable"/> object from the resulting
 		/// object.
@@ -590,14 +589,19 @@ namespace Everlook.UI
 		/// <param name="createRenderableDelegate">A delegate which accepts a generic type T and returns a renderable object.</param>
 		/// <param name="associatedControlPage">The control page which the file is associated with, that is, the one with relevant controls.</param>
 		/// <param name="ct">A cancellation token for this operation.</param>
-		/// <typeparam name="T">The type of model to load.</typeparam>
-		private async Task BeginLoadingFile<T>(
+		/// <typeparam name="T">The type of object to load.</typeparam>
+		private async Task DisplayRenderableFile<T>(
 			FileReference fileReference,
 			DataLoadingDelegates.LoadReferenceDelegate<T> referenceLoadingRoutine,
 			DataLoadingDelegates.CreateRenderableDelegate<T> createRenderableDelegate,
 			ControlPage associatedControlPage,
 			CancellationToken ct)
 		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
 			Log.Info($"Loading \"{fileReference.FilePath}\".");
 
 			this.StatusSpinner.Active = true;
@@ -865,7 +869,7 @@ namespace Everlook.UI
 					this.FileLoadingCancellationSource.Cancel();
 					this.FileLoadingCancellationSource = new CancellationTokenSource();
 
-					await BeginLoadingFile(fileReference,
+					await DisplayRenderableFile(fileReference,
 						DataLoadingRoutines.LoadBinaryImage,
 						DataLoadingRoutines.CreateRenderableBinaryImage,
 						ControlPage.Image,
@@ -878,7 +882,7 @@ namespace Everlook.UI
 					this.FileLoadingCancellationSource.Cancel();
 					this.FileLoadingCancellationSource = new CancellationTokenSource();
 
-					await BeginLoadingFile(fileReference,
+					await DisplayRenderableFile(fileReference,
 						DataLoadingRoutines.LoadWorldModel,
 						DataLoadingRoutines.CreateRenderableWorldModel,
 						ControlPage.Model,
@@ -891,7 +895,7 @@ namespace Everlook.UI
 					this.FileLoadingCancellationSource.Cancel();
 					this.FileLoadingCancellationSource = new CancellationTokenSource();
 
-					await BeginLoadingFile(fileReference,
+					await DisplayRenderableFile(fileReference,
 						DataLoadingRoutines.LoadWorldModelGroup,
 						DataLoadingRoutines.CreateRenderableWorldModel,
 						ControlPage.Model,
@@ -906,7 +910,7 @@ namespace Everlook.UI
 					this.FileLoadingCancellationSource.Cancel();
 					this.FileLoadingCancellationSource = new CancellationTokenSource();
 
-					await BeginLoadingFile(fileReference,
+					await DisplayRenderableFile(fileReference,
 						DataLoadingRoutines.LoadBitmapImage,
 						DataLoadingRoutines.CreateRenderableBitmapImage,
 						ControlPage.Image,
@@ -916,12 +920,12 @@ namespace Everlook.UI
 				case WarcraftFileType.WaveAudio:
 				{
 					AudioManager.UnregisterSource(this.GlobalAudio);
-					
+
 					this.GlobalAudio = AudioSource.CreateNew();
 					await this.GlobalAudio.SetAudioAsync(fileReference);
 
 					AudioManager.RegisterSource(this.GlobalAudio);
-					
+
 					this.GlobalAudio.Play();
 					break;
 				}

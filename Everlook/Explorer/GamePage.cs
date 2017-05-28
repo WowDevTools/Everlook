@@ -464,6 +464,14 @@ namespace Everlook.Explorer
 			{
 				return;
 			}
+			
+			if (fileReference.IsDirectory)
+			{
+				foreach (FileReference subfile in this.TreeModel.EnumerateFilesOfReference(fileReference))
+				{
+					Console.WriteLine(subfile.FilePath);
+				}
+			}
 
 			string cleanFilepath = fileReference.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
 			string exportpath;
@@ -517,15 +525,7 @@ namespace Everlook.Explorer
 			}
 
 			FileReference currentFileReference = this.TreeModel.GetReferenceByPath(this.Packages, modelPath);
-			if (currentFileReference.IsDirectory)
-			{
-				this.SaveItem.Sensitive = false;
-				this.ExportItem.Sensitive = true;
-				this.OpenItem.Sensitive = true;
-				this.QueueForExportItem.Sensitive = true;
-				this.CopyPathItem.Sensitive = true;
-			}
-			else if (currentFileReference.IsFile)
+			if (currentFileReference.IsFile || currentFileReference.IsDirectory)
 			{
 				this.SaveItem.Sensitive = true;
 				this.ExportItem.Sensitive = true;
