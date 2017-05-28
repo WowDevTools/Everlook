@@ -23,12 +23,14 @@
 using System;
 using System.Globalization;
 using System.IO;
+using Everlook.Database;
 using Everlook.Explorer;
 using Everlook.UI;
 using Everlook.Utility;
 using GLib;
 using log4net;
 using OpenTK;
+using Warcraft.DBC.Definitions;
 using Application = Gtk.Application;
 using FileNode = liblistfile.NodeTree.Node;
 

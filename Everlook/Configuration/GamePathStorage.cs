@@ -40,7 +40,6 @@ namespace Everlook.Configuration
 	{
 		private readonly object StorageLock = new object();
 
-
 		/// <summary>
 		/// Logger instance for this class.
 		/// </summary>
@@ -59,15 +58,16 @@ namespace Everlook.Configuration
 
 		private GamePathStorage()
 		{
-			if (!File.Exists(GetPathStoragePath()))
+			string storagePath = GetPathStoragePath();
+			if (!File.Exists(storagePath))
 			{
-				string storageDirectory = Directory.GetParent(GetPathStoragePath()).FullName;
+				string storageDirectory = Directory.GetParent(storagePath).FullName;
 				if (!Directory.Exists(storageDirectory))
 				{
 					Directory.CreateDirectory(storageDirectory);
 				}
 
-				File.Create(GetPathStoragePath()).Close();
+				File.Create(storagePath).Close();
 			}
 		}
 

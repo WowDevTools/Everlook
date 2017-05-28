@@ -78,6 +78,7 @@
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="Audio\IAudioAsset.cs" />
     <Compile Include="Audio\Wave\WaveAudioAsset.cs" />
+    <Compile Include="Database\ClientDatabaseProvider.cs" />
     <Compile Include="Explorer\FileReference.cs" />
     <Compile Include="Explorer\FileTreeModel.cs" />
     <Compile Include="Explorer\GameLoader.cs" />

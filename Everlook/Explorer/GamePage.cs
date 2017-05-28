@@ -25,6 +25,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Everlook.Configuration;
+using Everlook.Database;
 using Everlook.Package;
 using Everlook.Utility;
 using Gdk;
@@ -34,6 +35,7 @@ using Gtk;
 using liblistfile;
 using liblistfile.NodeTree;
 using Warcraft.Core;
+using Warcraft.DBC.Definitions;
 using FileNode = liblistfile.NodeTree.Node;
 using Style = Pango.Style;
 
@@ -86,6 +88,9 @@ namespace Everlook.Explorer
 		private readonly ImageMenuItem QueueForExportItem;
 		private readonly ImageMenuItem CopyPathItem;
 
+		private readonly WarcraftVersion Version;
+		private readonly ClientDatabaseProvider DatabaseProvider;
+
 		/// <summary>
 		/// Static reference to the configuration handler.
 		/// </summary>
@@ -106,10 +111,14 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <param name="packageGroup"></param>
 		/// <param name="nodeTree"></param>
-		public GamePage(PackageGroup packageGroup, OptimizedNodeTree nodeTree)
+		public GamePage(PackageGroup packageGroup, OptimizedNodeTree nodeTree, WarcraftVersion version = WarcraftVersion.Classic) // TODO: Predict version or gather from user
 		{
 			this.Packages = packageGroup;
+			this.Version = version;
+			this.DatabaseProvider = new ClientDatabaseProvider(this.Version, this.Packages);
 			this.TreeModel = new FileTreeModel(nodeTree);
+
+			var test = this.DatabaseProvider.GetRecord<ZoneMusicRecord>(1);
 
 			this.TreeAlignment = new Alignment(0.5f, 0.5f, 1.0f, 1.0f)
 			{
@@ -464,7 +473,7 @@ namespace Everlook.Explorer
 			{
 				return;
 			}
-			
+
 			if (fileReference.IsDirectory)
 			{
 				foreach (FileReference subfile in this.TreeModel.EnumerateFilesOfReference(fileReference))
