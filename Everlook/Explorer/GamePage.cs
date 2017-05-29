@@ -118,7 +118,10 @@ namespace Everlook.Explorer
 			this.DatabaseProvider = new ClientDatabaseProvider(this.Version, this.Packages);
 			this.TreeModel = new FileTreeModel(nodeTree);
 
-			var test = this.DatabaseProvider.GetRecord<ZoneMusicRecord>(1);
+			foreach (ZoneMusicRecord rec in this.DatabaseProvider.GetDatabase<ZoneMusicRecord>())
+			{
+				Console.WriteLine(rec.ID);
+			}
 
 			this.TreeAlignment = new Alignment(0.5f, 0.5f, 1.0f, 1.0f)
 			{

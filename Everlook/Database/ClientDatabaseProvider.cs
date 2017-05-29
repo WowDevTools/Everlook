@@ -80,17 +80,27 @@ namespace Everlook.Database
 		}
 
 		/// <summary>
-		/// Gets a record of type <typeparamref name="T"/> from its corresponding database by its ID. The ID that the 
-		/// function consumes is the zero-based index of the record in the database, however, the record IDs begin 
-		/// counting from one.
+		/// Gets a record of type <typeparamref name="T"/> from its corresponding database by its ID. 
 		/// </summary>
 		/// <param name="id"></param>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public T GetRecord<T>(int id) where T : DBCRecord, new()
+		public T GetRecordByID<T>(int id) where T : DBCRecord, new()
 		{
 			DBC<T> database = GetDatabase<T>();
 			return database.GetRecordByID(id);
+		}
+
+		/// <summary>
+		/// Gets a record of type <typeparamref name="T"/> from its corresponding database by its index. 
+		/// </summary>
+		/// <param name="index"></param>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public T GetRecordByIndex<T>(int index) where T : DBCRecord, new()
+		{
+			DBC<T> database = GetDatabase<T>();
+			return database.GetRecordByID(index);
 		}
 
 		/// <summary>
