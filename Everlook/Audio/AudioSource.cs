@@ -27,6 +27,8 @@ using Everlook.Explorer;
 using OpenTK;
 using OpenTK.Audio.OpenAL;
 using Warcraft.Core;
+using Warcraft.DBC.Definitions;
+using Warcraft.MPQ;
 
 namespace Everlook.Audio
 {
@@ -251,7 +253,8 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Gets or sets the reference distance of the source. Range: [0.0f - float.PositiveInfinity] (default 1.0f).
+		/// Gets or sets the reference distance of the source, that is, the distance under which the volume for the
+		/// source would normally drop by half. Range: [0.0f - float.PositiveInfinity] (default 1.0f).
 		/// A value of 0.0f indicates no attenuation.
 		/// </summary>
 		public float ReferenceDistance
@@ -280,6 +283,15 @@ namespace Everlook.Audio
 			AudioSource source = new AudioSource();
 			AudioManager.RegisterSource(source);
 
+			return source;
+		}
+
+		public static AudioSource CreateFromSoundEntry(SoundEntriesRecord soundEntry)
+		{
+			AudioSource source = CreateNew();
+			source.Attenuation = soundEntry.DistanceCutoff;
+
+			// TODO: More settings
 			return source;
 		}
 
@@ -343,7 +355,7 @@ namespace Everlook.Audio
 			// First, clear the old audio
 			ClearAudio();
 
-			byte[] soundData = audioAsset.PCMData; 
+			byte[] soundData = audioAsset.PCMData;
 			this.SoundFormat = audioAsset.Format;
 			this.SampleRate = audioAsset.SampleRate;
 

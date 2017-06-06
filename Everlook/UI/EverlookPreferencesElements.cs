@@ -33,6 +33,7 @@ namespace Everlook.UI
 	{
 		[UIElement] private readonly Dialog NewGamePathDialog;
 		[UIElement] private readonly Entry AliasEntry;
+		[UIElement] private readonly ComboBox GameVersionCombo;
 		[UIElement] private readonly FileChooserButton PathChooser;
 
 		[UIElement] private readonly TreeView GamePathSelectionTreeView;

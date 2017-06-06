@@ -24,6 +24,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using log4net;
+using Warcraft.Core;
 using Warcraft.Core.Extensions;
 
 namespace Everlook.Configuration
@@ -51,34 +52,57 @@ namespace Everlook.Configuration
 		public static readonly GamePathStorage Instance = new GamePathStorage();
 
 		/// <summary>
+		/// The current format version of the path store.
+		/// </summary>
+		private const int FormatVersion = 3;
+
+		/// <summary>
 		/// Gets the stored game paths.
 		/// </summary>
 		/// <value>The game paths.</value>
-		public List<(string Alias, string Path)> GamePaths => ReadStoredPaths();
+		public List<(string Alias, WarcraftVersion Version, string Path)> GamePaths => ReadStoredPaths();
 
 		private GamePathStorage()
 		{
 			string storagePath = GetPathStoragePath();
-			if (!File.Exists(storagePath))
+			if (File.Exists(storagePath))
 			{
-				string storageDirectory = Directory.GetParent(storagePath).FullName;
-				if (!Directory.Exists(storageDirectory))
+				// Check the format version
+				int formatVersion;
+				using (FileStream fs = File.OpenRead(GetPathStoragePath()))
+				using (BinaryReader br = new BinaryReader(fs))
 				{
-					Directory.CreateDirectory(storageDirectory);
+					formatVersion = br.ReadInt32();
 				}
 
-				File.Create(storagePath).Close();
+				if (formatVersion != FormatVersion)
+				{
+					File.Delete(GetPathStoragePath());
+				}
+				else
+				{
+					return;
+				}
 			}
+
+			string storageDirectory = Directory.GetParent(storagePath).FullName;
+			if (!Directory.Exists(storageDirectory))
+			{
+				Directory.CreateDirectory(storageDirectory);
+			}
+
+			ClearPaths();
 		}
 
 		/// <summary>
 		/// Stores a provided path in the path storage.
 		/// </summary>
 		/// <param name="alias">The alias of the path which is displayed in the UI.</param>
+		/// <param name="version">The version that the game at the path conforms to.</param>
 		/// <param name="pathToStore">Path to store.</param>
-		public void StorePath(string alias, string pathToStore)
+		public void StorePath(string alias, WarcraftVersion version, string pathToStore)
 		{
-			if (!this.GamePaths.Contains((alias, pathToStore)))
+			if (!this.GamePaths.Contains((alias, version, pathToStore)))
 			{
 				lock (this.StorageLock)
 				{
@@ -87,6 +111,7 @@ namespace Everlook.Configuration
 						using (BinaryWriter bw = new BinaryWriter(fs))
 						{
 							bw.WriteNullTerminatedString(alias);
+							bw.Write((uint)version);
 							bw.WriteNullTerminatedString(pathToStore);
 							bw.Flush();
 						}
@@ -99,24 +124,26 @@ namespace Everlook.Configuration
 		/// Removes a path that's been stored.
 		/// </summary>
 		/// <param name="alias">The alias of the path.</param>
+		/// <param name="version">The game version of the path.</param>
 		/// <param name="pathToRemove">Path to remove.</param>
-		public void RemoveStoredPath(string alias, string pathToRemove)
+		public void RemoveStoredPath(string alias, WarcraftVersion version, string pathToRemove)
 		{
-			List<(string Alias, string Path)> storedPaths = this.GamePaths;
-			if (storedPaths.Contains((alias, pathToRemove)))
+			List<(string Alias, WarcraftVersion Version, string Path)> storedPaths = this.GamePaths;
+			if (storedPaths.Contains((alias, version, pathToRemove)))
 			{
 				ClearPaths();
 				lock (this.StorageLock)
 				{
-					storedPaths.Remove((alias, pathToRemove));
+					storedPaths.Remove((alias, version, pathToRemove));
 
-					using (FileStream fs = File.OpenWrite(GetPathStoragePath()))
+					using (FileStream fs = File.Open(GetPathStoragePath(), FileMode.Append))
 					{
 						using (BinaryWriter bw = new BinaryWriter(fs))
 						{
-							foreach ((string remainingAlias, string remainingPath) in storedPaths)
+							foreach ((string remainingAlias, WarcraftVersion remainingVersion, string remainingPath) in storedPaths)
 							{
 								bw.WriteNullTerminatedString(remainingAlias);
+								bw.Write((uint)remainingVersion);
 								bw.WriteNullTerminatedString(remainingPath);
 								bw.Flush();
 							}
@@ -126,9 +153,9 @@ namespace Everlook.Configuration
 			}
 		}
 
-		private List<(string Alias, string Path)> ReadStoredPaths()
+		private List<(string Alias, WarcraftVersion Version, string Path)> ReadStoredPaths()
 		{
-			List<(string, string)> storedPaths = new List<(string, string)>();
+			List<(string, WarcraftVersion, string)> storedPaths = new List<(string, WarcraftVersion, string)>();
 			lock (this.StorageLock)
 			{
 				try
@@ -137,9 +164,17 @@ namespace Everlook.Configuration
 					{
 						using (BinaryReader br = new BinaryReader(fs))
 						{
-							while (br.BaseStream.Position != br.BaseStream.Length)
+							int formatVersion = br.ReadInt32();
+							if (formatVersion != FormatVersion)
 							{
-								storedPaths.Add((br.ReadNullTerminatedString(), br.ReadNullTerminatedString()));
+								Log.Warn("Read an unsupported path store version. Aborting.");
+							}
+							else
+							{
+								while (br.BaseStream.Position != br.BaseStream.Length)
+								{
+									storedPaths.Add((br.ReadNullTerminatedString(), (WarcraftVersion)br.ReadUInt32(), br.ReadNullTerminatedString()));
+								}
 							}
 						}
 					}
@@ -159,7 +194,12 @@ namespace Everlook.Configuration
 			lock (this.StorageLock)
 			{
 				File.Delete(GetPathStoragePath());
-				File.Create(GetPathStoragePath()).Close();
+
+				using (FileStream fs = File.Create(GetPathStoragePath()))
+				using (BinaryWriter bw = new BinaryWriter(fs))
+				{
+					bw.Write(FormatVersion);
+				}
 			}
 		}
 

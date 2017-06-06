@@ -88,7 +88,11 @@ namespace Everlook.Explorer
 		private readonly ImageMenuItem QueueForExportItem;
 		private readonly ImageMenuItem CopyPathItem;
 
-		private readonly WarcraftVersion Version;
+		/// <summary>
+		/// The <see cref="WarcraftVersion"/> of the game that is loaded into this page.
+		/// TODO: This should probably be broken out into an IGameContext with WarcraftVersion, ClientDatabaseProvider and IPackage exposed
+		/// </summary>
+		public readonly WarcraftVersion Version;
 		private readonly ClientDatabaseProvider DatabaseProvider;
 
 		/// <summary>
@@ -111,17 +115,14 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <param name="packageGroup"></param>
 		/// <param name="nodeTree"></param>
-		public GamePage(PackageGroup packageGroup, OptimizedNodeTree nodeTree, WarcraftVersion version = WarcraftVersion.Classic) // TODO: Predict version or gather from user
+		/// <param name="version">The Warcraft version that the game page is contextually relevant for.</param>
+		public GamePage(PackageGroup packageGroup, OptimizedNodeTree nodeTree, WarcraftVersion version)
 		{
 			this.Packages = packageGroup;
 			this.Version = version;
 			this.DatabaseProvider = new ClientDatabaseProvider(this.Version, this.Packages);
-			this.TreeModel = new FileTreeModel(nodeTree);
 
-			foreach (ZoneMusicRecord rec in this.DatabaseProvider.GetDatabase<ZoneMusicRecord>())
-			{
-				Console.WriteLine(rec.ID);
-			}
+			this.TreeModel = new FileTreeModel(nodeTree);
 
 			this.TreeAlignment = new Alignment(0.5f, 0.5f, 1.0f, 1.0f)
 			{
@@ -251,7 +252,7 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Sets the filter of the tree view and asynchronously refilters it. The filter is a set of 
+		/// Sets the filter of the tree view and asynchronously refilters it. The filter is a set of
 		/// <see cref="WarcraftFileType"/> flags.
 		/// </summary>
 		/// <param name="filteredFileTypes"></param>

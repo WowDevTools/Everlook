@@ -22,6 +22,7 @@
 
 using Everlook.Explorer;
 using Everlook.Viewport.Rendering.Interfaces;
+using Warcraft.Core;
 
 namespace Everlook.Utility
 {
@@ -42,7 +43,8 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <param name="renderableItem">The item to encapsulate in a renderable version of it.</param>
 		/// <param name="fileReference">The file reference associated with the object.</param>
+		/// <param name="version">The contextually relevant version of the object.</param>
 		/// <typeparam name="T">A type which can be encapsulated in another type implementing <see cref="IRenderable"/>.</typeparam>
-		public delegate IRenderable CreateRenderableDelegate<in T>(T renderableItem, FileReference fileReference);
+		public delegate IRenderable CreateRenderableDelegate<in T>(T renderableItem, FileReference fileReference, WarcraftVersion version);
 	}
 }

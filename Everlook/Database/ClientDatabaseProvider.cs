@@ -26,7 +26,9 @@ using System.IO;
 using Warcraft.Core;
 using Warcraft.DBC;
 using Warcraft.DBC.Definitions;
+using Warcraft.DBC.SpecialFields;
 using Warcraft.MPQ;
+using static Everlook.Database.TypeTranslatorHelpers;
 
 namespace Everlook.Database
 {
@@ -45,6 +47,11 @@ namespace Everlook.Database
 		/// The package where the database data can be sourced from.
 		/// </summary>
 		private readonly IPackage ContentSource;
+
+		/// <summary>
+		/// Locking object for threaded access to the databases.
+		/// </summary>
+		private readonly object DatabaseLock = new object();
 
 		/// <summary>
 		/// The loaded databases.
@@ -71,16 +78,19 @@ namespace Everlook.Database
 		{
 			DatabaseName databaseName = GetDatabaseNameFromRecordType(typeof(T));
 
-			if (!ContainsDatabase(databaseName))
+			lock (this.DatabaseLock)
 			{
-				LoadDatabase(databaseName);
-			}
+				if (!ContainsDatabase(databaseName))
+				{
+					LoadDatabase(databaseName);
+				}
 
-			return this.Databases[databaseName] as DBC<T>;
+				return this.Databases[databaseName] as DBC<T>;
+			}
 		}
 
 		/// <summary>
-		/// Gets a record of type <typeparamref name="T"/> from its corresponding database by its ID. 
+		/// Gets a record of type <typeparamref name="T"/> from its corresponding database by its ID.
 		/// </summary>
 		/// <param name="id"></param>
 		/// <typeparam name="T"></typeparam>
@@ -92,7 +102,7 @@ namespace Everlook.Database
 		}
 
 		/// <summary>
-		/// Gets a record of type <typeparamref name="T"/> from its corresponding database by its index. 
+		/// Gets a record of type <typeparamref name="T"/> from its corresponding database by its index.
 		/// </summary>
 		/// <param name="index"></param>
 		/// <typeparam name="T"></typeparam>
@@ -100,7 +110,7 @@ namespace Everlook.Database
 		public T GetRecordByIndex<T>(int index) where T : DBCRecord, new()
 		{
 			DBC<T> database = GetDatabase<T>();
-			return database.GetRecordByID(index);
+			return database[index];
 		}
 
 		/// <summary>
@@ -110,7 +120,10 @@ namespace Everlook.Database
 		/// <returns></returns>
 		public bool ContainsDatabase(DatabaseName databaseName)
 		{
-			return this.Databases.ContainsKey(databaseName);
+			lock (this.DatabaseLock)
+			{
+				return this.Databases.ContainsKey(databaseName);
+			}
 		}
 
 		/// <summary>
@@ -136,33 +149,6 @@ namespace Everlook.Database
 
 			IDBC database = (IDBC)Activator.CreateInstance(specificDBCType, this.Version, databaseData);
 			this.Databases.Add(databaseName, database);
-		}
-
-		/// <summary>
-		/// Converts a database name into a qualified type.
-		/// </summary>
-		/// <param name="databaseName"></param>
-		/// <returns></returns>
-		private static Type GetRecordTypeFromDatabaseName(DatabaseName databaseName)
-		{
-			return Type.GetType($"Warcraft.DBC.Definitions.{databaseName}Record, libwarcraft");
-		}
-
-		/// <summary>
-		/// Gets the database name from a type.
-		/// </summary>
-		/// <param name="recordType"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentException"></exception>
-		private DatabaseName GetDatabaseNameFromRecordType(Type recordType)
-		{
-			string recordName = recordType.Name.Replace("Record", "");
-			if (Enum.TryParse(recordName, true, out DatabaseName databaseName))
-			{
-				return databaseName;
-			}
-
-			throw new ArgumentException("The given type could not be resolved to a database name.", nameof(recordType));
 		}
 
 		/// <summary>

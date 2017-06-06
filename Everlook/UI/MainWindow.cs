@@ -417,7 +417,7 @@ namespace Everlook.UI
 						dialog.ProgressNotifier
 					);
 
-					AddGamePage(gameTarget.Alias, group, nodeTree);
+					AddGamePage(gameTarget.Alias, gameTarget.Version, group, nodeTree);
 				}
 				catch (OperationCanceledException ocex)
 				{
@@ -428,9 +428,9 @@ namespace Everlook.UI
 			dialog.Destroy();
 		}
 
-		private void AddGamePage(string alias, PackageGroup group, OptimizedNodeTree nodeTree)
+		private void AddGamePage(string alias, WarcraftVersion version, PackageGroup group, OptimizedNodeTree nodeTree)
 		{
-			GamePage page = new GamePage(group, nodeTree);
+			GamePage page = new GamePage(group, nodeTree, version);
 			page.Alias = alias;
 
 			page.FileLoadRequested += OnFileLoadRequested;
@@ -591,6 +591,7 @@ namespace Everlook.UI
 		/// <param name="ct">A cancellation token for this operation.</param>
 		/// <typeparam name="T">The type of object to load.</typeparam>
 		private async Task DisplayRenderableFile<T>(
+			GamePage gamePage,
 			FileReference fileReference,
 			DataLoadingDelegates.LoadReferenceDelegate<T> referenceLoadingRoutine,
 			DataLoadingDelegates.CreateRenderableDelegate<T> createRenderableDelegate,
@@ -614,7 +615,7 @@ namespace Everlook.UI
 			try
 			{
 				T item = await Task.Run(() => referenceLoadingRoutine(fileReference), ct);
-				IRenderable renderable = await Task.Factory.StartNew(() => createRenderableDelegate(item, fileReference),
+				IRenderable renderable = await Task.Factory.StartNew(() => createRenderableDelegate(item, fileReference, gamePage.Version),
 					ct,
 					TaskCreationOptions.None,
 					this.UiThreadScheduler);
@@ -869,7 +870,8 @@ namespace Everlook.UI
 					this.FileLoadingCancellationSource.Cancel();
 					this.FileLoadingCancellationSource = new CancellationTokenSource();
 
-					await DisplayRenderableFile(fileReference,
+					await DisplayRenderableFile(page,
+						fileReference,
 						DataLoadingRoutines.LoadBinaryImage,
 						DataLoadingRoutines.CreateRenderableBinaryImage,
 						ControlPage.Image,
@@ -882,7 +884,8 @@ namespace Everlook.UI
 					this.FileLoadingCancellationSource.Cancel();
 					this.FileLoadingCancellationSource = new CancellationTokenSource();
 
-					await DisplayRenderableFile(fileReference,
+					await DisplayRenderableFile(page,
+						fileReference,
 						DataLoadingRoutines.LoadWorldModel,
 						DataLoadingRoutines.CreateRenderableWorldModel,
 						ControlPage.Model,
@@ -895,7 +898,8 @@ namespace Everlook.UI
 					this.FileLoadingCancellationSource.Cancel();
 					this.FileLoadingCancellationSource = new CancellationTokenSource();
 
-					await DisplayRenderableFile(fileReference,
+					await DisplayRenderableFile(page,
+						fileReference,
 						DataLoadingRoutines.LoadWorldModelGroup,
 						DataLoadingRoutines.CreateRenderableWorldModel,
 						ControlPage.Model,
@@ -910,7 +914,8 @@ namespace Everlook.UI
 					this.FileLoadingCancellationSource.Cancel();
 					this.FileLoadingCancellationSource = new CancellationTokenSource();
 
-					await DisplayRenderableFile(fileReference,
+					await DisplayRenderableFile(page,
+						fileReference,
 						DataLoadingRoutines.LoadBitmapImage,
 						DataLoadingRoutines.CreateRenderableBitmapImage,
 						ControlPage.Image,
@@ -998,7 +1003,7 @@ namespace Everlook.UI
 
 			this.RenderingEngine.SetRenderTarget(null);
 			this.RenderingEngine.Dispose();
-			
+
 			this.ViewportWidget.Dispose();
 
 			Application.Quit();

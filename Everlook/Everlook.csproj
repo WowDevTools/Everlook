@@ -75,10 +75,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\AudioCollection.cs" />
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="Audio\IAudioAsset.cs" />
     <Compile Include="Audio\Wave\WaveAudioAsset.cs" />
+    <Compile Include="Database\Access\WMOAreaTableAccess.cs" />
     <Compile Include="Database\ClientDatabaseProvider.cs" />
+    <Compile Include="Database\TypeTranslatorHelpers.cs" />
     <Compile Include="Explorer\FileReference.cs" />
     <Compile Include="Explorer\FileTreeModel.cs" />
     <Compile Include="Explorer\GameLoader.cs" />
@@ -218,5 +221,8 @@
   </PropertyGroup>
   <Target Name="CopyGSettingsSchemas">
     <Copy SourceFiles="Content\GSettings\gschemas.compiled" DestinationFolder="$(OutDir)\share\glib-2.0\schemas\" />
+  </Target>
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="obj\x86\$(Configuration)\$(AssemblyName).pdb" DestinationFolder="$(OutputPath)" />
   </Target>
 </Project>

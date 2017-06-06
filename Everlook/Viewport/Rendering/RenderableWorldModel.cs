@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Everlook.Database;
 using Everlook.Package;
 using Everlook.Utility;
 using Everlook.Viewport.Camera;
@@ -70,7 +71,7 @@ namespace Everlook.Viewport.Rendering
 		public ProjectionType Projection => ProjectionType.Perspective;
 
 		/// <summary>
-		/// The default camera position for this renderable. 
+		/// The default camera position for this renderable.
 		/// </summary>
 		public Vector3 DefaultCameraPosition
 		{
@@ -86,7 +87,7 @@ namespace Everlook.Viewport.Rendering
 					return Vector3.Zero;
 				}
 
-				return 
+				return
 				(
 					this.ActorTransform.GetModelMatrix() *
 					new Vector4
@@ -115,6 +116,7 @@ namespace Everlook.Viewport.Rendering
 
 		private readonly PackageGroup ModelPackageGroup;
 		private readonly RenderCache Cache = RenderCache.Instance;
+		private readonly ClientDatabaseProvider DatabaseProvider;
 
 		/// <summary>
 		/// Dictionary that maps texture paths to OpenGL texture IDs.
@@ -147,10 +149,12 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableWorldModel"/> class.
 		/// </summary>
-		public RenderableWorldModel(WMO inModel, PackageGroup inPackageGroup)
+		public RenderableWorldModel(WMO inModel, PackageGroup inPackageGroup, WarcraftVersion inVersion)
 		{
 			this.Model = inModel;
 			this.ModelPackageGroup = inPackageGroup;
+
+			this.DatabaseProvider = new ClientDatabaseProvider(inVersion, this.ModelPackageGroup);
 
 			this.ActorTransform = new Transform
 			(

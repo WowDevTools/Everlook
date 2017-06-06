@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Everlook.Package;
 using liblistfile;
+using liblistfile.Exceptions;
 using liblistfile.NodeTree;
 using log4net;
 using Warcraft.MPQ;
@@ -123,19 +124,14 @@ namespace Everlook.Explorer
 					nodeTree = new OptimizedNodeTree(packageTreeFilePath);
 					generateTree = false;
 				}
-				catch (ArgumentException aex)
+				catch (NodeTreeNotFoundException nofex)
 				{
-					// TODO: Implement separate exceptions
-					if (aex.Message.Contains("Unseekable"))
-					{
-						throw;
-					}
-
-					if (aex.Message.Contains("Unsupported"))
-					{
-						Log.Info("Unsupported node tree version present. Deleting and regenerating.");
-						File.Delete(packageTreeFilePath);
-					}
+					Log.Error("No file for the node tree found at the given location.");
+				}
+				catch (UnsupportedNodeTreeVersionException unex)
+				{
+					Log.Info("Unsupported node tree version present. Deleting and regenerating.");
+					File.Delete(packageTreeFilePath);
 				}
 			}
 

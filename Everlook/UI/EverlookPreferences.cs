@@ -29,6 +29,7 @@ using Everlook.Export.Image;
 using Everlook.Export.Audio;
 using System.IO;
 using GLib;
+using Warcraft.Core;
 using Key = Gdk.Key;
 
 namespace Everlook.UI
@@ -131,12 +132,12 @@ namespace Everlook.UI
 				case ResponseType.Ok:
 				{
 					string alias = this.AliasEntry.Text;
+					WarcraftVersion selectedVersion = (WarcraftVersion)this.GameVersionCombo.Active;
 					Uri uriToStore = new Uri(this.PathChooser.CurrentFolderUri);
 
 					if (Directory.Exists(uriToStore.LocalPath))
 					{
-						this.GamePathListStore.AppendValues(alias, uriToStore.LocalPath);
-						GamePathStorage.Instance.StorePath(alias, uriToStore.LocalPath);
+						this.GamePathListStore.AppendValues(alias, uriToStore.LocalPath, (uint)selectedVersion, selectedVersion.ToString());
 					}
 
 					this.NewGamePathDialog.Hide();
@@ -167,7 +168,9 @@ namespace Everlook.UI
 
 			string alias = (string) this.GamePathListStore.GetValue(selectedIter, 0);
 			string path = (string) this.GamePathListStore.GetValue(selectedIter, 1);
-			GamePathStorage.Instance.RemoveStoredPath(alias, path);
+			WarcraftVersion version = (WarcraftVersion) this.GamePathListStore.GetValue(selectedIter, 2);
+
+			GamePathStorage.Instance.RemoveStoredPath(alias, version, path);
 			this.GamePathListStore.Remove(ref selectedIter);
 		}
 
@@ -176,11 +179,11 @@ namespace Everlook.UI
 		/// </summary>
 		private void LoadPreferences()
 		{
-			foreach ((string alias, string gamePath) in GamePathStorage.Instance.GamePaths)
+			foreach ((string alias, WarcraftVersion version, string gamePath) in GamePathStorage.Instance.GamePaths)
 			{
 				if (Directory.Exists(gamePath))
 				{
-					this.GamePathListStore.AppendValues(alias, gamePath);
+					this.GamePathListStore.AppendValues(alias, gamePath, (uint)version, version.ToString());
 				}
 			}
 
@@ -207,7 +210,8 @@ namespace Everlook.UI
 				{
 					string alias = (string)model.GetValue(iter, 0);
 					string gamePath = (string)model.GetValue(iter, 1);
-					GamePathStorage.Instance.StorePath(alias, gamePath);
+					WarcraftVersion version = (WarcraftVersion) this.GamePathListStore.GetValue(iter, 2);
+					GamePathStorage.Instance.StorePath(alias, version, gamePath);
 
 					return false;
 				});

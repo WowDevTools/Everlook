@@ -137,23 +137,23 @@ namespace Everlook.Utility
 			return null;
 		}
 
-		/// <summary>
-		/// Creates a renderable object from the specified WMO object, and the specified package group it belongs to.
-		/// NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
-		///
-		/// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
-		/// </summary>
-		/// <param name="worldModel">The model object.</param>
-		/// <param name="fileReference">The package group it belongs to.</param>
+		///  <summary>
+		///  Creates a renderable object from the specified WMO object, and the specified package group it belongs to.
+		///  NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
+		///  The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
+		///  </summary>
+		///  <param name="worldModel">The model object.</param>
+		///  <param name="fileReference">The package group it belongs to.</param>
+		/// <param name="version">The contextually relevant version.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
-		public static IRenderable CreateRenderableWorldModel(WMO worldModel, FileReference fileReference)
+		public static IRenderable CreateRenderableWorldModel(WMO worldModel, FileReference fileReference, WarcraftVersion version)
 		{
 			if (worldModel == null)
 			{
 				return null;
 			}
 
-			IRenderable renderableWorldModel = new RenderableWorldModel(worldModel, fileReference.PackageGroup);
+			IRenderable renderableWorldModel = new RenderableWorldModel(worldModel, fileReference.PackageGroup, version);
 			return renderableWorldModel;
 		}
 
@@ -183,17 +183,17 @@ namespace Everlook.Utility
 			return null;
 		}
 
-		/// <summary>
-		/// Creates a renderable object from the specified BLP object, aand the specified <see cref="FileReference"/>
-		/// it is associated with.
-		/// NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
-		///
-		/// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
-		/// </summary>
-		/// <param name="binaryImage">The image object.</param>
-		/// <param name="fileReference">The package group it belongs to.</param>
+		///  <summary>
+		///  Creates a renderable object from the specified BLP object, aand the specified <see cref="FileReference"/>
+		///  it is associated with.
+		///  NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
+		///  The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
+		///  </summary>
+		///  <param name="binaryImage">The image object.</param>
+		///  <param name="fileReference">The package group it belongs to.</param>
+		/// <param name="version">Unused.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
-		public static IRenderable CreateRenderableBinaryImage(BLP binaryImage, FileReference fileReference)
+		public static IRenderable CreateRenderableBinaryImage(BLP binaryImage, FileReference fileReference, WarcraftVersion version)
 		{
 			if (binaryImage == null)
 			{
@@ -233,17 +233,17 @@ namespace Everlook.Utility
 			return null;
 		}
 
-		/// <summary>
-		/// Creates a renderable object from the specified <see cref="Bitmap"/> object, and the specified
-		/// <see cref="FileReference"/> it is associated with.
-		/// NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
-		///
-		/// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
-		/// </summary>
-		/// <param name="bitmapImage">The image object.</param>
-		/// <param name="fileReference">The package group it belongs to.</param>
+		///  <summary>
+		///  Creates a renderable object from the specified <see cref="Bitmap"/> object, and the specified
+		///  <see cref="FileReference"/> it is associated with.
+		///  NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
+		///  The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
+		///  </summary>
+		///  <param name="bitmapImage">The image object.</param>
+		///  <param name="fileReference">The package group it belongs to.</param>
+		/// <param name="version">Unused.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
-		public static IRenderable CreateRenderableBitmapImage(Bitmap bitmapImage, FileReference fileReference)
+		public static IRenderable CreateRenderableBitmapImage(Bitmap bitmapImage, FileReference fileReference, WarcraftVersion version)
 		{
 			if (bitmapImage == null)
 			{

@@ -158,7 +158,7 @@ namespace Everlook.Viewport
 			GL.GenVertexArrays(1, out this.VertexArrayID);
 			GL.BindVertexArray(this.VertexArrayID);
 
-			GL.Disable(EnableCap.AlphaTest);
+			//GL.Disable(EnableCap.AlphaTest);
 
 			// Make sure we use the depth buffer when drawing
 			GL.Enable(EnableCap.DepthTest);

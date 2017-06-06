@@ -31,7 +31,87 @@
       <column type="gchararray"/>
       <!-- column-name GamePath -->
       <column type="gchararray"/>
+      <!-- column-name Version -->
+      <column type="guint"/>
+      <!-- column-name VersionString -->
+      <column type="gchararray"/>
     </columns>
+  </object>
+  <object class="GtkListStore" id="GameVersionListStore">
+    <columns>
+      <!-- column-name VersionName -->
+      <column type="gchararray"/>
+      <!-- column-name VersionValue -->
+      <column type="guint"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Unknown</col>
+        <col id="1">0</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Classic</col>
+        <col id="1">1</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">BC</col>
+        <col id="1">2</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Wrath</col>
+        <col id="1">3</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Cataclysm</col>
+        <col id="1">4</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Mists</col>
+        <col id="1">5</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Warlords</col>
+        <col id="1">6</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Legion</col>
+        <col id="1">7</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="ImageFormatListStore">
+    <columns>
+      <!-- column-name ImageFormatName -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">PNG (.png)</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">JPG (.jpg/.jpeg)</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Tiff (.tif)</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Bitmap (.bmp)</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="ModelFormatListStore">
+    <columns>
+      <!-- column-name ModelFormatName -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Collada</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Wavefront OBJ</col>
+      </row>
+    </data>
   </object>
   <object class="GtkDialog" id="PreferencesDialog">
     <property name="width_request">420</property>
@@ -138,6 +218,19 @@
                                   <object class="GtkCellRendererText" id="gameAliasTextRenderer"/>
                                   <attributes>
                                     <attribute name="text">0</attribute>
+                                  </attributes>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkTreeViewColumn" id="treeviewcolumn1">
+                                <property name="title" translatable="yes">Version</property>
+                                <child>
+                                  <object class="GtkCellRendererText" id="gameVersionTextRenderer1">
+                                    <property name="ellipsize">end</property>
+                                  </object>
+                                  <attributes>
+                                    <attribute name="text">3</attribute>
                                   </attributes>
                                 </child>
                               </object>
@@ -824,53 +917,19 @@
       </object>
     </child>
   </object>
-  <object class="GtkListStore" id="ImageFormatListStore">
-    <columns>
-      <!-- column-name ImageFormatName -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">PNG (.png)</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">JPG (.jpg/.jpeg)</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Tiff (.tif)</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Bitmap (.bmp)</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="ModelFormatListStore">
-    <columns>
-      <!-- column-name ModelFormatName -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Collada</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Wavefront OBJ</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkFileChooserDialog" id="GamePathChooserDialog">
+  <object class="GtkFileChooserDialog" id="GamePathChooser">
     <property name="can_focus">False</property>
-    <property name="type_hint">normal</property>
+    <property name="type_hint">dialog</property>
     <property name="transient_for">NewGamePathDialog</property>
     <property name="attached_to">NewGamePathDialog</property>
     <property name="action">select-folder</property>
     <child internal-child="vbox">
-      <object class="GtkBox" id="filechooserdialog-vbox3">
+      <object class="GtkBox" id="filechooserdialog-vbox2">
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
-          <object class="GtkButtonBox" id="filechooserdialog-action_area3">
+          <object class="GtkButtonBox" id="filechooserdialog-action_area2">
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
@@ -918,6 +977,14 @@
       <action-widget response="-5">button4</action-widget>
     </action-widgets>
   </object>
+  <object class="GtkSizeGroup" id="NewGameEntrySizeGroup">
+    <property name="mode">both</property>
+    <widgets>
+      <widget name="AliasAlignment"/>
+      <widget name="VersionAlignment"/>
+      <widget name="PathChooserAlignment"/>
+    </widgets>
+  </object>
   <object class="GtkDialog" id="NewGamePathDialog">
     <property name="can_focus">False</property>
     <property name="resizable">False</property>
@@ -928,6 +995,7 @@
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox2">
         <property name="can_focus">False</property>
+        <property name="valign">start</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
@@ -974,16 +1042,52 @@
           <object class="GtkBox" id="box6">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkAlignment" id="alignment17">
+              <object class="GtkBox" id="box13">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkEntry" id="AliasEntry">
+                  <object class="GtkAlignment" id="alignment9">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="placeholder_text" translatable="yes">Alias</property>
+                    <property name="can_focus">False</property>
+                    <property name="left_padding">4</property>
+                    <child>
+                      <object class="GtkLabel" id="label1">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Alias</property>
+                      </object>
+                    </child>
                   </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkAlignment" id="AliasAlignment">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="bottom_padding">4</property>
+                    <property name="left_padding">8</property>
+                    <property name="right_padding">4</property>
+                    <child>
+                      <object class="GtkEntry" id="AliasEntry">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">Alias</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
               </object>
               <packing>
@@ -993,23 +1097,120 @@
               </packing>
             </child>
             <child>
-              <object class="GtkAlignment" id="alignment2">
+              <object class="GtkBox" id="box14">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkFileChooserButton" id="PathChooser">
+                  <object class="GtkAlignment" id="alignment5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="action">select-folder</property>
-                    <property name="dialog">GamePathChooserDialog</property>
-                    <property name="title" translatable="yes">Select a Folder</property>
+                    <property name="left_padding">4</property>
+                    <child>
+                      <object class="GtkLabel" id="label7">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">Version</property>
+                      </object>
+                    </child>
                   </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkAlignment" id="VersionAlignment">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="bottom_padding">4</property>
+                    <property name="left_padding">8</property>
+                    <property name="right_padding">4</property>
+                    <child>
+                      <object class="GtkComboBox" id="GameVersionCombo">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="model">GameVersionListStore</property>
+                        <property name="active">0</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="gameVersionTextRenderer"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox" id="box15">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkAlignment" id="alignment13">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="left_padding">4</property>
+                    <child>
+                      <object class="GtkLabel" id="label9">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Game Folder</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkAlignment" id="PathChooserAlignment">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="bottom_padding">4</property>
+                    <property name="left_padding">8</property>
+                    <property name="right_padding">4</property>
+                    <child>
+                      <object class="GtkFileChooserButton" id="PathChooser">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="action">select-folder</property>
+                        <property name="dialog">GamePathChooser</property>
+                        <property name="title" translatable="yes">Select a Game Folder</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
