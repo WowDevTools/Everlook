@@ -277,16 +277,10 @@ namespace Everlook.Viewport.Rendering
 					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.PlainImage.PlainImageFragment.glsl");
 					break;
 				}
-				case EverlookShader.UnlitWorldModelOpaque:
+				case EverlookShader.UnlitWorldModel:
 				{
 					vertexShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelVertex.glsl");
-					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelFragment_Opaque.glsl");
-					break;
-				}
-				case EverlookShader.UnlitWorldModelAlphaKey:
-				{
-					vertexShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelVertex.glsl");
-					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelFragment_AlphaKey.glsl");
+					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelFragment.glsl");
 					break;
 				}
 				case EverlookShader.BoundingBox:

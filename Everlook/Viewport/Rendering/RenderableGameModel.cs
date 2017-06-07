@@ -55,7 +55,7 @@ namespace Everlook.Viewport.Rendering
 		public ProjectionType Projection => ProjectionType.Perspective;
 
 		/// <summary>
-		/// The default camera position for this renderable. 
+		/// The default camera position for this renderable.
 		/// </summary>
 		public Vector3 DefaultCameraPosition
 		{
@@ -66,7 +66,7 @@ namespace Everlook.Viewport.Rendering
 					return Vector3.Zero;
 				}
 
-				return 
+				return
 				(
 					this.ActorTransform.GetModelMatrix() *
 					new Vector4
@@ -117,7 +117,7 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Initialize()
 		{
-			if (this.Cache.HasCachedShader(EverlookShader.UnlitWorldModelOpaque))
+			if (this.Cache.HasCachedShader(EverlookShader.UnlitGameModel))
 			{
 				this.SimpleShaderID = this.Cache.GetCachedShader(EverlookShader.UnlitGameModel);
 			}

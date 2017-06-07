@@ -152,14 +152,13 @@
   <ItemGroup>
     <EmbeddedResource Include="Content\Shaders\Adapted\GameModel\GameModelFragment.glsl" />
     <EmbeddedResource Include="Content\Shaders\Adapted\GameModel\GameModelVertex.glsl" />
-    <EmbeddedResource Include="Content\Shaders\Adapted\WorldModel\WorldModelFragment_AlphaKey.glsl" />
     <EmbeddedResource Include="interfaces\Everlook.glade" />
     <EmbeddedResource Include="interfaces\EverlookPreferences.glade" />
     <EmbeddedResource Include="interfaces\EverlookImageExport.glade" />
     <EmbeddedResource Include="interfaces\EverlookDirectoryExport.glade" />
     <EmbeddedResource Include="Content\Shaders\Adapted\PlainImage\PlainImageFragment.glsl" />
     <EmbeddedResource Include="Content\Shaders\Adapted\PlainImage\PlainImageVertex.glsl" />
-    <EmbeddedResource Include="Content\Shaders\Adapted\WorldModel\WorldModelFragment_Opaque.glsl" />
+    <EmbeddedResource Include="Content\Shaders\Adapted\WorldModel\WorldModelFragment.glsl" />
     <EmbeddedResource Include="Content\Shaders\Adapted\WorldModel\WorldModelVertex.glsl" />
     <EmbeddedResource Include="Content\Shaders\BoundingBoxFragment.glsl" />
     <EmbeddedResource Include="Content\Shaders\BoundingBoxVertex.glsl" />

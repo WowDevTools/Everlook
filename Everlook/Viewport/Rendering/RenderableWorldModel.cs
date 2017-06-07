@@ -524,18 +524,15 @@ namespace Everlook.Viewport.Rendering
 				GL.Disable(EnableCap.Blend);
 			}
 
-			switch (modelMaterial.BlendMode)
+			this.CurrentShaderID = this.Cache.GetShader(EverlookShader.UnlitWorldModel);
+			int alphaThresholdLoc = GL.GetUniformLocation(this.CurrentShaderID, "alphaThreshold");
+			if (modelMaterial.BlendMode == BlendingMode.AlphaKey)
 			{
-				case BlendingMode.Opaque:
-				{
-					this.CurrentShaderID = this.Cache.GetShader(EverlookShader.UnlitWorldModelOpaque);
-					break;
-				}
-				case BlendingMode.AlphaKey:
-				{
-					this.CurrentShaderID = this.Cache.GetShader(EverlookShader.UnlitWorldModelAlphaKey);
-					break;
-				}
+				GL.Uniform1(alphaThresholdLoc, 224.0f / 255.0f);
+			}
+			else
+			{
+				GL.Uniform1(alphaThresholdLoc, 0.0f);
 			}
 		}
 
