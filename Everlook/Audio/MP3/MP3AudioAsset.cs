@@ -35,6 +35,11 @@ namespace Everlook.Audio.MP3
 	/// </summary>
 	public class MP3AudioAsset : IAudioAsset
 	{
+		/// <summary>
+		/// Whether or not this instance has been disposed.
+		/// </summary>
+		private bool IsDisposed;
+
 		public ALFormat Format
 		{
 			get
@@ -57,10 +62,38 @@ namespace Everlook.Audio.MP3
 			}
 		}
 
-		public byte[] PCMData { get; }
+		private byte[] PCMDataInternal;
+
+		public byte[] PCMData
+		{
+			get
+			{
+				if (this.PCMDataInternal != null)
+				{
+					return this.PCMDataInternal;
+				}
+
+				// Decode the whole stream
+				using (MemoryStream pcm = new MemoryStream())
+				{
+					// Quick note: this is inside the actual MP3 stream, not the PCM stream
+					this.PCMStream.Seek(0, SeekOrigin.Begin);
+
+					this.PCMStream.CopyTo(pcm);
+					this.PCMDataInternal = pcm.ToArray();
+				}
+
+				return this.PCMDataInternal;
+			}
+			private set => this.PCMDataInternal = value;
+		}
+		public Stream PCMStream { get; private set; }
+
 		public int Channels { get; }
 		public int BitsPerSample { get; }
 		public int SampleRate { get; }
+
+
 
 		/// <summary>
 		/// Initializes a new <see cref="MP3AudioAsset"/> from a file reference.
@@ -81,20 +114,10 @@ namespace Everlook.Audio.MP3
 				throw new ArgumentNullException(nameof(fileReference), "The file data could not be extracted.");
 			}
 
-			using (MemoryStream ms = new MemoryStream(fileBytes))
-			using (MP3Stream mp3 = new MP3Stream(ms))
-			{
-				this.Channels = mp3.ChannelCount;
-				this.BitsPerSample = 16;
-				this.SampleRate = mp3.Frequency;
-
-				// Decode the whole stream
-				using (MemoryStream pcm = new MemoryStream())
-				{
-					mp3.CopyTo(pcm);
-					this.PCMData = pcm.ToArray();
-				}
-			}
+			this.PCMStream = new MP3Stream(new MemoryStream(fileBytes));
+			this.Channels = ((MP3Stream)this.PCMStream).ChannelCount;
+			this.BitsPerSample = 16;
+			this.SampleRate = ((MP3Stream)this.PCMStream).Frequency;
 		}
 
 		/// <summary>
@@ -105,6 +128,17 @@ namespace Everlook.Audio.MP3
 		public static async Task<MP3AudioAsset> LoadAsync(FileReference fileReference)
 		{
 			return await Task.Run(() => new MP3AudioAsset(fileReference));
+		}
+
+		/// <summary>
+		/// Disposes this <see cref="MP3AudioAsset"/>.
+		/// </summary>
+		public void Dispose()
+		{
+			this.PCMStream?.Dispose();
+
+			this.PCMStream = null;
+			this.PCMData = null;
 		}
 	}
 }

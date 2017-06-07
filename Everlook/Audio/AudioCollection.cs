@@ -20,16 +20,38 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System;
 using System.Collections.Generic;
-using Everlook.Viewport.Rendering.Core;
+using OpenTK;
 
 namespace Everlook.Audio
 {
-	public class AudioCollection
+	/// <summary>
+	/// Represents a collection of concurrently playing and linked audio sources, such as music collections or
+	/// doodad sounds which should be considered as a unit.
+	/// </summary>
+	public class AudioCollection : IDisposable
 	{
-		private List<AudioSource> AudioSources = new List<AudioSource>();
+		private readonly List<AudioSource> AudioSources = new List<AudioSource>();
 
-		public Transform ActorTransform;
+		/// <summary>
+		/// The location at which the audio collection is. The locations of any sources
+		/// added to this collection are placed at the same point.
+		/// </summary>
+		public Vector3 Position
+		{
+			get => this.PositionInternal;
+			set
+			{
+				this.PositionInternal = value;
+				foreach (var audioSource in this.AudioSources)
+				{
+					audioSource.Position = value;
+				}
+			}
+		}
+
+		private Vector3 PositionInternal;
 
 		/// <summary>
 		/// Adds a source to the audio collection.
@@ -86,6 +108,19 @@ namespace Everlook.Audio
 			{
 				audioSource.Stop();
 			}
+		}
+
+		/// <summary>
+		/// Disposes this <see cref="AudioCollection"/> and all its associated audio sources.
+		/// </summary>
+		public void Dispose()
+		{
+			foreach (var audioSource in this.AudioSources)
+			{
+				audioSource.Dispose();
+			}
+
+			this.AudioSources.Clear();
 		}
 	}
 }

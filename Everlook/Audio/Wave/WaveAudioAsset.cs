@@ -55,10 +55,35 @@ namespace Everlook.Audio.Wave
 				}
 			}
 		}
-		public byte[] PCMData { get; private set; }
-		public int Channels { get; private set; }
-		public int BitsPerSample { get; private set; }
-		public int SampleRate { get; private set; }
+
+		private byte[] PCMDataInternal;
+		public byte[] PCMData
+		{
+			get
+			{
+				if (this.PCMDataInternal != null)
+				{
+					return this.PCMDataInternal;
+				}
+
+				// Decode the whole stream
+				using (MemoryStream pcm = new MemoryStream())
+				{
+					this.PCMStream.Seek(0, SeekOrigin.Begin);
+
+					this.PCMStream.CopyTo(pcm);
+					this.PCMDataInternal = pcm.ToArray();
+				}
+
+				return this.PCMDataInternal;
+			}
+			private set => this.PCMDataInternal = value;
+		}
+		public Stream PCMStream { get; private set; }
+
+		public int Channels { get; }
+		public int BitsPerSample { get; }
+		public int SampleRate { get; }
 
 		/// <summary>
 		/// Initializes a new <see cref="WaveAudioAsset"/> from a file reference.
@@ -118,7 +143,7 @@ namespace Everlook.Audio.Wave
 
 				int dataChunkSize = br.ReadInt32();
 
-				this.PCMData = br.ReadBytes(dataChunkSize);
+				this.PCMStream= new MemoryStream(br.ReadBytes(dataChunkSize));
 			}
 		}
 
@@ -130,6 +155,17 @@ namespace Everlook.Audio.Wave
 		public static async Task<WaveAudioAsset> LoadAsync(FileReference fileReference)
 		{
 			return await Task.Run(() => new WaveAudioAsset(fileReference));
+		}
+
+		/// <summary>
+		/// Disposes this <see cref="WaveAudioAsset"/>.
+		/// </summary>
+		public void Dispose()
+		{
+			this.PCMStream?.Dispose();
+
+			this.PCMStream = null;
+			this.PCMData = null;
 		}
 	}
 }

@@ -20,6 +20,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System;
+using System.IO;
 using OpenTK.Audio.OpenAL;
 
 namespace Everlook.Audio
@@ -27,7 +29,7 @@ namespace Everlook.Audio
 	/// <summary>
 	/// Exposes data common to audio assets.
 	/// </summary>
-	public interface IAudioAsset
+	public interface IAudioAsset : IDisposable
 	{
 		/// <summary>
 		/// The <see cref="ALFormat"/> that the PCM data is in.
@@ -38,6 +40,11 @@ namespace Everlook.Audio
 		/// The raw PCM data of the audio asset.
 		/// </summary>
 		byte[] PCMData { get; }
+
+		/// <summary>
+		/// A stream containing the PCM data.
+		/// </summary>
+		Stream PCMStream { get; }
 
 		/// <summary>
 		/// The number of channels that the audio has.

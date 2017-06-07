@@ -29,7 +29,6 @@ using OpenTK;
 using OpenTK.Audio.OpenAL;
 using Warcraft.Core;
 using Warcraft.DBC.Definitions;
-using Warcraft.MPQ;
 
 namespace Everlook.Audio
 {
@@ -38,6 +37,7 @@ namespace Everlook.Audio
 	/// </summary>
 	public class AudioSource : IDisposable, IEquatable<AudioSource>
 	{
+		private IAudioAsset AudioAsset;
 		private int SoundBufferID;
 		private int SoundSourceID;
 
@@ -287,6 +287,11 @@ namespace Everlook.Audio
 			return source;
 		}
 
+		/// <summary>
+		/// Creates a new <see cref="AudioSource"/> from a given <see cref="SoundEntriesRecord"/>.
+		/// </summary>
+		/// <param name="soundEntry"></param>
+		/// <returns></returns>
 		public static AudioSource CreateFromSoundEntry(SoundEntriesRecord soundEntry)
 		{
 			AudioSource source = CreateNew();
@@ -337,19 +342,17 @@ namespace Everlook.Audio
 		/// <returns>An asynchronous task.</returns>
 		public async Task SetAudioAsync(FileReference fileReference)
 		{
-			IAudioAsset audioAsset;
-
 			// Asynchronously load audio data
 			switch (fileReference.GetReferencedFileType())
 			{
 				case WarcraftFileType.WaveAudio:
 				{
-					audioAsset = await WaveAudioAsset.LoadAsync(fileReference);
+					this.AudioAsset = await WaveAudioAsset.LoadAsync(fileReference);
 					break;
 				}
 				case WarcraftFileType.MP3Audio:
 				{
-					audioAsset = await MP3AudioAsset.LoadAsync(fileReference);
+					this.AudioAsset = await MP3AudioAsset.LoadAsync(fileReference);
 					break;
 				}
 				default:
@@ -361,9 +364,9 @@ namespace Everlook.Audio
 			// First, clear the old audio
 			ClearAudio();
 
-			byte[] soundData = audioAsset.PCMData;
-			this.SoundFormat = audioAsset.Format;
-			this.SampleRate = audioAsset.SampleRate;
+			byte[] soundData = this.AudioAsset.PCMData;
+			this.SoundFormat = this.AudioAsset.Format;
+			this.SampleRate = this.AudioAsset.SampleRate;
 
 			// Create new AL data
 			this.SoundBufferID = AL.GenBuffer();
@@ -382,6 +385,9 @@ namespace Everlook.Audio
 
 			AL.DeleteSource(this.SoundSourceID);
 			AL.DeleteBuffer(this.SoundBufferID);
+
+			this.AudioAsset?.Dispose();
+			this.AudioAsset = null;
 		}
 
 		/// <summary>

@@ -33,6 +33,8 @@
     <ConsolePause>false</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
     <DocumentationFile>bin\Release\Everlook.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="INIFileParser, Version=2.3.0.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c">
