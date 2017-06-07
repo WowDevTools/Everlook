@@ -923,6 +923,7 @@ namespace Everlook.UI
 					break;
 				}
 				case WarcraftFileType.WaveAudio:
+				case WarcraftFileType.MP3Audio:
 				{
 					AudioManager.UnregisterSource(this.GlobalAudio);
 

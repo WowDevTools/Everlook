@@ -41,6 +41,9 @@
     <Reference Include="log4net, Version=2.0.7.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a">
       <HintPath>$(SolutionDir)\packages\log4net.2.0.7\lib\net45-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MP3Sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MP3Sharp.1.0.0\lib\net45\MP3Sharp.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK, Version=3.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
       <HintPath>..\packages\OpenTK.3.0.0-pre\lib\net20\OpenTK.dll</HintPath>
     </Reference>
@@ -78,6 +81,7 @@
     <Compile Include="Audio\AudioCollection.cs" />
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="Audio\IAudioAsset.cs" />
+    <Compile Include="Audio\MP3\MP3AudioAsset.cs" />
     <Compile Include="Audio\Wave\WaveAudioAsset.cs" />
     <Compile Include="Database\Access\WMOAreaTableAccess.cs" />
     <Compile Include="Database\ClientDatabaseProvider.cs" />

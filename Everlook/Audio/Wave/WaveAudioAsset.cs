@@ -29,6 +29,9 @@ using Warcraft.Core;
 
 namespace Everlook.Audio.Wave
 {
+	/// <summary>
+	/// Represents a loaded Wave audio asset.
+	/// </summary>
 	public class WaveAudioAsset : IAudioAsset
 	{
 		public ALFormat Format
@@ -57,6 +60,12 @@ namespace Everlook.Audio.Wave
 		public int BitsPerSample { get; private set; }
 		public int SampleRate { get; private set; }
 
+		/// <summary>
+		/// Initializes a new <see cref="WaveAudioAsset"/> from a file reference.
+		/// </summary>
+		/// <param name="fileReference"></param>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
 		public WaveAudioAsset(FileReference fileReference)
 		{
 			if (fileReference.GetReferencedFileType() != WarcraftFileType.WaveAudio)

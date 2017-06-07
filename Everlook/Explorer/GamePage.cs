@@ -58,7 +58,7 @@ namespace Everlook.Explorer
 		public event FileActionDelegate EnqueueFileExportRequested;
 
 		/// <summary>
-		/// Raised whenever a file is requeste to e
+		/// Raised whenever a file is requeste to be exported.
 		/// </summary>
 		public event FileActionDelegate ExportItemRequested;
 

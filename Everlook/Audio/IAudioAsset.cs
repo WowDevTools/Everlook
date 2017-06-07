@@ -24,12 +24,34 @@ using OpenTK.Audio.OpenAL;
 
 namespace Everlook.Audio
 {
+	/// <summary>
+	/// Exposes data common to audio assets.
+	/// </summary>
 	public interface IAudioAsset
 	{
+		/// <summary>
+		/// The <see cref="ALFormat"/> that the PCM data is in.
+		/// </summary>
 		ALFormat Format { get; }
+
+		/// <summary>
+		/// The raw PCM data of the audio asset.
+		/// </summary>
 		byte[] PCMData { get; }
+
+		/// <summary>
+		/// The number of channels that the audio has.
+		/// </summary>
 		int Channels { get; }
+
+		/// <summary>
+		/// The number of bits per PCM sample.
+		/// </summary>
 		int BitsPerSample { get; }
+
+		/// <summary>
+		/// The sample rate or frequency of the PCM data.
+		/// </summary>
 		int SampleRate { get; }
 	}
 }

@@ -22,6 +22,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Everlook.Audio.MP3;
 using Everlook.Audio.Wave;
 using Everlook.Explorer;
 using OpenTK;
@@ -344,6 +345,11 @@ namespace Everlook.Audio
 				case WarcraftFileType.WaveAudio:
 				{
 					audioAsset = await WaveAudioAsset.LoadAsync(fileReference);
+					break;
+				}
+				case WarcraftFileType.MP3Audio:
+				{
+					audioAsset = await MP3AudioAsset.LoadAsync(fileReference);
 					break;
 				}
 				default:
