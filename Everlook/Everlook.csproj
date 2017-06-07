@@ -88,6 +88,9 @@
     <Compile Include="Database\Access\WMOAreaTableAccess.cs" />
     <Compile Include="Database\ClientDatabaseProvider.cs" />
     <Compile Include="Database\TypeTranslatorHelpers.cs" />
+    <Compile Include="Exceptions\Shader\ShaderCompilationException.cs" />
+    <Compile Include="Exceptions\Shader\ShaderLinkingException.cs" />
+    <Compile Include="Exceptions\Shader\ShaderNullException.cs" />
     <Compile Include="Explorer\FileReference.cs" />
     <Compile Include="Explorer\FileTreeModel.cs" />
     <Compile Include="Explorer\GameLoader.cs" />
@@ -126,10 +129,13 @@
     <Compile Include="Utility\IconManager.cs" />
     <Compile Include="Utility\DataLoadingDelegates.cs" />
     <Compile Include="Utility\DataLoadingRoutines.cs" />
+    <Compile Include="Utility\ResourceManager.cs" />
     <Compile Include="Viewport\Camera\CameraMovement.cs" />
     <Compile Include="Viewport\Camera\ViewportCamera.cs" />
     <Compile Include="Viewport\Rendering\Core\EverlookShader.cs" />
+    <Compile Include="Viewport\Rendering\Core\ShaderProgram.cs" />
     <Compile Include="Viewport\Rendering\Core\Plane.cs" />
+    <Compile Include="Viewport\Rendering\Core\TextureUniform.cs" />
     <Compile Include="Viewport\Rendering\Core\Transform.cs" />
     <Compile Include="Viewport\Rendering\Interfaces\IActor.cs" />
     <Compile Include="Viewport\Rendering\Interfaces\IRenderable.cs" />
@@ -140,6 +146,10 @@
     <Compile Include="Viewport\Rendering\RenderableImage.cs" />
     <Compile Include="Viewport\Rendering\RenderableWorldModel.cs" />
     <Compile Include="Viewport\Rendering\RenderCache.cs" />
+    <Compile Include="Viewport\Rendering\Shaders\BoundingBoxShader.cs" />
+    <Compile Include="Viewport\Rendering\Shaders\GameModelShader.cs" />
+    <Compile Include="Viewport\Rendering\Shaders\Plain2DShader.cs" />
+    <Compile Include="Viewport\Rendering\Shaders\WorldModelShader.cs" />
     <Compile Include="Viewport\ViewportRenderer.cs" />
     <Compile Include="Utility\ExtensionMethods.cs" />
     <Compile Include="Audio\AudioSource.cs" />
@@ -150,18 +160,18 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <EmbeddedResource Include="Content\Shaders\Adapted\GameModel\GameModelFragment.glsl" />
-    <EmbeddedResource Include="Content\Shaders\Adapted\GameModel\GameModelVertex.glsl" />
+    <EmbeddedResource Include="Content\Shaders\BoundingBox\BoundingBoxFragment.glsl" />
+    <EmbeddedResource Include="Content\Shaders\BoundingBox\BoundingBoxVertex.glsl" />
+    <EmbeddedResource Include="Content\Shaders\GameModel\GameModelFragment.glsl" />
+    <EmbeddedResource Include="Content\Shaders\GameModel\GameModelVertex.glsl" />
+    <EmbeddedResource Include="Content\Shaders\Plain2D\Plain2DFragment.glsl" />
+    <EmbeddedResource Include="Content\Shaders\Plain2D\Plain2DVertex.glsl" />
+    <EmbeddedResource Include="Content\Shaders\WorldModel\WorldModelFragment.glsl" />
+    <EmbeddedResource Include="Content\Shaders\WorldModel\WorldModelVertex.glsl" />
     <EmbeddedResource Include="interfaces\Everlook.glade" />
     <EmbeddedResource Include="interfaces\EverlookPreferences.glade" />
     <EmbeddedResource Include="interfaces\EverlookImageExport.glade" />
     <EmbeddedResource Include="interfaces\EverlookDirectoryExport.glade" />
-    <EmbeddedResource Include="Content\Shaders\Adapted\PlainImage\PlainImageFragment.glsl" />
-    <EmbeddedResource Include="Content\Shaders\Adapted\PlainImage\PlainImageVertex.glsl" />
-    <EmbeddedResource Include="Content\Shaders\Adapted\WorldModel\WorldModelFragment.glsl" />
-    <EmbeddedResource Include="Content\Shaders\Adapted\WorldModel\WorldModelVertex.glsl" />
-    <EmbeddedResource Include="Content\Shaders\BoundingBoxFragment.glsl" />
-    <EmbeddedResource Include="Content\Shaders\BoundingBoxVertex.glsl" />
     <EmbeddedResource Include="Content\Icons\Blender\*.svg" />
     <EmbeddedResource Include="Content\Icons\Mint-X\*.png" />
     <EmbeddedResource Include="Content\Icons\Mint-Y\*.png" />
@@ -182,7 +192,6 @@
     <Folder Include="Package\" />
     <Folder Include="Content\" />
     <Folder Include="Content\Shaders\" />
-    <Folder Include="Content\Shaders\Adapted\" />
     <Folder Include="Content\Shaders\" />
     <Folder Include="Viewport\Camera" />
     <Folder Include="Viewport\Rendering\" />

@@ -27,6 +27,7 @@ using System.IO;
 using System.Reflection;
 using Everlook.Utility;
 using Everlook.Viewport.Rendering.Core;
+using Everlook.Viewport.Rendering.Shaders;
 using log4net;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -58,7 +59,7 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// The cache dictionary that maps active OpenGL shaders on the GPU.
 		/// </summary>
-		private readonly Dictionary<EverlookShader, int> GLShaderCache = new Dictionary<EverlookShader, int>();
+		private readonly Dictionary<EverlookShader, ShaderProgram> GLShaderCache = new Dictionary<EverlookShader, ShaderProgram>();
 
 		/// <summary>
 		/// The native ID of a fallback texture.
@@ -80,7 +81,7 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		/// <param name="shader"></param>
 		/// <returns></returns>
-		public int GetShader(EverlookShader shader)
+		public ShaderProgram GetShader(EverlookShader shader)
 		{
 			if (HasCachedShader(shader))
 			{
@@ -152,7 +153,7 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Gets a cached shader ID from the rendering cache.
 		/// </summary>
-		public int GetCachedShader(EverlookShader shader)
+		private ShaderProgram GetCachedShader(EverlookShader shader)
 		{
 			return this.GLShaderCache[shader];
 		}
@@ -254,7 +255,7 @@ namespace Everlook.Viewport.Rendering
 		/// Creates a cached shader for the specifed shader, using the specified shader enumeration
 		/// as a lookup key.
 		/// </summary>
-		public int CreateCachedShader(EverlookShader shader)
+		public ShaderProgram CreateCachedShader(EverlookShader shader)
 		{
 			if (!Enum.IsDefined(typeof(EverlookShader), shader))
 			{
@@ -263,130 +264,28 @@ namespace Everlook.Viewport.Rendering
 
 			Log.Info($"Creating cached shader for \"{shader}\"");
 
-			int vertexShaderID = GL.CreateShader(ShaderType.VertexShader);
-			int fragmentShaderID = GL.CreateShader(ShaderType.FragmentShader);
-
-			string vertexShaderSource;
-			string fragmentShaderSource;
-
 			switch (shader)
 			{
 				case EverlookShader.Plain2D:
 				{
-					vertexShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.PlainImage.PlainImageVertex.glsl");
-					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.PlainImage.PlainImageFragment.glsl");
-					break;
+					return new Plain2DShader();
 				}
-				case EverlookShader.UnlitWorldModel:
+				case EverlookShader.WorldModel:
 				{
-					vertexShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelVertex.glsl");
-					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.Adapted.WorldModel.WorldModelFragment.glsl");
-					break;
+					return new WorldModelShader();
 				}
 				case EverlookShader.BoundingBox:
 				{
-					vertexShaderSource = LoadShaderSource("Everlook.Content.Shaders.BoundingBoxVertex.glsl");
-					fragmentShaderSource = LoadShaderSource("Everlook.Content.Shaders.BoundingBoxFragment.glsl");
-					break;
+					return new BoundingBoxShader();
 				}
+				case EverlookShader.GameModel:
+				case EverlookShader.Model:
+				case EverlookShader.ParticleSystem:
 				default:
 				{
-					vertexShaderSource = "";
-					fragmentShaderSource = "";
-					break;
+					throw new ArgumentOutOfRangeException(nameof(shader), "No implemented shader class for this shader.");
 				}
 			}
-
-			int result;
-			int compilationLogLength;
-
-			Log.Info("Compiling vertex shader...");
-			GL.ShaderSource(vertexShaderID, vertexShaderSource);
-			GL.CompileShader(vertexShaderID);
-
-			GL.GetShader(vertexShaderID, ShaderParameter.CompileStatus, out result);
-			GL.GetShader(vertexShaderID, ShaderParameter.InfoLogLength, out compilationLogLength);
-
-			if (compilationLogLength > 0)
-			{
-				string compilationLog;
-				GL.GetShaderInfoLog(vertexShaderID, out compilationLog);
-
-				Log.Warn($"Vertex shader compilation failed or had warnings. Please review the following log: \n" +
-				         $"{compilationLog}");
-			}
-
-			Log.Info("Compiling fragment shader...");
-			GL.ShaderSource(fragmentShaderID, fragmentShaderSource);
-			GL.CompileShader(fragmentShaderID);
-
-			GL.GetShader(fragmentShaderID, ShaderParameter.CompileStatus, out result);
-			GL.GetShader(fragmentShaderID, ShaderParameter.InfoLogLength, out compilationLogLength);
-
-			if (compilationLogLength > 0)
-			{
-				string compilationLog;
-				GL.GetShaderInfoLog(fragmentShaderID, out compilationLog);
-
-				Log.Warn($"Fragment shader compilation failed or had warnings. Please review the following log: \n" +
-				         $"{compilationLog}");
-			}
-
-
-			Log.Info("Linking shader program...");
-			int shaderProgramID = GL.CreateProgram();
-
-			GL.AttachShader(shaderProgramID, vertexShaderID);
-			GL.AttachShader(shaderProgramID, fragmentShaderID);
-			GL.LinkProgram(shaderProgramID);
-
-			GL.GetProgram(shaderProgramID, GetProgramParameterName.LinkStatus, out result);
-			GL.GetProgram(shaderProgramID, GetProgramParameterName.InfoLogLength, out compilationLogLength);
-
-			if (compilationLogLength > 0)
-			{
-				string compilationLog;
-				GL.GetProgramInfoLog(shaderProgramID, out compilationLog);
-
-				Log.Warn($"Shader linking failed or had warnings. Please review the following log: \n" +
-				         $"{compilationLog}");
-			}
-
-			// Clean up the shader source code and unlinked object files from graphics memory
-			GL.DetachShader(shaderProgramID, vertexShaderID);
-			GL.DetachShader(shaderProgramID, fragmentShaderID);
-
-			GL.DeleteShader(vertexShaderID);
-			GL.DeleteShader(fragmentShaderID);
-
-
-			this.GLShaderCache.Add(shader, shaderProgramID);
-			return shaderProgramID;
-		}
-
-		/// <summary>
-		/// Loads the source code of a stored shader from the specified resource path.
-		/// </summary>
-		/// <param name="shaderResourcePath">The resource path of the shader.</param>
-		/// <returns>The source code of a shader.</returns>
-		private static string LoadShaderSource(string shaderResourcePath)
-		{
-			string shaderSource;
-			using (Stream shaderStream =
-					Assembly.GetExecutingAssembly().GetManifestResourceStream(shaderResourcePath))
-			{
-				if (shaderStream == null)
-				{
-					return null;
-				}
-
-				using (StreamReader sr = new StreamReader(shaderStream))
-				{
-					shaderSource = sr.ReadToEnd();
-				}
-			}
-
-			return shaderSource;
 		}
 
 		/// <summary>
@@ -480,9 +379,9 @@ namespace Everlook.Viewport.Rendering
 				GL.DeleteTexture(cachedTexture.Value);
 			}
 
-			foreach (KeyValuePair<EverlookShader, int> cachedShader in this.GLShaderCache)
+			foreach (KeyValuePair<EverlookShader, ShaderProgram> cachedShader in this.GLShaderCache)
 			{
-				GL.DeleteProgram(cachedShader.Value);
+				cachedShader.Value?.Dispose();
 			}
 		}
 	}

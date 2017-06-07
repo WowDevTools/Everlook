@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
+using Everlook.Viewport.Rendering.Shaders;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Warcraft.Core.Extensions;
@@ -56,7 +57,7 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// The native OpenGL ID for the unlit 2D shader.
 		/// </summary>
-		protected int ImageShaderID;
+		protected Plain2DShader Shader;
 
 		/// <summary>
 		/// The path to the encapsulated texture in the package group.
@@ -75,7 +76,7 @@ namespace Everlook.Viewport.Rendering
 		public ProjectionType Projection => ProjectionType.Orthographic;
 
 		/// <summary>
-		/// The default camera position for this renderable. 
+		/// The default camera position for this renderable.
 		/// </summary>
 		public Vector3 DefaultCameraPosition => new Vector3(0.0f, 0.0f, 1.0f);
 
@@ -124,7 +125,7 @@ namespace Everlook.Viewport.Rendering
 			this.GLTextureID = LoadCachedTexture();
 
 			// Use cached shaders whenever possible
-			this.ImageShaderID = LoadCachedShader();
+			this.Shader = this.Cache.GetShader(EverlookShader.Plain2D) as Plain2DShader;
 
 			this.ImageTransform = new Transform(
 				new Vector3(0.0f, 0.0f, 0.0f),
@@ -144,20 +145,6 @@ namespace Everlook.Viewport.Rendering
 		protected abstract int LoadCachedTexture();
 
 		/// <summary>
-		/// Loads or creates a cached unlit 2D shader.
-		/// </summary>
-		/// <returns></returns>
-		protected int LoadCachedShader()
-		{
-			if (this.Cache.HasCachedShader(EverlookShader.Plain2D))
-			{
-				return this.Cache.GetCachedShader(EverlookShader.Plain2D);
-			}
-
-			return this.Cache.CreateCachedShader(EverlookShader.Plain2D);
-		}
-
-		/// <summary>
 		/// Renders the current object in the current OpenGL context.
 		/// </summary>
 		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
@@ -167,7 +154,7 @@ namespace Everlook.Viewport.Rendering
 				return;
 			}
 
-			GL.UseProgram(this.ImageShaderID);
+			this.Shader.Enable();
 
 			// Render the object
 			// Send the vertices to the shader
@@ -193,22 +180,16 @@ namespace Everlook.Viewport.Rendering
 				0);
 
 			// Set the channel mask
-			int channelMaskVariableHandle = GL.GetUniformLocation(this.ImageShaderID, "channelMask");
-			GL.Uniform4(channelMaskVariableHandle, this.ChannelMask);
+			this.Shader.SetChannelMask(this.ChannelMask);
 
 			// Set the texture ID as a uniform sampler in unit 0
-			GL.ActiveTexture(TextureUnit.Texture0);
-			GL.BindTexture(TextureTarget.Texture2D, this.GLTextureID);
-			int textureVariableHandle = GL.GetUniformLocation(this.ImageShaderID, "imageTextureSampler");
-			int textureUnit = 0;
-			GL.Uniform1(textureVariableHandle, 1, ref textureUnit);
+			this.Shader.SetTexture(this.GLTextureID);
 
 			// Set the model view matrix
 			Matrix4 modelViewProjection = this.ImageTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
 			// Send the model matrix to the shader
-			int projectionShaderVariableHandle = GL.GetUniformLocation(this.ImageShaderID, "ModelViewProjection");
-			GL.UniformMatrix4(projectionShaderVariableHandle, false, ref modelViewProjection);
+			this.Shader.SetMVPMatrix(modelViewProjection);
 
 			// Finally, draw the image
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.VertexIndexBufferID);

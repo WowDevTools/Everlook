@@ -24,11 +24,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Everlook.Database;
+using Everlook.Exceptions.Shader;
 using Everlook.Package;
 using Everlook.Utility;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
+using Everlook.Viewport.Rendering.Shaders;
 using log4net;
 using OpenTK;
 using OpenTK.Graphics;
@@ -37,7 +39,6 @@ using SlimTK;
 using Warcraft.BLP;
 using Warcraft.Core;
 using Warcraft.Core.Extensions;
-using Warcraft.Core.Shading.Blending;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
 using Warcraft.WMO.GroupFile.Chunks;
@@ -144,7 +145,7 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public bool ShouldRenderBounds { get; set; }
 
-		private int CurrentShaderID;
+		private WorldModelShader Shader;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableWorldModel"/> class.
@@ -173,6 +174,8 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Initialize()
 		{
+			this.Shader = this.Cache.GetShader(EverlookShader.WorldModel) as WorldModelShader;
+
 			// TODO: Load and cache doodads in their respective sets
 
 			// TODO: Load and cache sound emitters
@@ -397,24 +400,54 @@ namespace Everlook.Viewport.Rendering
 				.OrderBy(batch => batch.MaterialIndex)
 				.ThenBy(batch => this.Model.GetMaterial(batch.MaterialIndex).BlendMode))
 			{
-				// TODO: Render based on the shader. For now, simple rendering of diffuse texture
+				this.Shader.Enable();
+
 				ModelMaterial modelMaterial = this.Model.GetMaterial(renderBatch.MaterialIndex);
-				EnableMaterial(modelMaterial);
 
-				GL.UseProgram(this.CurrentShaderID);
+				// TODO: Cheating before textures are properly wrapped
+				// Load the textures used in this material
+				if (!string.IsNullOrEmpty(modelMaterial.Texture0))
+				{
+					if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
+					{
+						CacheTexture(modelMaterial.Texture0, TextureWrapMode.ClampToBorder);
+					}
+					else
+					{
+						CacheTexture(modelMaterial.Texture0);
+					}
+				}
 
-				// Send the model matrix to the shader
-				int projectionShaderVariableHandle = GL.GetUniformLocation(this.CurrentShaderID, "ModelViewProjection");
-				GL.UniformMatrix4(projectionShaderVariableHandle, false, ref modelViewProjection);
+				if (!string.IsNullOrEmpty(modelMaterial.Texture1))
+				{
+					if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
+					{
+						CacheTexture(modelMaterial.Texture1, TextureWrapMode.ClampToBorder);
+					}
+					else
+					{
+						CacheTexture(modelMaterial.Texture1);
+					}
+				}
 
+				if (!string.IsNullOrEmpty(modelMaterial.Texture2))
+				{
+					if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
+					{
+						CacheTexture(modelMaterial.Texture2, TextureWrapMode.ClampToBorder);
+					}
+					else
+					{
+						CacheTexture(modelMaterial.Texture2);
+					}
+				}
+
+				this.Shader.SetMaterial(modelMaterial);
+				this.Shader.SetMVPMatrix(modelViewProjection);
+
+				// Set the texture as the first diffuse texture in unit 0
 				int textureID = this.Cache.GetCachedTexture(modelMaterial.Texture0);
-
-				// Set the texture ID as a uniform sampler in unit 0
-				GL.ActiveTexture(TextureUnit.Texture0);
-				GL.BindTexture(TextureTarget.Texture2D, textureID);
-				int textureVariableHandle = GL.GetUniformLocation(this.CurrentShaderID, "texture0");
-				int textureUnit = 0;
-				GL.Uniform1(textureVariableHandle, 1, ref textureUnit);
+				this.Shader.BindTexture2D(TextureUnit.Texture0, TextureUniform.Diffuse0, textureID);
 
 				// Finally, draw the model
 				GL.DrawRangeElements(PrimitiveType.Triangles, renderBatch.FirstPolygonIndex,
@@ -430,9 +463,17 @@ namespace Everlook.Viewport.Rendering
 
 		private void RenderBoundingBox(ModelGroup modelGroup, Matrix4 modelViewProjection, Color4 colour)
 		{
-			int shaderID = this.Cache.GetShader(EverlookShader.BoundingBox);
+			BoundingBoxShader bbShader = this.Cache.GetShader(EverlookShader.BoundingBox) as BoundingBoxShader;
 
-			GL.UseProgram(shaderID);
+			if (bbShader == null)
+			{
+				throw new ShaderNullException(typeof(BoundingBoxShader));
+			}
+
+			bbShader.Enable();
+			bbShader.SetMVPMatrix(modelViewProjection);
+			bbShader.SetLineColour(colour);
+
 			GL.Disable(EnableCap.CullFace);
 
 			// Render the object
@@ -450,14 +491,6 @@ namespace Everlook.Viewport.Rendering
 			// Bind the index buffer
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.BoundingBoxVertexIndexBufferID);
 
-			// Send the model matrix to the shader
-			int projectionShaderVariableHandle = GL.GetUniformLocation(shaderID, "ModelViewProjection");
-			GL.UniformMatrix4(projectionShaderVariableHandle, false, ref modelViewProjection);
-
-			// Send the box colour to the shader
-			int boxColourShaderVariableHandle = GL.GetUniformLocation(shaderID, "boxColour");
-			GL.Uniform4(boxColourShaderVariableHandle, colour);
-
 			// Now draw the box
 			GL.DrawRangeElements(PrimitiveType.LineLoop, 0,
 				23, 24,
@@ -466,76 +499,7 @@ namespace Everlook.Viewport.Rendering
 			GL.DisableVertexAttribArray(0);
 		}
 
-		private void EnableMaterial(ModelMaterial modelMaterial)
-		{
-			// Load the textures used in this material
-			if (!string.IsNullOrEmpty(modelMaterial.Texture0))
-			{
-				if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
-				{
-					CacheTexture(modelMaterial.Texture0, TextureWrapMode.ClampToBorder);
-				}
-				else
-				{
-					CacheTexture(modelMaterial.Texture0);
-				}
-			}
-
-			if (!string.IsNullOrEmpty(modelMaterial.Texture1))
-			{
-				if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
-				{
-					CacheTexture(modelMaterial.Texture1, TextureWrapMode.ClampToBorder);
-				}
-				else
-				{
-					CacheTexture(modelMaterial.Texture1);
-				}
-			}
-
-			if (!string.IsNullOrEmpty(modelMaterial.Texture2))
-			{
-				if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
-				{
-					CacheTexture(modelMaterial.Texture2, TextureWrapMode.ClampToBorder);
-				}
-				else
-				{
-					CacheTexture(modelMaterial.Texture2);
-				}
-			}
-
-			// Set two-sided rendering
-			if (modelMaterial.Flags.HasFlag(MaterialFlags.TwoSided))
-			{
-				GL.Disable(EnableCap.CullFace);
-			}
-			else
-			{
-				GL.Enable(EnableCap.CullFace);
-			}
-
-			if (BlendingState.EnableBlending[modelMaterial.BlendMode])
-			{
-				GL.Enable(EnableCap.Blend);
-			}
-			else
-			{
-				GL.Disable(EnableCap.Blend);
-			}
-
-			this.CurrentShaderID = this.Cache.GetShader(EverlookShader.UnlitWorldModel);
-			int alphaThresholdLoc = GL.GetUniformLocation(this.CurrentShaderID, "alphaThreshold");
-			if (modelMaterial.BlendMode == BlendingMode.AlphaKey)
-			{
-				GL.Uniform1(alphaThresholdLoc, 224.0f / 255.0f);
-			}
-			else
-			{
-				GL.Uniform1(alphaThresholdLoc, 0.0f);
-			}
-		}
-
+		// TODO: This has to go
 		private void CacheTexture(string texturePath, TextureWrapMode textureWrapMode = TextureWrapMode.Repeat)
 		{
 			if (this.Cache.HasCachedTextureForPath(texturePath))

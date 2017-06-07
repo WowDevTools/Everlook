@@ -26,6 +26,7 @@ using Everlook.Package;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
+using Everlook.Viewport.Rendering.Shaders;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using SlimTK;
@@ -100,7 +101,7 @@ namespace Everlook.Viewport.Rendering
 
 		private int VertexBufferID;
 
-		private int SimpleShaderID;
+		private GameModelShader Shader;
 
 		/// <summary>
 		/// Returns a value which represents whether or not the current renderable has been initialized.
@@ -117,14 +118,7 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Initialize()
 		{
-			if (this.Cache.HasCachedShader(EverlookShader.UnlitGameModel))
-			{
-				this.SimpleShaderID = this.Cache.GetCachedShader(EverlookShader.UnlitGameModel);
-			}
-			else
-			{
-				this.SimpleShaderID = this.Cache.CreateCachedShader(EverlookShader.UnlitGameModel);
-			}
+			this.Shader = this.Cache.GetShader(EverlookShader.GameModel) as GameModelShader;
 
 			this.VertexBufferID = GL.GenBuffer();
 
@@ -174,7 +168,7 @@ namespace Everlook.Viewport.Rendering
 
 			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
-			GL.UseProgram(this.SimpleShaderID);
+			this.Shader.Enable();
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, this.VertexBufferID);
 			GL.EnableVertexAttribArray(0);

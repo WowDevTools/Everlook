@@ -1,5 +1,5 @@
 ﻿//
-//  RenderCache.cs
+//  EverlookShader.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -37,12 +37,12 @@ namespace Everlook.Viewport.Rendering.Core
 		/// A shader capable of rendering a group inside a World Model. This shader does not support
 		/// any animation.
 		/// </summary>
-		UnlitWorldModel,
+		WorldModel,
 
 		/// <summary>
 		/// A shader capable of rendering a simple game model. This shader does not support any animation.
 		/// </summary>
-		UnlitGameModel,
+		GameModel,
 
 		/// <summary>
 		/// A shader capable of rendering an animated model.
