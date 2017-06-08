@@ -18,10 +18,12 @@ namespace Everlook.Viewport.Rendering.Shaders
 			GL.Uniform4(channelMaskVariableHandle, channelMask);
 		}
 
-		public void SetTexture(int nativeTextureHandle)
+		public void SetTexture(Texture2D texture)
 		{
 			GL.ActiveTexture(TextureUnit.Texture0);
-			GL.BindTexture(TextureTarget.Texture2D, nativeTextureHandle);
+
+			texture.Bind();
+
 			int textureVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, TextureIdentifier);
 			int textureUnit = 0;
 			GL.Uniform1(textureVariableHandle, 1, ref textureUnit);

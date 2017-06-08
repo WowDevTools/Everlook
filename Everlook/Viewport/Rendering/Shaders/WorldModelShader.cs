@@ -14,15 +14,15 @@ namespace Everlook.Viewport.Rendering.Shaders
 
 		/// <summary>
 		/// Binds a texture to a sampler in the shader
-		/// TODO: Wrap textures in class, refactor or remove this
+		/// TODO: Refactor or remove this
 		/// </summary>
 		/// <param name="textureUnit"></param>
 		/// <param name="uniform"></param>
-		/// <param name="nativeTextureID"></param>
-		public void BindTexture2D(TextureUnit textureUnit, TextureUniform uniform, int nativeTextureID)
+		/// <param name="texture"></param>
+		public void BindTexture2D(TextureUnit textureUnit, TextureUniform uniform, Texture2D texture)
 		{
 			GL.ActiveTexture(textureUnit);
-			GL.BindTexture(TextureTarget.Texture2D, nativeTextureID);
+			texture.Bind();
 
 			int textureVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniform.ToString());
 			GL.Uniform1(textureVariableHandle, (int)uniform);

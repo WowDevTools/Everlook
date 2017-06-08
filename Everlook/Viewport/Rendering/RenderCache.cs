@@ -22,17 +22,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Reflection;
 using Everlook.Utility;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders;
 using log4net;
-using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Warcraft.BLP;
-using Warcraft.Core.Structures;
 using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 using SysPixelFormat = System.Drawing.Imaging.PixelFormat;
 
@@ -54,17 +49,17 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// The cache dictionary that maps active OpenGL textures on the GPU.
 		/// </summary>
-		private readonly Dictionary<string, int> GLTextureCache = new Dictionary<string, int>();
+		private readonly Dictionary<string, Texture2D> TextureCache = new Dictionary<string, Texture2D>();
 
 		/// <summary>
 		/// The cache dictionary that maps active OpenGL shaders on the GPU.
 		/// </summary>
-		private readonly Dictionary<EverlookShader, ShaderProgram> GLShaderCache = new Dictionary<EverlookShader, ShaderProgram>();
+		private readonly Dictionary<EverlookShader, ShaderProgram> ShaderCache = new Dictionary<EverlookShader, ShaderProgram>();
 
 		/// <summary>
 		/// The native ID of a fallback texture.
 		/// </summary>
-		public readonly int FallbackTexture;
+		public readonly Texture2D FallbackTexture = new Texture2D(ResourceManager.GetFallbackImage());
 
 		/// <summary>
 		/// A singleton instance of the rendering cache.
@@ -73,7 +68,6 @@ namespace Everlook.Viewport.Rendering
 
 		private RenderCache()
 		{
-			this.FallbackTexture = CreateFallbackTexture();
 		}
 
 		/// <summary>
@@ -91,29 +85,6 @@ namespace Everlook.Viewport.Rendering
 			return CreateCachedShader(shader);
 		}
 
-
-		/// <summary>
-		/// Loads and creates a fallback texture which is used if a texture fails to load.
-		/// </summary>
-		private static int CreateFallbackTexture()
-		{
-			// Load the fallback texture
-			Assembly executingAssembly = Assembly.GetExecutingAssembly();
-			const string fallbackTextureName = "Everlook.Content.Textures.FallbackTexture";
-
-			using (Stream imageStream =
-				executingAssembly.GetManifestResourceStream(fallbackTextureName))
-			{
-				if (imageStream == null)
-				{
-					return -1;
-				}
-
-				Bitmap fallbackBitmap = new Bitmap(imageStream);
-				return CreateTexture(fallbackBitmap);
-			}
-		}
-
 		/// <summary>
 		/// Determines whether or not the rendering cache has a cached texture id
 		/// for the specified texture file path.
@@ -125,29 +96,29 @@ namespace Everlook.Viewport.Rendering
 				throw new ArgumentNullException(nameof(texturePath));
 			}
 
-			return this.GLTextureCache.ContainsKey(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant());
+			return this.TextureCache.ContainsKey(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant());
 		}
 
 		/// <summary>
 		/// Determines whether or not the rendering cache has a cached shader
 		/// for the specified shader type.
 		/// </summary>
-		public bool HasCachedShader(EverlookShader shader)
+		private bool HasCachedShader(EverlookShader shader)
 		{
 			if (!Enum.IsDefined(typeof(EverlookShader), shader))
 			{
 				throw new ArgumentException("An unknown shader was passed to the rendering cache.", nameof(shader));
 			}
 
-			return this.GLShaderCache.ContainsKey(shader);
+			return this.ShaderCache.ContainsKey(shader);
 		}
 
 		/// <summary>
 		/// Gets a cached texture ID from the rendering cache.
 		/// </summary>
-		public int GetCachedTexture(string texturePath)
+		public Texture2D GetCachedTexture(string texturePath)
 		{
-			return this.GLTextureCache[texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant()];
+			return this.TextureCache[texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant()];
 		}
 
 		/// <summary>
@@ -155,107 +126,38 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		private ShaderProgram GetCachedShader(EverlookShader shader)
 		{
-			return this.GLShaderCache[shader];
+			return this.ShaderCache[shader];
 		}
 
 		/// <summary>
 		/// Creates a cached texture for the specifed texture, using the specified path
 		/// as a lookup key.
 		/// </summary>
-		public int CreateCachedTexture(BLP texture, string texturePath, TextureWrapMode textureWrapMode = TextureWrapMode.Repeat)
+		public Texture2D CreateCachedTexture(BLP imageData, string texturePath, TextureWrapMode wrappingMode = TextureWrapMode.Repeat)
 		{
-			if (texture == null)
-			{
-				throw new ArgumentNullException(nameof(texture));
-			}
+			Texture2D texture = new Texture2D(imageData, wrappingMode);
 
-			int textureID = GL.GenTexture();
-			if (texture.GetCompressionType() == TextureCompressionType.DXTC)
-			{
-				try
-				{
-					LoadDXTTexture(textureID, texture);
-				}
-				catch (GraphicsErrorException gex)
-				{
-					Log.Warn($"GraphicsErrorException in CreateCachedTexture (failed to create DXT texture): {gex.Message}\n" +
-					          "The texture will be loaded as a bitmap instead.");
-				}
-				finally
-				{
-					// Load a fallback bitmap instead
-					using (Bitmap mipZero = texture.GetMipMap(0))
-					{
-						LoadBitmapTexture(textureID, mipZero);
-					}
-				}
-			}
-			else
-			{
-				using (Bitmap mipZero = texture.GetMipMap(0))
-				{
-					LoadBitmapTexture(textureID, mipZero);
-				}
-			}
-
-			// Use linear mipmapped filtering
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
-
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)textureWrapMode);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)textureWrapMode);
-
-			int maximalMipLevel = texture.GetMipMapCount() == 0 ? 0 : texture.GetMipMapCount() - 1;
-			GL.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMaxLevel, ref maximalMipLevel);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureBaseLevel, 0);
-
-			this.GLTextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), textureID);
-			return textureID;
+			this.TextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), texture);
+			return texture;
 		}
 
 		/// <summary>
 		/// Creates a cached texture for the specifed texture, using the specified path
 		/// as a lookup key.
 		/// </summary>
-		public int CreateCachedTexture(Bitmap texture, string texturePath)
+		public Texture2D CreateCachedTexture(Bitmap imageData, string texturePath)
 		{
-			if (texture == null)
-			{
-				throw new ArgumentNullException(nameof(texture));
-			}
+			Texture2D texture = new Texture2D(imageData);
 
-			int textureID = CreateTexture(texture);
-
-			this.GLTextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), textureID);
-			return textureID;
-		}
-
-		/// <summary>
-		/// Creates a native OpenGL texture object from the given Bitmap.
-		/// </summary>
-		/// <param name="texture">The bitmap to create a texture from.</param>
-		/// <returns>A native OpenGL texture ID.</returns>
-		private static int CreateTexture(Bitmap texture)
-		{
-			int textureID = GL.GenTexture();
-			GL.BindTexture(TextureTarget.Texture2D, textureID);
-			LoadBitmapTexture(textureID, texture);
-
-			// Use linear mipmapped filtering
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int) TextureMagFilter.Linear);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
-				(int) TextureMinFilter.LinearMipmapLinear);
-
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int) TextureWrapMode.ClampToEdge);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int) TextureWrapMode.ClampToEdge);
-			return textureID;
+			this.TextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), texture);
+			return texture;
 		}
 
 		/// <summary>
 		/// Creates a cached shader for the specifed shader, using the specified shader enumeration
 		/// as a lookup key.
 		/// </summary>
-		public ShaderProgram CreateCachedShader(EverlookShader shader)
+		private ShaderProgram CreateCachedShader(EverlookShader shader)
 		{
 			if (!Enum.IsDefined(typeof(EverlookShader), shader))
 			{
@@ -264,19 +166,23 @@ namespace Everlook.Viewport.Rendering
 
 			Log.Info($"Creating cached shader for \"{shader}\"");
 
+			ShaderProgram shaderProgram;
 			switch (shader)
 			{
 				case EverlookShader.Plain2D:
 				{
-					return new Plain2DShader();
+					shaderProgram = new Plain2DShader();
+					break;
 				}
 				case EverlookShader.WorldModel:
 				{
-					return new WorldModelShader();
+					shaderProgram = new WorldModelShader();
+					break;
 				}
 				case EverlookShader.BoundingBox:
 				{
-					return new BoundingBoxShader();
+					shaderProgram = new BoundingBoxShader();
+					break;
 				}
 				case EverlookShader.GameModel:
 				case EverlookShader.Model:
@@ -286,87 +192,9 @@ namespace Everlook.Viewport.Rendering
 					throw new ArgumentOutOfRangeException(nameof(shader), "No implemented shader class for this shader.");
 				}
 			}
-		}
 
-		/// <summary>
-		/// Loads the specified compressed image (in <see cref="BLP"/> format) into a native OpenGL texture.
-		/// </summary>
-		/// <param name="textureID">The ID of the texture to load the image into.</param>
-		/// <param name="compressedImage">The compressed image to load.</param>
-		/// <exception cref="ArgumentException">
-		/// Thrown if the image format does not match the pixel format.
-		/// </exception>
-		/// <exception cref="ArgumentNullException">
-		/// Thrown if the input image is null.
-		/// </exception>
-		private static void LoadDXTTexture(int textureID, BLP compressedImage)
-		{
-			if (compressedImage == null)
-			{
-				throw new ArgumentNullException(nameof(compressedImage));
-			}
-
-			GL.BindTexture(TextureTarget.Texture2D, textureID);
-
-			// Load the set of raw compressed mipmaps
-			for (uint i = 0; i < compressedImage.GetMipMapCount(); ++i)
-			{
-				byte[] compressedMipMap = compressedImage.GetRawMipMap(i);
-				Resolution mipResolution = compressedImage.GetMipLevelResolution(i);
-
-				PixelInternalFormat compressionFormat;
-				switch (compressedImage.GetPixelFormat())
-				{
-					case BLPPixelFormat.DXT1:
-					{
-						compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt1Ext;
-						break;
-					}
-					case BLPPixelFormat.DXT3:
-					{
-						compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt3Ext;
-						break;
-					}
-					case BLPPixelFormat.DXT5:
-					{
-						compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt5Ext;
-						break;
-					}
-					default:
-					{
-						throw new ArgumentException($"Image format (DXTC) did not match pixel format: {compressedImage.GetPixelFormat()}", nameof(Image));
-					}
-				}
-
-				// Load the mipmap into the texture
-				GL.CompressedTexImage2D(TextureTarget.Texture2D, (int)i,
-					compressionFormat,
-					(int)mipResolution.X,
-					(int)mipResolution.Y,
-					0,
-					compressedMipMap.Length,
-					compressedMipMap);
-			}
-		}
-
-		/// <summary>
-		/// Loads the specified bitmap texture into a native OpenGL texure. This will also generate mipmaps for the
-		/// texture.
-		/// </summary>
-		/// <param name="textureID">The ID of the texture to load the image into.</param>
-		/// <param name="texture">The texture bitmap to load.</param>
-		private static void LoadBitmapTexture(int textureID, Bitmap texture)
-		{
-			GL.BindTexture(TextureTarget.Texture2D, textureID);
-
-			// Extract raw RGB data from the largest bitmap
-			BitmapData pixels = texture.LockBits(new Rectangle(0, 0, texture.Width, texture.Height),
-			ImageLockMode.ReadOnly, SysPixelFormat.Format32bppArgb);
-
-			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, pixels.Width, pixels.Height, 0, GLPixelFormat.Bgra, PixelType.UnsignedByte, pixels.Scan0);
-			GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-
-			texture.UnlockBits(pixels);
+			this.ShaderCache.Add(shader, shaderProgram);
+			return shaderProgram;
 		}
 
 		/// <summary>
@@ -374,12 +202,12 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Dispose()
 		{
-			foreach (KeyValuePair<string, int> cachedTexture in this.GLTextureCache)
+			foreach (KeyValuePair<string, Texture2D> cachedTexture in this.TextureCache)
 			{
-				GL.DeleteTexture(cachedTexture.Value);
+				cachedTexture.Value?.Dispose();
 			}
 
-			foreach (KeyValuePair<EverlookShader, ShaderProgram> cachedShader in this.GLShaderCache)
+			foreach (KeyValuePair<EverlookShader, ShaderProgram> cachedShader in this.ShaderCache)
 			{
 				cachedShader.Value?.Dispose();
 			}

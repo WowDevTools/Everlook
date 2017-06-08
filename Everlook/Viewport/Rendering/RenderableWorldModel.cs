@@ -120,9 +120,9 @@ namespace Everlook.Viewport.Rendering
 		private readonly ClientDatabaseProvider DatabaseProvider;
 
 		/// <summary>
-		/// Dictionary that maps texture paths to OpenGL texture IDs.
+		/// Dictionary that maps texture paths to OpenGL textures.
 		/// </summary>
-		private readonly Dictionary<string, int> TextureLookup = new Dictionary<string, int>();
+		private readonly Dictionary<string, Texture2D> TextureLookup = new Dictionary<string, Texture2D>();
 
 		// Actual model data
 		private readonly Dictionary<ModelGroup, int> VertexBufferLookup = new Dictionary<ModelGroup, int>();
@@ -446,8 +446,8 @@ namespace Everlook.Viewport.Rendering
 				this.Shader.SetMVPMatrix(modelViewProjection);
 
 				// Set the texture as the first diffuse texture in unit 0
-				int textureID = this.Cache.GetCachedTexture(modelMaterial.Texture0);
-				this.Shader.BindTexture2D(TextureUnit.Texture0, TextureUniform.Diffuse0, textureID);
+				Texture2D texture = this.Cache.GetCachedTexture(modelMaterial.Texture0);
+				this.Shader.BindTexture2D(TextureUnit.Texture0, TextureUniform.Diffuse0, texture);
 
 				// Finally, draw the model
 				GL.DrawRangeElements(PrimitiveType.Triangles, renderBatch.FirstPolygonIndex,

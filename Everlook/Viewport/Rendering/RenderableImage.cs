@@ -52,7 +52,7 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// The native OpenGL ID for the image on the GPU.
 		/// </summary>
-		protected int GLTextureID;
+		protected Texture2D Texture;
 
 		/// <summary>
 		/// The native OpenGL ID for the unlit 2D shader.
@@ -122,7 +122,7 @@ namespace Everlook.Viewport.Rendering
 			this.UVBufferID = GenerateTextureCoordinates();
 
 			// Use cached textures whenever possible
-			this.GLTextureID = LoadCachedTexture();
+			this.Texture = LoadTexture();
 
 			// Use cached shaders whenever possible
 			this.Shader = this.Cache.GetShader(EverlookShader.Plain2D) as Plain2DShader;
@@ -142,7 +142,7 @@ namespace Everlook.Viewport.Rendering
 		/// was constructed with as a key.
 		/// </summary>
 		/// <returns></returns>
-		protected abstract int LoadCachedTexture();
+		protected abstract Texture2D LoadTexture();
 
 		/// <summary>
 		/// Renders the current object in the current OpenGL context.
@@ -183,7 +183,7 @@ namespace Everlook.Viewport.Rendering
 			this.Shader.SetChannelMask(this.ChannelMask);
 
 			// Set the texture ID as a uniform sampler in unit 0
-			this.Shader.SetTexture(this.GLTextureID);
+			this.Shader.SetTexture(this.Texture);
 
 			// Set the model view matrix
 			Matrix4 modelViewProjection = this.ImageTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
@@ -213,8 +213,8 @@ namespace Everlook.Viewport.Rendering
 		protected int GenerateVertices()
 		{
 			// Generate vertex positions
-			uint halfWidth = (uint) (GetResolution().X / 2);
-			uint halfHeight = (uint) (GetResolution().Y / 2);
+			uint halfWidth = (GetResolution().X / 2);
+			uint halfHeight = (GetResolution().Y / 2);
 
 			List<float> vertexPositions = new List<float>
 			{

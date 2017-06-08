@@ -614,17 +614,33 @@ namespace Everlook.UI
 
 			try
 			{
-				T item = await Task.Run(() => referenceLoadingRoutine(fileReference), ct);
-				IRenderable renderable = await Task.Factory.StartNew(() => createRenderableDelegate(item, fileReference, gamePage.Version),
+				T item = await Task.Run
+				(
+					() => referenceLoadingRoutine(fileReference),
+					ct
+				);
+
+				IRenderable renderable = await Task.Factory.StartNew
+				(
+					() => createRenderableDelegate(item, fileReference, gamePage.Version),
 					ct,
 					TaskCreationOptions.None,
-					this.UiThreadScheduler);
+					this.UiThreadScheduler
+				);
 
 				if (renderable != null)
 				{
 					ct.ThrowIfCancellationRequested();
 
-					this.RenderingEngine.SetRenderTarget(renderable);
+					// Replace the renderable on the UI thread
+					await Task.Factory.StartNew
+					(
+						() => this.RenderingEngine.SetRenderTarget(renderable),
+						ct,
+						TaskCreationOptions.None,
+						this.UiThreadScheduler
+					);
+
 					EnableControlPage(associatedControlPage);
 				}
 			}

@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System.Drawing;
+using Everlook.Viewport.Rendering.Core;
 using Warcraft.Core.Structures;
 
 namespace Everlook.Viewport.Rendering
@@ -57,7 +58,7 @@ namespace Everlook.Viewport.Rendering
 		/// was constructed with as a key.
 		/// </summary>
 		/// <returns></returns>
-		protected override int LoadCachedTexture()
+		protected override Texture2D LoadTexture()
 		{
 			if (this.Cache.HasCachedTextureForPath(this.TexturePath))
 			{

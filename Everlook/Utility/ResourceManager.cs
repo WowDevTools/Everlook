@@ -20,11 +20,15 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 
 namespace Everlook.Utility
 {
+	/// <summary>
+	/// Manages embedded resources in the application.
+	/// </summary>
 	public static class ResourceManager
 	{
 		/// <summary>
@@ -50,6 +54,28 @@ namespace Everlook.Utility
 			}
 
 			return resourceString;
+		}
+
+		/// <summary>
+		/// Gets a fallback image which can be used for textures that fail to load.
+		/// </summary>
+		/// <returns></returns>
+		public static Bitmap GetFallbackImage()
+		{
+			// Load the fallback texture
+			Assembly executingAssembly = Assembly.GetExecutingAssembly();
+			const string fallbackTextureName = "Everlook.Content.Textures.FallbackTexture.png";
+
+			using (Stream imageStream =
+				executingAssembly.GetManifestResourceStream(fallbackTextureName))
+			{
+				if (imageStream == null)
+				{
+					return null;
+				}
+
+				return new Bitmap(imageStream);
+			}
 		}
 	}
 }

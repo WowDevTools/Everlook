@@ -37,14 +37,14 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="INIFileParser, Version=2.3.0.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c">
-      <HintPath>$(SolutionDir)\packages\ini-parser.2.3.0\lib\net20\INIFileParser.dll</HintPath>
+    <Reference Include="INIFileParser, Version=2.4.0.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c">
+      <HintPath>..\packages\ini-parser.2.4.0\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.7.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a">
-      <HintPath>$(SolutionDir)\packages\log4net.2.0.7\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="MP3Sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\MP3Sharp.1.0.0\lib\net45\MP3Sharp.dll</HintPath>
+      <HintPath>..\packages\MP3Sharp.1.0.2\lib\net45\MP3Sharp.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK, Version=3.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
       <HintPath>..\packages\OpenTK.3.0.0-pre\lib\net20\OpenTK.dll</HintPath>
@@ -135,6 +135,7 @@
     <Compile Include="Viewport\Rendering\Core\EverlookShader.cs" />
     <Compile Include="Viewport\Rendering\Core\ShaderProgram.cs" />
     <Compile Include="Viewport\Rendering\Core\Plane.cs" />
+    <Compile Include="Viewport\Rendering\Core\Texture2D.cs" />
     <Compile Include="Viewport\Rendering\Core\TextureUniform.cs" />
     <Compile Include="Viewport\Rendering\Core\Transform.cs" />
     <Compile Include="Viewport\Rendering\Interfaces\IActor.cs" />
