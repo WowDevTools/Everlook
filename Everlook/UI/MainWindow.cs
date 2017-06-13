@@ -244,6 +244,15 @@ namespace Everlook.UI
 					mdx.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
 				}
 			};
+
+			this.RenderWireframeCheckButton.Toggled += (sender, args) =>
+			{
+				RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
+				if (wmo != null)
+				{
+					wmo.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
+				}
+			};
 		}
 
 		/// <summary>
@@ -503,11 +512,12 @@ namespace Everlook.UI
 					case ControlPage.Model:
 					{
 						this.RenderBoundsCheckButton.Sensitive = true;
-
+						this.RenderWireframeCheckButton.Sensitive = true;
 						RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
 						if (wmo != null)
 						{
 							wmo.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
+							wmo.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
 						}
 
 						RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
@@ -551,6 +561,7 @@ namespace Everlook.UI
 					case ControlPage.Model:
 					{
 						this.RenderBoundsCheckButton.Sensitive = false;
+						this.RenderWireframeCheckButton.Sensitive = false;
 						break;
 					}
 					case ControlPage.Animation:

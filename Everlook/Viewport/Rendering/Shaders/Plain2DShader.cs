@@ -14,12 +14,16 @@ namespace Everlook.Viewport.Rendering.Shaders
 
 		public void SetChannelMask(Vector4 channelMask)
 		{
+			Enable();
+
 			int channelMaskVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, ChannelMaskIdentifier);
 			GL.Uniform4(channelMaskVariableHandle, channelMask);
 		}
 
 		public void SetTexture(Texture2D texture)
 		{
+			Enable();
+
 			GL.ActiveTexture(TextureUnit.Texture0);
 
 			texture.Bind();
@@ -31,5 +35,6 @@ namespace Everlook.Viewport.Rendering.Shaders
 
 		protected override string VertexShaderResourceName => "Plain2D.Plain2DVertex";
 		protected override string FragmentShaderResourceName => "Plain2D.Plain2DFragment";
+		protected override string GeometryShaderResourceName => null;
 	}
 }

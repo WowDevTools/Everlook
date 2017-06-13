@@ -33,9 +33,42 @@ namespace Everlook.Viewport.Camera
 	public class ViewportCamera
 	{
 		/// <summary>
+		/// The projection type of the camera.
+		/// </summary>
+		public ProjectionType Projection
+		{
+			get => this.ProjectionInternal;
+			set
+			{
+				this.ProjectionInternal = value;
+				RecalculateInternals();
+			}
+		}
+		private ProjectionType ProjectionInternal;
+
+		/// <summary>
+		/// The width of the camera viewport in pixels.
+		/// </summary>
+		public int ViewportWidth { get; set; }
+
+		/// <summary>
+		/// The height of the camera viewport in pixels.
+		/// </summary>
+		public int ViewportHeight { get; set; }
+
+		/// <summary>
 		/// The current position of the observer in world space.
 		/// </summary>
-		public Vector3 Position;
+		public Vector3 Position
+		{
+			get => this.PositionInternal;
+			set
+			{
+				this.PositionInternal = value;
+				RecalculateInternals();
+			}
+		}
+		private Vector3 PositionInternal;
 
 		/// <summary>
 		/// A vector pointing in the direction the observer is currently looking.
@@ -71,18 +104,14 @@ namespace Everlook.Viewport.Camera
 		/// </summary>
 		public float HorizontalViewAngle
 		{
-			get
-			{
-				return this.horizontalViewAngle;
-			}
+			get => this.HorizontalViewAngleInternal;
 			set
 			{
-				this.horizontalViewAngle = value;
-				RecalculateVectors();
+				this.HorizontalViewAngleInternal = value;
+				RecalculateInternals();
 			}
 		}
-
-		private float horizontalViewAngle;
+		private float HorizontalViewAngleInternal;
 
 		/// <summary>
 		/// The current vertical view angle of the observer. This angle is
@@ -90,18 +119,14 @@ namespace Everlook.Viewport.Camera
 		/// </summary>
 		public float VerticalViewAngle
 		{
-			get
-			{
-				return this.verticalViewAngle;
-			}
+			get => this.VerticalViewAngleInternal;
 			set
 			{
-				this.verticalViewAngle = value;
-				RecalculateVectors();
+				this.VerticalViewAngleInternal = value;
+				RecalculateInternals();
 			}
 		}
-
-		private float verticalViewAngle;
+		private float VerticalViewAngleInternal;
 
 		/// <summary>
 		/// The bounding frustum of the camera.
@@ -151,7 +176,11 @@ namespace Everlook.Viewport.Camera
 		{
 			this.HorizontalViewAngle = MathHelper.DegreesToRadians(180.0f);
 			this.VerticalViewAngle = MathHelper.DegreesToRadians(0.0f);
+		}
 
+		private void RecalculateInternals()
+		{
+			// Recalculate the directional vectors
 			this.LookDirectionVector = new Vector3(
 				(float) (Math.Cos(this.VerticalViewAngle) * Math.Sin(this.HorizontalViewAngle)),
 				(float) Math.Sin(this.VerticalViewAngle),
@@ -163,57 +192,35 @@ namespace Everlook.Viewport.Camera
 				(float) Math.Cos(this.HorizontalViewAngle - MathHelper.PiOver2));
 
 			this.UpVector = Vector3.Cross(this.RightVector, this.LookDirectionVector);
-		}
 
-		private void RecalculateVectors()
-		{
-			// Compute the look direction
-			this.LookDirectionVector = new Vector3(
-				(float) (Math.Cos(this.VerticalViewAngle) * Math.Sin(this.HorizontalViewAngle)),
-				(float) Math.Sin(this.VerticalViewAngle),
-				(float) (Math.Cos(this.VerticalViewAngle) * Math.Cos(this.HorizontalViewAngle)));
+			// Recalculates the bounding frustum
+			Matrix4 modelMatrix = Matrix4.CreateTranslation(this.Position);
+			Matrix4 viewMatrix = GetViewMatrix();
+			Matrix4 projectionMatrix = GetProjectionMatrix();
 
-			this.RightVector = new Vector3(
-				(float) Math.Sin(this.HorizontalViewAngle - MathHelper.PiOver2),
-				0,
-				(float) Math.Cos(this.HorizontalViewAngle - MathHelper.PiOver2));
-
-			this.UpVector = Vector3.Cross(this.RightVector, this.LookDirectionVector);
-		}
-
-		/// <summary>
-		/// Recalculates the bounding frustum of the camera.
-		/// </summary>
-		/// <param name="projectionMatrix">The matrix to recalulcate from.</param>
-		public void RecalculateFrustum(Matrix4 projectionMatrix)
-		{
-			Matrix4 tempMatrix = projectionMatrix;
-			this.Frustum.Matrix = tempMatrix;
+			this.Frustum.Matrix = modelMatrix * viewMatrix * projectionMatrix;
 		}
 
 		/// <summary>
 		/// Gets the calculated projection matrix for this camera, using the values contained inside it.
 		/// </summary>
-		/// <param name="projectionType">The type of project to calculate for.</param>
-		/// <param name="viewportWidth">The current width of the viewport.</param>
-		/// <param name="viewportHeight">The current height of the viewport.</param>
 		/// <returns>A <see cref="Matrix4"/> projection matrix.</returns>
-		public Matrix4 GetProjectionMatrix(ProjectionType projectionType, int viewportWidth, int viewportHeight)
+		public Matrix4 GetProjectionMatrix()
 		{
-			Matrix4 projection;
-			if (projectionType == ProjectionType.Orthographic)
+			Matrix4 projectionMatrix;
+			if (this.Projection == ProjectionType.Orthographic)
 			{
-				projection = Matrix4.CreateOrthographic(viewportWidth, viewportHeight,
+				projectionMatrix = Matrix4.CreateOrthographic(this.ViewportWidth, this.ViewportHeight,
 					DefaultNearClippingDistance, DefaultFarClippingDistance);
 			}
 			else
 			{
-				float aspectRatio = (float) viewportWidth / (float) viewportHeight;
-				projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(DefaultFieldOfView), aspectRatio,
+				float aspectRatio = (float) this.ViewportWidth / (float) this.ViewportHeight;
+				projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(DefaultFieldOfView), aspectRatio,
 					DefaultNearClippingDistance, DefaultFarClippingDistance);
 			}
 
-			return projection;
+			return projectionMatrix;
 		}
 
 		/// <summary>
@@ -227,7 +234,27 @@ namespace Everlook.Viewport.Camera
 		}
 
 		/// <summary>
-		/// Determines whether or not the camera can see the provided bounding box (that is, it is within
+		/// Gets the NDC to screen transformation matrix.
+		/// </summary>
+		/// <returns></returns>
+		public Matrix4 GetViewportMatrix()
+		{
+			float wOver2 = this.ViewportWidth / 2.0f;
+			float hOver2 = this.ViewportHeight / 2.0f;
+			const float farSubNearOver2 = (DefaultFarClippingDistance - DefaultNearClippingDistance) / 2.0f;
+			const float farPlusNearOver2 = (DefaultFarClippingDistance + DefaultNearClippingDistance) / 2.0f;
+
+			return new Matrix4
+			(
+				wOver2, 0,		0, 				 wOver2,
+				0,		hOver2, 0, 				 hOver2,
+				0,		0,		farSubNearOver2, farPlusNearOver2,
+				0,		0,		0, 				 1
+			);
+		}
+
+		/// <summary>
+		/// Determines whether or not the camera can see the provided bounding box (that is, it is within or intersects
 		/// the view frustum).
 		/// </summary>
 		/// <param name="groupBoundingBox">The box to check.</param>

@@ -9,5 +9,6 @@ namespace Everlook.Viewport.Rendering.Shaders
 	{
 		protected override string VertexShaderResourceName => "GameModel.GameModelVertex";
 		protected override string FragmentShaderResourceName => "GameModel.GameModelFragment";
+		protected override string GeometryShaderResourceName => null;
 	}
 }

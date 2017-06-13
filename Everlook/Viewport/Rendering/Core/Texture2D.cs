@@ -33,6 +33,9 @@ using SysPixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Everlook.Viewport.Rendering.Core
 {
+	/// <summary>
+	/// Wraps functionality around an OpenGL texture.
+	/// </summary>
 	public class Texture2D : IDisposable
 	{
 		/// <summary>
@@ -40,6 +43,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// </summary>
 		private static readonly ILog Log = LogManager.GetLogger(typeof(Texture2D));
 
+		private readonly object TextureLock = new object();
 		private int NativeTextureID;
 
 		/// <summary>
@@ -94,7 +98,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <summary>
 		/// Initializes a new <see cref="Texture2D"/> object.
 		/// </summary>
-		protected Texture2D()
+		private Texture2D()
 		{
 			this.NativeTextureID = GL.GenTexture();
 		}
@@ -168,13 +172,24 @@ namespace Everlook.Viewport.Rendering.Core
 		}
 
 		/// <summary>
+		/// Destructs a texture.
+		/// </summary>
+		~Texture2D()
+		{
+			Dispose();
+		}
+
+		/// <summary>
 		/// Sets the filter used when magnifying the texture.
 		/// </summary>
 		/// <returns></returns>
 		private void SetMagnificationFilter(TextureMagFilter magFilter)
 		{
-			Bind();
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)magFilter);
+			lock (this.TextureLock)
+			{
+				Bind();
+				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)magFilter);
+			}
 		}
 
 		/// <summary>
@@ -183,8 +198,11 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <returns></returns>
 		private void SetMiniaturizationFilter(TextureMinFilter minFilter)
 		{
-			Bind();
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)minFilter);
+			lock (this.TextureLock)
+			{
+				Bind();
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)minFilter);
+			}
 		}
 
 		/// <summary>
@@ -193,10 +211,12 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <returns></returns>
 		private TextureMagFilter GetMagnificationFilter()
 		{
-			Bind();
-			GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureMagFilter, out int magFilter);
-
-			return (TextureMagFilter)magFilter;
+			lock (this.TextureLock)
+			{
+				Bind();
+                GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureMagFilter, out int magFilter);
+				return (TextureMagFilter)magFilter;
+			}
 		}
 
 		/// <summary>
@@ -205,10 +225,12 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <returns></returns>
 		private TextureMinFilter GetMiniaturizationFilter()
 		{
-			Bind();
-			GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureMinFilter, out int minFilter);
-
-			return (TextureMinFilter)minFilter;
+			lock (this.TextureLock)
+			{
+				Bind();
+                GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureMinFilter, out int minFilter);
+                return (TextureMinFilter)minFilter;
+			}
 		}
 
 		/// <summary>
@@ -218,9 +240,12 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <param name="wrapModeT"></param>
 		private void SetWrappingMode(TextureWrapMode wrapModeS, TextureWrapMode wrapModeT)
 		{
-			Bind();
-			SetWrappingModeS(wrapModeS);
-			SetWrappingModeT(wrapModeT);
+			lock (this.TextureLock)
+			{
+				Bind();
+                SetWrappingModeS(wrapModeS);
+                SetWrappingModeT(wrapModeT);
+			}
 		}
 
 		/// <summary>
@@ -229,8 +254,11 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <param name="wrapModeS"></param>
 		private void SetWrappingModeS(TextureWrapMode wrapModeS)
 		{
-			Bind();
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)wrapModeS);
+			lock (this.TextureLock)
+			{
+				Bind();
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)wrapModeS);
+			}
 		}
 
 		/// <summary>
@@ -239,8 +267,11 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <param name="wrapModeT"></param>
 		private void SetWrappingModeT(TextureWrapMode wrapModeT)
 		{
-			Bind();
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)wrapModeT);
+			lock (this.TextureLock)
+			{
+				Bind();
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)wrapModeT);
+			}
 		}
 
 		/// <summary>
@@ -249,10 +280,12 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <returns></returns>
 		private TextureWrapMode GetWrappingModeS()
 		{
-			Bind();
-			GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWrapS, out int wrapModeS);
-
-			return (TextureWrapMode) wrapModeS;
+			lock (this.TextureLock)
+			{
+				Bind();
+                GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWrapS, out int wrapModeS);
+                return (TextureWrapMode) wrapModeS;
+			}
 		}
 
 		/// <summary>
@@ -261,9 +294,12 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <returns></returns>
 		private TextureWrapMode GetWrappingModeT()
 		{
-			Bind();
-			GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWrapT, out int wrapModeT);
-			return (TextureWrapMode) wrapModeT;
+			lock (this.TextureLock)
+			{
+				Bind();
+                GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWrapT, out int wrapModeT);
+                return (TextureWrapMode) wrapModeT;
+			}
 		}
 
 		/// <summary>
@@ -273,46 +309,49 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <exception cref="ArgumentException"></exception>
 		private void CreateFromDXT(BLP inTextureData)
 		{
-			Bind();
-
-			for (uint i = 0; i < inTextureData.GetMipMapCount(); ++i)
+			lock (this.TextureLock)
 			{
-				byte[] compressedMipMap = inTextureData.GetRawMipMap(i);
-				Resolution mipResolution = inTextureData.GetMipLevelResolution(i);
+				Bind();
 
-				PixelInternalFormat compressionFormat;
-				switch (inTextureData.GetPixelFormat())
-				{
-					case BLPPixelFormat.DXT1:
-					{
-						compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt1Ext;
-						break;
-					}
-					case BLPPixelFormat.DXT3:
-					{
-						compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt3Ext;
-						break;
-					}
-					case BLPPixelFormat.DXT5:
-					{
-						compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt5Ext;
-						break;
-					}
-					default:
-					{
-						throw new ArgumentException($"Image format (DXTC) did not match pixel format: {inTextureData.GetPixelFormat()}",
-							nameof(Image));
-					}
-				}
+                for (uint i = 0; i < inTextureData.GetMipMapCount(); ++i)
+                {
+                    byte[] compressedMipMap = inTextureData.GetRawMipMap(i);
+                    Resolution mipResolution = inTextureData.GetMipLevelResolution(i);
 
-				// Load the mipmap into the texture
-				GL.CompressedTexImage2D(TextureTarget.Texture2D, (int)i,
-					compressionFormat,
-					(int)mipResolution.X,
-					(int)mipResolution.Y,
-					0,
-					compressedMipMap.Length,
-					compressedMipMap);
+                    PixelInternalFormat compressionFormat;
+                    switch (inTextureData.GetPixelFormat())
+                    {
+                        case BLPPixelFormat.DXT1:
+                        {
+                            compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt1Ext;
+                            break;
+                        }
+                        case BLPPixelFormat.DXT3:
+                        {
+                            compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt3Ext;
+                            break;
+                        }
+                        case BLPPixelFormat.DXT5:
+                        {
+                            compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt5Ext;
+                            break;
+                        }
+                        default:
+                        {
+                            throw new ArgumentException($"Image format (DXTC) did not match pixel format: {inTextureData.GetPixelFormat()}",
+                                nameof(Image));
+                        }
+                    }
+
+                    // Load the mipmap into the texture
+                    GL.CompressedTexImage2D(TextureTarget.Texture2D, (int)i,
+                        compressionFormat,
+                        (int)mipResolution.X,
+                        (int)mipResolution.Y,
+                        0,
+                        compressedMipMap.Length,
+                        compressedMipMap);
+                }
 			}
 		}
 
@@ -322,26 +361,29 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <param name="inTextureData"></param>
 		private void CreateFromBitmap(Bitmap inTextureData)
 		{
-			Bind();
+			lock (this.TextureLock)
+			{
+				Bind();
 
-			// Extract raw RGB data from the largest bitmap
-			BitmapData pixels = inTextureData.LockBits(new Rectangle(0, 0, inTextureData.Width, inTextureData.Height),
-				ImageLockMode.ReadOnly, SysPixelFormat.Format32bppArgb);
+                // Extract raw RGB data from the largest bitmap
+                BitmapData pixels = inTextureData.LockBits(new Rectangle(0, 0, inTextureData.Width, inTextureData.Height),
+                    ImageLockMode.ReadOnly, SysPixelFormat.Format32bppArgb);
 
-			GL.TexImage2D(
-				TextureTarget.Texture2D,
-				0, // level
-				PixelInternalFormat.Rgba,
-				pixels.Width,
-				pixels.Height,
-				0, // border
-				GLPixelFormat.Bgra,
-				PixelType.UnsignedByte,
-				pixels.Scan0);
+                GL.TexImage2D(
+                    TextureTarget.Texture2D,
+                    0, // level
+                    PixelInternalFormat.Rgba,
+                    pixels.Width,
+                    pixels.Height,
+                    0, // border
+                    GLPixelFormat.Bgra,
+                    PixelType.UnsignedByte,
+                    pixels.Scan0);
 
-			GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+                GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
-			inTextureData.UnlockBits(pixels);
+                inTextureData.UnlockBits(pixels);
+			}
 		}
 
 		/// <summary>
@@ -350,7 +392,10 @@ namespace Everlook.Viewport.Rendering.Core
 		/// </summary>
 		public void Bind()
 		{
-			GL.BindTexture(TextureTarget.Texture2D, this.NativeTextureID);
+			lock (this.TextureLock)
+			{
+				GL.BindTexture(TextureTarget.Texture2D, this.NativeTextureID);
+			}
 		}
 
 		/// <summary>
@@ -358,8 +403,11 @@ namespace Everlook.Viewport.Rendering.Core
 		/// </summary>
 		public void Dispose()
 		{
-			GL.DeleteTexture(this.NativeTextureID);
-			this.NativeTextureID = -1;
+			lock (this.TextureLock)
+			{
+				GL.DeleteTexture(this.NativeTextureID);
+            	this.NativeTextureID = -1;
+			}
 		}
 	}
 }

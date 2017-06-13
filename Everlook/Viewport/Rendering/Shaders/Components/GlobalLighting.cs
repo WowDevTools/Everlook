@@ -1,0 +1,71 @@
+//
+//  GlobalLighting.cs
+//
+//  Author:
+//       Jarl Gullberg <jarl.gullberg@gmail.com>
+//
+//  Copyright (c) 2016 Jarl Gullberg
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+
+using OpenTK;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
+
+namespace Everlook.Viewport.Rendering.Shaders.Components
+{
+	public class GlobalLighting
+	{
+		private const string LightVectorIdentifier = "LightVector";
+		private const string LightColourIdentifier = "LightColour";
+		private const string LightIntensityIdentifier = "LightIntensity";
+
+		private readonly int ParentShaderNativeID;
+
+		public GlobalLighting(int parentShaderID)
+		{
+			this.ParentShaderNativeID = parentShaderID;
+		}
+
+		private void EnableParent()
+		{
+			GL.UseProgram(this.ParentShaderNativeID);
+		}
+
+		public void SetLightColour(Color4 lightColour)
+		{
+			EnableParent();
+
+			int colourLoc = GL.GetUniformLocation(this.ParentShaderNativeID, LightColourIdentifier);
+			GL.Uniform4(colourLoc, lightColour);
+		}
+
+		public void SetLightDirection(Vector3 lightVector)
+		{
+			EnableParent();
+
+			int vectorLoc = GL.GetUniformLocation(this.ParentShaderNativeID, LightVectorIdentifier);
+			GL.Uniform3(vectorLoc, lightVector);
+		}
+
+		public void SetLightIntensity(float lightIntensity)
+		{
+			EnableParent();
+
+			int intensityLoc = GL.GetUniformLocation(this.ParentShaderNativeID, LightIntensityIdentifier);
+			GL.Uniform1(intensityLoc, lightIntensity);
+		}
+	}
+}

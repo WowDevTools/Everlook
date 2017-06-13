@@ -29,6 +29,7 @@ using Everlook.Package;
 using Everlook.Utility;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
+using Everlook.Viewport.Rendering.Core.Lights;
 using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
 using log4net;
@@ -145,7 +146,17 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public bool ShouldRenderBounds { get; set; }
 
+		/// <summary>
+		/// Gets or sets whether or not the wireframe of the object should be rendered.
+		/// </summary>
+		public bool ShouldRenderWireframe { get; set; }
+
 		private WorldModelShader Shader;
+
+		/// <summary>
+		/// The global light - effectively, a sun.
+		/// </summary>
+		private readonly DirectionalLight GlobalLighting;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableWorldModel"/> class.
@@ -164,6 +175,14 @@ namespace Everlook.Viewport.Rendering
 				new Vector3(1.0f, 1.0f, 1.0f)
 			);
 
+			this.GlobalLighting = new DirectionalLight
+			{
+				HorizontalAngle = 0.0f,
+				VerticalAngle = MathHelper.DegreesToRadians(-45.0f),
+				Intensity = 1.0f,
+				LightColour = new Color4(255, 188, 121, 255)
+			};
+
 			this.IsInitialized = false;
 
 			Initialize();
@@ -176,9 +195,29 @@ namespace Everlook.Viewport.Rendering
 		{
 			this.Shader = this.Cache.GetShader(EverlookShader.WorldModel) as WorldModelShader;
 
+			if (this.Shader == null)
+			{
+				throw new ShaderNullException(typeof(WorldModelShader));
+			}
+
+			this.Shader.Lighting.SetLightColour(this.GlobalLighting.LightColour);
+			this.Shader.Lighting.SetLightDirection(this.GlobalLighting.LightVector);
+			this.Shader.Lighting.SetLightIntensity(this.GlobalLighting.Intensity);
+
+			this.Shader.Wireframe.Enabled = true;
+
 			// TODO: Load and cache doodads in their respective sets
 
 			// TODO: Load and cache sound emitters
+
+			// Load the textures used in this model
+			foreach (string texture in this.Model.GetTextures())
+			{
+				if (!string.IsNullOrEmpty(texture))
+				{
+					CacheTexture(texture);
+				}
+			}
 
 			// TODO: Upload visible block vertices
 
@@ -317,7 +356,14 @@ namespace Everlook.Viewport.Rendering
 				return;
 			}
 
-			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
+			this.Shader.Wireframe.Enabled = this.ShouldRenderWireframe;
+			if (this.Shader.Wireframe.Enabled)
+			{
+				this.Shader.Wireframe.SetViewportMatrix(camera.GetViewportMatrix());
+			}
+
+			Matrix4 modelView = this.ActorTransform.GetModelMatrix() * viewMatrix;
+			Matrix4 modelViewProjection = modelView * projectionMatrix;
 
 			// TODO: Fix frustum culling
 			foreach (ModelGroup modelGroup in this.Model.Groups
@@ -328,7 +374,9 @@ namespace Everlook.Viewport.Rendering
 				if (this.ShouldRenderBounds)
 				{
 					// Now, draw the model's bounding box
-					BoundingBox groupBoundingBox = modelGroup.GetBoundingBox().ToOpenGLBoundingBox().Transform(ref modelViewProjection);
+
+					// Transform the bounding box into world space
+					BoundingBox groupBoundingBox = modelGroup.GetBoundingBox().ToOpenGLBoundingBox().Transform(ref modelView);
 					if (camera.CanSee(groupBoundingBox))
 					{
 						//continue;
@@ -404,49 +452,20 @@ namespace Everlook.Viewport.Rendering
 
 				ModelMaterial modelMaterial = this.Model.GetMaterial(renderBatch.MaterialIndex);
 
-				// TODO: Cheating before textures are properly wrapped
-				// Load the textures used in this material
-				if (!string.IsNullOrEmpty(modelMaterial.Texture0))
-				{
-					if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
-					{
-						CacheTexture(modelMaterial.Texture0, TextureWrapMode.ClampToBorder);
-					}
-					else
-					{
-						CacheTexture(modelMaterial.Texture0);
-					}
-				}
-
-				if (!string.IsNullOrEmpty(modelMaterial.Texture1))
-				{
-					if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
-					{
-						CacheTexture(modelMaterial.Texture1, TextureWrapMode.ClampToBorder);
-					}
-					else
-					{
-						CacheTexture(modelMaterial.Texture1);
-					}
-				}
-
-				if (!string.IsNullOrEmpty(modelMaterial.Texture2))
-				{
-					if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
-					{
-						CacheTexture(modelMaterial.Texture2, TextureWrapMode.ClampToBorder);
-					}
-					else
-					{
-						CacheTexture(modelMaterial.Texture2);
-					}
-				}
-
 				this.Shader.SetMaterial(modelMaterial);
 				this.Shader.SetMVPMatrix(modelViewProjection);
 
 				// Set the texture as the first diffuse texture in unit 0
 				Texture2D texture = this.Cache.GetCachedTexture(modelMaterial.Texture0);
+				if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
+				{
+					texture.WrappingMode = TextureWrapMode.Clamp;
+				}
+				else
+				{
+					texture.WrappingMode = TextureWrapMode.Repeat;
+				}
+
 				this.Shader.BindTexture2D(TextureUnit.Texture0, TextureUniform.Diffuse0, texture);
 
 				// Finally, draw the model

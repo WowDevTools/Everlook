@@ -24,7 +24,7 @@ using System;
 using System.Diagnostics;
 using Everlook.Configuration;
 using Everlook.Viewport.Camera;
-using Everlook.Viewport.Rendering;
+using Everlook.Viewport.Rendering.Core.Lights;
 using Everlook.Viewport.Rendering.Interfaces;
 using log4net;
 using OpenTK;
@@ -88,7 +88,7 @@ namespace Everlook.Viewport
 		private float DeltaTime;
 
 		/// <summary>
-		///
+		/// Gets or sets whether or not the viewer wants to move in the world.
 		/// </summary>
 		public bool WantsToMove { get; set; }
 
@@ -143,6 +143,7 @@ namespace Everlook.Viewport
 			this.ViewportWidget = viewportWidget;
 			this.Camera = new ViewportCamera();
 			this.Movement = new CameraMovement(this.Camera);
+
 
 			this.IsInitialized = false;
 		}
@@ -229,11 +230,13 @@ namespace Everlook.Viewport
 					ITickingActor tickingRenderable = this.RenderTarget as ITickingActor;
 					tickingRenderable?.Tick(this.DeltaTime);
 
+					// Update the camera with new parameters
+					this.Camera.ViewportHeight = widgetHeight;
+					this.Camera.ViewportWidth = widgetWidth;
+
 					// Then render the visual component
 					Matrix4 view = this.Camera.GetViewMatrix();
-					Matrix4 projection = this.Camera.GetProjectionMatrix(this.RenderTarget.Projection, widgetWidth, widgetHeight);
-					this.Camera.RecalculateFrustum(projection);
-
+					Matrix4 projection = this.Camera.GetProjectionMatrix();
 					this.RenderTarget.Render(view, projection, this.Camera);
 
 					GraphicsContext.CurrentContext.SwapBuffers();
@@ -302,10 +305,14 @@ namespace Everlook.Viewport
 				// Assign the new one
 				this.RenderTarget = inRenderable;
 
-				// Set the default camera transform
+				// Set the default camera values
 				if (this.RenderTarget != null)
 				{
+					this.Camera.ViewportWidth = this.ViewportWidget.AllocatedWidth;
+					this.Camera.ViewportHeight = this.ViewportWidget.AllocatedHeight;
+
 					this.Camera.Position = this.RenderTarget.DefaultCameraPosition;
+					this.Camera.Projection = this.RenderTarget.Projection;
 				}
 			}
 

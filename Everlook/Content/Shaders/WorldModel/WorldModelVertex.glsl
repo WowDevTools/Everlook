@@ -6,13 +6,16 @@ layout(location = 2) in vec2 vertexUV;
 
 uniform mat4 ModelViewProjection;
 
-out vec2 UV;
-out vec3 Normal;
+out VertexOut
+{
+	vec2 UV;
+	vec3 Normal;
+} vOut;
 
 void main()
 {
 	gl_Position = ModelViewProjection * vec4(vertexPosition.xyz, 1);
 
-	UV = vertexUV;
-	Normal = vertexNormal;
+	vOut.UV = vertexUV;
+	vOut.Normal = vertexNormal;
 }

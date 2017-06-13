@@ -56,7 +56,16 @@ namespace Everlook.Viewport.Rendering.Core
 			int vertexShaderID = CompileShader(ShaderType.VertexShader, vertexShaderSource);
 			int fragmentShaderID = CompileShader(ShaderType.FragmentShader, fragmentShaderSource);
 
-			this.NativeShaderProgramID = LinkShader(vertexShaderID, fragmentShaderID);
+			if (!string.IsNullOrEmpty(this.GeometryShaderResourceName))
+			{
+				string geometryShaderSource = GetShaderSource(this.GeometryShaderResourceName);
+				int geometryShaderID = CompileShader(ShaderType.GeometryShader, geometryShaderSource);
+				this.NativeShaderProgramID = LinkShader(vertexShaderID, fragmentShaderID, geometryShaderID);
+			}
+			else
+			{
+				this.NativeShaderProgramID = LinkShader(vertexShaderID, fragmentShaderID);
+			}
 		}
 
 		/// <summary>
@@ -88,26 +97,43 @@ namespace Everlook.Viewport.Rendering.Core
 		protected abstract string FragmentShaderResourceName { get; }
 
 		/// <summary>
+		/// Optional geometry shader.
+		/// The name of the fragment shader in the resources. This will be used with the resource path to load the source.
+		/// Do not include any extensions. Folder prefixes are optional.
+		///
+		/// Valid: WorldModelGeometry, Plain2D.Plain2DGeometry
+		/// Invalid: Resources.Content.Shaders.WorldModelGeometry.glsl
+		/// </summary>
+		protected abstract string GeometryShaderResourceName { get; }
+
+		/// <summary>
 		/// Links a vertex shader and a fragment shader into a complete shader program.
 		/// </summary>
 		/// <param name="vertexShaderID">The native handle to the object code of the vertex shader.</param>
 		/// <param name="fragmentShaderID">The native handle to the object code of the fragment shader.</param>
+		/// <param name="geometryShaderID">Optional. The native handle to the object code of the geometry shader.</param>
 		/// <returns>A native handle to a shader program.</returns>
 		/// <exception cref="ShaderLinkingException">Thrown if the linking fails.</exception>
-		private static int LinkShader(int vertexShaderID, int fragmentShaderID)
+		private static int LinkShader(int vertexShaderID, int fragmentShaderID, int geometryShaderID = -1)
 		{
 			Log.Info("Linking shader program...");
 			int program = GL.CreateProgram();
 
 			GL.AttachShader(program, vertexShaderID);
 			GL.AttachShader(program, fragmentShaderID);
+
+			if (geometryShaderID > -1)
+			{
+				GL.AttachShader(program, geometryShaderID);
+			}
+
 			GL.LinkProgram(program);
 
 			GL.GetProgram(program, GetProgramParameterName.LinkStatus, out int result);
 			bool linkingSucceeded = result > 0;
 
-			GL.GetProgram(program, GetProgramParameterName.InfoLogLength, out int compilationLogLength);
-			GL.GetProgramInfoLog(program, out string compilationLog);
+			GL.GetProgram(program, GetProgramParameterName.InfoLogLength, out int linkingLogLength);
+			GL.GetProgramInfoLog(program, out string linkingLog);
 
 			// Clean up the shader source code and unlinked object files from graphics memory
 			GL.DetachShader(program, vertexShaderID);
@@ -118,13 +144,13 @@ namespace Everlook.Viewport.Rendering.Core
 
 			if (!linkingSucceeded)
 			{
-				throw new ShaderLinkingException(compilationLog);
+				throw new ShaderLinkingException(linkingLog);
 			}
 
-			if (compilationLogLength > 0)
+			if (linkingLogLength > 0)
 			{
 				Log.Warn($"Warnings were raised during shader liGL.Programnking. Please review the following log: \n" +
-				         $"{compilationLog}");
+				         $"{linkingLog}");
 			}
 
 			return program;

@@ -133,6 +133,8 @@
     <Compile Include="Viewport\Camera\CameraMovement.cs" />
     <Compile Include="Viewport\Camera\ViewportCamera.cs" />
     <Compile Include="Viewport\Rendering\Core\EverlookShader.cs" />
+    <Compile Include="Viewport\Rendering\Core\Lights\AmbientLight.cs" />
+    <Compile Include="Viewport\Rendering\Core\Lights\DirectionalLight.cs" />
     <Compile Include="Viewport\Rendering\Core\ShaderProgram.cs" />
     <Compile Include="Viewport\Rendering\Core\Plane.cs" />
     <Compile Include="Viewport\Rendering\Core\Texture2D.cs" />
@@ -148,6 +150,9 @@
     <Compile Include="Viewport\Rendering\RenderableWorldModel.cs" />
     <Compile Include="Viewport\Rendering\RenderCache.cs" />
     <Compile Include="Viewport\Rendering\Shaders\BoundingBoxShader.cs" />
+    <Compile Include="Viewport\Rendering\Shaders\Components\AmbientLighting.cs" />
+    <Compile Include="Viewport\Rendering\Shaders\Components\GlobalLighting.cs" />
+    <Compile Include="Viewport\Rendering\Shaders\Components\SolidWireframe.cs" />
     <Compile Include="Viewport\Rendering\Shaders\GameModelShader.cs" />
     <Compile Include="Viewport\Rendering\Shaders\Plain2DShader.cs" />
     <Compile Include="Viewport\Rendering\Shaders\WorldModelShader.cs" />
@@ -218,6 +223,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\jokes.txt" />
+    <EmbeddedResource Include="Content\Shaders\WorldModel\WorldModelGeometry.glsl" />
     <Content Include="Everlook.exe.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
