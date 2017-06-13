@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using Gdk;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -83,6 +84,19 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 
 			int lineWidthLoc = GL.GetUniformLocation(this.ParentShaderNativeID, WireframeLineWidth);
 			GL.Uniform1(lineWidthLoc, lineWidth);
+		}
+
+		public void SetWireframeColour(RGBA wireframeColour)
+		{
+			Color4 colour = new Color4
+			(
+				(float)wireframeColour.Red,
+				(float)wireframeColour.Green,
+				(float)wireframeColour.Blue,
+				(float)wireframeColour.Alpha
+			);
+
+			SetWireframeColour(colour);
 		}
 
 		public void SetWireframeColour(Color4 wireframeColour)

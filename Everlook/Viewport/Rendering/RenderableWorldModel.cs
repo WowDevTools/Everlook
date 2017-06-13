@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Everlook.Configuration;
 using Everlook.Database;
 using Everlook.Exceptions.Shader;
 using Everlook.Package;
@@ -204,7 +205,7 @@ namespace Everlook.Viewport.Rendering
 			this.Shader.Lighting.SetLightDirection(this.GlobalLighting.LightVector);
 			this.Shader.Lighting.SetLightIntensity(this.GlobalLighting.Intensity);
 
-			this.Shader.Wireframe.Enabled = true;
+			this.Shader.Wireframe.SetWireframeColour(EverlookConfiguration.Instance.GetWireframeColour());
 
 			// TODO: Load and cache doodads in their respective sets
 

@@ -51,5 +51,7 @@ namespace Everlook.UI
 		[UIElement] private readonly CheckButton KeepDirectoryStructureCheckButton;
 
 		[UIElement] private readonly CheckButton SendStatsCheckButton;
+
+		[UIElement] private readonly ColorButton WireframeColourButton;
 	}
 }

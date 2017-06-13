@@ -199,6 +199,8 @@ namespace Everlook.UI
 			this.DefaultAudioExportFormatComboBox.Active = (int) this.Config.GetDefaultAudioFormat();
 			this.KeepDirectoryStructureCheckButton.Active = this.Config.GetShouldKeepFileDirectoryStructure();
 			this.SendStatsCheckButton.Active = this.Config.GetAllowSendAnonymousStats();
+
+			this.WireframeColourButton.Rgba = this.Config.GetWireframeColour();
 		}
 
 		/// <summary>
@@ -236,6 +238,8 @@ namespace Everlook.UI
 			this.Config.SetDefaultAudioFormat((AudioFormat) this.DefaultAudioExportFormatComboBox.Active);
 			this.Config.SetKeepFileDirectoryStructure(this.KeepDirectoryStructureCheckButton.Active);
 			this.Config.SetAllowSendAnonymousStats(this.SendStatsCheckButton.Active);
+
+			this.Config.SetWireframeColour(this.WireframeColourButton.Rgba);
 		}
 	}
 }
