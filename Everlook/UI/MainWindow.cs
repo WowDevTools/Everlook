@@ -42,9 +42,11 @@ using OpenTK.Graphics;
 using OpenTK.Input;
 using Warcraft.Core;
 using Application = Gtk.Application;
+using EventArgs = System.EventArgs;
 using IOPath = System.IO.Path;
 using FileNode = liblistfile.NodeTree.Node;
 using WindowState = Gdk.WindowState;
+using Task = System.Threading.Tasks.Task;
 
 namespace Everlook.UI
 {
@@ -399,7 +401,7 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private async void OnMainWindowShown(object sender, EventArgs e)
+		private async void OnMainWindowShown(object sender, EventArgs eventArgs)
 		{
 			await LoadGames();
 		}

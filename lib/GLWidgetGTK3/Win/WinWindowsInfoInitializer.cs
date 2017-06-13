@@ -35,7 +35,7 @@ namespace OpenTK.Win
 	public static class WinWindowsInfoInitializer
 	{
 		private const string WinLibGDKName = "libgdk-3-0.dll";
-		
+
 		public static IWindowInfo Initialize(IntPtr gdkWindowHandle)
 		{
 			IntPtr windowHandle = gdk_win32_window_get_handle(gdkWindowHandle);

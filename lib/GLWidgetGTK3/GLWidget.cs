@@ -58,7 +58,7 @@ namespace OpenTK
 		public static event EventHandler GraphicsContextInitialized;
 
 		/// <summary>
-		/// Called when the first <see cref="GraphicsContext"/> is being destroyed in the case where 
+		/// Called when the first <see cref="GraphicsContext"/> is being destroyed in the case where
 		/// GraphicsContext.ShareContext == true;
 		/// </summary>
 		public static event EventHandler GraphicsContextShuttingDown;
@@ -159,9 +159,9 @@ namespace OpenTK
 		/// <param name="graphicsContextFlags">
 		/// Any flags which should be used during initialization of the <see cref="GraphicsContext"/>.
 		/// </param>
-		public GLWidget(GraphicsMode graphicsMode, 
-			int glVersionMajor = 1, 
-			int glVersionMinor = 0, 
+		public GLWidget(GraphicsMode graphicsMode,
+			int glVersionMajor = 1,
+			int glVersionMinor = 0,
 			GraphicsContextFlags graphicsContextFlags = GraphicsContextFlags.Default)
 		{
 			this.DoubleBuffered = false;
@@ -255,7 +255,7 @@ namespace OpenTK
 
 				GraphicsContext dummyContext = new GraphicsContext
 				(
-					graphicsMode, 
+					graphicsMode,
 					this.WindowInfo,
 					1,
 					0,

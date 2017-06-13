@@ -37,6 +37,27 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\atk-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="cairo-sharp, Version=1.12.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\cairo-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\gdk-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\gio-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\glib-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="gtk-dotnet, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\gtk-dotnet.dll</HintPath>
+    </Reference>
+    <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\gtk-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="INIFileParser, Version=2.4.0.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c">
       <HintPath>..\packages\ini-parser.2.4.0\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
@@ -49,29 +70,11 @@
     <Reference Include="OpenTK, Version=3.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
       <HintPath>..\packages\OpenTK.3.0.0-pre\lib\net20\OpenTK.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-3.0</Package>
-    </Reference>
-    <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-3.0</Package>
-    </Reference>
-    <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gio-sharp-3.0</Package>
-    </Reference>
-    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>glib-sharp-3.0</Package>
-    </Reference>
     <Reference Include="pango-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-3.0</Package>
+      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\pango-sharp.dll</HintPath>
     </Reference>
-    <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-3.0</Package>
-    </Reference>
+    <Reference Include="System" />
     <Reference Include="System.Drawing" />
-    <Reference Include="cairo-sharp, Version=1.10.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <Package>gtk-sharp-3.0</Package>
-    </Reference>
     <Reference Include="System.Numerics.Vectors, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\System.Numerics.Vectors.4.3.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
     </Reference>
@@ -246,4 +249,5 @@
   <Target Name="AfterBuild">
     <Copy SourceFiles="obj\x86\$(Configuration)\$(AssemblyName).pdb" DestinationFolder="$(OutputPath)" />
   </Target>
+  <Import Project="..\packages\gtk-sharp3.3.22.0.0\build\gtk-sharp3.targets" />
 </Project>

@@ -30,6 +30,7 @@ using Everlook.Export.Audio;
 using System.IO;
 using GLib;
 using Warcraft.Core;
+using EventArgs = System.EventArgs;
 using Key = Gdk.Key;
 
 namespace Everlook.UI
@@ -122,7 +123,7 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		private void OnAddPathButtonClicked(object sender, EventArgs e)
+		private void OnAddPathButtonClicked(object sender, EventArgs eventArgs)
 		{
 			Uri defaultLocation = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
 			this.PathChooser.SetCurrentFolderUri(defaultLocation.ToString());

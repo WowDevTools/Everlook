@@ -36,8 +36,11 @@ using liblistfile;
 using liblistfile.NodeTree;
 using Warcraft.Core;
 using Warcraft.DBC.Definitions;
+using EventArgs = System.EventArgs;
 using FileNode = liblistfile.NodeTree.Node;
+using Menu = Gtk.Menu;
 using Style = Pango.Style;
+using Task = System.Threading.Tasks.Task;
 
 namespace Everlook.Explorer
 {
@@ -565,7 +568,7 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnSelectionChanged(object sender, EventArgs e)
+		private void OnSelectionChanged(object sender, EventArgs eventArgs)
 		{
 			FileReference fileReference = GetSelectedReference();
 			if (fileReference == null)
