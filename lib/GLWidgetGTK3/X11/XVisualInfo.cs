@@ -27,6 +27,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using OpenTK.Platform.X11;
 
 namespace OpenTK.X11
 {

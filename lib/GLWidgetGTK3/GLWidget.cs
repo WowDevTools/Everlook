@@ -241,7 +241,7 @@ namespace OpenTK
 			}
 			else
 			{
-				this.WindowInfo = XWindowInfoInitializer.Initialize(graphicsMode, this.Display.Handle, this.Screen.Number, this.Window.Handle, this.RootWindow.Handle);
+				this.WindowInfo = XWindowInfoInitializer.Initialize(graphicsMode, this.Display.Handle, this.Screen.Number, this.Window.Handle, this.Screen.RootWindow.Handle);
 			}
 
 			// GraphicsContext

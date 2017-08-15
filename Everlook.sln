@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GLWidgetGTK3", "lib\GLWidge
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlimTK", "lib\SlimTK\SlimTK\SlimTK.csproj", "{06C99D4B-9FD6-4AAA-83FD-CEB5CB308121}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libwarcraft", "lib\liblistfile\lib\libwarcraft\libwarcraft\libwarcraft.csproj", "{DA06A44E-A67B-46C7-B07D-E90AEBED0502}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libwarcraft", "lib\libwarcraft\libwarcraft\libwarcraft.csproj", "{DA06A44E-A67B-46C7-B07D-E90AEBED0502}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

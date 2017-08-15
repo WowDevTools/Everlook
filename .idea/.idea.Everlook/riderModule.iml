@@ -5,18 +5,18 @@
       <sourceFolder url="file://$MODULE_DIR$/../../Everlook" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../lib/GLWidgetGTK3" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../lib/SlimTK/SlimTK" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../lib/liblistfile/lib/libwarcraft/libwarcraft" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../lib/liblistfile/liblistfile" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../lib/libwarcraft/libwarcraft" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/../../Everlook/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../Everlook/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../lib/GLWidgetGTK3/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../lib/GLWidgetGTK3/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../lib/SlimTK/SlimTK/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../lib/SlimTK/SlimTK/obj" />
-      <excludeFolder url="file://$MODULE_DIR$/../../lib/liblistfile/lib/libwarcraft/libwarcraft/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../lib/liblistfile/lib/libwarcraft/libwarcraft/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../lib/liblistfile/liblistfile/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../lib/liblistfile/liblistfile/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../lib/libwarcraft/libwarcraft/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../lib/libwarcraft/libwarcraft/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../packages" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />

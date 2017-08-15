@@ -6,3 +6,6 @@
 	path = lib/SlimTK
 	url = https://github.com/WoWDevTools/SlimTK.git
 	branch = master
+[submodule "lib/libwarcraft"]
+	path = lib/libwarcraft
+	url = git@github.com:WowDevTools/libwarcraft.git
