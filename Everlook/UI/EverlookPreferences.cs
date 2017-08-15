@@ -21,17 +21,18 @@
 //
 
 using System;
-using Gtk;
-using UIElement = Gtk.Builder.ObjectAttribute;
-using Everlook.Configuration;
-using Everlook.Export.Model;
-using Everlook.Export.Image;
-using Everlook.Export.Audio;
 using System.IO;
+using Everlook.Configuration;
+using Everlook.Export.Audio;
+using Everlook.Export.Image;
+using Everlook.Export.Model;
 using GLib;
+using Gtk;
 using Warcraft.Core;
+
 using EventArgs = System.EventArgs;
 using Key = Gdk.Key;
+using UIElement = Gtk.Builder.ObjectAttribute;
 
 namespace Everlook.UI
 {
@@ -46,6 +47,7 @@ namespace Everlook.UI
 		/// <summary>
 		/// Creates an instance of the Preferences dialog, using the glade XML UI file.
 		/// </summary>
+		/// <returns>An initialized instance of the EverlookPreferences class.</returns>
 		public static EverlookPreferences Create()
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookPreferences.glade", null);
@@ -79,8 +81,8 @@ namespace Everlook.UI
 		/// <summary>
 		/// Handles enter key presses in the path dialog.
 		/// </summary>
-		/// <param name="o"></param>
-		/// <param name="args"></param>
+		/// <param name="o">The sending object.</param>
+		/// <param name="args">The event arguments.</param>
 		[ConnectBefore]
 		private void OnKeyPressedNewPathDialog(object o, KeyPressEventArgs args)
 		{
@@ -98,8 +100,8 @@ namespace Everlook.UI
 		/// <summary>
 		/// Handles deletion of rows in the treeview by keyboard shortcut.
 		/// </summary>
-		/// <param name="o"></param>
-		/// <param name="args"></param>
+		/// <param name="o">The sending object.</param>
+		/// <param name="args">The event arguments.</param>
 		private void OnKeyPressedGamePathTreeView(object o, KeyPressEventArgs args)
 		{
 			if (args.Event.Key == Key.Delete)
@@ -111,8 +113,8 @@ namespace Everlook.UI
 		/// <summary>
 		/// Handles setting the sensitivity of the confirmation button in the path addition dialog.
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="eventArgs"></param>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="eventArgs">The event arguments.</param>
 		private void OnAliasEntryChanged(object sender, EventArgs eventArgs)
 		{
 			this.NewGamePathDialog.SetResponseSensitive(ResponseType.Ok, !string.IsNullOrEmpty(this.AliasEntry.Text));
@@ -121,8 +123,8 @@ namespace Everlook.UI
 		/// <summary>
 		/// Handles the add path button clicked event.
 		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="eventArgs">The event arguments.</param>
 		private void OnAddPathButtonClicked(object sender, EventArgs eventArgs)
 		{
 			Uri defaultLocation = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
@@ -167,9 +169,9 @@ namespace Everlook.UI
 				return;
 			}
 
-			string alias = (string) this.GamePathListStore.GetValue(selectedIter, 0);
-			string path = (string) this.GamePathListStore.GetValue(selectedIter, 1);
-			WarcraftVersion version = (WarcraftVersion) this.GamePathListStore.GetValue(selectedIter, 2);
+			string alias = (string)this.GamePathListStore.GetValue(selectedIter, 0);
+			string path = (string)this.GamePathListStore.GetValue(selectedIter, 1);
+			WarcraftVersion version = (WarcraftVersion)this.GamePathListStore.GetValue(selectedIter, 2);
 
 			GamePathStorage.Instance.RemoveStoredPath(alias, version, path);
 			this.GamePathListStore.Remove(ref selectedIter);
@@ -195,9 +197,9 @@ namespace Everlook.UI
 				this.DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(new Uri(new Uri("file://"), this.Config.GetDefaultExportDirectory()).AbsoluteUri);
 			}
 
-			this.DefaultModelExportFormatComboBox.Active = (int) this.Config.GetDefaultModelFormat();
-			this.DefaultImageExportFormatComboBox.Active = (int) this.Config.GetDefaultImageFormat();
-			this.DefaultAudioExportFormatComboBox.Active = (int) this.Config.GetDefaultAudioFormat();
+			this.DefaultModelExportFormatComboBox.Active = (int)this.Config.GetDefaultModelFormat();
+			this.DefaultImageExportFormatComboBox.Active = (int)this.Config.GetDefaultImageFormat();
+			this.DefaultAudioExportFormatComboBox.Active = (int)this.Config.GetDefaultAudioFormat();
 			this.KeepDirectoryStructureCheckButton.Active = this.Config.GetShouldKeepFileDirectoryStructure();
 			this.SendStatsCheckButton.Active = this.Config.GetAllowSendAnonymousStats();
 
@@ -209,15 +211,18 @@ namespace Everlook.UI
 		/// </summary>
 		public void SavePreferences()
 		{
-			this.GamePathListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
+			this.GamePathListStore.Foreach
+			(
+				(model, path, iter) =>
 				{
 					string alias = (string)model.GetValue(iter, 0);
 					string gamePath = (string)model.GetValue(iter, 1);
-					WarcraftVersion version = (WarcraftVersion) this.GamePathListStore.GetValue(iter, 2);
+					WarcraftVersion version = (WarcraftVersion)this.GamePathListStore.GetValue(iter, 2);
 					GamePathStorage.Instance.StorePath(alias, version, gamePath);
 
 					return false;
-				});
+				}
+			);
 
 			this.Config.SetViewportBackgroundColour(this.ViewportColourButton.Rgba);
 
@@ -234,9 +239,9 @@ namespace Everlook.UI
 			string exportPath = this.DefaultExportDirectoryFileChooserButton.CurrentFolderFile.Uri.LocalPath;
 			this.Config.SetDefaultExportDirectory(exportPath);
 
-			this.Config.SetDefaultModelFormat((ModelFormat) this.DefaultModelExportFormatComboBox.Active);
-			this.Config.SetDefaultImageFormat((ImageFormat) this.DefaultImageExportFormatComboBox.Active);
-			this.Config.SetDefaultAudioFormat((AudioFormat) this.DefaultAudioExportFormatComboBox.Active);
+			this.Config.SetDefaultModelFormat((ModelFormat)this.DefaultModelExportFormatComboBox.Active);
+			this.Config.SetDefaultImageFormat((ImageFormat)this.DefaultImageExportFormatComboBox.Active);
+			this.Config.SetDefaultAudioFormat((AudioFormat)this.DefaultAudioExportFormatComboBox.Active);
 			this.Config.SetKeepFileDirectoryStructure(this.KeepDirectoryStructureCheckButton.Active);
 			this.Config.SetAllowSendAnonymousStats(this.SendStatsCheckButton.Active);
 
@@ -244,4 +249,3 @@ namespace Everlook.UI
 		}
 	}
 }
-

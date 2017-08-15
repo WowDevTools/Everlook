@@ -32,32 +32,32 @@ namespace Everlook.Audio
 	public interface IAudioAsset : IDisposable
 	{
 		/// <summary>
-		/// The <see cref="ALFormat"/> that the PCM data is in.
+		/// Gets the <see cref="ALFormat"/> that the PCM data is in.
 		/// </summary>
 		ALFormat Format { get; }
 
 		/// <summary>
-		/// The raw PCM data of the audio asset.
+		/// Gets the raw PCM data of the audio asset.
 		/// </summary>
 		byte[] PCMData { get; }
 
 		/// <summary>
-		/// A stream containing the PCM data.
+		/// Gets a stream containing the PCM data.
 		/// </summary>
 		Stream PCMStream { get; }
 
 		/// <summary>
-		/// The number of channels that the audio has.
+		/// Gets the number of channels that the audio has.
 		/// </summary>
 		int Channels { get; }
 
 		/// <summary>
-		/// The number of bits per PCM sample.
+		/// Gets the number of bits per PCM sample.
 		/// </summary>
 		int BitsPerSample { get; }
 
 		/// <summary>
-		/// The sample rate or frequency of the PCM data.
+		/// Gets the sample rate or frequency of the PCM data.
 		/// </summary>
 		int SampleRate { get; }
 	}

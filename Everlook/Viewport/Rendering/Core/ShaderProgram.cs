@@ -35,17 +35,20 @@ namespace Everlook.Viewport.Rendering.Core
 	/// </summary>
 	public abstract class ShaderProgram : IDisposable
 	{
+		private const string MVPIdentifier = "ModelViewProjection";
+
 		/// <summary>
 		/// Logger instance for this class.
 		/// </summary>
 		private static readonly ILog Log = LogManager.GetLogger(typeof(ShaderProgram));
 
-		private const string MVPIdentifier = "ModelViewProjection";
-
-		protected int NativeShaderProgramID;
+		/// <summary>
+		/// Gets the native OpenGL ID of the shader program.
+		/// </summary>
+		protected int NativeShaderProgramID { get; private set; }
 
 		/// <summary>
-		/// Initializes a new <see cref="ShaderProgram"/>, compiling and linking its associated shader sources into
+		/// Initializes a new instance of the <see cref="ShaderProgram"/> class, compiling and linking its associated shader sources into
 		/// a shader program on the GPU.
 		/// </summary>
 		public ShaderProgram()
@@ -71,7 +74,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <summary>
 		/// Sets the Model-View-Projection matrix of this shader.
 		/// </summary>
-		/// <param name="mvpMatrix"></param>
+		/// <param name="mvpMatrix">The ModelViewProjection matrix.</param>
 		public void SetMVPMatrix(Matrix4 mvpMatrix)
 		{
 			int projectionShaderVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, MVPIdentifier);
@@ -79,7 +82,7 @@ namespace Everlook.Viewport.Rendering.Core
 		}
 
 		/// <summary>
-		/// The name of vertex shader in the resources. This will be used with the resource path to load the source.
+		/// Gets the name of vertex shader in the resources. This will be used with the resource path to load the source.
 		/// Do not include any extensions. Folder prefixes are optional.
 		///
 		/// Valid: WorldModelVertex, Plain2D.Plain2DVertex
@@ -88,7 +91,7 @@ namespace Everlook.Viewport.Rendering.Core
 		protected abstract string VertexShaderResourceName { get; }
 
 		/// <summary>
-		/// The name of the fragment shader in the resources. This will be used with the resource path to load the source.
+		/// Gets the name of the fragment shader in the resources. This will be used with the resource path to load the source.
 		/// Do not include any extensions. Folder prefixes are optional.
 		///
 		/// Valid: WorldModelFragment, Plain2D.Plain2DFragment
@@ -97,9 +100,8 @@ namespace Everlook.Viewport.Rendering.Core
 		protected abstract string FragmentShaderResourceName { get; }
 
 		/// <summary>
-		/// Optional geometry shader.
-		/// The name of the fragment shader in the resources. This will be used with the resource path to load the source.
-		/// Do not include any extensions. Folder prefixes are optional.
+		/// Gets the name of the fragment shader in the resources. This value is optional, and will be used with the
+		/// resource path to load the source. Do not include any extensions. Folder prefixes are optional.
 		///
 		/// Valid: WorldModelGeometry, Plain2D.Plain2DGeometry
 		/// Invalid: Resources.Content.Shaders.WorldModelGeometry.glsl
@@ -150,7 +152,7 @@ namespace Everlook.Viewport.Rendering.Core
 			if (linkingLogLength > 0)
 			{
 				Log.Warn($"Warnings were raised during shader liGL.Programnking. Please review the following log: \n" +
-				         $"{linkingLog}");
+						 $"{linkingLog}");
 			}
 
 			return program;
@@ -167,8 +169,11 @@ namespace Everlook.Viewport.Rendering.Core
 		{
 			if (string.IsNullOrEmpty(shaderSource))
 			{
-				throw new ArgumentNullException(nameof(shaderSource),
-					"No shader source was given. Check that the names are correct.");
+				throw new ArgumentNullException
+				(
+					nameof(shaderSource),
+					"No shader source was given. Check that the names are correct."
+				);
 			}
 
 			int shader = GL.CreateShader(shaderType);
@@ -193,7 +198,7 @@ namespace Everlook.Viewport.Rendering.Core
 			if (compilationLogLength > 0)
 			{
 				Log.Warn($"Warnings were raised during shader compilation. Please review the following log: \n" +
-				         $"{compilationLog}");
+						 $"{compilationLog}");
 			}
 
 			return shader;

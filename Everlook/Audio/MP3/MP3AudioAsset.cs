@@ -40,6 +40,10 @@ namespace Everlook.Audio.MP3
 		/// </summary>
 		private bool IsDisposed;
 
+		/// <summary>
+		/// Gets the <see cref="ALFormat"/> that the PCM data is in.
+		/// </summary>
+		/// <exception cref="NotSupportedException">Thrown if the asset has an unsupported format.</exception>
 		public ALFormat Format
 		{
 			get
@@ -64,6 +68,7 @@ namespace Everlook.Audio.MP3
 
 		private byte[] PCMDataInternal;
 
+		/// <inheritdoc />
 		public byte[] PCMData
 		{
 			get
@@ -88,18 +93,24 @@ namespace Everlook.Audio.MP3
 			private set => this.PCMDataInternal = value;
 		}
 
+		/// <inheritdoc />
 		public Stream PCMStream { get; private set; }
 
+		/// <inheritdoc />
 		public int Channels { get; }
+
+		/// <inheritdoc />
 		public int BitsPerSample { get; }
+
+		/// <inheritdoc />
 		public int SampleRate { get; }
 
 		/// <summary>
-		/// Initializes a new <see cref="MP3AudioAsset"/> from a file reference.
+		/// Initializes a new instance of the <see cref="MP3AudioAsset"/> class.
 		/// </summary>
-		/// <param name="fileReference"></param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
+		/// <param name="fileReference">The reference to create the asset from.</param>
+		/// <exception cref="ArgumentException">Thrown if the reference is not an MP3 audio file.</exception>
+		/// <exception cref="ArgumentNullException">Thrown if the file data can't be extracted.</exception>
 		public MP3AudioAsset(FileReference fileReference)
 		{
 			if (fileReference.GetReferencedFileType() != WarcraftFileType.MP3Audio)
@@ -122,8 +133,8 @@ namespace Everlook.Audio.MP3
 		/// <summary>
 		/// Loads a <see cref="MP3AudioAsset"/> asynchronously.
 		/// </summary>
-		/// <param name="fileReference"></param>
-		/// <returns></returns>
+		/// <param name="fileReference">The reference to load.</param>
+		/// <returns>An MP3AudioAsset.</returns>
 		public static Task<MP3AudioAsset> LoadAsync(FileReference fileReference)
 		{
 			return Task.Run(() => new MP3AudioAsset(fileReference));

@@ -26,7 +26,6 @@ using System.IO;
 using Warcraft.Core;
 using Warcraft.DBC;
 using Warcraft.DBC.Definitions;
-using Warcraft.DBC.SpecialFields;
 using Warcraft.MPQ;
 using static Everlook.Database.TypeTranslatorHelpers;
 
@@ -59,10 +58,10 @@ namespace Everlook.Database
 		private readonly Dictionary<DatabaseName, IDBC> Databases = new Dictionary<DatabaseName, IDBC>();
 
 		/// <summary>
-		/// Initializes a new <see cref="ClientDatabaseProvider"/> for the given warcraft version and content source.
+		/// Initializes a new instance of the <see cref="ClientDatabaseProvider"/> class.
 		/// </summary>
-		/// <param name="version"></param>
-		/// <param name="contentSource"></param>
+		/// <param name="version">The game version to use when loading the databases.</param>
+		/// <param name="contentSource">The <see cref="IPackage"/> where data can be retrieved.</param>
 		public ClientDatabaseProvider(WarcraftVersion version, IPackage contentSource)
 		{
 			this.Version = version;
@@ -72,8 +71,8 @@ namespace Everlook.Database
 		/// <summary>
 		/// Gets the database which maps to the provided record type from the provider.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
+		/// <typeparam name="T">The type of database to retrieve.</typeparam>
+		/// <returns>A database of type <typeparamref name="T"/></returns>
 		public DBC<T> GetDatabase<T>() where T : DBCRecord, new()
 		{
 			DatabaseName databaseName = GetDatabaseNameFromRecordType(typeof(T));
@@ -90,11 +89,12 @@ namespace Everlook.Database
 		}
 
 		/// <summary>
-		/// Gets a record of type <typeparamref name="T"/> from its corresponding database by its ID.
+		/// Gets a record of type <typeparamref name="T"/> from its corresponding database by its ID. This is equivalent
+		/// to a primary key lookup.
 		/// </summary>
-		/// <param name="id"></param>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
+		/// <param name="id">The primary key ID.</param>
+		/// <typeparam name="T">The type of record to retrieve.</typeparam>
+		/// <returns>A record of type <typeparamref name="T"/></returns>
 		public T GetRecordByID<T>(int id) where T : DBCRecord, new()
 		{
 			DBC<T> database = GetDatabase<T>();
@@ -102,11 +102,12 @@ namespace Everlook.Database
 		}
 
 		/// <summary>
-		/// Gets a record of type <typeparamref name="T"/> from its corresponding database by its index.
+		/// Gets a record of type <typeparamref name="T"/> from its corresponding database by its index. This is not a
+		/// lookup by the primary key of the row, but rather a direct indexing into the data.
 		/// </summary>
-		/// <param name="index"></param>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
+		/// <param name="index">The index of the row in the database.</param>
+		/// <typeparam name="T">The type of record to retrieve.</typeparam>
+		/// <returns>A record of type <typeparamref name="T"/></returns>
 		public T GetRecordByIndex<T>(int index) where T : DBCRecord, new()
 		{
 			DBC<T> database = GetDatabase<T>();
@@ -116,8 +117,8 @@ namespace Everlook.Database
 		/// <summary>
 		/// Determines whether or not the given database name has a loaded database associated with it.
 		/// </summary>
-		/// <param name="databaseName"></param>
-		/// <returns></returns>
+		/// <param name="databaseName">The name of the database.</param>
+		/// <returns>true if the provider contains the given database; false otherwise.</returns>
 		public bool ContainsDatabase(DatabaseName databaseName)
 		{
 			lock (this.DatabaseLock)
@@ -129,7 +130,7 @@ namespace Everlook.Database
 		/// <summary>
 		/// Loads the database which corresponds to the given database name.
 		/// </summary>
-		/// <param name="databaseName"></param>
+		/// <param name="databaseName">The name of the database.</param>
 		private void LoadDatabase(DatabaseName databaseName)
 		{
 			if (this.Databases.ContainsKey(databaseName))
@@ -154,8 +155,8 @@ namespace Everlook.Database
 		/// <summary>
 		/// Gets the path to the database file for a given database name.
 		/// </summary>
-		/// <param name="databaseName"></param>
-		/// <returns></returns>
+		/// <param name="databaseName">The name of the database.</param>
+		/// <returns>The file path of the database in the package.</returns>
 		private static string GetDatabasePackagePath(DatabaseName databaseName)
 		{
 			return $"DBFilesClient\\{databaseName}.dbc";

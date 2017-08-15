@@ -4,7 +4,7 @@
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
 //
-//  Copyright (c) 2016 Jarl Gullberg
+//  Copyright (c) 2017 Jarl Gullberg
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -28,14 +28,16 @@ namespace Everlook.Audio
 {
 	/// <summary>
 	/// Represents a collection of concurrently playing and linked audio sources, such as music collections or
-	/// doodad sounds which should be considered as a unit.
+	/// doodad sounds which should be considered as a unit. Each audio source in a collection must be unique.
 	/// </summary>
 	public class AudioCollection : IDisposable
 	{
 		private readonly List<AudioSource> AudioSources = new List<AudioSource>();
 
+		private Vector3 PositionInternal;
+
 		/// <summary>
-		/// The location at which the audio collection is. The locations of any sources
+		/// Gets or sets the location at which the audio collection is. The locations of any sources
 		/// added to this collection are placed at the same point.
 		/// </summary>
 		public Vector3 Position
@@ -51,12 +53,10 @@ namespace Everlook.Audio
 			}
 		}
 
-		private Vector3 PositionInternal;
-
 		/// <summary>
 		/// Adds a source to the audio collection.
 		/// </summary>
-		/// <param name="audioSource"></param>
+		/// <param name="audioSource">The audio source to add to the collection.</param>
 		public void AddSource(AudioSource audioSource)
 		{
 			if (!this.AudioSources.Contains(audioSource))
@@ -66,9 +66,9 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Removes a source from the audio collection
+		/// Removes a source from the audio collection.
 		/// </summary>
-		/// <param name="audioSource"></param>
+		/// <param name="audioSource">The audio source to add to the collection.</param>
 		public void RemoveSource(AudioSource audioSource)
 		{
 			if (this.AudioSources.Contains(audioSource))

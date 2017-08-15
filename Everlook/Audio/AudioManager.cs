@@ -44,7 +44,7 @@ namespace Everlook.Audio
 		private readonly AudioContext Context;
 
 		/// <summary>
-		/// Initializes the singleton instance of the <see cref="AudioManager"/> class.
+		/// Initializes a new instance of the <see cref="AudioManager"/> class.
 		/// </summary>
 		protected AudioManager()
 		{
@@ -53,7 +53,7 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Destructs the singleton instance of the <see cref="AudioManager"/> class.
+		/// Finalizes an instance of the <see cref="AudioManager"/> class.
 		/// </summary>
 		~AudioManager()
 		{
@@ -61,9 +61,10 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Registers an <see cref="AudioSource"/> with the manager.
+		/// Registers an <see cref="AudioSource"/> with the manager. Registering a source will offload the resource
+		/// management of the source to the manager.
 		/// </summary>
-		/// <param name="audioSource"></param>
+		/// <param name="audioSource">The audio source to register.</param>
 		public static void RegisterSource(AudioSource audioSource)
 		{
 			if (!IsRegistered(audioSource))
@@ -73,9 +74,9 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Unregisters an <see cref="AudioSource"/> with the manager.
+		/// Unregisters an <see cref="AudioSource"/> with the manager. Unregistering a source will stop and dispose it.
 		/// </summary>
-		/// <param name="audioSource"></param>
+		/// <param name="audioSource">The audio source to unregister.</param>
 		public static void UnregisterSource(AudioSource audioSource)
 		{
 			if (audioSource == null)
@@ -94,8 +95,8 @@ namespace Everlook.Audio
 		/// <summary>
 		/// Determines whether or not an <see cref="AudioSource"/> is registered with the manager.
 		/// </summary>
-		/// <param name="audioSource"></param>
-		/// <returns></returns>
+		/// <param name="audioSource">The audio source to check.</param>
+		/// <returns>true if the source is registered; false otherwise.</returns>
 		public static bool IsRegistered(AudioSource audioSource)
 		{
 			return Instance.Sources.Contains(audioSource);

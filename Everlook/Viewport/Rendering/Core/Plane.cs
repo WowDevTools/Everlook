@@ -43,8 +43,7 @@ namespace Everlook.Viewport.Rendering.Core
 		public Vector3 PointOnPlane;
 
 		/// <summary>
-		/// Creates a new instance of the <see cref="Plane"/> class, representing an infinite plane oriented along
-		/// the input normal, with its shear determined by an input point which is on the plane.
+		/// Initializes a new instance of the <see cref="Plane"/> struct.
 		/// </summary>
 		/// <param name="inNormal">The normal of the plane.</param>
 		/// <param name="inPointOnPlane">A point on the plane.</param>

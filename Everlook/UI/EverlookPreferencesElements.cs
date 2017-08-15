@@ -26,6 +26,7 @@ using UIElement = Gtk.Builder.ObjectAttribute;
 // ReSharper disable UnassignedReadonlyField
 #pragma warning disable 649
 #pragma warning disable 1591
+#pragma warning disable SA1134 // Each attribute should be placed on its own line of code
 
 namespace Everlook.UI
 {
@@ -42,7 +43,6 @@ namespace Everlook.UI
 		[UIElement] private readonly Button RemovePathButton;
 
 		[UIElement] private readonly ColorButton ViewportColourButton;
-		//[UIElement] private readonly CheckButton ShowUnknownFilesCheckButton;
 
 		[UIElement] private readonly FileChooserButton DefaultExportDirectoryFileChooserButton;
 		[UIElement] private readonly ComboBox DefaultModelExportFormatComboBox;

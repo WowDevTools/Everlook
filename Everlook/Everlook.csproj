@@ -4,8 +4,11 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net461</TargetFramework>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Platform>x86</Platform>
     <DefineConstants>$(DefineConstants);GTK3;</DefineConstants>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\stylecop.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <Title>Everlook</Title>
@@ -46,6 +49,20 @@
     <EmbeddedResource Include="Content\jokes.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="OpenTK.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\GSettings\gschemas.compiled" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="$(SolutionDir)\stylecop.json">
+      <Link>stylecop.json</Link>
+    </AdditionalFiles>
+    <AdditionalFiles Include="$(SolutionDir)\stylecop.ruleset">
+      <Link>stylecop.ruleset</Link>
+    </AdditionalFiles>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\lib\GLWidgetGTK3\GLWidgetGTK3.csproj" />
     <ProjectReference Include="$(SolutionDir)\lib\SlimTK\SlimTK\SlimTK.csproj" />
   </ItemGroup>
@@ -58,12 +75,7 @@
     <PackageReference Include="NETStandard.Library.NETFramework" Version="2.0.0-preview2-25405-01" />
     <PackageReference Include="liblistfile" Version="2.0.1" />
     <PackageReference Include="OpenTK" Version="3.0.0-git00001" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="OpenTK.dll.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\GSettings\gschemas.compiled" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" />
   </ItemGroup>
   <PropertyGroup>
     <PrepareForRunDependsOn>$(PrepareForRunDependsOn);CopyGSettingsSchemas</PrepareForRunDependsOn>

@@ -70,7 +70,7 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Gets or sets whether or not this audio source should loop.
+		/// Gets or sets a value indicating whether this audio source should loop.
 		/// </summary>
 		public bool Looping
 		{
@@ -122,7 +122,7 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Gets or sets whether or not the audio position should be relative to the listener's position.
+		/// Gets or sets a value indicating whether the audio position should be relative to the listener's position.
 		/// </summary>
 		public bool RelativePositioning
 		{
@@ -278,7 +278,7 @@ namespace Everlook.Audio
 		/// <summary>
 		/// Creates a new <see cref="AudioSource"/> and registers it with the <see cref="AudioManager"/>.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>A new AudioSource.</returns>
 		public static AudioSource CreateNew()
 		{
 			AudioSource source = new AudioSource();
@@ -290,14 +290,16 @@ namespace Everlook.Audio
 		/// <summary>
 		/// Creates a new <see cref="AudioSource"/> from a given <see cref="SoundEntriesRecord"/>.
 		/// </summary>
-		/// <param name="soundEntry"></param>
-		/// <returns></returns>
+		/// <param name="soundEntry">The sound database entry.</param>
+		/// <returns>An AudioSource.</returns>
 		public static AudioSource CreateFromSoundEntry(SoundEntriesRecord soundEntry)
 		{
 			AudioSource source = CreateNew();
 			source.Attenuation = soundEntry.DistanceCutoff;
 
 			// TODO: More settings
+			AudioManager.RegisterSource(source);
+
 			return source;
 		}
 
@@ -402,7 +404,7 @@ namespace Everlook.Audio
 		/// <summary>
 		/// Gets the hash code for this object.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The hash of the object.</returns>
 		public override int GetHashCode()
 		{
 			unchecked
@@ -418,18 +420,18 @@ namespace Everlook.Audio
 		/// <summary>
 		/// Determines whether or not this object is equal to another.
 		/// </summary>
-		/// <param name="other"></param>
-		/// <returns></returns>
+		/// <param name="other">The object to inspect.</param>
+		/// <returns>true if the objects are the same; false otherwise.</returns>
 		public bool Equals(AudioSource other)
 		{
-			return Equals((object) other);
+			return Equals((object)other);
 		}
 
 		/// <summary>
 		/// Determines whether or not this object is equal to another.
 		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns></returns>
+		/// <param name="obj">The object to inspect.</param>
+		/// <returns>true if the objects are the same; false otherwise.</returns>
 		public override bool Equals(object obj)
 		{
 			if (!(obj is AudioSource))
@@ -437,10 +439,9 @@ namespace Everlook.Audio
 				return false;
 			}
 
-			AudioSource other = (AudioSource) obj;
+			AudioSource other = (AudioSource)obj;
 			return other.SoundSourceID == this.SoundSourceID &&
-			       other.SoundBufferID == this.SoundBufferID;
+				   other.SoundBufferID == this.SoundBufferID;
 		}
 	}
 }
-

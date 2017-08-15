@@ -21,8 +21,8 @@
 //
 
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using log4net;
 using Warcraft.Core;
 using Warcraft.Core.Extensions;
@@ -39,22 +39,22 @@ namespace Everlook.Configuration
 	/// </summary>
 	public sealed class GamePathStorage
 	{
-		private readonly object StorageLock = new object();
+		/// <summary>
+		/// The current format version of the path store.
+		/// </summary>
+		private const int FormatVersion = 3;
 
 		/// <summary>
 		/// Logger instance for this class.
 		/// </summary>
 		private static readonly ILog Log = LogManager.GetLogger(typeof(GamePathStorage));
 
+		private readonly object StorageLock = new object();
+
 		/// <summary>
 		/// A static instance of the path storage class.
 		/// </summary>
 		public static readonly GamePathStorage Instance = new GamePathStorage();
-
-		/// <summary>
-		/// The current format version of the path store.
-		/// </summary>
-		private const int FormatVersion = 3;
 
 		/// <summary>
 		/// Gets the stored game paths.
@@ -70,9 +70,11 @@ namespace Everlook.Configuration
 				// Check the format version
 				int formatVersion;
 				using (FileStream fs = File.OpenRead(GetPathStoragePath()))
-				using (BinaryReader br = new BinaryReader(fs))
 				{
-					formatVersion = br.ReadInt32();
+					using (BinaryReader br = new BinaryReader(fs))
+					{
+						formatVersion = br.ReadInt32();
+					}
 				}
 
 				if (formatVersion != FormatVersion)
@@ -173,7 +175,10 @@ namespace Everlook.Configuration
 							{
 								while (br.BaseStream.Position != br.BaseStream.Length)
 								{
-									storedPaths.Add((br.ReadNullTerminatedString(), (WarcraftVersion)br.ReadUInt32(), br.ReadNullTerminatedString()));
+									storedPaths.Add
+									(
+										(br.ReadNullTerminatedString(), (WarcraftVersion)br.ReadUInt32(), br.ReadNullTerminatedString())
+									);
 								}
 							}
 						}
@@ -196,9 +201,11 @@ namespace Everlook.Configuration
 				File.Delete(GetPathStoragePath());
 
 				using (FileStream fs = File.Create(GetPathStoragePath()))
-				using (BinaryWriter bw = new BinaryWriter(fs))
 				{
-					bw.Write(FormatVersion);
+					using (BinaryWriter bw = new BinaryWriter(fs))
+					{
+						bw.Write(FormatVersion);
+					}
 				}
 			}
 		}

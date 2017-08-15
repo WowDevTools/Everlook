@@ -57,9 +57,9 @@ namespace Everlook.Viewport.Rendering
 		private readonly Dictionary<EverlookShader, ShaderProgram> ShaderCache = new Dictionary<EverlookShader, ShaderProgram>();
 
 		/// <summary>
-		/// The native ID of a fallback texture.
+		/// Gets the the fallback texture.
 		/// </summary>
-		public readonly Texture2D FallbackTexture = new Texture2D(ResourceManager.GetFallbackImage());
+		public Texture2D FallbackTexture { get; }
 
 		/// <summary>
 		/// A singleton instance of the rendering cache.
@@ -68,13 +68,15 @@ namespace Everlook.Viewport.Rendering
 
 		private RenderCache()
 		{
+			this.FallbackTexture = new Texture2D(ResourceManager.GetFallbackImage());
 		}
 
 		/// <summary>
-		/// Gets the native OpenGL ID for the specified shader.
+		/// Gets a <see cref="ShaderProgram"/> for the specified shader type. If one is not already in the cache, it
+		/// will be created.
 		/// </summary>
-		/// <param name="shader"></param>
-		/// <returns></returns>
+		/// <param name="shader">The type of shader to retrieve.</param>
+		/// <returns>A shader program object.</returns>
 		public ShaderProgram GetShader(EverlookShader shader)
 		{
 			if (HasCachedShader(shader))
@@ -89,6 +91,8 @@ namespace Everlook.Viewport.Rendering
 		/// Determines whether or not the rendering cache has a cached texture id
 		/// for the specified texture file path.
 		/// </summary>
+		/// <param name="texturePath">The path of the texture in its package group. Used as a lookup key.</param>
+		/// <returns>true if a cached textures exists with the given path as a lookup key; false otherwise</returns>
 		public bool HasCachedTextureForPath(string texturePath)
 		{
 			if (string.IsNullOrEmpty(texturePath))
@@ -116,6 +120,8 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Gets a cached texture ID from the rendering cache.
 		/// </summary>
+		/// <param name="texturePath">The path of the texture in its package group. Used as a lookup key.</param>
+		/// <returns>A texture object.</returns>
 		public Texture2D GetCachedTexture(string texturePath)
 		{
 			return this.TextureCache[texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant()];
@@ -131,8 +137,14 @@ namespace Everlook.Viewport.Rendering
 
 		/// <summary>
 		/// Creates a cached texture for the specifed texture, using the specified path
-		/// as a lookup key.
+		/// as a lookup key. This method will create a new texture, and cache it.
 		/// </summary>
+		/// /// <param name="imageData">A bitmap containing the image data.</param>
+		/// <param name="texturePath">
+		/// The path to the texture in its corresponding package group. This is used as a lookup key.
+		/// </param>
+		/// <param name="wrappingMode">How the texture should wrap.</param>
+		/// <returns>A new cached texture created from the data.</returns>
 		public Texture2D CreateCachedTexture(BLP imageData, string texturePath, TextureWrapMode wrappingMode = TextureWrapMode.Repeat)
 		{
 			Texture2D texture = new Texture2D(imageData, wrappingMode);
@@ -143,8 +155,13 @@ namespace Everlook.Viewport.Rendering
 
 		/// <summary>
 		/// Creates a cached texture for the specifed texture, using the specified path
-		/// as a lookup key.
+		/// as a lookup key. This method will create a new texture, and cache it.
 		/// </summary>
+		/// <param name="imageData">A bitmap containing the image data.</param>
+		/// <param name="texturePath">
+		/// The path to the texture in its corresponding package group. This is used as a lookup key.
+		/// </param>
+		/// <returns>A new cached texture created from the data.</returns>
 		public Texture2D CreateCachedTexture(Bitmap imageData, string texturePath)
 		{
 			Texture2D texture = new Texture2D(imageData);

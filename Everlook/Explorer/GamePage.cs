@@ -30,12 +30,11 @@ using Everlook.Package;
 using Everlook.Utility;
 using Gdk;
 using GLib;
-using static Everlook.Utility.CommunicationDelegates;
 using Gtk;
 using liblistfile;
 using liblistfile.NodeTree;
 using Warcraft.Core;
-using Warcraft.DBC.Definitions;
+using static Everlook.Utility.CommunicationDelegates;
 using EventArgs = System.EventArgs;
 using FileNode = liblistfile.NodeTree.Node;
 using Menu = Gtk.Menu;
@@ -66,16 +65,17 @@ namespace Everlook.Explorer
 		public event FileActionDelegate ExportItemRequested;
 
 		/// <summary>
-		/// The widget which is at the top level of the page.
+		/// Gets the widget which is at the top level of the page.
 		/// </summary>
 		public Widget PageWidget => this.TreeAlignment;
 
 		/// <summary>
-		/// The alias of this page, that is, its name.
+		/// Gets or sets the alias of this page, that is, its name.
 		/// </summary>
 		public string Alias { get; set; }
 
 		private readonly Alignment TreeAlignment;
+
 		private TreeView Tree { get; }
 
 		private readonly PackageGroup Packages;
@@ -92,10 +92,11 @@ namespace Everlook.Explorer
 		private readonly ImageMenuItem CopyPathItem;
 
 		/// <summary>
-		/// The <see cref="WarcraftVersion"/> of the game that is loaded into this page.
+		/// Gets the <see cref="WarcraftVersion"/> of the game that is loaded into this page.
 		/// TODO: This should probably be broken out into an IGameContext with WarcraftVersion, ClientDatabaseProvider and IPackage exposed
 		/// </summary>
-		public readonly WarcraftVersion Version;
+		public WarcraftVersion Version { get; }
+
 		private readonly ClientDatabaseProvider DatabaseProvider;
 
 		/// <summary>
@@ -114,10 +115,11 @@ namespace Everlook.Explorer
 		private bool IsFiltered;
 
 		/// <summary>
-		/// Creates a new <see cref="GamePage"/> for the given package group and node tree.
+		/// Initializes a new instance of the <see cref="GamePage"/> class. The given package group and node tree are
+		/// wrapped by the page.
 		/// </summary>
-		/// <param name="packageGroup"></param>
-		/// <param name="nodeTree"></param>
+		/// <param name="packageGroup">The package group which the node tree maps to.</param>
+		/// <param name="nodeTree">The prebuilt node tree to display.</param>
 		/// <param name="version">The Warcraft version that the game page is contextually relevant for.</param>
 		public GamePage(PackageGroup packageGroup, OptimizedNodeTree nodeTree, WarcraftVersion version)
 		{
@@ -248,7 +250,7 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Sets the tree sensitivity, i.e, if the user can interact with it.
 		/// </summary>
-		/// <param name="sensitive"></param>
+		/// <param name="sensitive">Whether or not the tree should be sensitive.</param>
 		public void SetTreeSensitivity(bool sensitive)
 		{
 			this.Tree.Sensitive = sensitive;
@@ -258,8 +260,7 @@ namespace Everlook.Explorer
 		/// Sets the filter of the tree view and asynchronously refilters it. The filter is a set of
 		/// <see cref="WarcraftFileType"/> flags.
 		/// </summary>
-		/// <param name="filteredFileTypes"></param>
-		/// <returns></returns>
+		/// <param name="filteredFileTypes">The file types to filter out.</param>
 		public void SetFilter(WarcraftFileType filteredFileTypes)
 		{
 			this.FilteredFileTypes = filteredFileTypes;
@@ -269,7 +270,6 @@ namespace Everlook.Explorer
 		/// Sets whether or not the tree is filtered.
 		/// </summary>
 		/// <param name="isFiltered">True if the tree should be filtered by the set file types, false otherwise.</param>
-		/// <returns></returns>
 		public void SetFilterState(bool isFiltered)
 		{
 			this.IsFiltered = isFiltered;
@@ -278,21 +278,24 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Asynchronously refilters the node tree.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>A task which when finished signifies that the tree has been filtered.</returns>
 		public async Task RefilterAsync()
 		{
-			await Task.Factory.StartNew(() =>
-			{
-				this.TreeFilter.Refilter();
-			}, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+			await Task.Factory.StartNew
+			(
+				() => this.TreeFilter.Refilter(),
+				CancellationToken.None,
+				TaskCreationOptions.None,
+				TaskScheduler.FromCurrentSynchronizationContext()
+			);
 		}
 
 		/// <summary>
 		/// This function is used internally by the tree filter to determine which rows are visible and which are not.
 		/// </summary>
-		/// <param name="model"></param>
-		/// <param name="iter"></param>
-		/// <returns></returns>
+		/// <param name="model">The model of the tree.</param>
+		/// <param name="iter">The iter to determine visibility for.</param>
+		/// <returns>true if the iter should be visible; false otherwise.</returns>
 		private bool TreeModelVisibilityFunc(ITreeModel model, TreeIter iter)
 		{
 			if (!this.IsFiltered)
@@ -316,15 +319,14 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Handles rendering of the icon of a node in the tree.
 		/// </summary>
-		/// <param name="column"></param>
-		/// <param name="cell"></param>
-		/// <param name="model"></param>
-		/// <param name="iter"></param>
-		/// <exception cref="NotImplementedException"></exception>
+		/// <param name="column">The column which the icon is in.</param>
+		/// <param name="cell">The cell which the reference is in.</param>
+		/// <param name="model">The model of the treeview.</param>
+		/// <param name="iter">The <see cref="TreeIter"/> pointing to the row the icon is in.</param>
 		private void RenderNodeIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			CellRendererPixbuf cellIcon = cell as CellRendererPixbuf;
-			FileNode node = (FileNode) model.GetValue(iter, 0);
+			FileNode node = (FileNode)model.GetValue(iter, 0);
 
 			if (node == null || cellIcon == null)
 			{
@@ -361,15 +363,14 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Handles rendering of the name of a node in the tree.
 		/// </summary>
-		/// <param name="column"></param>
-		/// <param name="cell"></param>
-		/// <param name="model"></param>
-		/// <param name="iter"></param>
-		/// <exception cref="NotImplementedException"></exception>
+		/// <param name="column">The column which the cell is in.</param>
+		/// <param name="cell">The cell which the name is in.</param>
+		/// <param name="model">The model of the treeview.</param>
+		/// <param name="iter">The <see cref="TreeIter"/> pointing to the row the name is in.</param>
 		private void RenderNodeName(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			CellRendererText cellText = cell as CellRendererText;
-			FileNode node = (FileNode) model.GetValue(iter, 0);
+			FileNode node = (FileNode)model.GetValue(iter, 0);
 
 			if (node == null || cellText == null)
 			{
@@ -393,8 +394,8 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Handles queueing of a file or directory for exporting in the main UI.
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="eventArgs"></param>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="eventArgs">Arguments describing the row that was activated.</param>
 		private void OnQueueForExportRequested(object sender, EventArgs eventArgs)
 		{
 			FileReference fileReference = GetSelectedReference();
@@ -409,15 +410,15 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Handles passing off export requests for files in the tree.
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="eventArgs"></param>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="eventArgs">Arguments describing the row that was activated.</param>
 		private void OnExportItemRequested(object sender, EventArgs eventArgs)
 		{
 			FileReference fileReference = GetSelectedReference();
-            if (fileReference == null)
-            {
-                return;
-            }
+			if (fileReference == null)
+			{
+				return;
+			}
 
 			RequestFileExport(fileReference);
 		}
@@ -427,15 +428,15 @@ namespace Everlook.Explorer
 		/// row is expanded. If not, and the file is a "normal" file, it is extracted and handed off to the operating
 		/// system.
 		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="eventArgs">E.</param>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="eventArgs">Arguments describing the row that was activated.</param>
 		private void OnOpenItem(object sender, EventArgs eventArgs)
 		{
 			FileReference fileReference = GetSelectedReference();
-            if (fileReference == null)
-            {
-                return;
-            }
+			if (fileReference == null)
+			{
+				return;
+			}
 
 			if (fileReference.IsFile)
 			{
@@ -454,8 +455,8 @@ namespace Everlook.Explorer
 		/// Handles copying of the file path of a selected item in the archive, triggered by a
 		/// context menu press.
 		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="eventArgs">E.</param>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="eventArgs">Arguments describing the row that was activated.</param>
 		private void OnCopyPath(object sender, EventArgs eventArgs)
 		{
 			FileReference fileReference = GetSelectedReference();
@@ -465,14 +466,14 @@ namespace Everlook.Explorer
 			}
 
 			Clipboard clipboard = Clipboard.Get(Atom.Intern("CLIPBOARD", false));
-            clipboard.Text = fileReference.FilePath;
+			clipboard.Text = fileReference.FilePath;
 		}
 
 		/// <summary>
 		/// Handles extraction of files from the archive triggered by a context menu press.
 		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="eventArgs">E.</param>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="eventArgs">Arguments describing the row that was activated.</param>
 		private void OnSaveItem(object sender, EventArgs eventArgs)
 		{
 			FileReference fileReference = GetSelectedReference();
@@ -513,8 +514,8 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Handles spawning of the context menu.
 		/// </summary>
-		/// <param name="o"></param>
-		/// <param name="args"></param>
+		/// <param name="o">The sending object.</param>
+		/// <param name="args">Arguments describing the row that was activated.</param>
 		[ConnectBefore]
 		private void OnButtonPressed(object o, ButtonPressEventArgs args)
 		{
@@ -525,10 +526,9 @@ namespace Everlook.Explorer
 			}
 
 			TreePath sorterPath;
-	        this.Tree.GetPathAtPos((int)args.Event.X, (int)args.Event.Y, out sorterPath);
+			this.Tree.GetPathAtPos((int)args.Event.X, (int)args.Event.Y, out sorterPath);
 			TreePath filterPath = this.TreeSorter.ConvertPathToChildPath(sorterPath);
 			TreePath modelPath = this.TreeFilter.ConvertPathToChildPath(filterPath);
-
 
 			if (modelPath == null)
 			{
@@ -566,8 +566,8 @@ namespace Everlook.Explorer
 		/// Handles notifying subscribers that the selection in the tree has changed, requesting file loading
 		/// if it is a file.
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="eventArgs">Arguments describing the row that was activated.</param>
 		private void OnSelectionChanged(object sender, EventArgs eventArgs)
 		{
 			FileReference fileReference = GetSelectedReference();
@@ -590,32 +590,32 @@ namespace Everlook.Explorer
 		private void OnRowActivated(object o, RowActivatedArgs args)
 		{
 			FileReference fileReference = GetSelectedReference();
-            if (fileReference == null)
-            {
-                return;
-            }
+			if (fileReference == null)
+			{
+				return;
+			}
 
-            if (fileReference.IsFile)
-            {
-	            OpenReference(fileReference);
-            }
-            else
-            {
-	            if (this.Tree.GetRowExpanded(args.Path))
-	            {
-		            this.Tree.CollapseRow(args.Path);
-	            }
-	            else
-	            {
-		            this.Tree.ExpandRow(args.Path, false);
-	            }
-            }
+			if (fileReference.IsFile)
+			{
+				OpenReference(fileReference);
+			}
+			else
+			{
+				if (this.Tree.GetRowExpanded(args.Path))
+				{
+					this.Tree.CollapseRow(args.Path);
+				}
+				else
+				{
+					this.Tree.ExpandRow(args.Path, false);
+				}
+			}
 		}
 
 		/// <summary>
 		/// Gets the reference which maps to the currently selected node.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The currently selected reference.</returns>
 		private FileReference GetSelectedReference()
 		{
 			TreeIter selectedIter;
@@ -631,7 +631,7 @@ namespace Everlook.Explorer
 		/// Opens the given reference by extracting it, saving it to a temporary file, and handing it off
 		/// to the operating system.
 		/// </summary>
-		/// <param name="fileReference"></param>
+		/// <param name="fileReference">The reference to open.</param>
 		private static void OpenReference(FileReference fileReference)
 		{
 			switch (fileReference.GetReferencedFileType())
@@ -698,8 +698,8 @@ namespace Everlook.Explorer
 			const int sortAWithB = 0;
 			const int sortAAfterB = 1;
 
-			FileNode nodeA = (FileNode) model.GetValue(a, 0);
-			FileNode nodeB = (FileNode) model.GetValue(b, 0);
+			FileNode nodeA = (FileNode)model.GetValue(a, 0);
+			FileNode nodeB = (FileNode)model.GetValue(b, 0);
 
 			NodeType typeofA = nodeA.Type;
 			NodeType typeofB = nodeB.Type;
@@ -726,11 +726,11 @@ namespace Everlook.Explorer
 				return sortABeforeB;
 			}
 
-			string aComparisonString = this.TreeModel.GetNodeName(nodeA);
+			string nodeAName = this.TreeModel.GetNodeName(nodeA);
 
-			string bComparisonString = this.TreeModel.GetNodeName(nodeB);
+			string nodeBName = this.TreeModel.GetNodeName(nodeB);
 
-			int result = string.CompareOrdinal(aComparisonString, bComparisonString);
+			int result = string.CompareOrdinal(nodeAName, nodeBName);
 
 			if (result <= sortABeforeB)
 			{
@@ -748,7 +748,7 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Requests the loading of the specified <see cref="FileReference"/> in the main UI.
 		/// </summary>
-		/// <param name="fileReference"></param>
+		/// <param name="fileReference">The reference to request a load operation for.</param>
 		private void RequestFileLoad(FileReference fileReference)
 		{
 			this.FileLoadRequested?.Invoke(this, fileReference);
@@ -757,7 +757,7 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Requests the exporting of the specified <see cref="FileReference"/> in the main UI.
 		/// </summary>
-		/// <param name="fileReference"></param>
+		/// <param name="fileReference">The reference to request an  export operation for.</param>
 		private void RequestFileExport(FileReference fileReference)
 		{
 			this.ExportItemRequested?.Invoke(this, fileReference);
@@ -766,7 +766,7 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Requests the enqueueing for export of the specified <see cref="FileReference"/> in the main UI.
 		/// </summary>
-		/// <param name="fileReference"></param>
+		/// <param name="fileReference">The reference to request an enqueued export operation for.</param>
 		private void RequestEnqueueFileExport(FileReference fileReference)
 		{
 			this.EnqueueFileExportRequested?.Invoke(this, fileReference);

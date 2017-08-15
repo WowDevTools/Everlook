@@ -37,7 +37,7 @@ namespace Everlook.Utility
 		/// <summary>
 		/// Clears all pages from a notebook.
 		/// </summary>
-		/// <param name="notebook"></param>
+		/// <param name="notebook">The notebook to clear the pages from.</param>
 		public static void ClearPages(this Gtk.Notebook notebook)
 		{
 			while (notebook.NPages > 0)
@@ -81,7 +81,7 @@ namespace Everlook.Utility
 		/// Gets the icon best representing this <see cref="FileReference"/>, based on its file extension.
 		/// </summary>
 		/// <param name="fileReference">The item reference for which the icon should be retrieved.</param>
-		/// <returns></returns>
+		/// <returns>A pixel buffer containg the icon.</returns>
 		public static Pixbuf GetIcon(this FileReference fileReference)
 		{
 			return IconManager.GetIconForFiletype(fileReference.FilePath);
@@ -90,6 +90,8 @@ namespace Everlook.Utility
 		/// <summary>
 		/// Converts the current OpenGL vector to a Warcraft vector structure.
 		/// </summary>
+		/// <param name="vector3">An <see cref="OpenTK.Vector3"/>-type vector.</param>
+		/// <returns>A System.Numerics vector.</returns>
 		public static System.Numerics.Vector3 ToSystemVector(this Vector3 vector3)
 		{
 			return new System.Numerics.Vector3(vector3.X, vector3.Y, vector3.Z);
@@ -98,6 +100,8 @@ namespace Everlook.Utility
 		/// <summary>
 		/// Converts the current Warcraft vector to an OpenGL vector structure.
 		/// </summary>
+		/// <param name="vector3">A <see cref="System.Numerics.Vector3"/>-type vector.</param>
+		/// <returns>An OpenTK vector.</returns>
 		public static Vector3 ToOpenGLVector(this System.Numerics.Vector3 vector3)
 		{
 			return new Vector3(vector3.X, vector3.Y, vector3.Z);
@@ -106,12 +110,11 @@ namespace Everlook.Utility
 		/// <summary>
 		/// Converts the current Warcraft box structure to an OpenGL box structure.
 		/// </summary>
-		/// <param name="box">The box to conver.t</param>
-		/// <returns></returns>
+		/// <param name="box">The box to convert.</param>
+		/// <returns>A SlimTK bounding box.</returns>
 		public static BoundingBox ToOpenGLBoundingBox(this Box box)
 		{
 			return new BoundingBox(box.BottomCorner.ToOpenGLVector(), box.TopCorner.ToOpenGLVector());
 		}
 	}
 }
-

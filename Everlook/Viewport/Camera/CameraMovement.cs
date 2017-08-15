@@ -21,12 +21,9 @@
 //
 
 using System;
-using Everlook.Viewport.Rendering.Interfaces;
 using log4net;
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
-using Warcraft.Core.Extensions;
 
 namespace Everlook.Viewport.Camera
 {
@@ -38,55 +35,6 @@ namespace Everlook.Viewport.Camera
 	public class CameraMovement
 	{
 		/// <summary>
-		/// Logger instance for this class.
-		/// </summary>
-		private static readonly ILog Log = LogManager.GetLogger(typeof(CameraMovement));
-
-		private readonly ViewportCamera Camera;
-
-		/// <summary>
-		/// The current orientation of the bound camera.
-		/// </summary>
-		public Vector3 Orientation
-		{
-			get
-			{
-				return new Vector3(MathHelper.RadiansToDegrees(this.Camera.VerticalViewAngle),
-					MathHelper.RadiansToDegrees(this.Camera.HorizontalViewAngle), 0);
-			}
-			set
-			{
-				this.Camera.VerticalViewAngle = MathHelper.DegreesToRadians(value.X);
-				this.Camera.HorizontalViewAngle = MathHelper.DegreesToRadians(value.Y);
-			}
-		}
-
-		/// <summary>
-		/// The current position of the bound camera.
-		/// </summary>
-		public Vector3 Position
-		{
-			get
-			{
-				return this.Camera.Position;
-			}
-			set
-			{
-				this.Camera.Position = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not to constrain the vertical view angle to -/+ 90 degrees. This
-		/// prevents the viewer from going upside down.
-		/// </summary>
-		public bool ConstrainVerticalView
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
 		/// The default movement speed of the observer within the viewport.
 		/// </summary>
 		private const float DefaultMovementSpeed = 10.0f;
@@ -97,8 +45,57 @@ namespace Everlook.Viewport.Camera
 		private const float DefaultTurningSpeed = 0.5f;
 
 		/// <summary>
-		/// Creates a new <see cref="CameraMovement"/> instance, bound to the input camera.
+		/// Logger instance for this class.
 		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(CameraMovement));
+
+		private readonly ViewportCamera Camera;
+
+		/// <summary>
+		/// Gets or sets the current orientation of the bound camera.
+		/// </summary>
+		public Vector3 Orientation
+		{
+			get
+			{
+				return new Vector3
+				(
+					MathHelper.RadiansToDegrees(this.Camera.VerticalViewAngle),
+					MathHelper.RadiansToDegrees(this.Camera.HorizontalViewAngle),
+					0
+				);
+			}
+
+			set
+			{
+				this.Camera.VerticalViewAngle = MathHelper.DegreesToRadians(value.X);
+				this.Camera.HorizontalViewAngle = MathHelper.DegreesToRadians(value.Y);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the current position of the bound camera.
+		/// </summary>
+		public Vector3 Position
+		{
+			get => this.Camera.Position;
+			set => this.Camera.Position = value;
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether to constrain the vertical view angle to -/+ 90 degrees. This
+		/// prevents the viewer from going upside down.
+		/// </summary>
+		public bool ConstrainVerticalView
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="CameraMovement"/> class, bound to the input camera.
+		/// </summary>
+		/// <param name="inCamera">The camera which the movement component should control.</param>
 		public CameraMovement(ViewportCamera inCamera)
 		{
 			this.Camera = inCamera;
@@ -109,9 +106,9 @@ namespace Everlook.Viewport.Camera
 		/// Calculates and applies the position of the camera in screen space, using input
 		/// relayed from the main interface. This function is used for 2D orthographic projection.
 		/// </summary>
-		/// <param name="deltaMouseX"></param>
-		/// <param name="deltaMouseY"></param>
-		/// <param name="deltaTime"></param>
+		/// <param name="deltaMouseX">The motion delta along the X axis of the mouse in the last frame.</param>
+		/// <param name="deltaMouseY">The motion delta along the Y axis of the mouse in the last frame.</param>
+		/// <param name="deltaTime">The time delta between this frame and the previous one.</param>
 		public void Calculate2DMovement(float deltaMouseX, float deltaMouseY, float deltaTime)
 		{
 			const float speedMultiplier = 6.0f;
@@ -138,6 +135,9 @@ namespace Everlook.Viewport.Camera
 		/// Calculates the relative position of the observer in world space, using
 		/// input relayed from the main interface. This function is used for 3D projection.
 		/// </summary>
+		/// <param name="deltaMouseX">The motion delta along the X axis of the mouse in the last frame.</param>
+		/// <param name="deltaMouseY">The motion delta along the Y axis of the mouse in the last frame.</param>
+		/// <param name="deltaTime">The time delta between this frame and the previous one.</param>
 		public void Calculate3DMovement(float deltaMouseX, float deltaMouseY, float deltaTime)
 		{
 			// Perform radial movement
@@ -177,7 +177,6 @@ namespace Everlook.Viewport.Camera
 				MoveRight(deltaTime * DefaultMovementSpeed);
 			}
 
-
 			if (Keyboard.GetState().IsKeyDown(Key.Q))
 			{
 				MoveUp(deltaTime * DefaultMovementSpeed);
@@ -192,6 +191,7 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// Rotates the camera on the horizontal axis by the provided amount of degrees.
 		/// </summary>
+		/// <param name="degrees">The number of degrees to rotate.</param>
 		public void RotateHorizontal(float degrees)
 		{
 			this.Camera.HorizontalViewAngle += degrees;
@@ -200,6 +200,7 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// Rotates the camera on the vertical axis by the provided amount of degrees.
 		/// </summary>
+		/// <param name="degrees">The number of degrees to rotate.</param>
 		public void RotateVertical(float degrees)
 		{
 			this.Camera.VerticalViewAngle += degrees;
@@ -208,6 +209,7 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// Moves the camera up along its local Y axis by <paramref name="distance"/> units.
 		/// </summary>
+		/// <param name="distance">The distance to move.</param>
 		public void MoveUp(float distance)
 		{
 			this.Camera.Position += this.Camera.UpVector * Math.Abs(distance);
@@ -216,6 +218,7 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// Moves the camera down along its local Y axis by <paramref name="distance"/> units.
 		/// </summary>
+		/// <param name="distance">The distance to move.</param>
 		public void MoveDown(float distance)
 		{
 			this.Camera.Position -= this.Camera.UpVector * Math.Abs(distance);
@@ -224,6 +227,7 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// Moves the camera forward along its local Z axis by <paramref name="distance"/> units.
 		/// </summary>
+		/// <param name="distance">The distance to move.</param>
 		public void MoveForward(float distance)
 		{
 			this.Camera.Position += this.Camera.LookDirectionVector * Math.Abs(distance);
@@ -232,6 +236,7 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// Moves the camera backwards along its local Z axis by <paramref name="distance"/> units.
 		/// </summary>
+		/// <param name="distance">The distance to move.</param>
 		public void MoveBackward(float distance)
 		{
 			this.Camera.Position -= this.Camera.LookDirectionVector * Math.Abs(distance);
@@ -240,6 +245,7 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// Moves the camera left along its local X axis by <paramref name="distance"/> units.
 		/// </summary>
+		/// <param name="distance">The distance to move.</param>
 		public void MoveLeft(float distance)
 		{
 			this.Camera.Position -= this.Camera.RightVector * Math.Abs(distance);
@@ -248,6 +254,7 @@ namespace Everlook.Viewport.Camera
 		/// <summary>
 		/// Moves the camera right along its local X axis by <paramref name="distance"/> units.
 		/// </summary>
+		/// <param name="distance">The distance to move.</param>
 		public void MoveRight(float distance)
 		{
 			this.Camera.Position += this.Camera.RightVector * Math.Abs(distance);

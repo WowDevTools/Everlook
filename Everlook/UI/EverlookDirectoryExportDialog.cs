@@ -46,15 +46,21 @@ namespace Everlook.UI
 		/// <summary>
 		/// Creates an instance of the Image Export dialog, using the glade XML UI file.
 		/// </summary>
+		/// <param name="inExportTarget">The reference which is to be exported.</param>
+		/// <returns>An initialized instance of the EverlookDirectoryExportDialog class.</returns>
 		public static EverlookDirectoryExportDialog Create(FileReference inExportTarget)
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookDirectoryExport.glade", null);
-			return new EverlookDirectoryExportDialog(builder, builder.GetObject("EverlookDirectoryExportDialog").Handle,
-				inExportTarget);
+			return new EverlookDirectoryExportDialog
+			(
+				builder,
+				builder.GetObject("EverlookDirectoryExportDialog").Handle,
+				inExportTarget
+			);
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.UI.EverlookImageExportDialog"/> class.
+		/// Initializes a new instance of the <see cref="EverlookDirectoryExportDialog"/> class.
 		/// </summary>
 		/// <param name="builder">Builder.</param>
 		/// <param name="handle">Handle.</param>
@@ -163,11 +169,14 @@ namespace Everlook.UI
 		/// <param name="e">E.</param>
 		private void OnSelectAllItemActivated(object sender, EventArgs e)
 		{
-			this.ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
-			{
-				this.ItemExportListStore.SetValue(iter, 0, true);
-				return false;
-			});
+			this.ItemExportListStore.Foreach
+			(
+				(model, path, iter) =>
+				{
+					this.ItemExportListStore.SetValue(iter, 0, true);
+					return false;
+				}
+			);
 		}
 
 		/// <summary>
@@ -177,11 +186,14 @@ namespace Everlook.UI
 		/// <param name="e">E.</param>
 		private void OnSelectNoneItemActivated(object sender, EventArgs e)
 		{
-			this.ItemExportListStore.Foreach(delegate(ITreeModel model, TreePath path, TreeIter iter)
-			{
-				this.ItemExportListStore.SetValue(iter, 0, false);
-				return false;
-			});
+			this.ItemExportListStore.Foreach
+			(
+				(model, path, iter) =>
+				{
+					this.ItemExportListStore.SetValue(iter, 0, false);
+					return false;
+				}
+			);
 		}
 
 		/// <summary>
@@ -194,7 +206,7 @@ namespace Everlook.UI
 			TreeIter iter;
 			this.ItemExportListStore.GetIterFromString(out iter, e.Path);
 
-			bool currentValue = (bool) this.ItemExportListStore.GetValue(iter, 0);
+			bool currentValue = (bool)this.ItemExportListStore.GetValue(iter, 0);
 
 			this.ItemExportListStore.SetValue(iter, 0, !currentValue);
 		}
@@ -210,4 +222,3 @@ namespace Everlook.UI
 		}
 	}
 }
-

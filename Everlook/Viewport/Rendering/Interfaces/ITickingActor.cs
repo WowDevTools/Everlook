@@ -30,6 +30,7 @@ namespace Everlook.Viewport.Rendering.Interfaces
 		/// <summary>
 		/// Ticks this actor, advancing or performing any time-based actions.
 		/// </summary>
+		/// <param name="deltaTime">The time delta, in seconds.</param>
 		void Tick(float deltaTime);
 	}
 }

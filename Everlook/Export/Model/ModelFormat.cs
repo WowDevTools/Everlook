@@ -40,4 +40,3 @@ namespace Everlook.Export.Model
 		WavefrontObj = 1
 	}
 }
-

@@ -31,7 +31,7 @@ namespace Everlook.Viewport.Rendering.Core
 	public struct Transform
 	{
 		/// <summary>
-		/// The translation of the object in world space. One unit is arbitrary, but
+		/// Gets or sets the translation of the object in world space. One unit is arbitrary, but
 		/// can usually be considered one meter.
 		/// </summary>
 		public Vector3 Translation
@@ -41,7 +41,7 @@ namespace Everlook.Viewport.Rendering.Core
 		}
 
 		/// <summary>
-		/// The orientation of the object.
+		/// Gets or sets the orientation of the object.
 		/// </summary>
 		public Quaternion Orientation
 		{
@@ -50,7 +50,7 @@ namespace Everlook.Viewport.Rendering.Core
 		}
 
 		/// <summary>
-		/// The scale of the object on three axes. A value of <value>1.0f</value> equates to a
+		/// Gets or sets the scale of the object on three axes. A value of <value>1.0f</value> equates to a
 		/// 1:1 correspondence of vertex position to actual position. Increasing or decreasing this value
 		/// will increase or decrease the scale of the object on that axis.
 		/// </summary>
@@ -61,17 +61,22 @@ namespace Everlook.Viewport.Rendering.Core
 		}
 
 		/// <summary>
-		/// Creates a new <see cref="Transform"/> object from a single translation vector. The rotation and scale
-		/// are assumed to be 0,0,0 and 1,1,1, respectively.
+		/// Initializes a new instance of the <see cref="Transform"/> struct. This contstructor creates the instance from
+		/// a single translation vector. The rotation and scale are assumed to be 0,0,0 and 1,1,1, respectively.
 		/// </summary>
+		/// <param name="translation">The translation in world space.</param>
 		public Transform(Vector3 translation)
 			: this(translation, Quaternion.FromAxisAngle(Vector3.UnitX, 0.0f), Vector3.One)
 		{
 		}
 
 		/// <summary>
-		/// Creates a new <see cref="Transform"/> object from a translation vector, a quaternion and a scale vector.
+		/// Initializes a new instance of the <see cref="Transform"/> struct. This constructor creates the instances from
+		/// a translation vector, a quaternion and a scale vector.
 		/// </summary>
+		/// <param name="translation">The translation in world space.</param>
+		/// <param name="orientation">The orientation of the transform.</param>
+		/// <param name="scale">The scaling factor along the X, Y and Z axes.</param>
 		public Transform(Vector3 translation, Quaternion orientation, Vector3 scale)
 		{
 			this.Translation = translation;
@@ -82,6 +87,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <summary>
 		/// Gets the <see cref="Matrix4"/> object representing the model matrix of this transform.
 		/// </summary>
+		/// <returns>A matrix containing model-space transformation data.</returns>
 		public Matrix4 GetModelMatrix()
 		{
 			Matrix4 modelScale = Matrix4.CreateScale(this.Scale);

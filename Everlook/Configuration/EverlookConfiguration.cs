@@ -81,7 +81,6 @@ namespace Everlook.Configuration
 				if (!File.Exists(GetConfigurationFilePath()))
 				{
 					// Create the default configuration file
-
 					Directory.CreateDirectory(Directory.GetParent(GetConfigurationFilePath()).FullName);
 					File.Create(GetConfigurationFilePath()).Close();
 					IniData data = parser.ReadFile(GetConfigurationFilePath());
@@ -179,7 +178,7 @@ namespace Everlook.Configuration
 					if (data[General].ContainsKey("GameDirectory"))
 					{
 						// May 15th, 2017 - Added path aliasing, breaking support for path import
-						//GamePathStorage.Instance.StorePath(data[General]["GameDirectory"]);
+						// GamePathStorage.Instance.StorePath(data[General]["GameDirectory"]);
 						data[General].RemoveKey("GameDirectory");
 					}
 
@@ -253,7 +252,7 @@ namespace Everlook.Configuration
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
-				RGBA viewportBackgroundColour = new RGBA();
+				RGBA viewportBackgroundColour = default(RGBA);
 				if (viewportBackgroundColour.Parse(data[General][ViewportBackgroundColour]))
 				{
 					return viewportBackgroundColour;
@@ -287,7 +286,7 @@ namespace Everlook.Configuration
 		/// <summary>
 		/// Gets the wireframe colour for models.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The colour of the wireframe.</returns>
 		public RGBA GetWireframeColour()
 		{
 			lock (this.ReadLock)
@@ -295,7 +294,7 @@ namespace Everlook.Configuration
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
-				RGBA wireframeColour = new RGBA();
+				RGBA wireframeColour = default(RGBA);
 				if (wireframeColour.Parse(data[Model][WireframeColour]))
 				{
 					return wireframeColour;
@@ -586,4 +585,3 @@ namespace Everlook.Configuration
 		}
 	}
 }
-

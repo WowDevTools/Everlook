@@ -1,5 +1,4 @@
-﻿
-//
+﻿//
 //  ImageTypes.cs
 //
 //  Author:
@@ -53,4 +52,3 @@ namespace Everlook.Export.Image
 		BMP = 3
 	}
 }
-

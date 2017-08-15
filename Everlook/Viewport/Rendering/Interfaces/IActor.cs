@@ -31,7 +31,7 @@ namespace Everlook.Viewport.Rendering.Interfaces
 	public interface IActor : IRenderable
 	{
 		/// <summary>
-		/// The transform of the actor.
+		/// Gets or sets the transform of the actor.
 		/// </summary>
 		Transform ActorTransform
 		{

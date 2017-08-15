@@ -50,13 +50,13 @@ namespace Everlook.Viewport.Rendering
 		public bool IsStatic => false;
 
 		/// <summary>
-		/// The projection method to use for this renderable object. Typically, this is Orthographic
+		/// Gets the projection method to use for this renderable object. Typically, this is Orthographic
 		/// or Perspective.
 		/// </summary>
 		public ProjectionType Projection => ProjectionType.Perspective;
 
 		/// <summary>
-		/// The default camera position for this renderable.
+		/// Gets the default camera position for this renderable.
 		/// </summary>
 		public Vector3 DefaultCameraPosition
 		{
@@ -72,10 +72,11 @@ namespace Everlook.Viewport.Rendering
 					this.ActorTransform.GetModelMatrix() *
 					new Vector4
 					(
-			        	this.Model.BoundingBox.GetCenterCoordinates().AsOpenTKVector(),
-				        1.0f
+						this.Model.BoundingBox.GetCenterCoordinates().AsOpenTKVector(),
+						1.0f
 					)
-				).Xyz;
+				)
+				.Xyz;
 			}
 		}
 
@@ -85,7 +86,7 @@ namespace Everlook.Viewport.Rendering
 		private readonly MDX Model;
 
 		/// <summary>
-		/// The transform of the actor.
+		/// Gets or sets the transform of the actor.
 		/// </summary>
 		public Transform ActorTransform { get; set; }
 
@@ -104,12 +105,12 @@ namespace Everlook.Viewport.Rendering
 		private GameModelShader Shader;
 
 		/// <summary>
-		/// Returns a value which represents whether or not the current renderable has been initialized.
+		/// Gets or sets a value indicating whether the current renderable has been initialized.
 		/// </summary>
 		public bool IsInitialized { get; set; }
 
 		/// <summary>
-		/// Sets whether or not the bounding box of the model should be rendered.
+		/// Gets or sets a value indicating whether the bounding box of the model should be rendered.
 		/// </summary>
 		public bool ShouldRenderBounds { get; set; }
 
@@ -128,10 +129,13 @@ namespace Everlook.Viewport.Rendering
 				.ToArray();
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, this.VertexBufferID);
-			GL.BufferData(BufferTarget.ArrayBuffer,
+			GL.BufferData
+			(
+				BufferTarget.ArrayBuffer,
 				(IntPtr)vertexBufferData.Length,
 				vertexBufferData,
-				BufferUsageHint.StaticDraw);
+				BufferUsageHint.StaticDraw
+			);
 
 			// TODO: Textures
 
@@ -156,9 +160,7 @@ namespace Everlook.Viewport.Rendering
 			this.IsInitialized = true;
 		}
 
-		/// <summary>
-		/// Renders the current object in the current OpenGL context.
-		/// </summary>
+		/// <inheritdoc />
 		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
 		{
 			if (!this.IsInitialized)
@@ -174,65 +176,78 @@ namespace Everlook.Viewport.Rendering
 			GL.EnableVertexAttribArray(0);
 
 			// Position pointer
-			GL.VertexAttribPointer(
+			GL.VertexAttribPointer
+			(
 				0,
 				3,
 				VertexAttribPointerType.Float,
 				false,
 				0,
-				0);
+				0
+			);
 
 			// Bone weight pointer
-			GL.VertexAttribPointer(
+			GL.VertexAttribPointer
+			(
 				1,
 				4,
 				VertexAttribPointerType.Byte,
 				false,
 				12,
-				12);
+				12
+			);
 
 			// Bone index pointer
-			GL.VertexAttribPointer(
+			GL.VertexAttribPointer
+			(
 				2,
 				4,
 				VertexAttribPointerType.Byte,
 				false,
 				16,
-				16);
+				16
+			);
 
 			// Normal pointer
-			GL.VertexAttribPointer(
+			GL.VertexAttribPointer
+			(
 				3,
 				3,
 				VertexAttribPointerType.Float,
 				false,
 				20,
-				20);
+				20
+			);
 
 			// UV1 pointer
-			GL.VertexAttribPointer(
+			GL.VertexAttribPointer
+			(
 				4,
 				2,
 				VertexAttribPointerType.Float,
 				false,
 				32,
-				32);
+				32
+			);
 
 			// UV2 pointer
-			GL.VertexAttribPointer(
+			GL.VertexAttribPointer
+			(
 				5,
 				2,
 				VertexAttribPointerType.Float,
 				false,
 				40,
-				40);
-
-
+				40
+			);
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableGameModel"/> class.
 		/// </summary>
+		/// <param name="inModel">The model to render.</param>
+		/// <param name="inPackageGroup">The package group the model belongs to.</param>
+		/// <param name="shouldInitialize">Whether or not the model should be initialized right away.</param>
 		public RenderableGameModel(MDX inModel, PackageGroup inPackageGroup, bool shouldInitialize)
 		{
 			this.Model = inModel;
@@ -255,7 +270,6 @@ namespace Everlook.Viewport.Rendering
 		/// <see cref="RenderableGameModel"/> was occupying.</remarks>
 		public void Dispose()
 		{
-
 		}
 
 		/// <summary>
@@ -268,4 +282,3 @@ namespace Everlook.Viewport.Rendering
 		}
 	}
 }
-

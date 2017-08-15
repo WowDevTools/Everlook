@@ -29,6 +29,8 @@ using UIElement = Gtk.Builder.ObjectAttribute;
 // ReSharper disable UnassignedReadonlyField
 #pragma warning disable 649
 #pragma warning disable 1591
+#pragma warning disable SA1134 // Each attribute should be placed on its own line of code
+#pragma warning disable SA1214 // Readonly fields should appear before non-readonly fields
 
 namespace Everlook.UI
 {

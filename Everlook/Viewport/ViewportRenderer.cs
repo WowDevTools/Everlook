@@ -63,12 +63,12 @@ namespace Everlook.Viewport
 		private readonly object RenderTargetLock = new object();
 
 		/// <summary>
-		/// Whether or not the renderer currently has an object to render.
+		/// Gets a value indicating whether or not the renderer currently has an object to render.
 		/// </summary>
 		public bool HasRenderTarget => this.RenderTarget != null;
 
 		/// <summary>
-		/// The current rendering target. This is an object capable of being shown in an
+		/// Gets the current rendering target. This is an object capable of being shown in an
 		/// OpenGL viewport.
 		/// </summary>
 		public IRenderable RenderTarget { get; private set; }
@@ -89,19 +89,19 @@ namespace Everlook.Viewport
 		private float DeltaTime;
 
 		/// <summary>
-		/// Gets or sets whether or not the viewer wants to move in the world.
+		/// Gets or sets a value indicating whether or not the viewer wants to move in the world.
 		/// </summary>
 		public bool WantsToMove { get; set; }
 
 		/// <summary>
-		/// The X position of the mouse during the last frame, relative to the <see cref="ViewportWidget"/>.
+		/// Gets or sets the X position of the mouse during the last frame, relative to the <see cref="ViewportWidget"/>.
 		/// </summary>
-		public int InitialMouseX;
+		public int InitialMouseX { get; set; }
 
 		/// <summary>
-		/// The Y position of the mouse during the last frame, relative to the <see cref="ViewportWidget"/>.
+		/// Gets or sets the Y position of the mouse during the last frame, relative to the <see cref="ViewportWidget"/>.
 		/// </summary>
-		public int InitialMouseY;
+		public int InitialMouseY { get; set; }
 
 		/*
 			Runtime transitional OpenGL data.
@@ -113,7 +113,7 @@ namespace Everlook.Viewport
 		private int VertexArrayID;
 
 		/// <summary>
-		/// Whether or not this instance has been initialized and is ready
+		/// Gets a value indicating whether or not this instance has been initialized and is ready
 		/// to render objects.
 		/// </summary>
 		public bool IsInitialized
@@ -139,12 +139,12 @@ namespace Everlook.Viewport
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Viewport.ViewportRenderer"/> class.
 		/// </summary>
+		/// <param name="viewportWidget">The widget which the viewport should be rendered to.</param>
 		public ViewportRenderer(GLWidget viewportWidget)
 		{
 			this.ViewportWidget = viewportWidget;
 			this.Camera = new ViewportCamera();
 			this.Movement = new CameraMovement(this.Camera);
-
 
 			this.IsInitialized = false;
 		}
@@ -173,7 +173,7 @@ namespace Everlook.Viewport
 			GL.GenVertexArrays(1, out this.VertexArrayID);
 			GL.BindVertexArray(this.VertexArrayID);
 
-			//GL.Disable(EnableCap.AlphaTest);
+			// GL.Disable(EnableCap.AlphaTest);
 
 			// Make sure we use the depth buffer when drawing
 			GL.Enable(EnableCap.DepthTest);
@@ -192,11 +192,13 @@ namespace Everlook.Viewport
 			int widgetWidth = this.ViewportWidget.AllocatedWidth;
 			int widgetHeight = this.ViewportWidget.AllocatedHeight;
 			GL.Viewport(0, 0, widgetWidth, widgetHeight);
-			GL.ClearColor(
-				(float) this.Configuration.GetViewportBackgroundColour().Red,
-				(float) this.Configuration.GetViewportBackgroundColour().Green,
-				(float) this.Configuration.GetViewportBackgroundColour().Blue,
-				(float) this.Configuration.GetViewportBackgroundColour().Alpha);
+			GL.ClearColor
+			(
+				(float)this.Configuration.GetViewportBackgroundColour().Red,
+				(float)this.Configuration.GetViewportBackgroundColour().Green,
+				(float)this.Configuration.GetViewportBackgroundColour().Blue,
+				(float)this.Configuration.GetViewportBackgroundColour().Alpha
+			);
 
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
@@ -270,7 +272,7 @@ namespace Everlook.Viewport
 				}
 
 				this.FrameWatch.Stop();
-				this.DeltaTime = (float) this.FrameWatch.Elapsed.TotalMilliseconds / 1000;
+				this.DeltaTime = (float)this.FrameWatch.Elapsed.TotalMilliseconds / 1000;
 			}
 		}
 
@@ -312,10 +314,10 @@ namespace Everlook.Viewport
 		/// <summary>
 		/// Determines whether or not movement is currently disabled for the rendered object.
 		/// </summary>
+		/// <returns>true if movement is disabled; false otherwise.</returns>
 		public bool IsMovementDisabled()
 		{
-			return this.RenderTarget == null ||
-			       !this.RenderTarget.IsInitialized;
+			return this.RenderTarget == null || !this.RenderTarget.IsInitialized;
 		}
 
 		/// <summary>
@@ -358,4 +360,3 @@ namespace Everlook.Viewport
 		}
 	}
 }
-

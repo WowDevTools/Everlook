@@ -24,9 +24,19 @@ using OpenTK.Graphics;
 
 namespace Everlook.Viewport.Rendering.Core.Lights
 {
+	/// <summary>
+	/// Represents an ambient light source.
+	/// </summary>
 	public class AmbientLight
 	{
+		/// <summary>
+		/// Gets or sets the colour of the light.
+		/// </summary>
 		public Color4 LightColour { get; set; }
+
+		/// <summary>
+		/// Gets or sets the intensity, in lux, of the light.
+		/// </summary>
 		public float Intensity { get; set; }
 	}
 }

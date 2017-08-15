@@ -1,5 +1,5 @@
 ﻿//
-//  TextureUniform.cs
+//  ProjectionType.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -20,38 +20,23 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#pragma warning disable SA1025 // Code must not contain multiple whitespace in a row, used for alignment
-
-namespace Everlook.Viewport.Rendering.Core
+namespace Everlook.Viewport.Rendering.Interfaces
 {
 	/// <summary>
-	/// Uniform slots for textures, used for identifying the corresponding variables and slots in the shader.
+	/// The type of projection used in OpenGL rendering.
 	/// </summary>
-	public enum TextureUniform
+	public enum ProjectionType
 	{
 		/// <summary>
-		/// The first diffuse texture.
+		/// Perspective rendering, or a 3D view with proper relational
+		/// scale and perspective.
 		/// </summary>
-		Diffuse0  = 0,
+		Perspective,
 
 		/// <summary>
-		/// The first specular texture.
+		/// Orthographic rendering, or a "flat" view with no relational
+		/// scale or perspective.
 		/// </summary>
-		Specular0 = 1,
-
-		/// <summary>
-		/// The second diffuse texture.
-		/// </summary>
-		Diffuse1  = 2,
-
-		/// <summary>
-		/// The second specular texture.
-		/// </summary>
-		Specular1 = 3,
-
-		/// <summary>
-		/// An environment map.
-		/// </summary>
-		EnvMap    = 4
+		Orthographic
 	}
 }

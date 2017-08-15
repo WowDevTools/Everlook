@@ -56,31 +56,38 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Loads the bundled dictionary from disk.
 		/// </summary>
-		/// <param name="ct"></param>
-		/// <returns></returns>
-		private static async Task<ListfileDictionary> LoadDictionaryAsync(CancellationToken ct = new CancellationToken())
+		/// <param name="ct">A cancellation topen.</param>
+		/// <returns>A loaded ListfileDictionary.</returns>
+		private static Task<ListfileDictionary> LoadDictionaryAsync(CancellationToken ct)
 		{
-			ListfileDictionary dict = new ListfileDictionary();
-			await dict.LoadFromStreamAsync(File.OpenRead("Dictionary/dictionary.dic"), ct);
+			return Task.Run
+			(
+				() =>
+				{
+					var dict = new ListfileDictionary();
+					dict.LoadFromStream(File.OpenRead("Dictionary/dictionary.dic"), ct);
 
-			return dict;
+					return dict;
+				},
+				ct
+			);
 		}
 
-		///  <summary>
-		///  Attempts to load a game in a specified path, returning a <see cref="PackageGroup"/> object with the
-		///  packages in the path and an <see cref="OptimizedNodeTree"/> with a fully qualified node tree of the
-		///  package group.
-		///  If no packages are found, then this method will return null in both fields.
-		///  </summary>
+		/// <summary>
+		/// Attempts to load a game in a specified path, returning a <see cref="PackageGroup"/> object with the
+		/// packages in the path and an <see cref="OptimizedNodeTree"/> with a fully qualified node tree of the
+		/// package group.
+		/// If no packages are found, then this method will return null in both fields.
+		/// </summary>
 		/// <param name="gameAlias">The alias of the game at the path.</param>
 		/// <param name="gamePath">The path to load as a game.</param>
 		/// <param name="ct">A cancellation token.</param>
 		/// <param name="progress">An <see cref="IProgress{GameLoadingProgress}"/> object for progress reporting.</param>
-		/// <returns></returns>
+		/// <returns>A tuple with a package group and a node tree for the requested game.</returns>
 		public async Task<(PackageGroup packageGroup, OptimizedNodeTree nodeTree)> LoadGameAsync(
 			string gameAlias,
 			string gamePath,
-			CancellationToken ct = new CancellationToken(),
+			CancellationToken ct,
 			IProgress<GameLoadingProgress> progress = null)
 		{
 			progress?.Report(new GameLoadingProgress
@@ -90,11 +97,15 @@ namespace Everlook.Explorer
 				Alias = gameAlias
 			});
 
-			List<string> packagePaths = Directory.EnumerateFiles(gamePath, "*",
-					SearchOption.AllDirectories)
-				.Where(p => p.EndsWith(".mpq", StringComparison.InvariantCultureIgnoreCase))
-				.OrderBy(p => p)
-				.ToList();
+			List<string> packagePaths = Directory.EnumerateFiles
+			(
+				gamePath,
+				"*",
+				SearchOption.AllDirectories
+			)
+			.Where(p => p.EndsWith(".mpq", StringComparison.InvariantCultureIgnoreCase))
+			.OrderBy(p => p)
+			.ToList();
 
 			if (packagePaths.Count == 0)
 			{
@@ -220,7 +231,6 @@ namespace Everlook.Explorer
 				packageGroup = await PackageGroup.LoadAsync(gameAlias, packageSetHash, gamePath, ct, progress);
 			}
 
-
 			progress?.Report(new GameLoadingProgress
 			{
 				CompletionPercentage = 1,
@@ -236,8 +246,8 @@ namespace Everlook.Explorer
 		/// and dirty way of discerning changes in sets of files without hashing any of their contents. Useful
 		/// for large files like archives.
 		/// </summary>
-		/// <param name="packagePaths"></param>
-		/// <returns></returns>
+		/// <param name="packagePaths">The set of paths to hash together.</param>
+		/// <returns>The hash created from the path set.</returns>
 		private static string GeneratePathSetHash(IEnumerable<string> packagePaths)
 		{
 			StringBuilder sb = new StringBuilder();

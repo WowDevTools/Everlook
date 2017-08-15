@@ -36,6 +36,7 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <param name="fileReference">The <see cref="FileReference"/> to load.</param>
 		/// <typeparam name="T">The type that should be returned by the loading.</typeparam>
+		/// <returns>An object of type <typeparamref name="T"/>.</returns>
 		public delegate T LoadReferenceDelegate<out T>(FileReference fileReference);
 
 		/// <summary>
@@ -45,6 +46,7 @@ namespace Everlook.Utility
 		/// <param name="fileReference">The file reference associated with the object.</param>
 		/// <param name="version">The contextually relevant version of the object.</param>
 		/// <typeparam name="T">A type which can be encapsulated in another type implementing <see cref="IRenderable"/>.</typeparam>
+		/// <returns>A renderable object.</returns>
 		public delegate IRenderable CreateRenderableDelegate<in T>(T renderableItem, FileReference fileReference, WarcraftVersion version);
 	}
 }

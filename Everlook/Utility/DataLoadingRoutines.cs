@@ -137,13 +137,13 @@ namespace Everlook.Utility
 			return null;
 		}
 
-		///  <summary>
-		///  Creates a renderable object from the specified WMO object, and the specified package group it belongs to.
-		///  NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
-		///  The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
-		///  </summary>
-		///  <param name="worldModel">The model object.</param>
-		///  <param name="fileReference">The package group it belongs to.</param>
+		/// <summary>
+		/// Creates a renderable object from the specified WMO object, and the specified package group it belongs to.
+		/// NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
+		/// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
+		/// </summary>
+		/// <param name="worldModel">The model object.</param>
+		/// <param name="fileReference">The package group it belongs to.</param>
 		/// <param name="version">The contextually relevant version.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
 		public static IRenderable CreateRenderableWorldModel(WMO worldModel, FileReference fileReference, WarcraftVersion version)
@@ -161,7 +161,7 @@ namespace Everlook.Utility
 		/// Loads the specified BLP image from the archives and deserialize it.
 		/// </summary>
 		/// <param name="fileReference">A reference to a BLP image.</param>
-		/// <returns></returns>
+		/// <returns>A BLP object containing the image data pointed to by the reference.</returns>
 		public static BLP LoadBinaryImage(FileReference fileReference)
 		{
 			byte[] fileData = fileReference.Extract();
@@ -174,7 +174,7 @@ namespace Everlook.Utility
 				catch (FileLoadException fex)
 				{
 					Log.Warn($"FileLoadException when loading BLP image: {fex.Message}\n" +
-					         $"Please report this on GitHub or via email.");
+							 $"Please report this on GitHub or via email.");
 				}
 			}
 
@@ -183,14 +183,14 @@ namespace Everlook.Utility
 			return null;
 		}
 
-		///  <summary>
-		///  Creates a renderable object from the specified BLP object, aand the specified <see cref="FileReference"/>
-		///  it is associated with.
-		///  NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
-		///  The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
-		///  </summary>
-		///  <param name="binaryImage">The image object.</param>
-		///  <param name="fileReference">The package group it belongs to.</param>
+		/// <summary>
+		/// Creates a renderable object from the specified BLP object, aand the specified <see cref="FileReference"/>
+		/// it is associated with.
+		/// NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
+		/// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
+		/// </summary>
+		/// <param name="binaryImage">The image object.</param>
+		/// <param name="fileReference">The package group it belongs to.</param>
 		/// <param name="version">Unused.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
 		public static IRenderable CreateRenderableBinaryImage(BLP binaryImage, FileReference fileReference, WarcraftVersion version)
@@ -205,10 +205,10 @@ namespace Everlook.Utility
 		}
 
 		/// <summary>
-		/// Loads the specified BLP image from the archives and deserialize it.
+		/// Loads the specified image from the archives and deserializes it into a bitmap.
 		/// </summary>
-		/// <param name="fileReference">A reference to a BLP image.</param>
-		/// <returns></returns>
+		/// <param name="fileReference">A reference to an image.</param>
+		/// <returns>A bitmap containing the image data pointed to by the reference.</returns>
 		public static Bitmap LoadBitmapImage(FileReference fileReference)
 		{
 			byte[] fileData = fileReference.Extract();
@@ -224,7 +224,7 @@ namespace Everlook.Utility
 				catch (FileLoadException fex)
 				{
 					Log.Warn($"FileLoadException when loading bitmap image: {fex.Message}\n" +
-					         $"Please report this on GitHub or via email.");
+							 $"Please report this on GitHub or via email.");
 				}
 			}
 
@@ -233,14 +233,14 @@ namespace Everlook.Utility
 			return null;
 		}
 
-		///  <summary>
-		///  Creates a renderable object from the specified <see cref="Bitmap"/> object, and the specified
-		///  <see cref="FileReference"/> it is associated with.
-		///  NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
-		///  The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
-		///  </summary>
-		///  <param name="bitmapImage">The image object.</param>
-		///  <param name="fileReference">The package group it belongs to.</param>
+		/// <summary>
+		/// Creates a renderable object from the specified <see cref="Bitmap"/> object, and the specified
+		/// <see cref="FileReference"/> it is associated with.
+		/// NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
+		/// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
+		/// </summary>
+		/// <param name="bitmapImage">The image object.</param>
+		/// <param name="fileReference">The package group it belongs to.</param>
 		/// <param name="version">Unused.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
 		public static IRenderable CreateRenderableBitmapImage(Bitmap bitmapImage, FileReference fileReference, WarcraftVersion version)

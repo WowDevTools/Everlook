@@ -37,7 +37,7 @@ namespace Everlook.UI
 	public partial class EverlookGameLoadingDialog : Gtk.Dialog
 	{
 		/// <summary>
-		/// The source of the cancellation token associated with this dialog.
+		/// Gets the source of the cancellation token associated with this dialog.
 		/// </summary>
 		public CancellationTokenSource CancellationSource { get; }
 
@@ -46,22 +46,23 @@ namespace Everlook.UI
 		private readonly uint JokeTimeoutID;
 
 		/// <summary>
-		/// The notifier object which can be used to update the loading dialog with new information.
+		/// Gets the notifier object which can be used to update the loading dialog with new information.
 		/// </summary>
 		public Progress<GameLoadingProgress> ProgressNotifier { get; }
 
 		/// <summary>
 		/// Creates a new dialog with the given window as its parent.
 		/// </summary>
-		/// <param name="parent"></param>
-		/// <returns></returns>
+		/// <param name="parent">The parent window.</param>
+		/// <returns>An initialized instance of the EverlookGameLoadingDialog class.</returns>
 		public static EverlookGameLoadingDialog Create(Window parent)
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.EverlookGameLoadingDialog.glade", null);
 			return new EverlookGameLoadingDialog(builder, builder.GetObject("GameLoadingDialog").Handle, parent);
 		}
 
-		private EverlookGameLoadingDialog(Builder builder, IntPtr handle, Window parent) : base(handle)
+		private EverlookGameLoadingDialog(Builder builder, IntPtr handle, Window parent)
+			: base(handle)
 		{
 			builder.Autoconnect(this);
 			this.TransientFor = parent;
@@ -80,7 +81,7 @@ namespace Everlook.UI
 			{
 				SetFraction(loadingProgress.CompletionPercentage);
 
-				string statusText = "";
+				string statusText = string.Empty;
 				switch (loadingProgress.State)
 				{
 					case GameLoadingState.SettingUp:
@@ -156,7 +157,7 @@ namespace Everlook.UI
 		/// <summary>
 		/// Sets the fraction of the dialog's loading bar.
 		/// </summary>
-		/// <param name="fraction"></param>
+		/// <param name="fraction">The fraction of the loading bar which is filled.</param>
 		public void SetFraction(double fraction)
 		{
 			this.GameLoadingProgressBar.Fraction = fraction;
@@ -165,7 +166,7 @@ namespace Everlook.UI
 		/// <summary>
 		/// Sets the status message of the dialog.
 		/// </summary>
-		/// <param name="statusMessage"></param>
+		/// <param name="statusMessage">The status message to set.</param>
 		public void SetStatusMessage(string statusMessage)
 		{
 			this.GameLoadingDialogLabel.Text = statusMessage;

@@ -68,13 +68,13 @@ namespace Everlook.Viewport.Rendering
 		public bool IsStatic => false;
 
 		/// <summary>
-		/// The projection method to use for this renderable object. Typically, this is Orthographic
+		/// Gets the projection method to use for this renderable object. Typically, this is Orthographic
 		/// or Perspective.
 		/// </summary>
 		public ProjectionType Projection => ProjectionType.Perspective;
 
 		/// <summary>
-		/// The default camera position for this renderable.
+		/// Gets the default camera position for this renderable.
 		/// </summary>
 		public Vector3 DefaultCameraPosition
 		{
@@ -102,7 +102,8 @@ namespace Everlook.Viewport.Rendering
 						.AsOpenTKVector(),
 						1.0f
 					)
-				).Xyz;
+				)
+				.Xyz;
 			}
 		}
 
@@ -113,7 +114,7 @@ namespace Everlook.Viewport.Rendering
 		private readonly WMO Model;
 
 		/// <summary>
-		/// The transform of the actor.
+		/// Gets or sets the transform of the actor.
 		/// </summary>
 		public Transform ActorTransform { get; set; }
 
@@ -138,30 +139,28 @@ namespace Everlook.Viewport.Rendering
 		private int BoundingBoxVertexIndexBufferID;
 
 		/// <summary>
-		/// Returns a value which represents whether or not the current renderable has been initialized.
+		/// Gets or sets a value indicating whether or not the current renderable has been initialized.
 		/// </summary>
 		public bool IsInitialized { get; set; }
 
 		/// <summary>
-		/// Sets whether or not the bounding boxes of the model groups should be rendered.
+		/// Gets or sets a value indicating whether or not the bounding boxes of the model groups should be rendered.
 		/// </summary>
 		public bool ShouldRenderBounds { get; set; }
 
 		/// <summary>
-		/// Gets or sets whether or not the wireframe of the object should be rendered.
+		/// Gets or sets a value indicating whether or not the wireframe of the object should be rendered.
 		/// </summary>
 		public bool ShouldRenderWireframe { get; set; }
 
 		private WorldModelShader Shader;
 
 		/// <summary>
-		/// The global light - effectively, a sun.
-		/// </summary>
-		private readonly DirectionalLight GlobalLighting;
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableWorldModel"/> class.
 		/// </summary>
+		/// <param name="inModel">The model to render.</param>
+		/// <param name="inPackageGroup">The package group the model belongs to.</param>
+		/// <param name="inVersion">The game version of the package group.</param>
 		public RenderableWorldModel(WMO inModel, PackageGroup inPackageGroup, WarcraftVersion inVersion)
 		{
 			this.Model = inModel;
@@ -175,14 +174,6 @@ namespace Everlook.Viewport.Rendering
 				Quaternion.FromAxisAngle(Vector3.UnitX, MathHelper.Pi),
 				new Vector3(1.0f, 1.0f, 1.0f)
 			);
-
-			this.GlobalLighting = new DirectionalLight
-			{
-				HorizontalAngle = 0.0f,
-				VerticalAngle = MathHelper.DegreesToRadians(-45.0f),
-				Intensity = 1.0f,
-				LightColour = new Color4(255, 188, 121, 255)
-			};
 
 			this.IsInitialized = false;
 
@@ -200,10 +191,6 @@ namespace Everlook.Viewport.Rendering
 			{
 				throw new ShaderNullException(typeof(WorldModelShader));
 			}
-
-			this.Shader.Lighting.SetLightColour(this.GlobalLighting.LightColour);
-			this.Shader.Lighting.SetLightDirection(this.GlobalLighting.LightVector);
-			this.Shader.Lighting.SetLightIntensity(this.GlobalLighting.Intensity);
 
 			this.Shader.Wireframe.SetWireframeColour(EverlookConfiguration.Instance.GetWireframeColour());
 
@@ -262,8 +249,13 @@ namespace Everlook.Viewport.Rendering
 					.ToArray();
 
 				GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferID);
-				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr) (groupVertexValues.Length * sizeof(float)),
-					groupVertexValues, BufferUsageHint.StaticDraw);
+				GL.BufferData
+				(
+					BufferTarget.ArrayBuffer,
+					(IntPtr)(groupVertexValues.Length * sizeof(float)),
+					groupVertexValues,
+					BufferUsageHint.StaticDraw
+				);
 
 				this.VertexBufferLookup.Add(modelGroup, vertexBufferID);
 
@@ -275,8 +267,13 @@ namespace Everlook.Viewport.Rendering
 					.ToArray();
 
 				GL.BindBuffer(BufferTarget.ArrayBuffer, normalBufferID);
-				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr) (groupNormalValues.Length * sizeof(float)),
-					groupNormalValues, BufferUsageHint.StaticDraw);
+				GL.BufferData
+				(
+					BufferTarget.ArrayBuffer,
+					(IntPtr)(groupNormalValues.Length * sizeof(float)),
+					groupNormalValues,
+					BufferUsageHint.StaticDraw
+				);
 
 				this.NormalBufferLookup.Add(modelGroup, normalBufferID);
 
@@ -288,16 +285,26 @@ namespace Everlook.Viewport.Rendering
 					.ToArray();
 
 				GL.BindBuffer(BufferTarget.ArrayBuffer, coordinateBufferID);
-				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr) (groupTextureCoordinateValues.Length * sizeof(float)),
-					groupTextureCoordinateValues, BufferUsageHint.StaticDraw);
+				GL.BufferData
+				(
+					BufferTarget.ArrayBuffer,
+					(IntPtr)(groupTextureCoordinateValues.Length * sizeof(float)),
+					groupTextureCoordinateValues,
+					BufferUsageHint.StaticDraw
+				);
 
 				this.TextureCoordinateBufferLookup.Add(modelGroup, coordinateBufferID);
 
 				// Upload vertex indices for this group
 				ushort[] groupVertexIndexValuesArray = modelGroup.GetVertexIndices().ToArray();
 				GL.BindBuffer(BufferTarget.ElementArrayBuffer, vertexIndicesID);
-				GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr) (groupVertexIndexValuesArray.Length * sizeof(ushort)),
-					groupVertexIndexValuesArray, BufferUsageHint.StaticDraw);
+				GL.BufferData
+				(
+					BufferTarget.ElementArrayBuffer,
+					(IntPtr)(groupVertexIndexValuesArray.Length * sizeof(ushort)),
+					groupVertexIndexValuesArray,
+					BufferUsageHint.StaticDraw
+				);
 
 				this.VertexIndexBufferLookup.Add(modelGroup, vertexIndicesID);
 
@@ -310,8 +317,13 @@ namespace Everlook.Viewport.Rendering
 					.ToArray();
 
 				GL.BindBuffer(BufferTarget.ArrayBuffer, boundingBoxVertexBufferID);
-				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(boundingBoxVertices.Length * sizeof(float)),
-					boundingBoxVertices, BufferUsageHint.StaticDraw);
+				GL.BufferData
+				(
+					BufferTarget.ArrayBuffer,
+					(IntPtr)(boundingBoxVertices.Length * sizeof(float)),
+					boundingBoxVertices,
+					BufferUsageHint.StaticDraw
+				);
 
 				this.BoundingBoxVertexBufferLookup.Add(modelGroup, boundingBoxVertexBufferID);
 			}
@@ -332,8 +344,13 @@ namespace Everlook.Viewport.Rendering
 			};
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, boundingBoxVertexIndicesBufferID);
-			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(boundingBoxIndexValuesArray.Length * sizeof(byte)),
-				boundingBoxIndexValuesArray, BufferUsageHint.StaticDraw);
+			GL.BufferData
+			(
+				BufferTarget.ArrayBuffer,
+				(IntPtr)(boundingBoxIndexValuesArray.Length * sizeof(byte)),
+				boundingBoxIndexValuesArray,
+				BufferUsageHint.StaticDraw
+			);
 
 			this.IsInitialized = true;
 		}
@@ -341,15 +358,14 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Ticks this actor, advancing or performing any time-based actions.
 		/// </summary>
+		/// <param name="deltaTime">The time delta, in seconds.</param>
 		public void Tick(float deltaTime)
 		{
 			// TODO: Tick the animations of all referenced doodads.
 			// Doodads that are not rendered should still have their states advanced.
 		}
 
-		/// <summary>
-		/// Renders the current object in the current OpenGL context.
-		/// </summary>
+		/// <inheritdoc />
 		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
 		{
 			if (!this.IsInitialized)
@@ -380,7 +396,7 @@ namespace Everlook.Viewport.Rendering
 					BoundingBox groupBoundingBox = modelGroup.GetBoundingBox().ToOpenGLBoundingBox().Transform(ref modelView);
 					if (camera.CanSee(groupBoundingBox))
 					{
-						//continue;
+						// continue;
 						RenderBoundingBox(modelGroup, modelViewProjection, Color4.LimeGreen);
 					}
 					else
@@ -470,9 +486,15 @@ namespace Everlook.Viewport.Rendering
 				this.Shader.BindTexture2D(TextureUnit.Texture0, TextureUniform.Diffuse0, texture);
 
 				// Finally, draw the model
-				GL.DrawRangeElements(PrimitiveType.Triangles, renderBatch.FirstPolygonIndex,
-					renderBatch.FirstPolygonIndex + renderBatch.PolygonIndexCount - 1, renderBatch.PolygonIndexCount,
-					DrawElementsType.UnsignedShort, new IntPtr(renderBatch.FirstPolygonIndex * 2));
+				GL.DrawRangeElements
+				(
+					PrimitiveType.Triangles,
+					renderBatch.FirstPolygonIndex,
+					renderBatch.FirstPolygonIndex + renderBatch.PolygonIndexCount - 1,
+					renderBatch.PolygonIndexCount,
+					DrawElementsType.UnsignedShort,
+					new IntPtr(renderBatch.FirstPolygonIndex * 2)
+				);
 			}
 
 			// Release the attribute arrays
@@ -483,16 +505,16 @@ namespace Everlook.Viewport.Rendering
 
 		private void RenderBoundingBox(ModelGroup modelGroup, Matrix4 modelViewProjection, Color4 colour)
 		{
-			BoundingBoxShader bbShader = this.Cache.GetShader(EverlookShader.BoundingBox) as BoundingBoxShader;
+			BoundingBoxShader boxShader = this.Cache.GetShader(EverlookShader.BoundingBox) as BoundingBoxShader;
 
-			if (bbShader == null)
+			if (boxShader == null)
 			{
 				throw new ShaderNullException(typeof(BoundingBoxShader));
 			}
 
-			bbShader.Enable();
-			bbShader.SetMVPMatrix(modelViewProjection);
-			bbShader.SetLineColour(colour);
+			boxShader.Enable();
+			boxShader.SetMVPMatrix(modelViewProjection);
+			boxShader.SetLineColour(colour);
 
 			GL.Disable(EnableCap.CullFace);
 
@@ -500,21 +522,29 @@ namespace Everlook.Viewport.Rendering
 			// Send the vertices to the shader
 			GL.EnableVertexAttribArray(0);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, this.BoundingBoxVertexBufferLookup[modelGroup]);
-			GL.VertexAttribPointer(
+			GL.VertexAttribPointer
+			(
 				0,
 				3,
 				VertexAttribPointerType.Float,
 				false,
 				0,
-				0);
+				0
+			);
 
 			// Bind the index buffer
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.BoundingBoxVertexIndexBufferID);
 
 			// Now draw the box
-			GL.DrawRangeElements(PrimitiveType.LineLoop, 0,
-				23, 24,
-				DrawElementsType.UnsignedByte, new IntPtr(0));
+			GL.DrawRangeElements
+			(
+				PrimitiveType.LineLoop,
+				0,
+				23,
+				24,
+				DrawElementsType.UnsignedByte,
+				new IntPtr(0)
+			);
 
 			GL.DisableVertexAttribArray(0);
 		}
@@ -539,7 +569,7 @@ namespace Everlook.Viewport.Rendering
 				catch (InvalidFileSectorTableException fex)
 				{
 					Log.Warn($"Failed to load the texture \"{texturePath}\" due to an invalid sector table (\"{fex.Message}\").\n" +
-					         $" A fallback texture has been loaded instead.");
+							 $"A fallback texture has been loaded instead.");
 					this.TextureLookup.Add(texturePath, this.Cache.FallbackTexture);
 				}
 			}

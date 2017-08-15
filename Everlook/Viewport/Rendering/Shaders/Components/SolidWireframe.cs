@@ -44,6 +44,11 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 
 		private readonly int ParentShaderNativeID;
 
+		private bool EnabledInternal;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether or not the wireframe should be rendered.
+		/// </summary>
 		public bool Enabled
 		{
 			get => this.EnabledInternal;
@@ -53,8 +58,11 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 				SetWireframeState(value);
 			}
 		}
-		private bool EnabledInternal;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SolidWireframe"/> class, and attaches it to the given parent shader.
+		/// </summary>
+		/// <param name="parentShaderID">The native ID of the parent shader.</param>
 		public SolidWireframe(int parentShaderID)
 		{
 			this.ParentShaderNativeID = parentShaderID;
@@ -78,6 +86,11 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 			GL.Uniform1(enabledLoc, isEnabled ? 1 : 0);
 		}
 
+		/// <summary>
+		/// Sets the width of the lines in the wireframe. Note that this line is for the edge of one triangle, and will
+		/// effectively be doubled, since triangles share lines.
+		/// </summary>
+		/// <param name="lineWidth">The line width, in pixels.</param>
 		public void SetWireframeLineWidth(int lineWidth)
 		{
 			EnableParent();
@@ -86,6 +99,10 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 			GL.Uniform1(lineWidthLoc, lineWidth);
 		}
 
+		/// <summary>
+		/// Sets the colour of the wireframe.
+		/// </summary>
+		/// <param name="wireframeColour">The wire colour.</param>
 		public void SetWireframeColour(RGBA wireframeColour)
 		{
 			Color4 colour = new Color4
@@ -99,6 +116,10 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 			SetWireframeColour(colour);
 		}
 
+		/// <summary>
+		/// Sets the colour of the wireframe.
+		/// </summary>
+		/// <param name="wireframeColour">The wire colour.</param>
 		public void SetWireframeColour(Color4 wireframeColour)
 		{
 			EnableParent();
@@ -107,6 +128,10 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 			GL.Uniform4(colourLoc, wireframeColour);
 		}
 
+		/// <summary>
+		/// Sets the width of the edge fade of the wireframe's lines.
+		/// </summary>
+		/// <param name="fadeWidth">The width in pixels.</param>
 		public void SetWireframeFadeWidth(int fadeWidth)
 		{
 			EnableParent();
@@ -118,7 +143,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 		/// <summary>
 		/// Sets the viewport matrix that will transform NDC coordinates to screen space coordinates.
 		/// </summary>
-		/// <param name="viewportMatrix"></param>
+		/// <param name="viewportMatrix">The viewport matrix.</param>
 		public void SetViewportMatrix(Matrix4 viewportMatrix)
 		{
 			EnableParent();

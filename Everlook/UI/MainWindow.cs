@@ -41,12 +41,13 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Input;
 using Warcraft.Core;
+
 using Application = Gtk.Application;
 using EventArgs = System.EventArgs;
-using IOPath = System.IO.Path;
 using FileNode = liblistfile.NodeTree.Node;
-using WindowState = Gdk.WindowState;
+using IOPath = System.IO.Path;
 using Task = System.Threading.Tasks.Task;
+using WindowState = Gdk.WindowState;
 
 namespace Everlook.UI
 {
@@ -72,14 +73,14 @@ namespace Everlook.UI
 		private readonly ViewportRenderer RenderingEngine;
 
 		/// <summary>
-		/// Whether or not the program is shutting down. This is used to remove callbacks and events.
-		/// </summary>
-		private bool IsShuttingDown;
-
-		/// <summary>
 		/// Task scheduler for the UI thread. This allows task-based code to have very simple UI callbacks.
 		/// </summary>
 		private readonly TaskScheduler UiThreadScheduler;
+
+		/// <summary>
+		/// Whether or not the program is shutting down. This is used to remove callbacks and events.
+		/// </summary>
+		private bool IsShuttingDown;
 
 		/// <summary>
 		/// Cancellation token source for file loading operations.
@@ -92,8 +93,9 @@ namespace Everlook.UI
 		private AudioSource GlobalAudio;
 
 		/// <summary>
-		/// Creates an instance of the MainWindow class, loading the glade XML UI as needed.
+		/// Creates an instance of the <see cref="MainWindow"/> class, loading the glade XML UI as needed.
 		/// </summary>
+		/// <returns>An initialized instance of the MainWindow class.</returns>
 		public static MainWindow Create()
 		{
 			Builder builder = new Builder(null, "Everlook.interfaces.Everlook.glade", null);
@@ -137,7 +139,7 @@ namespace Everlook.UI
 				EventMask.KeyPressMask |
 				EventMask.KeyReleaseMask;
 
-			this.ViewportWidget.Initialized += delegate
+			this.ViewportWidget.Initialized += (sender, args) =>
 			{
 				// Initialize all OpenGL rendering parameters
 				this.RenderingEngine.Initialize();
@@ -160,20 +162,19 @@ namespace Everlook.UI
 			this.GameTabNotebook.ClearPages();
 
 			this.ExportQueueTreeView.ButtonPressEvent += OnExportQueueButtonPressed;
-			this.ExportQueueTreeView.GetColumn(0)
-				.SetCellDataFunc
-				(
-					this.ExportQueueTreeView.GetColumn(0).Cells[0],
-					RenderExportQueueReferenceIcon
-				);
+			this.ExportQueueTreeView.GetColumn(0).SetCellDataFunc
+			(
+				this.ExportQueueTreeView.GetColumn(0).Cells[0],
+				RenderExportQueueReferenceIcon
+			);
 
 			this.ExportQueueTreeView.GetColumn(0).Expand = true;
-			this.ExportQueueTreeView.GetColumn(0)
-				.SetCellDataFunc
-				(
-					this.ExportQueueTreeView.GetColumn(0).Cells[1],
-					RenderExportQueueReferenceName
-				);
+			this.ExportQueueTreeView.GetColumn(0).SetCellDataFunc
+			(
+				this.ExportQueueTreeView.GetColumn(0).Cells[1],
+				RenderExportQueueReferenceName
+			);
+
 			this.RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
 
 			this.FileFilterComboBox.Changed += OnFilterChanged;
@@ -196,7 +197,7 @@ namespace Everlook.UI
 					return;
 				}
 
-				image.ChannelMask.W = this.RenderAlphaCheckButton.Active ? 1.0f : 0.0f;
+				image.RenderAlphaChannel = this.RenderAlphaCheckButton.Active;
 			};
 
 			this.RenderRedCheckButton.Toggled += (sender, args) =>
@@ -207,7 +208,7 @@ namespace Everlook.UI
 					return;
 				}
 
-				image.ChannelMask.X = this.RenderRedCheckButton.Active ? 1.0f : 0.0f;
+				image.RenderRedChannel = this.RenderRedCheckButton.Active;
 			};
 
 			this.RenderGreenCheckButton.Toggled += (sender, args) =>
@@ -218,7 +219,7 @@ namespace Everlook.UI
 					return;
 				}
 
-				image.ChannelMask.Y = this.RenderGreenCheckButton.Active ? 1.0f : 0.0f;
+				image.RenderGreenChannel = this.RenderGreenCheckButton.Active;
 			};
 
 			this.RenderBlueCheckButton.Toggled += (sender, args) =>
@@ -229,7 +230,7 @@ namespace Everlook.UI
 					return;
 				}
 
-				image.ChannelMask.Z = this.RenderBlueCheckButton.Active ? 1.0f : 0.0f;
+				image.RenderBlueChannel = this.RenderBlueCheckButton.Active;
 			};
 
 			this.RenderBoundsCheckButton.Toggled += (sender, args) =>
@@ -260,8 +261,8 @@ namespace Everlook.UI
 		/// <summary>
 		/// Handles expansion of the viewport pane when the window is maximized.
 		/// </summary>
-		/// <param name="o"></param>
-		/// <param name="args"></param>
+		/// <param name="o">The sending object.</param>
+		/// <param name="args">The event arguments.</param>
 		[ConnectBefore]
 		private void OnWindowStateChanged(object o, WindowStateEventArgs args)
 		{
@@ -270,8 +271,8 @@ namespace Everlook.UI
 				this.ViewportPaned.Position =
 					this.ViewportPaned.AllocatedHeight +
 					this.LowerBoxPaned.AllocatedHeight +
-					(int) this.ViewportAlignment.BottomPadding +
-					(int) this.LowerBoxAlignment.TopPadding;
+					(int)this.ViewportAlignment.BottomPadding +
+					(int)this.LowerBoxAlignment.TopPadding;
 			}
 
 			this.ViewportHasPendingRedraw = true;
@@ -280,8 +281,8 @@ namespace Everlook.UI
 		/// <summary>
 		/// Handles changing the cursor when leaving the viewport.
 		/// </summary>
-		/// <param name="o"></param>
-		/// <param name="args"></param>
+		/// <param name="o">The sending object.</param>
+		/// <param name="args">The event arguments.</param>
 		[ConnectBefore]
 		private void OnViewportMouseLeave(object o, LeaveNotifyEventArgs args)
 		{
@@ -291,8 +292,8 @@ namespace Everlook.UI
 		/// <summary>
 		/// Handles changing the cursor when hovering over the viewport
 		/// </summary>
-		/// <param name="o"></param>
-		/// <param name="args"></param>
+		/// <param name="o">The sending object.</param>
+		/// <param name="args">The event arguments.</param>
 		[ConnectBefore]
 		private void OnViewportMouseEnter(object o, EnterNotifyEventArgs args)
 		{
@@ -305,15 +306,14 @@ namespace Everlook.UI
 		/// <summary>
 		/// Renders the name of a file reference in the export queue.
 		/// </summary>
-		/// <param name="column"></param>
-		/// <param name="cell"></param>
-		/// <param name="model"></param>
-		/// <param name="iter"></param>
-		private static void RenderExportQueueReferenceName(TreeViewColumn column, CellRenderer cell, ITreeModel model,
-			TreeIter iter)
+		/// <param name="column">The column which the cell is in.</param>
+		/// <param name="cell">The cell which the reference is in.</param>
+		/// <param name="model">The model of the treeview.</param>
+		/// <param name="iter">The <see cref="TreeIter"/> pointing to the row the reference is in.</param>
+		private static void RenderExportQueueReferenceName(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			CellRendererText cellText = cell as CellRendererText;
-			FileReference reference = (FileReference) model.GetValue(iter, 0);
+			FileReference reference = (FileReference)model.GetValue(iter, 0);
 
 			if (reference == null || cellText == null)
 			{
@@ -326,15 +326,14 @@ namespace Everlook.UI
 		/// <summary>
 		/// Renders the icon of a file reference in the export queue.
 		/// </summary>
-		/// <param name="column"></param>
-		/// <param name="cell"></param>
-		/// <param name="model"></param>
-		/// <param name="iter"></param>
-		private static void RenderExportQueueReferenceIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model,
-			TreeIter iter)
+		/// <param name="column">The column which the cell is in.</param>
+		/// <param name="cell">The cell which the icon is in.</param>
+		/// <param name="model">The model of the treeview.</param>
+		/// <param name="iter">The <see cref="TreeIter"/> pointing to the row the icon is in.</param>
+		private static void RenderExportQueueReferenceIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			CellRendererPixbuf cellIcon = cell as CellRendererPixbuf;
-			FileReference reference = (FileReference) model.GetValue(iter, 0);
+			FileReference reference = (FileReference)model.GetValue(iter, 0);
 
 			if (reference == null || cellIcon == null)
 			{
@@ -353,8 +352,8 @@ namespace Everlook.UI
 		/// <summary>
 		/// Handles updating the filter state for the game pages when the user changes it in the UI.
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="e">The event arguments.</param>
 		private async void OnFilterChanged(object sender, EventArgs e)
 		{
 			ComboBox box = sender as ComboBox;
@@ -365,10 +364,13 @@ namespace Everlook.UI
 
 			this.StatusSpinner.Active = true;
 			uint refilterStatusContextID = this.MainStatusBar.GetContextId("refreshFilter");
-			uint refilterStatusMessageID = this.MainStatusBar.Push(refilterStatusContextID,
-				"Refiltering node trees...");
+			uint refilterStatusMessageID = this.MainStatusBar.Push
+			(
+				refilterStatusContextID,
+				"Refiltering node trees..."
+			);
 
-			FilterType filterType = (FilterType) box.Active;
+			FilterType filterType = (FilterType)box.Active;
 			foreach (GamePage page in this.GamePages)
 			{
 				if (filterType == FilterType.All)
@@ -377,7 +379,6 @@ namespace Everlook.UI
 
 					page.SetTreeSensitivity(false);
 					await page.RefilterAsync();
-					//page.Refilter();
 					page.SetTreeSensitivity(true);
 				}
 				else
@@ -387,7 +388,6 @@ namespace Everlook.UI
 
 					page.SetTreeSensitivity(false);
 					await page.RefilterAsync();
-					//page.Refilter();
 					page.SetTreeSensitivity(true);
 				}
 			}
@@ -399,8 +399,8 @@ namespace Everlook.UI
 		/// <summary>
 		/// Performs any actions which should occur after the window is visible to the user.
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="eventArgs">The event arguments.</param>
 		private async void OnMainWindowShown(object sender, EventArgs eventArgs)
 		{
 			await LoadGames();
@@ -409,7 +409,6 @@ namespace Everlook.UI
 		/// <summary>
 		/// Loads the games stored in the preferences into the UI.
 		/// </summary>
-		/// <returns></returns>
 		private async Task LoadGames()
 		{
 			GameLoader loader = new GameLoader();
@@ -475,7 +474,7 @@ namespace Everlook.UI
 			if (Enum.IsDefined(typeof(ControlPage), pageToEnable))
 			{
 				// Set the page
-				this.ItemControlNotebook.Page = (int) pageToEnable;
+				this.ItemControlNotebook.Page = (int)pageToEnable;
 
 				// Disable the other pages
 				foreach (ControlPage otherPage in Enum.GetValues(typeof(ControlPage)))
@@ -505,10 +504,10 @@ namespace Everlook.UI
 						this.RenderGreenCheckButton.Sensitive = true;
 						this.RenderBlueCheckButton.Sensitive = true;
 
-						image.ChannelMask.W = this.RenderAlphaCheckButton.Active ? 1.0f : 0.0f;
-						image.ChannelMask.X = this.RenderRedCheckButton.Active ? 1.0f : 0.0f;
-						image.ChannelMask.Y = this.RenderGreenCheckButton.Active ? 1.0f : 0.0f;
-						image.ChannelMask.Z = this.RenderBlueCheckButton.Active ? 1.0f : 0.0f;
+						image.RenderAlphaChannel = this.RenderAlphaCheckButton.Active;
+						image.RenderRedChannel = this.RenderRedCheckButton.Active;
+						image.RenderGreenChannel = this.RenderGreenCheckButton.Active;
+						image.RenderBlueChannel = this.RenderBlueCheckButton.Active;
 						break;
 					}
 					case ControlPage.Model:
@@ -622,8 +621,11 @@ namespace Everlook.UI
 
 			string modelName = fileReference.Filename;
 			uint modelStatusMessageContextID = this.MainStatusBar.GetContextId($"itemLoad_{modelName}");
-			uint modelStatusMessageID = this.MainStatusBar.Push(modelStatusMessageContextID,
-				$"Loading \"{modelName}\"...");
+			uint modelStatusMessageID = this.MainStatusBar.Push
+			(
+				modelStatusMessageContextID,
+				$"Loading \"{modelName}\"..."
+			);
 
 			try
 			{
@@ -793,7 +795,7 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
-		///
+		/// Sets the viewport to redraw whenever the widget gets a configure event.
 		/// </summary>
 		/// <param name="o">The sending object.</param>
 		/// <param name="args">The configuration arguments.</param>
@@ -830,7 +832,7 @@ namespace Everlook.UI
 				{
 					using (EverlookImageExportDialog exportDialog = EverlookImageExportDialog.Create(fileReference))
 					{
-						if (exportDialog.Run() == (int) ResponseType.Ok)
+						if (exportDialog.Run() == (int)ResponseType.Ok)
 						{
 							exportDialog.RunExport();
 						}
@@ -873,7 +875,7 @@ namespace Everlook.UI
 			using (EverlookPreferences preferencesDialog = EverlookPreferences.Create())
 			{
 				preferencesDialog.TransientFor = this;
-				if (preferencesDialog.Run() == (int) ResponseType.Ok)
+				if (preferencesDialog.Run() == (int)ResponseType.Ok)
 				{
 					preferencesDialog.SavePreferences();
 					ReloadRuntimeValues();
@@ -899,12 +901,15 @@ namespace Everlook.UI
 					this.FileLoadingCancellationSource.Cancel();
 					this.FileLoadingCancellationSource = new CancellationTokenSource();
 
-					await DisplayRenderableFile(page,
+					await DisplayRenderableFile
+					(
+						page,
 						fileReference,
 						DataLoadingRoutines.LoadBinaryImage,
 						DataLoadingRoutines.CreateRenderableBinaryImage,
 						ControlPage.Image,
-						this.FileLoadingCancellationSource.Token);
+						this.FileLoadingCancellationSource.Token
+					);
 
 					break;
 				}
@@ -913,12 +918,15 @@ namespace Everlook.UI
 					this.FileLoadingCancellationSource.Cancel();
 					this.FileLoadingCancellationSource = new CancellationTokenSource();
 
-					await DisplayRenderableFile(page,
+					await DisplayRenderableFile
+					(
+						page,
 						fileReference,
 						DataLoadingRoutines.LoadWorldModel,
 						DataLoadingRoutines.CreateRenderableWorldModel,
 						ControlPage.Model,
-						this.FileLoadingCancellationSource.Token);
+						this.FileLoadingCancellationSource.Token
+					);
 
 					break;
 				}
@@ -927,12 +935,15 @@ namespace Everlook.UI
 					this.FileLoadingCancellationSource.Cancel();
 					this.FileLoadingCancellationSource = new CancellationTokenSource();
 
-					await DisplayRenderableFile(page,
+					await DisplayRenderableFile
+					(
+						page,
 						fileReference,
 						DataLoadingRoutines.LoadWorldModelGroup,
 						DataLoadingRoutines.CreateRenderableWorldModel,
 						ControlPage.Model,
-						this.FileLoadingCancellationSource.Token);
+						this.FileLoadingCancellationSource.Token
+					);
 
 					break;
 				}
@@ -943,12 +954,16 @@ namespace Everlook.UI
 					this.FileLoadingCancellationSource.Cancel();
 					this.FileLoadingCancellationSource = new CancellationTokenSource();
 
-					await DisplayRenderableFile(page,
+					await DisplayRenderableFile
+					(
+						page,
 						fileReference,
 						DataLoadingRoutines.LoadBitmapImage,
 						DataLoadingRoutines.CreateRenderableBitmapImage,
 						ControlPage.Image,
-						this.FileLoadingCancellationSource.Token);
+						this.FileLoadingCancellationSource.Token
+					);
+
 					break;
 				}
 				case WarcraftFileType.WaveAudio:
@@ -982,7 +997,7 @@ namespace Everlook.UI
 			}
 
 			TreePath path;
-			this.ExportQueueTreeView.GetPathAtPos((int) e.Event.X, (int) e.Event.Y, out path);
+			this.ExportQueueTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out path);
 
 			if (path == null)
 			{
@@ -992,7 +1007,7 @@ namespace Everlook.UI
 			TreeIter iter;
 			this.ExportQueueListStore.GetIter(out iter, path);
 
-			FileReference queuedReference = (FileReference) this.ExportQueueListStore.GetValue(iter, 0);
+			FileReference queuedReference = (FileReference)this.ExportQueueListStore.GetValue(iter, 0);
 
 			if (string.IsNullOrEmpty(queuedReference?.FilePath))
 			{

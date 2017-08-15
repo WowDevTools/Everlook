@@ -58,4 +58,3 @@ namespace Everlook.Export.Audio
 		FLAC = 4
 	}
 }
-

@@ -24,17 +24,34 @@ using System;
 
 namespace Everlook.Exceptions.Shader
 {
+	/// <summary>
+	/// An exception thrown when a shader fails to link.
+	/// </summary>
 	public class ShaderLinkingException : Exception
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ShaderLinkingException"/> class.
+		/// </summary>
 		public ShaderLinkingException()
 		{
 		}
 
-		public ShaderLinkingException(string message) : base(message)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ShaderLinkingException"/> class.
+		/// </summary>
+		/// <param name="message">The message to include with the exception.</param>
+		public ShaderLinkingException(string message)
+			: base(message)
 		{
 		}
 
-		public ShaderLinkingException(string message, Exception inner) : base(message, inner)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ShaderLinkingException"/> class.
+		/// </summary>
+		/// <param name="message">The message to include with the exception.</param>
+		/// <param name="inner">The exception which caused this exception.</param>
+		public ShaderLinkingException(string message, Exception inner)
+			: base(message, inner)
 		{
 		}
 	}

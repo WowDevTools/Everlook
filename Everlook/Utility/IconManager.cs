@@ -38,12 +38,12 @@ namespace Everlook.Utility
 	/// </summary>
 	public static class IconManager
 	{
-		private static Dictionary<(string iconName, int iconSize), Pixbuf> IconCache = new Dictionary<(string iconName, int iconSize), Pixbuf>();
-
 		/// <summary>
 		/// Logger instance for this class.
 		/// </summary>
 		private static readonly ILog Log = LogManager.GetLogger(typeof(IconManager));
+
+		private static Dictionary<(string iconName, int iconSize), Pixbuf> IconCache = new Dictionary<(string iconName, int iconSize), Pixbuf>();
 
 		/// <summary>
 		/// Loads all embedded builtin icons into the application's icon theme.
@@ -53,16 +53,15 @@ namespace Everlook.Utility
 			Assembly executingAssembly = Assembly.GetExecutingAssembly();
 			string[] manifestResourceNames = executingAssembly
 				.GetManifestResourceNames();
-			IEnumerable<string> manifestIcons = manifestResourceNames
-				.Where
+			IEnumerable<string> manifestIcons = manifestResourceNames.Where
+			(
+				path =>
+				path.Contains(".Icons.") &&
 				(
-					path =>
-					path.Contains(".Icons.") &&
-					(
-						path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-						path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase)
-					)
-				);
+					path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+					path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase)
+				)
+			);
 
 			foreach (string manifestIconName in manifestIcons)
 			{
@@ -70,7 +69,6 @@ namespace Everlook.Utility
 				// Note that this assumes that there is only a single extension.
 				string[] manifestNameParts = manifestIconName.Split('.');
 				string iconName = manifestNameParts.ElementAt(manifestNameParts.Length - 2);
-
 
 				Pixbuf iconBuffer = LoadEmbeddedImage(manifestIconName);
 				if (iconBuffer != null)
@@ -110,8 +108,8 @@ namespace Everlook.Utility
 		/// Gets the specified icon as a pixel buffer. If the icon is not found in the current theme, or
 		/// if loading should fail for any other reason, a default icon will be returned instead.
 		/// </summary>
-		/// <param name="iconName"></param>
-		/// <returns></returns>
+		/// <param name="iconName">The name of the icon.</param>
+		/// <returns>A pixel buffer containing the icon.</returns>
 		public static Pixbuf GetIcon(string iconName)
 		{
 			try
@@ -121,7 +119,7 @@ namespace Everlook.Utility
 			catch (GException gex)
 			{
 				Log.Warn($"Loading of icon \"{iconName}\" failed. Exception message: {gex.Message}\n" +
-				         $"A fallback icon will be used instead.");
+						 $"A fallback icon will be used instead.");
 				return LoadIconPixbuf("empty");
 			}
 		}
@@ -293,7 +291,7 @@ namespace Everlook.Utility
 		/// Thrown for a number of reasons, but can be thrown if the icon is not present
 		/// in the current icon theme.
 		/// </exception>
-		/// <returns></returns>
+		/// <returns>A pixel buffer containing the icon.</returns>
 		private static Pixbuf LoadIconPixbuf(string iconName, int size = 16)
 		{
 			var key = (iconName, size);
@@ -304,7 +302,6 @@ namespace Everlook.Utility
 			}
 
 			return IconCache[key];
-
 		}
 	}
 }

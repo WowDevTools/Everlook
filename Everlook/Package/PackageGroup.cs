@@ -26,10 +26,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Warcraft.MPQ.FileInfo;
-using Warcraft.MPQ;
 using Everlook.Explorer;
 using log4net;
+using Warcraft.MPQ;
+using Warcraft.MPQ.FileInfo;
+
 using FileNode = liblistfile.NodeTree.Node;
 
 namespace Everlook.Package
@@ -51,7 +52,7 @@ namespace Everlook.Package
 		/// Gets the name of the package group.
 		/// </summary>
 		/// <value>The name of the group.</value>
-		public readonly string GroupName;
+		public string GroupName { get; }
 
 		/// <summary>
 		/// The packages handled by this package group.
@@ -61,6 +62,9 @@ namespace Everlook.Package
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Package.PackageGroup"/> class.
 		/// </summary>
+		/// <param name="groupName">The name of the group.</param>
+		/// <param name="rootPackageDirectory">The root directory where packages should be searched for.</param>
+		/// <exception cref="ArgumentNullException">Thrown if the name is null or empty.</exception>
 		public PackageGroup(string groupName, string rootPackageDirectory)
 		{
 			if (string.IsNullOrEmpty(groupName))
@@ -74,10 +78,11 @@ namespace Everlook.Package
 		}
 
 		/// <summary>
-		/// Creates a new, empty package group.
+		/// Initializes a new instance of the <see cref="PackageGroup"/> class. The group is by default empty,
+		/// and must be manually filled.
 		/// </summary>
-		/// <param name="groupName"></param>
-		/// <exception cref="ArgumentNullException"></exception>
+		/// <param name="groupName">The name of the package group.</param>
+		/// <exception cref="ArgumentNullException">Thrown if the name is null or empty.</exception>
 		public PackageGroup(string groupName)
 		{
 			if (string.IsNullOrEmpty(groupName))
@@ -96,10 +101,8 @@ namespace Everlook.Package
 		/// <param name="packageDirectory">The directory where the packages to load are.</param>
 		/// <param name="ct">A <see cref="CancellationToken"/> which can be used to cancel the operation.</param>
 		/// <param name="progress">The progress reporting object.</param>
-		/// <returns></returns>
-		public static async Task<PackageGroup> LoadAsync(string alias, string groupName, string packageDirectory,
-			CancellationToken ct = new CancellationToken(),
-			IProgress<GameLoadingProgress> progress = null)
+		/// <returns>A loaded package group.</returns>
+		public static async Task<PackageGroup> LoadAsync(string alias, string groupName, string packageDirectory, CancellationToken ct, IProgress<GameLoadingProgress> progress = null)
 		{
 			PackageGroup group = new PackageGroup(groupName);
 
@@ -133,12 +136,12 @@ namespace Everlook.Package
 				catch (FileLoadException fex)
 				{
 					Log.Warn($"FileLoadException for package \"{packagePath}\": {fex.Message}\n" +
-					         $"Please report this on GitHub or via email.");
+							 $"Please report this on GitHub or via email.");
 				}
 				catch (NotImplementedException nex)
 				{
 					Log.Warn($"NotImplementedException for package \"{packagePath}\": {nex.Message}\n" +
-					         $"There's a good chance your game version isn't supported yet.");
+							 $"There's a good chance your game version isn't supported yet.");
 				}
 			}
 
@@ -146,9 +149,10 @@ namespace Everlook.Package
 		}
 
 		/// <summary>
-		/// Loads all packages in the specified path into the package group.
+		/// Loads all packages in the specified path into the package group. Packages are searched for in the specified
+		/// directory, and all subdirectories.
 		/// </summary>
-		/// <param name="path"></param>
+		/// <param name="path">The path on disk where the packages are.</param>
 		public void LoadPackagesFromPath(string path)
 		{
 			// Grab all packages in the game directory
@@ -166,12 +170,12 @@ namespace Everlook.Package
 				catch (FileLoadException fex)
 				{
 					Log.Warn($"FileLoadException for package \"{packagePath}\": {fex.Message}\n" +
-					         $"Please report this on GitHub or via email.");
+							 $"Please report this on GitHub or via email.");
 				}
 				catch (NotImplementedException nex)
 				{
 					Log.Warn($"NotImplementedException for package \"{packagePath}\": {nex.Message}\n" +
-					         $"There's a good chance your game version isn't supported yet.");
+							 $"There's a good chance your game version isn't supported yet.");
 				}
 			}
 		}
@@ -179,8 +183,8 @@ namespace Everlook.Package
 		/// <summary>
 		/// Adds a package to the package group.
 		/// </summary>
-		/// <param name="package"></param>
-		/// <exception cref="ArgumentNullException"></exception>
+		/// <param name="package">The package to add.</param>
+		/// <exception cref="ArgumentNullException">Thrown if the package is null.</exception>
 		public void AddPackage(PackageInteractionHandler package)
 		{
 			if (package == null)
@@ -283,8 +287,6 @@ namespace Everlook.Package
 			return null;
 		}
 
-		#region IPackage implementation
-
 		/// <summary>
 		/// Extracts the file.
 		/// </summary>
@@ -359,10 +361,10 @@ namespace Everlook.Package
 		}
 
 		/// <summary>
-		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Everlook.Package.PackageGroup"/>.
+		/// Determines whether the specified <see cref="object"/> is equal to the current <see cref="Everlook.Package.PackageGroup"/>.
 		/// </summary>
-		/// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Everlook.Package.PackageGroup"/>.</param>
-		/// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+		/// <param name="obj">The <see cref="object"/> to compare with the current <see cref="Everlook.Package.PackageGroup"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
 		/// <see cref="Everlook.Package.PackageGroup"/>; otherwise, <c>false</c>.</returns>
 		public override bool Equals(object obj)
 		{
@@ -379,6 +381,7 @@ namespace Everlook.Package
 		/// <summary>
 		/// Returns a formatted string describing the current object.
 		/// </summary>
+		/// <returns>The name of the group.</returns>
 		public override string ToString()
 		{
 			return this.GroupName;
@@ -392,8 +395,6 @@ namespace Everlook.Package
 		{
 			return (this.GroupName.GetHashCode() + this.Packages.GetHashCode()).GetHashCode();
 		}
-
-		#endregion
 
 		/// <summary>
 		/// Releases all resource used by the <see cref="Everlook.Package.PackageGroup"/> object.
@@ -411,4 +412,3 @@ namespace Everlook.Package
 		}
 	}
 }
-

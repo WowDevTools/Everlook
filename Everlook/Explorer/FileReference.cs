@@ -21,11 +21,10 @@
 //
 
 using System;
-using System.Drawing.Drawing2D;
-using Warcraft.Core;
 using System.IO;
 using Everlook.Package;
 using liblistfile.NodeTree;
+using Warcraft.Core;
 using Warcraft.MPQ.FileInfo;
 using FileNode = liblistfile.NodeTree.Node;
 
@@ -52,13 +51,13 @@ namespace Everlook.Explorer
 		/// Gets the name of the package where the file is stored.
 		/// </summary>
 		/// <value>The name of the package.</value>
-		public string PackageName { get; } = "";
+		public string PackageName { get; } = string.Empty;
 
 		/// <summary>
 		/// Gets the file path of the file inside the package.
 		/// </summary>
 		/// <value>The file path.</value>
-		public string FilePath { get; } = "";
+		public string FilePath { get; } = string.Empty;
 
 		/// <summary>
 		/// Gets the file info of this reference.
@@ -102,7 +101,7 @@ namespace Everlook.Explorer
 		public bool IsFile => this.Node.Type.HasFlag(NodeType.File);
 
 		/// <summary>
-		/// The name of the file or directory.
+		/// Gets the name of the file or directory.
 		/// </summary>
 		public string Filename => this.IsDirectory ?
 			Path.GetDirectoryName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar)) :
@@ -122,6 +121,7 @@ namespace Everlook.Explorer
 			this.FilePath = filePath.Replace('/', '\\');
 			this.Node = node;
 		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileReference"/> class.
 		/// </summary>
@@ -134,6 +134,7 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Extracts this instance from the package group it is associated with.
 		/// </summary>
+		/// <returns>The raw data of the file pointed to by the reference.</returns>
 		public byte[] Extract()
 		{
 			return this.PackageGroup.ExtractVersionedReference(this);
@@ -148,12 +149,10 @@ namespace Everlook.Explorer
 			return FileInfoUtilities.GetFileType(this.FilePath);
 		}
 
-		#region IEquatable implementation
-
 		/// <summary>
-		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="FileReference"/>.
+		/// Determines whether the specified <see cref="object"/> is equal to the current <see cref="FileReference"/>.
 		/// </summary>
-		/// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="FileReference"/>.</param>
+		/// <param name="obj">The <see cref="object"/> to compare with the current <see cref="FileReference"/>.</param>
 		/// <returns><c>true</c> if the specified <see cref="FileReference"/> is equal to the current
 		/// <see cref="FileReference"/>; otherwise, <c>false</c>.</returns>
 		public override bool Equals(object obj)
@@ -180,12 +179,10 @@ namespace Everlook.Explorer
 			return false;
 		}
 
-		#endregion
-
 		/// <summary>
-		/// Returns a <see cref="System.String"/> that represents the current <see cref="FileReference"/>.
+		/// Returns a <see cref="string"/> that represents the current <see cref="FileReference"/>.
 		/// </summary>
-		/// <returns>A <see cref="System.String"/> that represents the current <see cref="FileReference"/>.</returns>
+		/// <returns>A <see cref="string"/> that represents the current <see cref="FileReference"/>.</returns>
 		public override string ToString()
 		{
 			return $"{this.PackageName}:{this.FilePath}";
@@ -197,12 +194,13 @@ namespace Everlook.Explorer
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()
 		{
-			return (
+			return
+			(
 				this.PackageName.GetHashCode() +
 				this.FilePath.GetHashCode() +
 				this.PackageGroup.GroupName.GetHashCode()
-			).GetHashCode();
-
+			)
+			.GetHashCode();
 		}
 	}
 }

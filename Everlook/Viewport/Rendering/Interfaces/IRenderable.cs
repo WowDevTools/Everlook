@@ -29,7 +29,7 @@ namespace Everlook.Viewport.Rendering.Interfaces
 	/// Interface representing a renderable object that can be passed to the viewport renderer.
 	/// Specific implementations of the rendering is implemented in the viewport renderer.
 	/// </summary>
-	public interface IRenderable: IDisposable
+	public interface IRenderable : IDisposable
 	{
 		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is,
@@ -42,7 +42,7 @@ namespace Everlook.Viewport.Rendering.Interfaces
 		}
 
 		/// <summary>
-		/// Returns a value which represents whether or not the current renderable has been initialized.
+		/// Gets or sets a value indicating whether the current renderable has been initialized.
 		/// </summary>
 		bool IsInitialized
 		{
@@ -51,7 +51,7 @@ namespace Everlook.Viewport.Rendering.Interfaces
 		}
 
 		/// <summary>
-		/// The projection method to use for this renderable object. Typically, this is Orthographic
+		/// Gets the projection method to use for this renderable object. Typically, this is Orthographic
 		/// or Perspective.
 		/// </summary>
 		ProjectionType Projection
@@ -60,7 +60,7 @@ namespace Everlook.Viewport.Rendering.Interfaces
 		}
 
 		/// <summary>
-		/// The default camera position for this renderable. 
+		/// Gets the default camera position for this renderable.
 		/// </summary>
 		Vector3 DefaultCameraPosition
 		{
@@ -75,25 +75,9 @@ namespace Everlook.Viewport.Rendering.Interfaces
 		/// <summary>
 		/// Renders the current object in the current OpenGL context.
 		/// </summary>
+		/// <param name="viewMatrix">The view matrix.</param>
+		/// <param name="projectionMatrix">The projection matrix.</param>
+		/// <param name="camera">The user camera.</param>
 		void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera);
 	}
-
-	/// <summary>
-	/// The type of projection used in OpenGL rendering.
-	/// </summary>
-	public enum ProjectionType
-	{
-		/// <summary>
-		/// Perspective rendering, or a 3D view with proper relational
-		/// scale and perspective.
-		/// </summary>
-		Perspective,
-
-		/// <summary>
-		/// Orthographic rendering, or a "flat" view with no relational
-		/// scale or perspective.
-		/// </summary>
-		Orthographic
-	}
 }
-

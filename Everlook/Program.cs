@@ -23,19 +23,20 @@
 using System;
 using System.Globalization;
 using System.IO;
-using Everlook.Database;
 using Everlook.Explorer;
 using Everlook.UI;
 using Everlook.Utility;
 using GLib;
 using log4net;
 using OpenTK;
-using Warcraft.DBC.Definitions;
 using Application = Gtk.Application;
 using FileNode = liblistfile.NodeTree.Node;
 
 namespace Everlook
 {
+	/// <summary>
+	/// The main entry class, containing the entry point and some top-level diagnostics.
+	/// </summary>
 	internal static class Program
 	{
 		/// <summary>
@@ -43,6 +44,9 @@ namespace Everlook
 		/// </summary>
 		private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
 
+		/// <summary>
+		/// The entry point.
+		/// </summary>
 		public static void Main()
 		{
 			// Bind any unhandled exceptions in the main thread so that they are logged.
@@ -72,10 +76,10 @@ namespace Everlook
 			ExceptionManager.UnhandledException += OnGLibUnhandledException;
 
 			Log.Info("Registering treeview types with the native backend...");
-			GType nodeType = (GType) typeof(FileNode);
+			GType nodeType = (GType)typeof(FileNode);
 			GType.Register(nodeType, typeof(FileNode));
 
-			GType referenceType = (GType) typeof(FileReference);
+			GType referenceType = (GType)typeof(FileReference);
 			GType.Register(referenceType, typeof(FileReference));
 
 			// GTK
@@ -96,7 +100,7 @@ namespace Everlook
 		}
 
 		/// <summary>
-		///	Event handler for all unhandled exceptions that may be encountered during runtime. While there should never
+		/// Event handler for all unhandled exceptions that may be encountered during runtime. While there should never
 		/// be any unhandled exceptions in an ideal program, unexpected issues can and will arise. This handler logs
 		/// the exception and all relevant information to a logfile and prints it to the console for debugging purposes.
 		/// </summary>
@@ -113,7 +117,7 @@ namespace Everlook
 			Log.Fatal("Something has gone terribly, terribly wrong during runtime.");
 			Log.Fatal("The following is what information could be gathered by the program before crashing.");
 			Log.Fatal("Please report this to <jarl.gullberg@gmail.com> or via GitHub. Include the full log and a " +
-			          "description of what you were doing when it happened.");
+					  "description of what you were doing when it happened.");
 
 			Exception unhandledException = unhandledExceptionEventArgs.ExceptionObject as Exception;
 			if (unhandledException != null)
@@ -121,8 +125,8 @@ namespace Everlook
 				if (unhandledException is DllNotFoundException)
 				{
 					Log.Fatal("This exception is typical of instances where the GTK# runtime has not been installed.\n" +
-					          "If you haven't installed it, download it at \'https://download.gnome.org/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi\'.\n" +
-					          "If you have installed it, reboot your computer and try again.");
+							  "If you haven't installed it, download it at \'https://download.gnome.org/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi\'.\n" +
+							  "If you have installed it, reboot your computer and try again.");
 				}
 
 				Log.Fatal("Exception type: " + unhandledException.GetType().FullName);

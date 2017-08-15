@@ -31,7 +31,7 @@ namespace Everlook.Viewport.Rendering
 	public sealed class RenderableBitmap : RenderableImage
 	{
 		/// <summary>
-		/// The encapsulated image.
+		/// Gets the encapsulated image.
 		/// </summary>
 		/// <value>The image.</value>
 		private Bitmap Image
@@ -53,38 +53,24 @@ namespace Everlook.Viewport.Rendering
 			Initialize();
 		}
 
-		/// <summary>
-		/// Loads or creates a cached texture from the global texture cache using the path the image
-		/// was constructed with as a key.
-		/// </summary>
-		/// <returns></returns>
+		/// <inheritdoc />
 		protected override Texture2D LoadTexture()
 		{
-			if (this.Cache.HasCachedTextureForPath(this.TexturePath))
+			if (Cache.HasCachedTextureForPath(this.TexturePath))
 			{
-				return this.Cache.GetCachedTexture(this.TexturePath);
+				return Cache.GetCachedTexture(this.TexturePath);
 			}
 
-			return this.Cache.CreateCachedTexture(this.Image, this.TexturePath);
+			return Cache.CreateCachedTexture(this.Image, this.TexturePath);
 		}
 
-		/// <summary>
-		/// Gets the resolution of the encapsulated image.
-		/// </summary>
-		/// <returns></returns>
+		/// <inheritdoc />
 		protected override Resolution GetResolution()
 		{
-			return new Resolution((uint) this.Image.Width, (uint) this.Image.Height);
+			return new Resolution((uint)this.Image.Width, (uint)this.Image.Height);
 		}
 
-		/// <summary>
-		/// Releases all resource used by the <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> object.
-		/// </summary>
-		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/>. The
-		/// <see cref="Dispose"/> method leaves the <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> in an unusable state.
-		/// After calling <see cref="Dispose"/>, you must release all references to the
-		/// <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> so the garbage collector can reclaim the memory that the
-		/// <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> was occupying.</remarks>
+		/// <inheritdoc />
 		public override void Dispose()
 		{
 			base.Dispose();
@@ -102,4 +88,3 @@ namespace Everlook.Viewport.Rendering
 		}
 	}
 }
-

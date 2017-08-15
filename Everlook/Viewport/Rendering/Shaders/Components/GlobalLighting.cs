@@ -26,6 +26,9 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Shaders.Components
 {
+	/// <summary>
+	/// A global light shader component.
+	/// </summary>
 	public class GlobalLighting
 	{
 		private const string LightVectorIdentifier = "LightVector";
@@ -34,6 +37,10 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 
 		private readonly int ParentShaderNativeID;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GlobalLighting"/> class, and attaches it to the given parent shader.
+		/// </summary>
+		/// <param name="parentShaderID">The native ID of the parent shader.</param>
 		public GlobalLighting(int parentShaderID)
 		{
 			this.ParentShaderNativeID = parentShaderID;
@@ -44,6 +51,10 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 			GL.UseProgram(this.ParentShaderNativeID);
 		}
 
+		/// <summary>
+		/// Sets the colour of the global lighting shader component.
+		/// </summary>
+		/// <param name="lightColour">The colour of the light.</param>
 		public void SetLightColour(Color4 lightColour)
 		{
 			EnableParent();
@@ -52,6 +63,10 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 			GL.Uniform4(colourLoc, lightColour);
 		}
 
+		/// <summary>
+		/// Sets the light direction of the global lighting shader component.
+		/// </summary>
+		/// <param name="lightVector">The vector along which light shines.</param>
 		public void SetLightDirection(Vector3 lightVector)
 		{
 			EnableParent();
@@ -60,6 +75,10 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 			GL.Uniform3(vectorLoc, lightVector);
 		}
 
+		/// <summary>
+		/// Sets the light intensity, in lux, of the global lighting shader component.
+		/// </summary>
+		/// <param name="lightIntensity">The intensity in lux.</param>
 		public void SetLightIntensity(float lightIntensity)
 		{
 			EnableParent();

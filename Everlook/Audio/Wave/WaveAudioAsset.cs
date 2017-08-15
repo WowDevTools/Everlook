@@ -34,6 +34,9 @@ namespace Everlook.Audio.Wave
 	/// </summary>
 	public class WaveAudioAsset : IAudioAsset
 	{
+		/// <summary>
+		/// Gets the <see cref="ALFormat"/> that the PCM data is in.
+		/// </summary>
 		public ALFormat Format
 		{
 			get
@@ -57,6 +60,8 @@ namespace Everlook.Audio.Wave
 		}
 
 		private byte[] PCMDataInternal;
+
+		/// <inheritdoc />
 		public byte[] PCMData
 		{
 			get
@@ -79,18 +84,26 @@ namespace Everlook.Audio.Wave
 			}
 			private set => this.PCMDataInternal = value;
 		}
+
+		/// <inheritdoc />
 		public Stream PCMStream { get; private set; }
 
+		/// <inheritdoc />
 		public int Channels { get; }
+
+		/// <inheritdoc />
 		public int BitsPerSample { get; }
+
+		/// <inheritdoc />
 		public int SampleRate { get; }
 
 		/// <summary>
-		/// Initializes a new <see cref="WaveAudioAsset"/> from a file reference.
+		/// Initializes a new instance of the <see cref="WaveAudioAsset"/> class.
 		/// </summary>
-		/// <param name="fileReference"></param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
+		/// <param name="fileReference">The reference to create the asset from.</param>
+		/// <exception cref="ArgumentException">Thrown if the reference is not a wave audio file.</exception>
+		/// <exception cref="NotSupportedException">Thrown if the file data is not a wave audio file.</exception>
+		/// <exception cref="ArgumentNullException">Thrown if the file data can't be extracted.</exception>
 		public WaveAudioAsset(FileReference fileReference)
 		{
 			if (fileReference.GetReferencedFileType() != WarcraftFileType.WaveAudio)
@@ -105,53 +118,55 @@ namespace Everlook.Audio.Wave
 			}
 
 			using (MemoryStream ms = new MemoryStream(fileBytes))
-			using (BinaryReader br = new BinaryReader(ms))
 			{
-				string signature = new string(br.ReadChars(4));
-				if (signature != "RIFF")
+				using (BinaryReader br = new BinaryReader(ms))
 				{
-					throw new NotSupportedException("The file data is not a wave file.");
+					string signature = new string(br.ReadChars(4));
+					if (signature != "RIFF")
+					{
+						throw new NotSupportedException("The file data is not a wave file.");
+					}
+
+					int riffChunkSize = br.ReadInt32();
+
+					string format = new string(br.ReadChars(4));
+					if (format != "WAVE")
+					{
+						throw new NotSupportedException("The file data is not a wave file.");
+					}
+
+					string formatSignature = new string(br.ReadChars(4));
+					if (formatSignature != "fmt ")
+					{
+						throw new NotSupportedException("The file data is not a wave file.");
+					}
+					int formatChunkSize = br.ReadInt32();
+
+					int audioFormat = br.ReadInt16();
+					this.Channels = br.ReadInt16();
+					this.SampleRate = br.ReadInt32();
+					int byteRate = br.ReadInt32();
+					int blockAlign = br.ReadInt16();
+					this.BitsPerSample = br.ReadInt16();
+
+					string dataSignature = new string(br.ReadChars(4));
+					if (dataSignature != "data")
+					{
+						throw new NotSupportedException("The file data is not a wave file.");
+					}
+
+					int dataChunkSize = br.ReadInt32();
+
+					this.PCMStream = new MemoryStream(br.ReadBytes(dataChunkSize));
 				}
-
-				int riffChunkSize = br.ReadInt32();
-
-				string format = new string(br.ReadChars(4));
-				if (format != "WAVE")
-				{
-					throw new NotSupportedException("The file data is not a wave file.");
-				}
-
-				string formatSignature = new string(br.ReadChars(4));
-				if (formatSignature != "fmt ")
-				{
-					throw new NotSupportedException("The file data is not a wave file.");
-				}
-				int formatChunkSize = br.ReadInt32();
-
-				int audioFormat = br.ReadInt16();
-				this.Channels = br.ReadInt16();
-				this.SampleRate = br.ReadInt32();
-				int byteRate = br.ReadInt32();
-				int blockAlign = br.ReadInt16();
-				this.BitsPerSample = br.ReadInt16();
-
-				string dataSignature = new string(br.ReadChars(4));
-				if (dataSignature != "data")
-				{
-					throw new NotSupportedException("The file data is not a wave file.");
-				}
-
-				int dataChunkSize = br.ReadInt32();
-
-				this.PCMStream= new MemoryStream(br.ReadBytes(dataChunkSize));
 			}
 		}
 
 		/// <summary>
 		/// Loads a <see cref="WaveAudioAsset"/> asynchronously.
 		/// </summary>
-		/// <param name="fileReference"></param>
-		/// <returns></returns>
+		/// <param name="fileReference">The reference to load.</param>
+		/// <returns>A WaveAudioAsset.</returns>
 		public static Task<WaveAudioAsset> LoadAsync(FileReference fileReference)
 		{
 			return Task.Run(() => new WaveAudioAsset(fileReference));

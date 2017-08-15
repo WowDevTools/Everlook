@@ -19,15 +19,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
 using System;
-using Warcraft.MPQ;
-using System.IO;
-using Warcraft.MPQ.FileInfo;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Everlook.Explorer;
 using log4net;
 using Warcraft.Core;
+using Warcraft.MPQ;
+using Warcraft.MPQ.FileInfo;
 
 namespace Everlook.Package
 {
@@ -61,16 +62,22 @@ namespace Everlook.Package
 		private MPQ Package;
 
 		/// <summary>
-		///
+		/// Asynchronously loads a package at the given path.
 		/// </summary>
-		/// <param name="packagePath"></param>
-		/// <returns></returns>
-		public static async Task<PackageInteractionHandler> LoadAsync(string packagePath)
+		/// <param name="packagePath">The path on disk where the package is.</param>
+		/// <returns>A loaded PackageInteractionHandler.</returns>
+		public static Task<PackageInteractionHandler> LoadAsync(string packagePath)
 		{
-			PackageInteractionHandler handler = new PackageInteractionHandler();
-			await Task.Run(() => handler.Load(packagePath));
+			return Task.Run
+			(
+				() =>
+				{
+					PackageInteractionHandler handler = new PackageInteractionHandler();
+					handler.Load(packagePath);
 
-			return handler;
+					return handler;
+				}
+			);
 		}
 
 		/// <summary>
@@ -80,14 +87,13 @@ namespace Everlook.Package
 		/// </summary>
 		public PackageInteractionHandler()
 		{
-
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Package.PackageInteractionHandler"/> class and loads
 		/// the package at the provided path.
 		/// </summary>
-		/// <param name="inPackagePath">In package path.</param>
+		/// <param name="inPackagePath">The path on disk where the package is.</param>
 		public PackageInteractionHandler(string inPackagePath)
 		{
 			Load(inPackagePath);
@@ -96,8 +102,8 @@ namespace Everlook.Package
 		/// <summary>
 		/// Loads the package at the specified path, binding it to the handler.
 		/// </summary>
-		/// <param name="inPackagePath"></param>
-		/// <exception cref="FileNotFoundException"></exception>
+		/// <param name="inPackagePath">The path on disk where the package is.</param>
+		/// <exception cref="FileNotFoundException">Thrown if no file exists at the given path.</exception>
 		public void Load(string inPackagePath)
 		{
 			if (File.Exists(inPackagePath))
@@ -131,6 +137,7 @@ namespace Everlook.Package
 		/// Extracts the specified reference from its associated package. This method only operates on the file path.
 		/// </summary>
 		/// <param name="fileReference">Reference reference.</param>
+		/// <returns>The raw data of the file pointed to by the reference.</returns>
 		public byte[] ExtractReference(FileReference fileReference)
 		{
 			if (!fileReference.IsFile)
@@ -165,8 +172,6 @@ namespace Everlook.Package
 
 			return GetFileInfo(fileReference.FilePath);
 		}
-
-		#region IPackage implementation
 
 		/// <summary>
 		/// Extracts the file.
@@ -219,8 +224,6 @@ namespace Everlook.Package
 			return this.Package.GetFileInfo(filePath);
 		}
 
-		#endregion
-
 		/// <summary>
 		/// Releases all resource used by the <see cref="Everlook.Package.PackageInteractionHandler"/> object.
 		/// </summary>
@@ -235,4 +238,3 @@ namespace Everlook.Package
 		}
 	}
 }
-

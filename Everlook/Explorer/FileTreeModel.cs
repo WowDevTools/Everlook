@@ -30,8 +30,9 @@ using GLib;
 using Gtk;
 using liblistfile;
 using liblistfile.NodeTree;
-using Object = GLib.Object;
+
 using FileNode = liblistfile.NodeTree.Node;
+using Object = GLib.Object;
 
 namespace Everlook.Explorer
 {
@@ -43,12 +44,12 @@ namespace Everlook.Explorer
 		private readonly OptimizedNodeTree Tree;
 
 		/// <summary>
-		/// The flags of the model.
+		/// Gets the flags of the model.
 		/// </summary>
 		public TreeModelFlags Flags => TreeModelFlags.ItersPersist;
 
 		/// <summary>
-		/// The number of columns in the model.
+		/// Gets the number of columns in the model.
 		/// </summary>
 		public int NColumns => 1;
 
@@ -58,10 +59,10 @@ namespace Everlook.Explorer
 		private readonly int Stamp;
 
 		/// <summary>
-		/// Creates a new <see cref="FileTreeModel"/> and attaches it to an <see cref="OptimizedNodeTree"/>.
+		/// Initializes a new instance of the <see cref="FileTreeModel"/> class.
 		/// </summary>
-		/// <param name="nodeTree"></param>
-		public FileTreeModel(OptimizedNodeTree nodeTree) : base()
+		/// <param name="nodeTree">The precomputed node tree to wrap around.</param>
+		public FileTreeModel(OptimizedNodeTree nodeTree)
 		{
 			this.Tree = nodeTree;
 			this.Stamp = new Random().Next();
@@ -70,8 +71,8 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Gets the name of a given node.
 		/// </summary>
-		/// <param name="node"></param>
-		/// <returns></returns>
+		/// <param name="node">The node to get the name of.</param>
+		/// <returns>The name of the node.</returns>
 		public string GetNodeName(FileNode node)
 		{
 			return this.Tree.GetNodeName(node);
@@ -80,8 +81,8 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Gets the package the given node belongs to.
 		/// </summary>
-		/// <param name="node"></param>
-		/// <returns></returns>
+		/// <param name="node">The node to get the package of.</param>
+		/// <returns>The name of the package.</returns>
 		public string GetNodePackage(FileNode node)
 		{
 			FileNode currentNode = node;
@@ -94,10 +95,10 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
-		/// Gets the absolute file path of a node within the archive.
+		/// Gets the absolute file path of a node within the package.
 		/// </summary>
-		/// <param name="node"></param>
-		/// <returns></returns>
+		/// <param name="node">The node to get the path of.</param>
+		/// <returns>The file path of the node in the package.</returns>
 		public string GetNodeFilePath(FileNode node)
 		{
 			StringBuilder sb = new StringBuilder();
@@ -124,7 +125,7 @@ namespace Everlook.Explorer
 		/// level scan.
 		/// </summary>
 		/// <param name="fileReference">The reference to enumerate.</param>
-		/// <returns></returns>
+		/// <returns>A set of all the child references of the given reference.</returns>
 		public IEnumerable<FileReference> EnumerateFilesOfReference(FileReference fileReference)
 		{
 			if (fileReference == null)
@@ -138,7 +139,7 @@ namespace Everlook.Explorer
 				yield break;
 			}
 
-			List<FileNode> folderNodes = new List<FileNode>{ fileReference.Node };
+			List<FileNode> folderNodes = new List<FileNode> { fileReference.Node };
 
 			while (folderNodes.Count > 0)
 			{
@@ -150,8 +151,13 @@ namespace Everlook.Explorer
 
 					if (childNode.Type.HasFlag(NodeType.File))
 					{
-						yield return new FileReference(fileReference.PackageGroup, childNode, fileReference.PackageName,
-							GetNodeFilePath(childNode));
+						yield return new FileReference
+						(
+							fileReference.PackageGroup,
+							childNode,
+							fileReference.PackageName,
+							GetNodeFilePath(childNode)
+						);
 					}
 
 					if (childNode.Type.HasFlag(NodeType.Directory))
@@ -167,9 +173,10 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Gets a <see cref="FileReference"/> from a given iter in the tree.
 		/// </summary>
-		/// <param name="packageGroup"></param>
-		/// <param name="iter"></param>
-		/// <returns></returns>
+		/// <param name="packageGroup">The package group to create a reference for.</param>
+		/// <param name="iter">The iter in the tree.</param>
+		/// <returns>The FileReference pointed to by the given iter.</returns>
+		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
 		public FileReference GetReferenceByIter(PackageGroup packageGroup, TreeIter iter)
 		{
 			if (iter.Stamp != this.Stamp)
@@ -177,7 +184,7 @@ namespace Everlook.Explorer
 				throw new InvalidDataException("The given iter was not valid for this model.");
 			}
 
-			FileNode node = this.Tree.GetNode((ulong) iter.UserData);
+			FileNode node = this.Tree.GetNode((ulong)iter.UserData);
 			if (node == null)
 			{
 				return null;
@@ -189,9 +196,9 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Gets a <see cref="FileReference"/> from a given path in the tree.
 		/// </summary>
-		/// <param name="packageGroup"></param>
-		/// <param name="path"></param>
-		/// <returns></returns>
+		/// <param name="packageGroup">The package group to create a reference for.</param>
+		/// <param name="path">The path in the tree.</param>
+		/// <returns>The FileReference pointed to by the given TreePath.</returns>
 		public FileReference GetReferenceByPath(PackageGroup packageGroup, TreePath path)
 		{
 			TreeIter iter;
@@ -202,8 +209,8 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Gets the type of the given column.
 		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
+		/// <param name="index">The index of the column.</param>
+		/// <returns>The GType of the column.</returns>
 		public GType GetColumnType(int index)
 		{
 			if (index > 0)
@@ -217,9 +224,9 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Gets an iter at a specified path.
 		/// </summary>
-		/// <param name="iter"></param>
-		/// <param name="path"></param>
-		/// <returns></returns>
+		/// <param name="iter">Will contain the iter.</param>
+		/// <param name="path">The path to the iter.</param>
+		/// <returns>true if the iter is now set to the iter at the given path; false otherwise.</returns>
 		public bool GetIter(out TreeIter iter, TreePath path)
 		{
 			iter = TreeIter.Zero;
@@ -228,7 +235,7 @@ namespace Everlook.Explorer
 			FileNode currentNode = this.Tree.Root;
 			foreach (int index in path.Indices)
 			{
-				ulong longIndex = (ulong) index;
+				ulong longIndex = (ulong)index;
 				if (longIndex > currentNode.ChildCount - 1)
 				{
 					return false;
@@ -246,8 +253,8 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Gets the path to a specified iter.
 		/// </summary>
-		/// <param name="iter"></param>
-		/// <returns></returns>
+		/// <param name="iter">The iter to get the path of.</param>
+		/// <returns>The TreePath corresponding to the given iter.</returns>
 		public TreePath GetPath(TreeIter iter)
 		{
 			if (iter.Stamp != this.Stamp)
@@ -256,7 +263,7 @@ namespace Everlook.Explorer
 			}
 
 			TreePath result = new TreePath();
-			FileNode node = this.Tree.GetNode((ulong) iter.UserData);
+			FileNode node = this.Tree.GetNode((ulong)iter.UserData);
 			if (node == null)
 			{
 				return result;
@@ -278,9 +285,10 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Gets the value stored in the model at a given iter.
 		/// </summary>
-		/// <param name="iter"></param>
-		/// <param name="column"></param>
-		/// <param name="value"></param>
+		/// <param name="iter">The iter where the value is stored.</param>
+		/// <param name="column">The column to get the value from</param>
+		/// <param name="value">Will contain the value.</param>
+		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
 		public void GetValue(TreeIter iter, int column, ref Value value)
 		{
 			if (iter.Stamp != this.Stamp && !iter.Equals(TreeIter.Zero))
@@ -288,7 +296,7 @@ namespace Everlook.Explorer
 				throw new InvalidDataException("The given iter was not valid for this model.");
 			}
 
-			FileNode node = iter.Equals(TreeIter.Zero) ? this.Tree.Root : this.Tree.GetNode((ulong) iter.UserData);
+			FileNode node = iter.Equals(TreeIter.Zero) ? this.Tree.Root : this.Tree.GetNode((ulong)iter.UserData);
 			if (node == null)
 			{
 				return;
@@ -301,8 +309,9 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Moves the given iter to the next one at the same level.
 		/// </summary>
-		/// <param name="iter"></param>
-		/// <returns></returns>
+		/// <param name="iter">The iter to move.</param>
+		/// <returns>true if the iter is now set to the next iter at the same level; false otherwise</returns>
+		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
 		public bool IterNext(ref TreeIter iter)
 		{
 			if (iter.Stamp != this.Stamp)
@@ -310,7 +319,7 @@ namespace Everlook.Explorer
 				throw new InvalidDataException("The given iter was not valid for this model.");
 			}
 
-			ulong currentOffset = (ulong) iter.UserData;
+			ulong currentOffset = (ulong)iter.UserData;
 			FileNode currentNode = this.Tree.GetNode(currentOffset);
 			FileNode parentNode = this.Tree.GetNode((ulong)currentNode.ParentOffset);
 
@@ -329,8 +338,9 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Moves the given iter to the previous one at the same level.
 		/// </summary>
-		/// <param name="iter"></param>
-		/// <returns></returns>
+		/// <param name="iter">The iter to move.</param>
+		/// <returns>true if the iter is now set to the previous iter at the same level; false otherwise.</returns>
+		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
 		public bool IterPrevious(ref TreeIter iter)
 		{
 			if (iter.Stamp != this.Stamp)
@@ -338,7 +348,7 @@ namespace Everlook.Explorer
 				throw new InvalidDataException("The given iter was not valid for this model.");
 			}
 
-			ulong currentOffset = (ulong) iter.UserData;
+			ulong currentOffset = (ulong)iter.UserData;
 			FileNode currentNode = this.Tree.GetNode(currentOffset);
 
 			FileNode parentNode = this.Tree.GetNode((ulong)currentNode.ParentOffset);
@@ -358,10 +368,11 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Gets the iter of the first child of the given iter.
 		/// </summary>
-		/// <param name="iter"></param>
-		/// <param name="parent"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentException"></exception>
+		/// <param name="iter">Will contain the first child.</param>
+		/// <param name="parent">The iter to get the first child from.</param>
+		/// <returns>true if the iter is now set to the first child of the parent; false otherwise</returns>
+		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
+		/// <exception cref="ArgumentException">Thrown if the iter is not valid.</exception>
 		public bool IterChildren(out TreeIter iter, TreeIter parent)
 		{
 			if (parent.Stamp != this.Stamp)
@@ -371,7 +382,7 @@ namespace Everlook.Explorer
 
 			iter = TreeIter.Zero;
 
-			FileNode node = parent.Equals(TreeIter.Zero) ? this.Tree.Root : this.Tree.GetNode((ulong) parent.UserData);
+			FileNode node = parent.Equals(TreeIter.Zero) ? this.Tree.Root : this.Tree.GetNode((ulong)parent.UserData);
 			if (node == null)
 			{
 				throw new ArgumentException("The given iter was not valid.", nameof(parent));
@@ -390,9 +401,10 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Determines whether or not the given iter has any children.
 		/// </summary>
-		/// <param name="iter"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentException"></exception>
+		/// <param name="iter">The iter to check.</param>
+		/// <returns>true if the iter has any children; false otherwise</returns>
+		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
+		/// <exception cref="ArgumentException">Thrown if the iter is not valid.</exception>
 		public bool IterHasChild(TreeIter iter)
 		{
 			if (iter.Stamp != this.Stamp)
@@ -400,7 +412,7 @@ namespace Everlook.Explorer
 				throw new InvalidDataException("The given iter was not valid for this model.");
 			}
 
-			FileNode node = iter.Equals(TreeIter.Zero) ? this.Tree.Root : this.Tree.GetNode((ulong) iter.UserData);
+			FileNode node = iter.Equals(TreeIter.Zero) ? this.Tree.Root : this.Tree.GetNode((ulong)iter.UserData);
 			if (node == null)
 			{
 				throw new ArgumentException("The given iter was not valid.", nameof(iter));
@@ -412,9 +424,10 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Determines the number of children an iter has.
 		/// </summary>
-		/// <param name="iter"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentException"></exception>
+		/// <param name="iter">The iter to count the children of.</param>
+		/// <returns>The number of children that the iter has.</returns>
+		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
+		/// <exception cref="ArgumentException">Thrown if the iter is not valid.</exception>
 		public int IterNChildren(TreeIter iter)
 		{
 			if (iter.Equals(TreeIter.Zero))
@@ -427,7 +440,7 @@ namespace Everlook.Explorer
 				throw new InvalidDataException("The given iter was not valid for this model.");
 			}
 
-			FileNode node = this.Tree.GetNode((ulong) iter.UserData);
+			FileNode node = this.Tree.GetNode((ulong)iter.UserData);
 			if (node == null)
 			{
 				throw new ArgumentException("The given iter was not valid.", nameof(iter));
@@ -439,11 +452,12 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Gets the nth child of the provided iter.
 		/// </summary>
-		/// <param name="iter"></param>
-		/// <param name="parent"></param>
-		/// <param name="n"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentException"></exception>
+		/// <param name="iter">Will contain the nth child.</param>
+		/// <param name="parent">The iter to get the child of.</param>
+		/// <param name="n">The value of n.</param>
+		/// <returns>true if the iter is now set to the nth child of the parent; false otherwise</returns>
+		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
+		/// <exception cref="ArgumentException">Thrown if the iter is not valid.</exception>
 		public bool IterNthChild(out TreeIter iter, TreeIter parent, int n)
 		{
 			if (parent.Stamp != this.Stamp && !parent.Equals(TreeIter.Zero))
@@ -458,14 +472,14 @@ namespace Everlook.Explorer
 				return false;
 			}
 
-			FileNode node = iter.Equals(TreeIter.Zero) ? this.Tree.Root : this.Tree.GetNode((ulong) iter.UserData);
+			FileNode node = iter.Equals(TreeIter.Zero) ? this.Tree.Root : this.Tree.GetNode((ulong)iter.UserData);
 
 			if (node == null)
 			{
 				throw new ArgumentException("The given iter was not valid.", nameof(parent));
 			}
 
-			if (!node.HasChildren() || n > (int)node.ChildCount -1)
+			if (!node.HasChildren() || n > (int)node.ChildCount - 1)
 			{
 				return false;
 			}
@@ -478,10 +492,11 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Gets the parent of the given iter.
 		/// </summary>
-		/// <param name="iter"></param>
-		/// <param name="child"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentException"></exception>
+		/// <param name="iter">Will contain the parent iter.</param>
+		/// <param name="child">The iter to get the parent of.</param>
+		/// <returns>true if the iter is now set to the parent iter of the child; false otherwise</returns>
+		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
+		/// <exception cref="ArgumentException">Thrown if the iter is not valid.</exception>
 		public bool IterParent(out TreeIter iter, TreeIter child)
 		{
 			if (child.Stamp != this.Stamp)
@@ -491,13 +506,13 @@ namespace Everlook.Explorer
 
 			iter = TreeIter.Zero;
 
-			FileNode childNode = this.Tree.GetNode((ulong) child.UserData);
+			FileNode childNode = this.Tree.GetNode((ulong)child.UserData);
 			if (childNode == null)
 			{
 				throw new ArgumentException("The given iter was not valid.", nameof(child));
 			}
 
-			FileNode parentNode = this.Tree.GetNode((ulong) childNode.ParentOffset);
+			FileNode parentNode = this.Tree.GetNode((ulong)childNode.ParentOffset);
 			if (parentNode == null)
 			{
 				return false;
@@ -511,7 +526,7 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Loads the specified iter into the cache. Currently unused.
 		/// </summary>
-		/// <param name="iter"></param>
+		/// <param name="iter">The iter to load.</param>
 		public void RefNode(TreeIter iter)
 		{
 			// Ignored for now
@@ -520,7 +535,7 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Unloads the specified iter from the cache. Currently unused.
 		/// </summary>
-		/// <param name="iter"></param>
+		/// <param name="iter">The iter to unload.</param>
 		public void UnrefNode(TreeIter iter)
 		{
 			// Ignored for now

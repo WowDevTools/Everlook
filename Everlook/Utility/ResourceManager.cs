@@ -59,7 +59,7 @@ namespace Everlook.Utility
 		/// <summary>
 		/// Gets a fallback image which can be used for textures that fail to load.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>A bitmap containing a fallback texture.</returns>
 		public static Bitmap GetFallbackImage()
 		{
 			// Load the fallback texture

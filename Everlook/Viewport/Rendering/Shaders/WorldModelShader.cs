@@ -35,15 +35,25 @@ namespace Everlook.Viewport.Rendering.Shaders
 	{
 		private const string AlphaThresholdIdentifier = "alphaThreshold";
 
-		public readonly GlobalLighting Lighting;
-		public readonly SolidWireframe Wireframe;
+		/// <inheritdoc />
+		protected override string VertexShaderResourceName => "WorldModel.WorldModelVertex";
+
+		/// <inheritdoc />
+		protected override string FragmentShaderResourceName => "WorldModel.WorldModelFragment";
+
+		/// <inheritdoc />
+		protected override string GeometryShaderResourceName => "WorldModel.WorldModelGeometry";
 
 		/// <summary>
-		/// Initializes a new <see cref="WorldModelShader"/> object.
+		/// Gets the <see cref="SolidWireframe"/> shader component, which enables solid wireframe rendering.
+		/// </summary>
+		public SolidWireframe Wireframe { get; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="WorldModelShader"/> class.
 		/// </summary>
 		public WorldModelShader()
 		{
-			this.Lighting = new GlobalLighting(this.NativeShaderProgramID);
 			this.Wireframe = new SolidWireframe(this.NativeShaderProgramID);
 		}
 
@@ -51,9 +61,9 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// Binds a texture to a sampler in the shader
 		/// TODO: Refactor or remove this
 		/// </summary>
-		/// <param name="textureUnit"></param>
-		/// <param name="uniform"></param>
-		/// <param name="texture"></param>
+		/// <param name="textureUnit">The texture unit to bind the texture to</param>
+		/// <param name="uniform">The uniform name where the texture should be bound.</param>
+		/// <param name="texture">The texture to bind.</param>
 		public void BindTexture2D(TextureUnit textureUnit, TextureUniform uniform, Texture2D texture)
 		{
 			Enable();
@@ -68,7 +78,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <summary>
 		/// Sets the current <see cref="ModelMaterial"/> that the shader renders.
 		/// </summary>
-		/// <param name="modelMaterial"></param>
+		/// <param name="modelMaterial">The material to use.</param>
 		public void SetMaterial(ModelMaterial modelMaterial)
 		{
 			Enable();
@@ -115,7 +125,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <summary>
 		/// Sets the current threshold for pixel discarding. Unused if the current material is opaque.
 		/// </summary>
-		/// <param name="threshold"></param>
+		/// <param name="threshold">The alpha value threshold.</param>
 		public void SetAlphaDiscardThreshold(float threshold)
 		{
 			Enable();
@@ -123,9 +133,5 @@ namespace Everlook.Viewport.Rendering.Shaders
 			int alphaThresholdLoc = GL.GetUniformLocation(this.NativeShaderProgramID, AlphaThresholdIdentifier);
 			GL.Uniform1(alphaThresholdLoc, threshold);
 		}
-
-		protected override string VertexShaderResourceName => "WorldModel.WorldModelVertex";
-		protected override string FragmentShaderResourceName => "WorldModel.WorldModelFragment";
-		protected override string GeometryShaderResourceName => "WorldModel.WorldModelGeometry";
 	}
 }

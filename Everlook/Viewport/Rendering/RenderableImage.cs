@@ -1,4 +1,26 @@
-﻿using System;
+﻿//
+//  RenderableImage.cs
+//
+//  Author:
+//       Jarl Gullberg <jarl.gullberg@gmail.com>
+//
+//  Copyright (c) 2016 Jarl Gullberg
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+
+using System;
 using System.Collections.Generic;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
@@ -17,6 +39,11 @@ namespace Everlook.Viewport.Rendering
 	public abstract class RenderableImage : IRenderable
 	{
 		/// <summary>
+		/// Gets a reference to the global shader cache.
+		/// </summary>
+		protected static RenderCache Cache => RenderCache.Instance;
+
+		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is,
 		/// a single frame is rendered and then reused. Useful as an optimization for images.
 		/// </summary>
@@ -25,91 +52,115 @@ namespace Everlook.Viewport.Rendering
 		public bool IsStatic => true;
 
 		/// <summary>
-		/// The model transformation of the image. Used for moving and zooming.
+		/// Gets or sets the model transformation of the image. Used for moving and zooming.
 		/// </summary>
 		protected Transform ImageTransform { get; set; }
 
 		/// <summary>
-		/// Returns a value which represents whether or not the current renderable has been initialized.
+		/// Gets or sets a value indicating whether or not the current renderable has been initialized.
 		/// </summary>
 		public bool IsInitialized { get; set; }
 
 		/// <summary>
-		/// The native OpenGL ID for the vertex buffer.
+		/// Gets the native OpenGL ID for the vertex buffer.
 		/// </summary>
-		protected int VertexBufferID;
+		protected int VertexBufferID { get; private set; }
 
 		/// <summary>
-		/// The native OpenGL ID for the UV coordinate buffer.
+		/// Gets the native OpenGL ID for the UV coordinate buffer.
 		/// </summary>
-		protected int UVBufferID;
+		protected int UVBufferID { get; private set; }
 
 		/// <summary>
-		/// The native OpenGL ID for the vertex index buffer.
+		/// Gets the native OpenGL ID for the vertex index buffer.
 		/// </summary>
-		protected int VertexIndexBufferID;
+		protected int VertexIndexBufferID { get; private set; }
 
 		/// <summary>
-		/// The native OpenGL ID for the image on the GPU.
+		/// Gets or sets the native OpenGL ID for the image on the GPU.
 		/// </summary>
-		protected Texture2D Texture;
+		protected Texture2D Texture { get; set; }
 
 		/// <summary>
-		/// The native OpenGL ID for the unlit 2D shader.
+		/// Gets or sets the native OpenGL ID for the unlit 2D shader.
 		/// </summary>
-		protected Plain2DShader Shader;
+		protected Plain2DShader Shader { get; set; }
 
 		/// <summary>
-		/// The path to the encapsulated texture in the package group.
+		/// Gets or sets the path to the encapsulated texture in the package group.
 		/// </summary>
-		protected string TexturePath;
+		protected string TexturePath { get; set; }
 
 		/// <summary>
-		/// A reference to the global shader cache.
-		/// </summary>
-		protected readonly RenderCache Cache = RenderCache.Instance;
-
-		/// <summary>
-		/// The projection method to use for this renderable object. Typically, this is Orthographic
+		/// Gets the projection method to use for this renderable object. Typically, this is Orthographic
 		/// or Perspective.
 		/// </summary>
 		public ProjectionType Projection => ProjectionType.Orthographic;
 
 		/// <summary>
-		/// The default camera position for this renderable.
+		/// Gets the default camera position for this renderable.
 		/// </summary>
 		public Vector3 DefaultCameraPosition => new Vector3(0.0f, 0.0f, 1.0f);
 
 		/// <summary>
-		/// A vector that is multiplied with the final texture sampling.
+		/// Gets or sets a value indicating whether or not the red channel should be rendered.
 		/// </summary>
-		public Vector4 ChannelMask;
+		public bool RenderRedChannel { get; set; } = true;
 
 		/// <summary>
-		/// The number of mipmap levels for this image.
+		/// Gets or sets a value indicating whether or not the green channel should be rendered.
+		/// </summary>
+		public bool RenderGreenChannel { get; set; } = true;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether or not the blue channel should be rendered.
+		/// </summary>
+		public bool RenderBlueChannel { get; set; } = true;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether or not the alpha channel should be rendered.
+		/// </summary>
+		public bool RenderAlphaChannel { get; set; } = true;
+
+		/// <summary>
+		/// Gets a vector based on <see cref="RenderRedChannel"/>, <see cref="RenderGreenChannel"/>,
+		/// <see cref="RenderBlueChannel"/> and <see cref="RenderAlphaChannel"/> that is multiplied with the final
+		/// texture sampling to mask out channels.
+		/// TODO: Investigate whether or not this is a problem memory-wise, new vector created every frame
+		/// </summary>
+		public Vector4 ChannelMask => new Vector4
+		(
+			this.RenderRedChannel ? 1.0f : 0.0f,
+			this.RenderGreenChannel ? 1.0f : 0.0f,
+			this.RenderBlueChannel ? 1.0f : 0.0f,
+			this.RenderAlphaChannel ? 1.0f : 0.0f
+		);
+
+		/// <summary>
+		/// Gets the number of mipmap levels for this image.
 		/// </summary>
 		public uint MipCount => GetNumReasonableMipLevels();
 
 		/// <summary>
 		/// TODO: Put this in Warcraft.Core instead
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The number of reasonable mipmap levels.</returns>
 		private uint GetNumReasonableMipLevels()
 		{
 			uint smallestXRes = GetResolution().X;
-            uint smallestYRes = GetResolution().Y;
+			uint smallestYRes = GetResolution().Y;
 
-            uint mipLevels = 0;
-            while (smallestXRes > 1 && smallestYRes > 1)
-            {
-                // Bisect the resolution using the current number of mip levels.
-                smallestXRes = smallestXRes / (uint)Math.Pow(2, mipLevels);
-                smallestYRes = smallestYRes / (uint)Math.Pow(2, mipLevels);
+			uint mipLevels = 0;
+			while (smallestXRes > 1 && smallestYRes > 1)
+			{
+				// Bisect the resolution using the current number of mip levels.
+				smallestXRes = smallestXRes / (uint)Math.Pow(2, mipLevels);
+				smallestYRes = smallestYRes / (uint)Math.Pow(2, mipLevels);
 
-                ++mipLevels;
-            }
+				++mipLevels;
+			}
 
-            return mipLevels.Clamp<uint>(0, 15);
+			return mipLevels.Clamp<uint>(0, 15);
 		}
 
 		/// <summary>
@@ -125,14 +176,12 @@ namespace Everlook.Viewport.Rendering
 			this.Texture = LoadTexture();
 
 			// Use cached shaders whenever possible
-			this.Shader = this.Cache.GetShader(EverlookShader.Plain2D) as Plain2DShader;
+			this.Shader = Cache.GetShader(EverlookShader.Plain2D) as Plain2DShader;
 
 			this.ImageTransform = new Transform(
 				new Vector3(0.0f, 0.0f, 0.0f),
 				Quaternion.FromAxisAngle(Vector3.UnitX, 0.0f),
 				new Vector3(1.0f, 1.0f, 1.0f));
-
-			this.ChannelMask = Vector4.One;
 
 			this.IsInitialized = true;
 		}
@@ -141,12 +190,10 @@ namespace Everlook.Viewport.Rendering
 		/// Loads or creates a cached texture from the global texture cache using the path the image
 		/// was constructed with as a key.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>A texture object.</returns>
 		protected abstract Texture2D LoadTexture();
 
-		/// <summary>
-		/// Renders the current object in the current OpenGL context.
-		/// </summary>
+		/// <inheritdoc />
 		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
 		{
 			if (!this.IsInitialized)
@@ -203,18 +250,18 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Gets the resolution of the encapsulated image.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The resolution of the image.</returns>
 		protected abstract Resolution GetResolution();
 
 		/// <summary>
 		/// Generates the four corner vertices of the encapsulated image.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The native OpenGL ID of the buffer.</returns>
 		protected int GenerateVertices()
 		{
 			// Generate vertex positions
-			uint halfWidth = (GetResolution().X / 2);
-			uint halfHeight = (GetResolution().Y / 2);
+			uint halfWidth = GetResolution().X / 2;
+			uint halfHeight = GetResolution().Y / 2;
 
 			List<float> vertexPositions = new List<float>
 			{
@@ -237,11 +284,11 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Generates a vertex index buffer for the four corner vertices.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The native OpenGL ID of the buffer.</returns>
 		protected static int GenerateVertexIndices()
 		{
 			// Generate vertex indices
-			List<ushort> vertexIndices = new List<ushort> {1, 0, 2, 2, 3, 1};
+			List<ushort> vertexIndices = new List<ushort> { 1, 0, 2, 2, 3, 1 };
 
 			int vertexIndicesID;
 			GL.GenBuffers(1, out vertexIndicesID);
@@ -255,7 +302,7 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Generates a UV coordinate buffer for the four corner vertices.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The native OpenGL ID of the buffer.</returns>
 		protected static int GenerateTextureCoordinates()
 		{
 			// Generate UV coordinates

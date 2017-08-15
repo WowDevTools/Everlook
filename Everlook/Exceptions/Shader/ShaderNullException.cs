@@ -21,25 +21,47 @@
 //
 
 using System;
-using OpenTK.Graphics.OpenGL;
 
 namespace Everlook.Exceptions.Shader
 {
+	/// <summary>
+	/// An exception thrown when a shader was null, but absolutely shouldn't have been.
+	/// </summary>
 	public class ShaderNullException : Exception
 	{
-		public readonly Type Shader;
+		/// <summary>
+		/// Gets the type of shader that was null.
+		/// </summary>
+		public Type Shader { get; }
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ShaderNullException"/> class.
+		/// </summary>
+		/// <param name="type">The shader type.</param>
 		public ShaderNullException(Type type)
 		{
 			this.Shader = type;
 		}
 
-		public ShaderNullException(Type type, string message) : base(message)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ShaderNullException"/> class.
+		/// </summary>
+		/// <param name="type">The shader type.</param>
+		/// <param name="message">The message to include with the exception.</param>
+		public ShaderNullException(Type type, string message)
+			: base(message)
 		{
 			this.Shader = type;
 		}
 
-		public ShaderNullException(Type type, string message, Exception inner) : base(message, inner)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ShaderNullException"/> class.
+		/// </summary>
+		/// <param name="type">The shader type.</param>
+		/// <param name="message">The message to include with the exception.</param>
+		/// <param name="inner">The exception which caused this exception.</param>
+		public ShaderNullException(Type type, string message, Exception inner)
+			: base(message, inner)
 		{
 			this.Shader = type;
 		}

@@ -50,25 +50,18 @@ namespace Everlook.Viewport.Rendering
 			Initialize();
 		}
 
-		/// <summary>
-		/// Loads or creates a cached texture from the global texture cache using the path the image
-		/// was constructed with as a key.
-		/// </summary>
-		/// <returns></returns>
+		/// <inheritdoc />
 		protected override Texture2D LoadTexture()
 		{
-			if (this.Cache.HasCachedTextureForPath(this.TexturePath))
+			if (Cache.HasCachedTextureForPath(this.TexturePath))
 			{
-				return this.Cache.GetCachedTexture(this.TexturePath);
+				return Cache.GetCachedTexture(this.TexturePath);
 			}
 
-			return this.Cache.CreateCachedTexture(this.Image, this.TexturePath);
+			return Cache.CreateCachedTexture(this.Image, this.TexturePath);
 		}
 
-		/// <summary>
-		/// Gets the resolution of the encapsulated image.
-		/// </summary>
-		/// <returns></returns>
+		/// <inheritdoc />
 		protected override Resolution GetResolution()
 		{
 			return this.Image.GetResolution();
@@ -84,4 +77,3 @@ namespace Everlook.Viewport.Rendering
 		}
 	}
 }
-
