@@ -126,8 +126,8 @@ namespace Everlook.UI
 				DepthBPP = 24,
 				AccumulatorBPP = 24,
 				Samples = 4,
-				GLVersionMajor = 3,
-				GLVersionMinor = 3,
+				GlVersionMajor = 3,
+				GlVersionMinor = 3,
 				GraphicsContextFlags = GraphicsContextFlags.Default,
 			};
 

@@ -63,7 +63,6 @@
     </AdditionalFiles>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)\lib\GLWidgetGTK3\GLWidgetGTK3.csproj" />
     <ProjectReference Include="$(SolutionDir)\lib\SlimTK\SlimTK\SlimTK.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +74,7 @@
     <PackageReference Include="NETStandard.Library.NETFramework" Version="2.0.0-preview2-25405-01" />
     <PackageReference Include="liblistfile" Version="2.0.1" />
     <PackageReference Include="OpenTK" Version="3.0.0-git00001" />
+    <PackageReference Include="OpenTK.GLWidget" Version="3.0.0-git00001" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" />
   </ItemGroup>
   <PropertyGroup>

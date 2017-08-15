@@ -6,14 +6,11 @@
     </content>
     <content url="file://$MODULE_DIR$/../..">
       <sourceFolder url="file://$MODULE_DIR$/../../Everlook" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../lib/GLWidgetGTK3" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../lib/SlimTK/SlimTK" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../stylecop.json" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../stylecop.ruleset" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/../../Everlook/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../Everlook/obj" />
-      <excludeFolder url="file://$MODULE_DIR$/../../lib/GLWidgetGTK3/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../lib/GLWidgetGTK3/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../lib/SlimTK/SlimTK/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../lib/SlimTK/SlimTK/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../packages" />

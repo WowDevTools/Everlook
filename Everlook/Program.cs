@@ -29,6 +29,7 @@ using Everlook.Utility;
 using GLib;
 using log4net;
 using OpenTK;
+using OpenTK.Graphics;
 using Application = Gtk.Application;
 using FileNode = liblistfile.NodeTree.Node;
 
@@ -124,9 +125,24 @@ namespace Everlook
 			{
 				if (unhandledException is DllNotFoundException)
 				{
-					Log.Fatal("This exception is typical of instances where the GTK# runtime has not been installed.\n" +
-							  "If you haven't installed it, download it at \'https://download.gnome.org/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi\'.\n" +
-							  "If you have installed it, reboot your computer and try again.");
+					Log.Fatal
+					(
+						"This exception is typical of instances where the GTK# runtime has not been installed.\n" +
+						"If you haven't installed it and you're on Windows, download it at \'https://download.gnome.org/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi\'.\n" +
+						"If you have installed it, reboot your computer and try again.\n" +
+						"If you're on macOS, try installing it through Homebrew." +
+						"If you're on Linux, check with your package maintainer that all dependencies are properly listed."
+					);
+				}
+
+				if (unhandledException is GraphicsException)
+				{
+					Log.Fatal
+					(
+						"Some type of graphics error occurred. On macOS, this is usally indicative of an OpenGL context " +
+		        		"which doesn't meet Everlook's requirements. Please note that Everlook requires at least OpenGL 3.3.\n" +
+						"If you're running via XQuartz, please note that XQuartz does not provided contexts above OpenGL 2.1."
+					);
 				}
 
 				Log.Fatal("Exception type: " + unhandledException.GetType().FullName);
