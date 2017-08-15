@@ -7,6 +7,23 @@
     <Platform>x86</Platform>
     <DefineConstants>$(DefineConstants);GTK3;</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup>
+    <Title>Everlook</Title>
+    <Authors>Jarl Gullberg</Authors>
+    <Version>2.0.0</Version>
+    <Description>An open-source World of Warcraft model viewer.</Description>
+    <Copyright>Copyright Jarl Gullberg 2017</Copyright>
+  </PropertyGroup>
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <PackageVersion>2.0.0</PackageVersion>
+    <PackageId>Everlook</PackageId>
+    <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0.en.html</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/WowDevTools/Everlook</PackageProjectUrl>
+    <PackageOutputPath>../nuget</PackageOutputPath>
+    <IncludeSymbols>true</IncludeSymbols>
+    <RepositoryUrl>https://github.com/WowDevTools/Everlook</RepositoryUrl>
+  </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\Shaders\BoundingBox\BoundingBoxFragment.glsl" />
     <EmbeddedResource Include="Content\Shaders\BoundingBox\BoundingBoxVertex.glsl" />
@@ -57,7 +74,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="gtk-sharp-3" Version="3.22.6.4" />
+    <PackageReference Include="ini-parser" Version="2.5.2" />
     <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="MP3Sharp" Version="1.0.3" />
+    <PackageReference Include="NETStandard.Library.NETFramework" Version="2.0.0-preview2-25405-01" />
     <PackageReference Include="OpenTK" Version="3.0.0-pre" />
     <PackageReference Include="liblistfile" Version="2.0.1" />
     <PackageReference Include="libwarcraft" Version="2.0.2" />
