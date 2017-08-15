@@ -1,237 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{64BD763C-024D-477A-B05C-57152FD612DF}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <RootNamespace>Everlook</RootNamespace>
-    <AssemblyName>Everlook</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <LangVersion>7</LangVersion>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net461</TargetFramework>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-    <PlatformTarget>x86</PlatformTarget>
+    <Platform>x86</Platform>
+    <DefineConstants>$(DefineConstants);GTK3;</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;GTK3;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <PlatformTarget>x86</PlatformTarget>
-    <DocumentationFile>bin\Debug\Everlook.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <DefineConstants>GTK3;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <PlatformTarget>x86</PlatformTarget>
-    <DocumentationFile>bin\Release\Everlook.xml</DocumentationFile>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="atk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\atk-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="cairo-sharp, Version=1.12.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\cairo-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="gdk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\gdk-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="gio-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\gio-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="glib-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\glib-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="gtk-dotnet, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\gtk-dotnet.dll</HintPath>
-    </Reference>
-    <Reference Include="gtk-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\gtk-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="ImageSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\ImageSharp.1.0.0-alpha9-00140\lib\netstandard1.3\ImageSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="INIFileParser, Version=2.4.0.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c">
-      <HintPath>..\packages\ini-parser.2.4.0\lib\net20\INIFileParser.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a">
-      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="MP3Sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\MP3Sharp.1.0.2\lib\net45\MP3Sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTK, Version=3.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
-      <HintPath>..\packages\OpenTK.3.0.0-pre\lib\net20\OpenTK.dll</HintPath>
-    </Reference>
-    <Reference Include="pango-sharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <HintPath>..\packages\gtk-sharp3.3.22.0.0\lib\net40\pango-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Buffers, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
-      <HintPath>..\packages\System.Buffers.4.3.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.3.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <HintPath>..\packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Memory, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
-      <HintPath>..\packages\System.Memory.4.4.0-preview1-25305-02\lib\netstandard2.0\System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Numerics.Vectors.4.4.0-preview1-25305-02\lib\net46\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.4.0-preview1-25305-02\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
-      <HintPath>..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Audio\AudioCollection.cs" />
-    <Compile Include="Audio\AudioManager.cs" />
-    <Compile Include="Audio\IAudioAsset.cs" />
-    <Compile Include="Audio\MP3\MP3AudioAsset.cs" />
-    <Compile Include="Audio\Wave\WaveAudioAsset.cs" />
-    <Compile Include="Database\Access\WMOAreaTableAccess.cs" />
-    <Compile Include="Database\ClientDatabaseProvider.cs" />
-    <Compile Include="Database\TypeTranslatorHelpers.cs" />
-    <Compile Include="Exceptions\Shader\ShaderCompilationException.cs" />
-    <Compile Include="Exceptions\Shader\ShaderLinkingException.cs" />
-    <Compile Include="Exceptions\Shader\ShaderNullException.cs" />
-    <Compile Include="Explorer\FileReference.cs" />
-    <Compile Include="Explorer\FileTreeModel.cs" />
-    <Compile Include="Explorer\GameLoader.cs" />
-    <Compile Include="Explorer\GameLoadingProgress.cs" />
-    <Compile Include="Explorer\GameLoadingState.cs" />
-    <Compile Include="Explorer\GamePage.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Configuration\EverlookConfiguration.cs" />
-    <Compile Include="Export\Image\ImageFormat.cs" />
-    <Compile Include="Export\Audio\AudioFormat.cs" />
-    <Compile Include="Export\Model\ModelFormat.cs" />
-    <Compile Include="UI\EverlookDirectoryExportDialog.cs" />
-    <Compile Include="UI\EverlookDirectoryExportDialogElements.cs">
-      <DependentUpon>EverlookDirectoryExportDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\EverlookGameLoadingDialog.cs" />
-    <Compile Include="UI\EverlookGameLoadingDialogElements.cs">
-      <DependentUpon>EverlookGameLoadingDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\EverlookImageExportDialog.cs" />
-    <Compile Include="UI\EverlookImageExportDialogElements.cs">
-      <DependentUpon>EverlookImageExportDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\EverlookPreferences.cs" />
-    <Compile Include="UI\EverlookPreferencesElements.cs">
-      <DependentUpon>EverlookPreferences.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\MainWindow.cs" />
-    <Compile Include="UI\ControlPages.cs" />
-    <Compile Include="UI\MainWindowElements.cs">
-      <DependentUpon>MainWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Utility\CommunicationDelegates.cs" />
-    <Compile Include="Utility\DirectoryHelpers.cs" />
-    <Compile Include="Utility\IconManager.cs" />
-    <Compile Include="Utility\DataLoadingDelegates.cs" />
-    <Compile Include="Utility\DataLoadingRoutines.cs" />
-    <Compile Include="Utility\ResourceManager.cs" />
-    <Compile Include="Viewport\Camera\CameraMovement.cs" />
-    <Compile Include="Viewport\Camera\ViewportCamera.cs" />
-    <Compile Include="Viewport\Rendering\Core\EverlookShader.cs" />
-    <Compile Include="Viewport\Rendering\Core\Lights\AmbientLight.cs" />
-    <Compile Include="Viewport\Rendering\Core\Lights\DirectionalLight.cs" />
-    <Compile Include="Viewport\Rendering\Core\ShaderProgram.cs" />
-    <Compile Include="Viewport\Rendering\Core\Plane.cs" />
-    <Compile Include="Viewport\Rendering\Core\Texture2D.cs" />
-    <Compile Include="Viewport\Rendering\Core\TextureUniform.cs" />
-    <Compile Include="Viewport\Rendering\Core\Transform.cs" />
-    <Compile Include="Viewport\Rendering\Interfaces\IActor.cs" />
-    <Compile Include="Viewport\Rendering\Interfaces\IRenderable.cs" />
-    <Compile Include="Viewport\Rendering\Interfaces\ITickingActor.cs" />
-    <Compile Include="Viewport\Rendering\RenderableBitmap.cs" />
-    <Compile Include="Viewport\Rendering\RenderableBLP.cs" />
-    <Compile Include="Viewport\Rendering\RenderableGameModel.cs" />
-    <Compile Include="Viewport\Rendering\RenderableImage.cs" />
-    <Compile Include="Viewport\Rendering\RenderableWorldModel.cs" />
-    <Compile Include="Viewport\Rendering\RenderCache.cs" />
-    <Compile Include="Viewport\Rendering\Shaders\BoundingBoxShader.cs" />
-    <Compile Include="Viewport\Rendering\Shaders\Components\AmbientLighting.cs" />
-    <Compile Include="Viewport\Rendering\Shaders\Components\GlobalLighting.cs" />
-    <Compile Include="Viewport\Rendering\Shaders\Components\SolidWireframe.cs" />
-    <Compile Include="Viewport\Rendering\Shaders\GameModelShader.cs" />
-    <Compile Include="Viewport\Rendering\Shaders\Plain2DShader.cs" />
-    <Compile Include="Viewport\Rendering\Shaders\WorldModelShader.cs" />
-    <Compile Include="Viewport\ViewportRenderer.cs" />
-    <Compile Include="Utility\ExtensionMethods.cs" />
-    <Compile Include="Audio\AudioSource.cs" />
-    <Compile Include="Package\PackageInteractionHandler.cs" />
-    <Compile Include="Package\PackageGroup.cs" />
-    <Compile Include="Explorer\FilterType.cs" />
-    <Compile Include="Configuration\GamePathStorage.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="Content\Shaders\BoundingBox\BoundingBoxFragment.glsl" />
     <EmbeddedResource Include="Content\Shaders\BoundingBox\BoundingBoxVertex.glsl" />
@@ -249,6 +24,12 @@
     <EmbeddedResource Include="Content\Icons\Mint-X\*.png" />
     <EmbeddedResource Include="Content\Icons\Mint-Y\*.png" />
     <EmbeddedResource Include="Content\Textures\*.png" />
+    <EmbeddedResource Include="Content\jokes.txt" />
+    <EmbeddedResource Include="Content\Shaders\WorldModel\WorldModelGeometry.glsl" />
+    <Content Include="Everlook.exe.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="interfaces\EverlookGameLoadingDialog.glade" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
@@ -271,38 +52,21 @@
     <Folder Include="Viewport\Rendering\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)\lib\GLWidgetGTK3\GLWidgetGTK3.csproj">
-      <Project>{47B57CB3-1885-462D-84DA-FBA0AE356F2A}</Project>
-      <Name>GLWidgetGTK3</Name>
-    </ProjectReference>
-    <ProjectReference Include="$(SolutionDir)\lib\liblistfile\liblistfile\liblistfile.csproj">
-      <Project>{CE32160A-4A61-4813-93A5-D9DFDD7AB470}</Project>
-      <Name>liblistfile</Name>
-    </ProjectReference>
-    <ProjectReference Include="$(SolutionDir)\lib\libwarcraft\libwarcraft\libwarcraft.csproj">
-      <Project>{DA06A44E-A67B-46C7-B07D-E90AEBED0502}</Project>
-      <Name>libwarcraft</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\lib\SlimTK\SlimTK\SlimTK.csproj">
-      <Project>{06c99d4b-9fd6-4aaa-83fd-ceb5cb308121}</Project>
-      <Name>SlimTK</Name>
-    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\lib\GLWidgetGTK3\GLWidgetGTK3.csproj" />
+    <ProjectReference Include="$(SolutionDir)\lib\SlimTK\SlimTK\SlimTK.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\jokes.txt" />
-    <EmbeddedResource Include="Content\Shaders\WorldModel\WorldModelGeometry.glsl" />
-    <Content Include="Everlook.exe.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <EmbeddedResource Include="interfaces\EverlookGameLoadingDialog.glade" />
+    <PackageReference Include="gtk-sharp-3" Version="3.22.6.4" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="OpenTK" Version="3.0.0-pre" />
+    <PackageReference Include="liblistfile" Version="2.0.1" />
+    <PackageReference Include="libwarcraft" Version="2.0.2" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="OpenTK.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="packages.config" />
     <Content Include="Content\GSettings\gschemas.compiled" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>
     <PrepareForRunDependsOn>$(PrepareForRunDependsOn);CopyGSettingsSchemas</PrepareForRunDependsOn>
@@ -310,10 +74,4 @@
   <Target Name="CopyGSettingsSchemas">
     <Copy SourceFiles="Content\GSettings\gschemas.compiled" DestinationFolder="$(OutDir)\share\glib-2.0\schemas\" />
   </Target>
-  <Target Name="AfterBuild">
-    <Copy SourceFiles="obj\x86\$(Configuration)\$(AssemblyName).pdb" DestinationFolder="$(OutputPath)" />
-  </Target>
-  <Import Project="..\packages\gtk-sharp3.3.22.0.0\build\gtk-sharp3.targets" />
-  <Import Project="..\packages\Microsoft.Packaging.Tools.1.0.0-preview1-25301-01\build\Microsoft.Packaging.Tools.targets" />
-  <Import Project="..\packages\NETStandard.Library.2.0.0-preview1-25301-01\build\netstandard2.0\NETStandard.Library.targets" />
 </Project>

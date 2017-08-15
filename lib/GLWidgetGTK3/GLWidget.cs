@@ -140,7 +140,7 @@ namespace OpenTK
 		/// <summary>
 		/// The set <see cref="GraphicsContextFlags"/> for this widget.
 		/// </summary>
-		public GraphicsContextFlags GraphicsContextFlags { get; set; }
+		public GraphicsContextFlags GraphContextFlags { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="GLWidget"/> class.

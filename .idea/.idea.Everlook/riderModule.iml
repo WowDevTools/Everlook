@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="RIDER_MODULE" version="4">
   <component name="NewModuleRootManager">
+    <content url="file://$USER_HOME$/.nuget/packages/liblistfile/2.0.1/contentFiles/any/netstandard2.0/Dictionary/dictionary.dic">
+      <sourceFolder url="file://$USER_HOME$/.nuget/packages/liblistfile/2.0.1/contentFiles/any/netstandard2.0/Dictionary/dictionary.dic" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/../..">
       <sourceFolder url="file://$MODULE_DIR$/../../Everlook" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../lib/GLWidgetGTK3" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../lib/SlimTK/SlimTK" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../lib/liblistfile/liblistfile" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../lib/libwarcraft/libwarcraft" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/../../Everlook/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../Everlook/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../lib/GLWidgetGTK3/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../lib/GLWidgetGTK3/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../lib/SlimTK/SlimTK/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../lib/SlimTK/SlimTK/obj" />
-      <excludeFolder url="file://$MODULE_DIR$/../../lib/liblistfile/liblistfile/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../lib/liblistfile/liblistfile/obj" />
-      <excludeFolder url="file://$MODULE_DIR$/../../lib/libwarcraft/libwarcraft/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../lib/libwarcraft/libwarcraft/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../packages" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
