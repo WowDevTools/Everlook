@@ -87,13 +87,12 @@ namespace Everlook.Audio.MP3
 			}
 			private set => this.PCMDataInternal = value;
 		}
+
 		public Stream PCMStream { get; private set; }
 
 		public int Channels { get; }
 		public int BitsPerSample { get; }
 		public int SampleRate { get; }
-
-
 
 		/// <summary>
 		/// Initializes a new <see cref="MP3AudioAsset"/> from a file reference.
@@ -125,9 +124,9 @@ namespace Everlook.Audio.MP3
 		/// </summary>
 		/// <param name="fileReference"></param>
 		/// <returns></returns>
-		public static async Task<MP3AudioAsset> LoadAsync(FileReference fileReference)
+		public static Task<MP3AudioAsset> LoadAsync(FileReference fileReference)
 		{
-			return await Task.Run(() => new MP3AudioAsset(fileReference));
+			return Task.Run(() => new MP3AudioAsset(fileReference));
 		}
 
 		/// <summary>

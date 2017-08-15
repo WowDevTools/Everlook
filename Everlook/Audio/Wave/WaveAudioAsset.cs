@@ -152,9 +152,9 @@ namespace Everlook.Audio.Wave
 		/// </summary>
 		/// <param name="fileReference"></param>
 		/// <returns></returns>
-		public static async Task<WaveAudioAsset> LoadAsync(FileReference fileReference)
+		public static Task<WaveAudioAsset> LoadAsync(FileReference fileReference)
 		{
-			return await Task.Run(() => new WaveAudioAsset(fileReference));
+			return Task.Run(() => new WaveAudioAsset(fileReference));
 		}
 
 		/// <summary>

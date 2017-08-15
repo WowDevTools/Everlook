@@ -342,6 +342,9 @@ namespace Everlook.Audio
 		/// <returns>An asynchronous task.</returns>
 		public async Task SetAudioAsync(FileReference fileReference)
 		{
+			// First, clear the old audio
+			ClearAudio();
+
 			// Asynchronously load audio data
 			switch (fileReference.GetReferencedFileType())
 			{
@@ -360,9 +363,6 @@ namespace Everlook.Audio
 					return;
 				}
 			}
-
-			// First, clear the old audio
-			ClearAudio();
 
 			byte[] soundData = this.AudioAsset.PCMData;
 			this.SoundFormat = this.AudioAsset.Format;
