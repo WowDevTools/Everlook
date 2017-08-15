@@ -35,6 +35,11 @@ namespace Everlook.Audio.Wave
 	public class WaveAudioAsset : IAudioAsset
 	{
 		/// <summary>
+		/// Whether or not this instance has been disposed.
+		/// </summary>
+		private bool IsDisposed;
+
+		/// <summary>
 		/// Gets the <see cref="ALFormat"/> that the PCM data is in.
 		/// </summary>
 		public ALFormat Format
@@ -66,6 +71,8 @@ namespace Everlook.Audio.Wave
 		{
 			get
 			{
+				EnsureUndisposed();
+
 				if (this.PCMDataInternal != null)
 				{
 					return this.PCMDataInternal;
@@ -172,11 +179,22 @@ namespace Everlook.Audio.Wave
 			return Task.Run(() => new WaveAudioAsset(fileReference));
 		}
 
+		/// <inheritdoc />
+		public void EnsureUndisposed()
+		{
+			if (this.IsDisposed)
+			{
+				throw new ObjectDisposedException(ToString());
+			}
+		}
+
 		/// <summary>
 		/// Disposes this <see cref="WaveAudioAsset"/>.
 		/// </summary>
 		public void Dispose()
 		{
+			this.IsDisposed = true;
+
 			this.PCMStream?.Dispose();
 
 			this.PCMStream = null;

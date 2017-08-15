@@ -60,5 +60,10 @@ namespace Everlook.Audio
 		/// Gets the sample rate or frequency of the PCM data.
 		/// </summary>
 		int SampleRate { get; }
+
+		/// <summary>
+		/// Throws an <see cref="ObjectDisposedException"/> if the object has been disposed.
+		/// </summary>
+		void EnsureUndisposed();
 	}
 }

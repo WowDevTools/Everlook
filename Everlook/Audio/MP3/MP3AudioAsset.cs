@@ -73,6 +73,8 @@ namespace Everlook.Audio.MP3
 		{
 			get
 			{
+				EnsureUndisposed();
+
 				if (this.PCMDataInternal != null)
 				{
 					return this.PCMDataInternal;
@@ -140,11 +142,22 @@ namespace Everlook.Audio.MP3
 			return Task.Run(() => new MP3AudioAsset(fileReference));
 		}
 
+		/// <inheritdoc />
+		public void EnsureUndisposed()
+		{
+			if (this.IsDisposed)
+			{
+				throw new ObjectDisposedException(ToString());
+			}
+		}
+
 		/// <summary>
 		/// Disposes this <see cref="MP3AudioAsset"/>.
 		/// </summary>
 		public void Dispose()
 		{
+			this.IsDisposed = true;
+
 			this.PCMStream?.Dispose();
 
 			this.PCMStream = null;
