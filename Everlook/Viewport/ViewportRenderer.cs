@@ -21,10 +21,11 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Everlook.Configuration;
 using Everlook.Viewport.Camera;
-using Everlook.Viewport.Rendering.Core.Lights;
 using Everlook.Viewport.Rendering.Interfaces;
 using log4net;
 using OpenTK;
@@ -155,6 +156,19 @@ namespace Everlook.Viewport
 		{
 			Log.Info($"Initializing {nameof(ViewportRenderer)} and setting up default OpenGL state...");
 
+			int numExtensions = GL.GetInteger(GetPName.NumExtensions);
+			List<string> extensions = new List<string>();
+			for (int i = 0; i < numExtensions; ++i)
+			{
+				extensions.Add(GL.GetString(StringNameIndexed.Extensions, i));
+			}
+
+			if (extensions.Contains("GL_KHR_debug"))
+			{
+				GL.Enable(EnableCap.DebugOutputSynchronous);
+				GL.DebugMessageCallback(OnGLDebugMessage, IntPtr.Zero);
+			}
+
 			// Generate the vertex array
 			GL.GenVertexArrays(1, out this.VertexArrayID);
 			GL.BindVertexArray(this.VertexArrayID);
@@ -187,6 +201,19 @@ namespace Everlook.Viewport
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 			this.IsInitialized = true;
+		}
+
+		private static void OnGLDebugMessage(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userparam)
+		{
+			string messageContent = Marshal.PtrToStringAuto(message, length);
+
+			Log.Debug
+			(
+				"=======\n" +
+				$"An OpenGL debug message has been received from \"{source}\" of type \"{type}\"." +
+				"=======\n" +
+				$"{messageContent}"
+			);
 		}
 
 		/// <summary>

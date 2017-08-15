@@ -30,6 +30,7 @@ using Everlook.Export.Image;
 using Everlook.Utility;
 using Gdk;
 using Gtk;
+using ImageSharp.Formats;
 using Warcraft.BLP;
 
 namespace Everlook.UI
@@ -137,7 +138,8 @@ namespace Everlook.UI
 					Directory.CreateDirectory(Directory.GetParent(exportPath).FullName);
 
 					string fullExportPath = $"{exportPath}_{i}.{formatExtension}";
-					this.Image.GetMipMap((uint)i).Save(fullExportPath, GetSystemImageFormatFromImageFormat((ImageFormat) this.ExportFormatComboBox.Active));
+
+					this.Image.GetMipMap((uint)i).Save(fullExportPath, GetImageEncoderFromFormat((ImageFormat) this.ExportFormatComboBox.Active));
 				}
 
 				++i;
@@ -150,20 +152,18 @@ namespace Everlook.UI
 		/// </summary>
 		/// <returns>The system image format from image format.</returns>
 		/// <param name="format">Format.</param>
-		private static SystemImageFormat GetSystemImageFormatFromImageFormat(ImageFormat format)
+		private static IImageEncoder GetImageEncoderFromFormat(ImageFormat format)
 		{
 			switch (format)
 			{
 				case ImageFormat.PNG:
-					return SystemImageFormat.Png;
+					return new PngEncoder();
 				case ImageFormat.JPG:
-					return SystemImageFormat.Jpeg;
-				case ImageFormat.TIF:
-					return SystemImageFormat.Tiff;
+					return new JpegEncoder();
 				case ImageFormat.BMP:
-					return SystemImageFormat.Bmp;
+					return new BmpEncoder();
 				default:
-					return SystemImageFormat.Png;
+					return new PngEncoder();
 			}
 		}
 

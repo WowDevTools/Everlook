@@ -126,7 +126,7 @@ namespace Everlook.UI
 				Samples = 4,
 				GLVersionMajor = 3,
 				GLVersionMinor = 3,
-				GraphicsContextFlags = GraphicsContextFlags.Default
+				GraphicsContextFlags = GraphicsContextFlags.Default,
 			};
 
 			this.ViewportWidget.Events |=

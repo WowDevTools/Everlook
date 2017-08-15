@@ -23,12 +23,15 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using ImageSharp;
 using log4net;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Warcraft.BLP;
 using Warcraft.Core.Structures;
 using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
+using Image = System.Drawing.Image;
+using Rectangle = System.Drawing.Rectangle;
 using SysPixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Everlook.Viewport.Rendering.Core
@@ -152,17 +155,17 @@ namespace Everlook.Viewport.Rendering.Core
 				finally
 				{
 					// Load a fallback bitmap instead
-					using (Bitmap mipZero = imageData.GetMipMap(0))
+					using (Image<Rgba32> mipZero = imageData.GetMipMap(0))
 					{
-						CreateFromBitmap(mipZero);
+						CreateFromImage(mipZero);
 					}
 				}
 			}
 			else
 			{
-				using (Bitmap mipZero = imageData.GetMipMap(0))
+				using (Image<Rgba32> mipZero = imageData.GetMipMap(0))
 				{
-					CreateFromBitmap(mipZero);
+					CreateFromImage(mipZero);
 				}
 			}
 
@@ -383,6 +386,30 @@ namespace Everlook.Viewport.Rendering.Core
                 GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
                 inTextureData.UnlockBits(pixels);
+			}
+		}
+
+		private void CreateFromImage(Image<Rgba32> inTextureData)
+		{
+			lock (this.TextureLock)
+			{
+				Bind();
+
+				// Extract raw RGB data from the largest bitmap
+				byte[] colourData = inTextureData.Pixels.AsBytes().ToArray();
+
+				GL.TexImage2D(
+					TextureTarget.Texture2D,
+					0, // level
+					PixelInternalFormat.Rgba,
+					inTextureData.Width,
+					inTextureData.Height,
+					0, // border
+					GLPixelFormat.Rgba,
+					PixelType.UnsignedByte,
+					colourData);
+
+				GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 			}
 		}
 
