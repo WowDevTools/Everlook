@@ -29,7 +29,6 @@ using Everlook.Utility;
 using GLib;
 using log4net;
 using OpenTK;
-using OpenTK.Graphics;
 using Application = Gtk.Application;
 using FileNode = liblistfile.NodeTree.Node;
 
@@ -61,7 +60,7 @@ namespace Everlook
 			Log.Info("----------------");
 			Log.Info("Initializing Everlook...");
 
-			Log.Info("Initializing OpenGL...");
+			Log.Info("Initializing OpenTK...");
 
 			// OpenGL
 			Toolkit.Init(new ToolkitOptions
@@ -69,7 +68,7 @@ namespace Everlook
 				Backend = PlatformBackend.PreferNative
 			});
 
-			Log.Info($"OpenGL initialized using the {(OpenTK.Configuration.RunningOnSdl2 ? "SDL2" : "native")} backend.");
+			Log.Info($"OpenTK initialized using the {GetOpenTKBackend()} backend.");
 
 			Log.Info("Initializing GTK...");
 
@@ -89,6 +88,25 @@ namespace Everlook
 			MainWindow win = MainWindow.Create();
 			win.Show();
 			Application.Run();
+		}
+
+		/// <summary>
+		/// Gets the backend used by OpenTK.
+		/// </summary>
+		/// <returns>The name of the backend.</returns>
+		private static string GetOpenTKBackend()
+		{
+			if (OpenTK.Configuration.RunningOnSdl2)
+			{
+				return "SDL2";
+			}
+
+			if (OpenTK.Configuration.RunningOnX11)
+			{
+				return "X11";
+			}
+
+			return "native";
 		}
 
 		/// <summary>
@@ -140,7 +158,7 @@ namespace Everlook
 					Log.Fatal
 					(
 						"Some type of graphics error occurred. On macOS, this is usally indicative of an OpenGL context " +
-		        		"which doesn't meet Everlook's requirements. Please note that Everlook requires at least OpenGL 3.3.\n" +
+						"which doesn't meet Everlook's requirements. Please note that Everlook requires at least OpenGL 3.3.\n" +
 						"If you're running via XQuartz, please note that XQuartz does not provided contexts above OpenGL 2.1."
 					);
 				}
