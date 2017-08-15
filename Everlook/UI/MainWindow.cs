@@ -429,7 +429,7 @@ namespace Everlook.UI
 
 					AddGamePage(gameTarget.Alias, gameTarget.Version, group, nodeTree);
 				}
-				catch (OperationCanceledException ocex)
+				catch (OperationCanceledException)
 				{
 					Log.Info("Cancelled game loading operation.");
 				}
@@ -591,11 +591,12 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
-		/// Loads and displays the pecified fileReference in the UI, which is expected to point to a valid object.
+		/// Loads and displays the specified fileReference in the UI, which is expected to point to a valid object.
 		/// This function takes a delegate which will correctly load the file pointed to by the FileReference,
 		/// and another delegate which will create a correct <see cref="IRenderable"/> object from the resulting
 		/// object.
 		/// </summary>
+		/// <param name="gamePage">The game page that the renderable originated from.</param>
 		/// <param name="fileReference">A <see cref="FileReference"/> which points to the desired file.</param>
 		/// <param name="referenceLoadingRoutine">A delegate which correctly loads the desired file, returning a generic type T.</param>
 		/// <param name="createRenderableDelegate">A delegate which accepts a generic type T and returns a renderable object.</param>
@@ -659,7 +660,7 @@ namespace Everlook.UI
 					EnableControlPage(associatedControlPage);
 				}
 			}
-			catch (OperationCanceledException ocex)
+			catch (OperationCanceledException)
 			{
 				Log.Info($"Cancelled loading of {fileReference.Filename}");
 			}

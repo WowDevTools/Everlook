@@ -135,11 +135,11 @@ namespace Everlook.Explorer
 					nodeTree = new OptimizedNodeTree(packageTreeFilePath);
 					generateTree = false;
 				}
-				catch (NodeTreeNotFoundException nofex)
+				catch (NodeTreeNotFoundException)
 				{
 					Log.Error("No file for the node tree found at the given location.");
 				}
-				catch (UnsupportedNodeTreeVersionException unex)
+				catch (UnsupportedNodeTreeVersionException)
 				{
 					Log.Info("Unsupported node tree version present. Deleting and regenerating.");
 					File.Delete(packageTreeFilePath);
