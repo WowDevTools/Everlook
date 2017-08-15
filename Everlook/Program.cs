@@ -159,7 +159,7 @@ namespace Everlook
 					(
 						"Some type of graphics error occurred. On macOS, this is usally indicative of an OpenGL context " +
 						"which doesn't meet Everlook's requirements. Please note that Everlook requires at least OpenGL 3.3.\n" +
-						"If you're running via XQuartz, please note that XQuartz does not provided contexts above OpenGL 2.1."
+						"If you're running via XQuartz, please note that XQuartz does not provide contexts above OpenGL 2.1."
 					);
 				}
 
