@@ -11,8 +11,9 @@ before_install:
     - sudo apt-get update
     - sudo apt-get install mono-complete libgtk3.0-cil msbuild dotnet-sdk-2.0.0
     - nuget sources add -Name OpenTK-dev -Source https://www.myget.org/F/opentk-develop/api/v2
+    - nuget sources add -Name ImageSharp -Source https://www.myget.org/F/imagesharp/api/v2
     - git config --global url."https://github.com/".insteadOf "git@github.com:"
     - git submodule update --init --recursive
-    - dotnet restore
+    - nuget restore
 script:
     - msbuild /p:Configuration=Release Everlook.sln
