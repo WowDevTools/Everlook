@@ -24,6 +24,10 @@ using OpenTK;
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {
+	/// <summary>
+	/// Provides a starting position for the viewport camera. Typically used on a class implementing
+	/// <see cref="IRenderable"/>.
+	/// </summary>
 	public interface IDefaultCameraPositionProvider
 	{
 		/// <summary>

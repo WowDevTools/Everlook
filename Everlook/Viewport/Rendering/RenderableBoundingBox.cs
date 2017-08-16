@@ -40,6 +40,8 @@ namespace Everlook.Viewport.Rendering
 	/// </summary>
 	public sealed class RenderableBoundingBox : IActor
 	{
+		private readonly BoundingBoxShader BoxShader;
+
 		/// <inheritdoc />
 		public Transform ActorTransform { get; set; }
 
@@ -60,8 +62,6 @@ namespace Everlook.Viewport.Rendering
 		private BoundingBox BoundingBoxData;
 		private int VertexBufferID;
 		private int VertexIndicesBufferID;
-
-		private readonly BoundingBoxShader BoxShader;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableBoundingBox"/> class. The bounds data is taken from
