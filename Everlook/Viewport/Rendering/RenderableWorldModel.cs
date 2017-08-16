@@ -133,10 +133,8 @@ namespace Everlook.Viewport.Rendering
 		private readonly Dictionary<ModelGroup, int> TextureCoordinateBufferLookup = new Dictionary<ModelGroup, int>();
 		private readonly Dictionary<ModelGroup, int> VertexIndexBufferLookup = new Dictionary<ModelGroup, int>();
 
-		// Bounding box data
-		private readonly Dictionary<ModelGroup, int> BoundingBoxVertexBufferLookup = new Dictionary<ModelGroup, int>();
-
-		private int BoundingBoxVertexIndexBufferID;
+		// Bounding boxes
+		private readonly Dictionary<ModelGroup, RenderableBoundingBox> BoundingBoxLookup = new Dictionary<ModelGroup, RenderableBoundingBox>();
 
 		/// <summary>
 		/// Gets or sets a value indicating whether or not the current renderable has been initialized.
@@ -238,9 +236,6 @@ namespace Everlook.Viewport.Rendering
 				int vertexIndicesID;
 				GL.GenBuffers(1, out vertexIndicesID);
 
-				int boundingBoxVertexBufferID;
-				GL.GenBuffers(1, out boundingBoxVertexBufferID);
-
 				// Upload all of the vertices in this group
 				float[] groupVertexValues = modelGroup
 					.GetVertices()
@@ -308,49 +303,16 @@ namespace Everlook.Viewport.Rendering
 
 				this.VertexIndexBufferLookup.Add(modelGroup, vertexIndicesID);
 
-				// Upload the corners of the bounding box
-				float[] boundingBoxVertices = modelGroup.GetBoundingBox()
-					.ToOpenGLBoundingBox()
-					.GetCorners()
-					.Select(v => v.AsSIMDVector().Flatten())
-					.SelectMany(f => f)
-					.ToArray();
-
-				GL.BindBuffer(BufferTarget.ArrayBuffer, boundingBoxVertexBufferID);
-				GL.BufferData
+				RenderableBoundingBox boundingBox = new RenderableBoundingBox
 				(
-					BufferTarget.ArrayBuffer,
-					(IntPtr)(boundingBoxVertices.Length * sizeof(float)),
-					boundingBoxVertices,
-					BufferUsageHint.StaticDraw
+					modelGroup.GetBoundingBox().ToOpenGLBoundingBox(),
+					modelGroup.GetPosition().ToOpenGLVector()
 				);
 
-				this.BoundingBoxVertexBufferLookup.Add(modelGroup, boundingBoxVertexBufferID);
+				boundingBox.Initialize();
+
+				this.BoundingBoxLookup.Add(modelGroup, boundingBox);
 			}
-
-			// The bounding box indices never differ for objects, so we'll initialize that here
-			int boundingBoxVertexIndicesBufferID;
-			GL.GenBuffers(1, out boundingBoxVertexIndicesBufferID);
-			this.BoundingBoxVertexIndexBufferID = boundingBoxVertexIndicesBufferID;
-
-			byte[] boundingBoxIndexValuesArray =
-			{
-				0, 1, 1, 2,
-				2, 3, 3, 0,
-				0, 4, 4, 7,
-				7, 3, 2, 6,
-				6, 7, 6, 5,
-				5, 4, 5, 1
-			};
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, boundingBoxVertexIndicesBufferID);
-			GL.BufferData
-			(
-				BufferTarget.ArrayBuffer,
-				(IntPtr)(boundingBoxIndexValuesArray.Length * sizeof(byte)),
-				boundingBoxIndexValuesArray,
-				BufferUsageHint.StaticDraw
-			);
 
 			this.IsInitialized = true;
 		}
@@ -390,19 +352,7 @@ namespace Everlook.Viewport.Rendering
 
 				if (this.ShouldRenderBounds)
 				{
-					// Now, draw the model's bounding box
-
-					// Transform the bounding box into world space
-					BoundingBox groupBoundingBox = modelGroup.GetBoundingBox().ToOpenGLBoundingBox().Transform(ref modelView);
-					if (camera.CanSee(groupBoundingBox))
-					{
-						// continue;
-						RenderBoundingBox(modelGroup, modelViewProjection, Color4.LimeGreen);
-					}
-					else
-					{
-						RenderBoundingBox(modelGroup, modelViewProjection, Color4.Red);
-					}
+					this.BoundingBoxLookup[modelGroup].Render(viewMatrix, projectionMatrix, camera);
 				}
 			}
 
@@ -503,52 +453,6 @@ namespace Everlook.Viewport.Rendering
 			GL.DisableVertexAttribArray(2);
 		}
 
-		private void RenderBoundingBox(ModelGroup modelGroup, Matrix4 modelViewProjection, Color4 colour)
-		{
-			BoundingBoxShader boxShader = this.Cache.GetShader(EverlookShader.BoundingBox) as BoundingBoxShader;
-
-			if (boxShader == null)
-			{
-				throw new ShaderNullException(typeof(BoundingBoxShader));
-			}
-
-			boxShader.Enable();
-			boxShader.SetMVPMatrix(modelViewProjection);
-			boxShader.SetLineColour(colour);
-
-			GL.Disable(EnableCap.CullFace);
-
-			// Render the object
-			// Send the vertices to the shader
-			GL.EnableVertexAttribArray(0);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, this.BoundingBoxVertexBufferLookup[modelGroup]);
-			GL.VertexAttribPointer
-			(
-				0,
-				3,
-				VertexAttribPointerType.Float,
-				false,
-				0,
-				0
-			);
-
-			// Bind the index buffer
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.BoundingBoxVertexIndexBufferID);
-
-			// Now draw the box
-			GL.DrawRangeElements
-			(
-				PrimitiveType.LineLoop,
-				0,
-				23,
-				24,
-				DrawElementsType.UnsignedByte,
-				new IntPtr(0)
-			);
-
-			GL.DisableVertexAttribArray(0);
-		}
-
 		// TODO: This has to go
 		private void CacheTexture(string texturePath, TextureWrapMode textureWrapMode = TextureWrapMode.Repeat)
 		{
@@ -610,13 +514,6 @@ namespace Everlook.Viewport.Rendering
 				int bufferID = indexBuffer.Value;
 				GL.DeleteBuffer(bufferID);
 			}
-
-			foreach (var boundingBoxVertexBuffer in this.BoundingBoxVertexBufferLookup)
-			{
-				int bufferID = boundingBoxVertexBuffer.Value;
-				GL.DeleteBuffer(bufferID);
-			}
-			GL.DeleteBuffer(this.BoundingBoxVertexIndexBufferID);
 		}
 
 		/// <summary>
