@@ -5,9 +5,14 @@ dist: trusty
 git:
     submodules: false
 before_install:
+    - curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+    - sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+    - sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
+    - sudo apt-get update
+    - sudo apt-get install mono-complete libgtk3.0-cil msbuild dotnet-sdk-2.0.0
+    - nuget sources add -Name OpenTK-dev -Source https://www.myget.org/F/opentk-develop/api/v2
     - git config --global url."https://github.com/".insteadOf "git@github.com:"
     - git submodule update --init --recursive
-    - sudo apt-get install mono-complete libgtk3.0-cil msbuild
     - nuget restore
 script:
     - msbuild /p:Configuration=Release Everlook.sln
