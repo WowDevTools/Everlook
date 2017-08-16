@@ -13,7 +13,6 @@ before_install:
     - nuget sources add -Name OpenTK-dev -Source https://www.myget.org/F/opentk-develop/api/v2
     - git config --global url."https://github.com/".insteadOf "git@github.com:"
     - git submodule update --init --recursive
-    - nuget restore
-    - nuget restore lib/SlimTK/SlimTK.sln
+    - dotnet restore
 script:
     - msbuild /p:Configuration=Release Everlook.sln
