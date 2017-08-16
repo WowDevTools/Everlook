@@ -3,6 +3,7 @@ image: Visual Studio 2017
 configuration:
   - Release
 install:
+    - nuget sources add -Name OpenTK-dev -Source https://www.myget.org/F/opentk-develop/api/v3/index.json
     - ps: git config --global url."https://github.com/".insteadOf "git@github.com:"
 before_build:
   - curl -fsS -o gtk-sharp-3.msi http://gemmei.acc.umu.se/pub/GNOME/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi
