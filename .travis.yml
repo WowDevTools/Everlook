@@ -14,5 +14,6 @@ before_install:
     - git config --global url."https://github.com/".insteadOf "git@github.com:"
     - git submodule update --init --recursive
     - nuget restore
+    - nuget restore lib/SlimTK/SlimTK.sln
 script:
     - msbuild /p:Configuration=Release Everlook.sln
