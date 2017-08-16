@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
 using System;
 using Everlook.Viewport.Camera;
 using OpenTK;
@@ -55,14 +56,6 @@ namespace Everlook.Viewport.Rendering.Interfaces
 		/// or Perspective.
 		/// </summary>
 		ProjectionType Projection
-		{
-			get;
-		}
-
-		/// <summary>
-		/// Gets the default camera position for this renderable.
-		/// </summary>
-		Vector3 DefaultCameraPosition
 		{
 			get;
 		}

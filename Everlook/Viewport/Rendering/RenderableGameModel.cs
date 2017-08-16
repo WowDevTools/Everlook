@@ -39,7 +39,7 @@ namespace Everlook.Viewport.Rendering
 	/// <summary>
 	/// Represents a renderable Game Object Model.
 	/// </summary>
-	public sealed class RenderableGameModel : IRenderable
+	public sealed class RenderableGameModel : IRenderable, IDefaultCameraPositionProvider
 	{
 		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is,

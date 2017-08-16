@@ -340,7 +340,12 @@ namespace Everlook.Viewport
 					this.Camera.ViewportWidth = this.ViewportWidget.AllocatedWidth;
 					this.Camera.ViewportHeight = this.ViewportWidget.AllocatedHeight;
 
-					this.Camera.Position = this.RenderTarget.DefaultCameraPosition;
+					var cameraPositionProvider = this.RenderTarget as IDefaultCameraPositionProvider;
+					if (cameraPositionProvider != null)
+					{
+						this.Camera.Position = cameraPositionProvider.DefaultCameraPosition;
+					}
+
 					this.Camera.Projection = this.RenderTarget.Projection;
 				}
 			}

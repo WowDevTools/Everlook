@@ -52,7 +52,7 @@ namespace Everlook.Viewport.Rendering
 	/// <summary>
 	/// Represents a renderable World Model Object
 	/// </summary>
-	public sealed class RenderableWorldModel : ITickingActor
+	public sealed class RenderableWorldModel : ITickingActor, IDefaultCameraPositionProvider
 	{
 		/// <summary>
 		/// Logger instance for this class.

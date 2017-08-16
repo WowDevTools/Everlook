@@ -36,7 +36,7 @@ namespace Everlook.Viewport.Rendering
 	/// <summary>
 	/// Represents a renderable 2D image, and contains common functionality required to render one.
 	/// </summary>
-	public abstract class RenderableImage : IRenderable
+	public abstract class RenderableImage : IRenderable, IDefaultCameraPositionProvider
 	{
 		/// <summary>
 		/// Gets a reference to the global shader cache.
