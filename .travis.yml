@@ -7,5 +7,7 @@ git:
 before_install:
     - git config --global url."https://github.com/".insteadOf "git@github.com:"
     - git submodule update --init --recursive
-    - sudo apt-get install mono-complete libgtk3.0-cil
+    - sudo apt-get install mono-complete libgtk3.0-cil msbuild
     - nuget restore
+script:
+    - msbuild /p:Configuration=Release Everlook.sln
