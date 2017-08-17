@@ -45,6 +45,11 @@ namespace Everlook.UI
 		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
 
 		/// <summary>
+		/// Gets a value indicating whether the list of games to load changed.
+		/// </summary>
+		public bool DidGameListChange { get; private set; }
+
+		/// <summary>
 		/// Creates an instance of the Preferences dialog, using the glade XML UI file.
 		/// </summary>
 		/// <returns>An initialized instance of the EverlookPreferences class.</returns>
@@ -141,6 +146,7 @@ namespace Everlook.UI
 					if (Directory.Exists(uriToStore.LocalPath))
 					{
 						this.GamePathListStore.AppendValues(alias, uriToStore.LocalPath, (uint)selectedVersion, selectedVersion.ToString());
+						this.DidGameListChange = true;
 					}
 
 					this.NewGamePathDialog.Hide();
@@ -175,6 +181,7 @@ namespace Everlook.UI
 
 			GamePathStorage.Instance.RemoveStoredPath(alias, version, path);
 			this.GamePathListStore.Remove(ref selectedIter);
+			this.DidGameListChange = true;
 		}
 
 		/// <summary>

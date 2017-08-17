@@ -578,18 +578,24 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
-		/// Reloads visible runtime values that the user can change in the preferences, such as the colour
-		/// of the viewport or the loaded packages.
+		/// Clears the loaded games and loads new ones from the configuration.
 		/// </summary>
-		private async void ReloadRuntimeValues()
+		/// <returns>A task wrapping the game reload operation.</returns>
+		private Task ReloadGames()
+		{
+			this.GamePages.Clear();
+			this.GameTabNotebook.ClearPages();
+			return LoadGames();
+		}
+
+		/// <summary>
+		/// Reloads the viewport background colour from the configuration.
+		/// </summary>
+		private void ReloadViewportBackground()
 		{
 			this.ViewportWidget.OverrideBackgroundColor(StateFlags.Normal, this.Config.GetViewportBackgroundColour());
 			this.RenderingEngine.SetClearColour(this.Config.GetViewportBackgroundColour());
 			this.ViewportHasPendingRedraw = true;
-
-			this.GamePages.Clear();
-			this.GameTabNotebook.ClearPages();
-			await LoadGames();
 		}
 
 		/// <summary>
@@ -873,7 +879,7 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		private void OnPreferencesButtonClicked(object sender, EventArgs e)
+		private async void OnPreferencesButtonClicked(object sender, EventArgs e)
 		{
 			using (EverlookPreferences preferencesDialog = EverlookPreferences.Create())
 			{
@@ -881,10 +887,17 @@ namespace Everlook.UI
 				if (preferencesDialog.Run() == (int)ResponseType.Ok)
 				{
 					preferencesDialog.SavePreferences();
-					ReloadRuntimeValues();
 				}
 
 				preferencesDialog.Destroy();
+
+				// Commit the changes
+				ReloadViewportBackground();
+
+				if (preferencesDialog.DidGameListChange)
+				{
+					await ReloadGames();
+				}
 			}
 		}
 
