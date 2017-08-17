@@ -36,7 +36,7 @@ namespace Everlook.Package
 	/// Package interaction handler. This class is responsible for loading a package and performing file operations
 	/// on it.
 	/// </summary>
-	public class PackageInteractionHandler : IDisposable, IPackage
+	public sealed class PackageInteractionHandler : IDisposable, IPackage
 	{
 		/// <summary>
 		/// Logger instance for this class.

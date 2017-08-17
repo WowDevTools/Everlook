@@ -39,7 +39,7 @@ namespace Everlook.Viewport.Rendering
 	///
 	/// Currently, these are textures and shader programs.
 	/// </summary>
-	public class RenderCache : IDisposable
+	public sealed class RenderCache : IDisposable
 	{
 		/// <summary>
 		/// Logger instance for this class.

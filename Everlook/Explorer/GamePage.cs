@@ -46,7 +46,7 @@ namespace Everlook.Explorer
 	/// A <see cref="GamePage"/> encapsulates a <see cref="TreeView"/> with a bound node tree which the user
 	/// can explore. It also handles events which the tree produces as the user navigates it.
 	/// </summary>
-	public class GamePage : IDisposable
+	public sealed class GamePage : IDisposable
 	{
 		/// <summary>
 		/// Raised whenever a file is selected in the tree which can be displayed in the interface.

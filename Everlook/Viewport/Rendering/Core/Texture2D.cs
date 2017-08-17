@@ -39,7 +39,7 @@ namespace Everlook.Viewport.Rendering.Core
 	/// <summary>
 	/// Wraps functionality around an OpenGL texture.
 	/// </summary>
-	public class Texture2D : IDisposable
+	public sealed class Texture2D : IDisposable
 	{
 		/// <summary>
 		/// Logger instance for this class.
