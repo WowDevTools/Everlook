@@ -283,7 +283,7 @@ namespace Everlook.Explorer
 		{
 			 return Task.Factory.StartNew
 			(
-				() => this.TreeFilter.Refilter(),
+				this.TreeFilter.Refilter,
 				CancellationToken.None,
 				TaskCreationOptions.None,
 				TaskScheduler.FromCurrentSynchronizationContext()
