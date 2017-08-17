@@ -573,32 +573,34 @@ namespace Everlook.UI
 		/// <param name="pageToDisable">pageToEnable.</param>
 		private void DisableControlPage(ControlPage pageToDisable)
 		{
-			if (Enum.IsDefined(typeof(ControlPage), pageToDisable))
+			if (!Enum.IsDefined(typeof(ControlPage), pageToDisable))
 			{
-				switch (pageToDisable)
+				return;
+			}
+
+			switch (pageToDisable)
+			{
+				case ControlPage.Image:
 				{
-					case ControlPage.Image:
-					{
-						this.RenderAlphaCheckButton.Sensitive = false;
-						this.RenderRedCheckButton.Sensitive = false;
-						this.RenderGreenCheckButton.Sensitive = false;
-						this.RenderBlueCheckButton.Sensitive = false;
-						break;
-					}
-					case ControlPage.Model:
-					{
-						this.RenderBoundsCheckButton.Sensitive = false;
-						this.RenderWireframeCheckButton.Sensitive = false;
-						break;
-					}
-					case ControlPage.Animation:
-					{
-						break;
-					}
-					case ControlPage.Audio:
-					{
-						break;
-					}
+					this.RenderAlphaCheckButton.Sensitive = false;
+					this.RenderRedCheckButton.Sensitive = false;
+					this.RenderGreenCheckButton.Sensitive = false;
+					this.RenderBlueCheckButton.Sensitive = false;
+					break;
+				}
+				case ControlPage.Model:
+				{
+					this.RenderBoundsCheckButton.Sensitive = false;
+					this.RenderWireframeCheckButton.Sensitive = false;
+					break;
+				}
+				case ControlPage.Animation:
+				{
+					break;
+				}
+				case ControlPage.Audio:
+				{
+					break;
 				}
 			}
 		}
@@ -820,11 +822,13 @@ namespace Everlook.UI
 				return stopCalling;
 			}
 
-			if (this.RenderingEngine.HasRenderTarget || this.ViewportHasPendingRedraw)
+			if (!this.RenderingEngine.HasRenderTarget && !this.ViewportHasPendingRedraw)
 			{
-				this.RenderingEngine.RenderFrame();
-				this.ViewportHasPendingRedraw = false;
+				return keepCalling;
 			}
+
+			this.RenderingEngine.RenderFrame();
+			this.ViewportHasPendingRedraw = false;
 
 			return keepCalling;
 		}
