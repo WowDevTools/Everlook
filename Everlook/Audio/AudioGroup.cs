@@ -30,7 +30,7 @@ namespace Everlook.Audio
 	/// Represents a group of concurrently playing and linked audio sources, such as music collections or
 	/// doodad sounds which should be considered as a unit. Each audio source in a collection must be unique.
 	/// </summary>
-	public class AudioGroup : IDisposable
+	public sealed class AudioGroup : IDisposable
 	{
 		private readonly List<AudioSource> AudioSources = new List<AudioSource>();
 

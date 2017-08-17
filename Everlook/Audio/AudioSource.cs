@@ -35,7 +35,7 @@ namespace Everlook.Audio
 	/// <summary>
 	/// Represents a single audio source in 3D space.
 	/// </summary>
-	public class AudioSource : IDisposable, IEquatable<AudioSource>
+	public sealed class AudioSource : IDisposable, IEquatable<AudioSource>
 	{
 		private IAudioAsset AudioAsset;
 		private int SoundBufferID;

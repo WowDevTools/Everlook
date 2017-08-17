@@ -29,7 +29,7 @@ namespace Everlook.Audio
 	/// <summary>
 	/// Manages the audio context of the application, and handles audio sources within it.
 	/// </summary>
-	public class AudioManager : IDisposable
+	public sealed class AudioManager : IDisposable
 	{
 		/// <summary>
 		/// Gets the singleton instance of the <see cref="AudioManager"/>.
