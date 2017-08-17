@@ -34,7 +34,6 @@ using Gtk;
 using liblistfile;
 using liblistfile.NodeTree;
 using Warcraft.Core;
-using static Everlook.Utility.CommunicationDelegates;
 using EventArgs = System.EventArgs;
 using FileNode = liblistfile.NodeTree.Node;
 using Menu = Gtk.Menu;
