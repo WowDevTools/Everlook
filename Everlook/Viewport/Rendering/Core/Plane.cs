@@ -35,12 +35,12 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <summary>
 		/// The normal of the plane.
 		/// </summary>
-		public Vector3 Normal;
+		public Vector3 Normal { get; set; }
 
 		/// <summary>
 		/// A point on the plane.
 		/// </summary>
-		public Vector3 PointOnPlane;
+		public Vector3 PointOnPlane { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Plane"/> struct.

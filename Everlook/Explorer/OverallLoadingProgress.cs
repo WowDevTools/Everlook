@@ -30,11 +30,11 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// The total number of operations in this loading operation.
 		/// </summary>
-		public int OperationCount;
+		public int OperationCount { get; set; }
 
 		/// <summary>
 		/// The number of finished operations.
 		/// </summary>
-		public int FinishedOperations;
+		public int FinishedOperations { get; set; }
 	}
 }

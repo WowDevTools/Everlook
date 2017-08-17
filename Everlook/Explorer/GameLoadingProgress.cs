@@ -30,16 +30,16 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// The overall completion percentage.
 		/// </summary>
-		public double CompletionPercentage;
+		public double CompletionPercentage { get; set; }
 
 		/// <summary>
 		/// The state of the load operation at the time of reporting.
 		/// </summary>
-		public GameLoadingState State;
+		public GameLoadingState State { get; set; }
 
 		/// <summary>
 		/// The alias of the game which is being loaded.
 		/// </summary>
-		public string Alias;
+		public string Alias { get; set; }
 	}
 }
