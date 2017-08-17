@@ -1017,12 +1017,16 @@ namespace Everlook.UI
 				{
 					AudioManager.UnregisterSource(this.GlobalAudio);
 
-					this.GlobalAudio = AudioSource.CreateNew();
-					await this.GlobalAudio.SetAudioAsync(fileReference);
+					if (this.Config.GetAutoplayAudio())
+					{
+						this.GlobalAudio = AudioSource.CreateNew();
+						await this.GlobalAudio.SetAudioAsync(fileReference);
 
-					AudioManager.RegisterSource(this.GlobalAudio);
+						AudioManager.RegisterSource(this.GlobalAudio);
 
-					this.GlobalAudio.Play();
+						this.GlobalAudio.Play();
+					}
+
 					break;
 				}
 			}
