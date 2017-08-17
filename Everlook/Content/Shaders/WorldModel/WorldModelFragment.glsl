@@ -102,7 +102,16 @@ void main()
 		else if (distance < WireframeLineWidth)
 		{
 			float relativeDistance = distance - (WireframeLineWidth - WireframeFadeWidth);
-			FragColour = mix(texCol, WireframeColour, SmoothStepEdge(relativeDistance));
+
+			vec4 baseColour = texCol;
+
+			// If the pixel should ordinarily be discarded, fade with a fully transparent pixel instead
+			if (texCol.a < alphaThreshold)
+			{
+				baseColour = vec4(0, 0, 0, 0);
+			}
+
+			FragColour = mix(baseColour, WireframeColour, SmoothStepEdge(relativeDistance));
 			return;
 		}
 	}

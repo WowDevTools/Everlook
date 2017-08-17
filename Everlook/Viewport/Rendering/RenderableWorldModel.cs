@@ -354,8 +354,13 @@ namespace Everlook.Viewport.Rendering
 				.OrderByDescending(modelGroup => VectorMath.Distance(camera.Position, modelGroup.GetPosition().AsOpenTKVector())))
 			{
 				RenderGroup(modelGroup, modelViewProjection);
+			}
 
-				if (this.ShouldRenderBounds)
+			// Render bounding boxes
+			if (this.ShouldRenderBounds)
+			{
+				foreach (ModelGroup modelGroup in this.Model.Groups
+					.OrderByDescending(modelGroup => VectorMath.Distance(camera.Position, modelGroup.GetPosition().AsOpenTKVector())))
 				{
 					this.BoundingBoxLookup[modelGroup].Render(viewMatrix, projectionMatrix, camera);
 				}
@@ -377,6 +382,9 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		private void RenderGroup(ModelGroup modelGroup, Matrix4 modelViewProjection)
 		{
+			// Reenable depth test
+			GL.Enable(EnableCap.DepthTest);
+
 			// Render the object
 			// Send the vertices to the shader
 			GL.EnableVertexAttribArray(0);
@@ -426,6 +434,12 @@ namespace Everlook.Viewport.Rendering
 
 				this.Shader.SetMaterial(modelMaterial);
 				this.Shader.SetMVPMatrix(modelViewProjection);
+
+				if (this.ShouldRenderWireframe)
+				{
+					// Override blend setting
+					GL.Enable(EnableCap.Blend);
+				}
 
 				// Set the texture as the first diffuse texture in unit 0
 				Texture2D texture = this.Cache.GetCachedTexture(modelMaterial.Texture0);
