@@ -33,7 +33,7 @@ namespace Everlook.Audio.MP3
 	/// <summary>
 	/// Represents a loaded MP3 audio asset.
 	/// </summary>
-	public class MP3AudioAsset : IAudioAsset
+	public sealed class MP3AudioAsset : IAudioAsset
 	{
 		/// <summary>
 		/// Whether or not this instance has been disposed.

@@ -32,7 +32,7 @@ namespace Everlook.Audio.Wave
 	/// <summary>
 	/// Represents a loaded Wave audio asset.
 	/// </summary>
-	public class WaveAudioAsset : IAudioAsset
+	public sealed class WaveAudioAsset : IAudioAsset
 	{
 		/// <summary>
 		/// Whether or not this instance has been disposed.
