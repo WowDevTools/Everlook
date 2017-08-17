@@ -85,13 +85,13 @@ namespace Everlook.Viewport.Rendering
 		/// <returns>true if the objects are equal; false otherwise.</returns>
 		public override bool Equals(object obj)
 		{
-			var otherBitmap = obj as RenderableBitmap;
-			if (otherBitmap == null)
+			var otherImage = obj as RenderableBitmap;
+			if (otherImage == null)
 			{
 				return false;
 			}
 
-			return otherBitmap.Image == this.Image;
+			return otherImage.Image == this.Image && otherImage.IsStatic == this.IsStatic;
 		}
 
 		/// <summary>

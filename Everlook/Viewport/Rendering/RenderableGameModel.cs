@@ -306,7 +306,9 @@ namespace Everlook.Viewport.Rendering
 				return false;
 			}
 
-			return (otherModel.Model == this.Model) && (otherModel.ModelPackageGroup == this.ModelPackageGroup);
+			return (otherModel.Model == this.Model) &&
+					(otherModel.ModelPackageGroup == this.ModelPackageGroup) &&
+					(otherModel.IsStatic == this.IsStatic);
 		}
 
 		/// <summary>
