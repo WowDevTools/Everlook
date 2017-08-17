@@ -27,10 +27,10 @@ using OpenTK;
 namespace Everlook.Audio
 {
 	/// <summary>
-	/// Represents a collection of concurrently playing and linked audio sources, such as music collections or
+	/// Represents a group of concurrently playing and linked audio sources, such as music collections or
 	/// doodad sounds which should be considered as a unit. Each audio source in a collection must be unique.
 	/// </summary>
-	public class AudioCollection : IDisposable
+	public class AudioGroup : IDisposable
 	{
 		private readonly List<AudioSource> AudioSources = new List<AudioSource>();
 
@@ -111,7 +111,7 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Disposes this <see cref="AudioCollection"/> and all its associated audio sources.
+		/// Disposes this <see cref="AudioGroup"/> and all its associated audio sources.
 		/// </summary>
 		public void Dispose()
 		{
