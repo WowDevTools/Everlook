@@ -617,15 +617,15 @@ namespace Everlook.UI
 		/// <param name="gamePage">The game page that the renderable originated from.</param>
 		/// <param name="fileReference">A <see cref="FileReference"/> which points to the desired file.</param>
 		/// <param name="referenceLoadingRoutine">A delegate which correctly loads the desired file, returning a generic type T.</param>
-		/// <param name="createRenderableDelegate">A delegate which accepts a generic type T and returns a renderable object.</param>
+		/// <param name="createRenderable">A delegate which accepts a generic type T and returns a renderable object.</param>
 		/// <param name="associatedControlPage">The control page which the file is associated with, that is, the one with relevant controls.</param>
 		/// <param name="ct">A cancellation token for this operation.</param>
 		/// <typeparam name="T">The type of object to load.</typeparam>
 		private async Task DisplayRenderableFile<T>(
 			GamePage gamePage,
 			FileReference fileReference,
-			DataLoadingDelegates.LoadReferenceDelegate<T> referenceLoadingRoutine,
-			DataLoadingDelegates.CreateRenderableDelegate<T> createRenderableDelegate,
+			DataLoadingDelegates.LoadReference<T> referenceLoadingRoutine,
+			DataLoadingDelegates.CreateRenderable<T> createRenderable,
 			ControlPage associatedControlPage,
 			CancellationToken ct)
 		{
@@ -656,7 +656,7 @@ namespace Everlook.UI
 
 				IRenderable renderable = await Task.Factory.StartNew
 				(
-					() => createRenderableDelegate(item, fileReference, gamePage.Version),
+					() => createRenderable(item, fileReference, gamePage.Version),
 					ct,
 					TaskCreationOptions.None,
 					this.UiThreadScheduler

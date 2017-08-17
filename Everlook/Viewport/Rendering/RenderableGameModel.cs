@@ -273,12 +273,28 @@ namespace Everlook.Viewport.Rendering
 		}
 
 		/// <summary>
+		/// Determines whether or not this object is equal to another object.
+		/// </summary>
+		/// <param name="obj">The other object</param>
+		/// <returns>true if the objects are equal; false otherwise.</returns>
+		public override bool Equals(object obj)
+		{
+			var otherModel = obj as RenderableGameModel;
+			if (otherModel == null)
+			{
+				return false;
+			}
+
+			return (otherModel.Model == this.Model) && (otherModel.ModelPackageGroup == this.ModelPackageGroup);
+		}
+
+		/// <summary>
 		/// Serves as a hash function for a <see cref="RenderableGameModel"/> object.
 		/// </summary>
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()
 		{
-			return (this.IsStatic.GetHashCode() + this.Model.GetHashCode()).GetHashCode();
+			return (this.IsStatic.GetHashCode() + this.Model.GetHashCode() + this.ModelPackageGroup.GetHashCode()).GetHashCode();
 		}
 	}
 }

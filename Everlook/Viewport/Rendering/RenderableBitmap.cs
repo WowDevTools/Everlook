@@ -79,6 +79,22 @@ namespace Everlook.Viewport.Rendering
 		}
 
 		/// <summary>
+		/// Determines whether or not this object is equal to another object.
+		/// </summary>
+		/// <param name="obj">The other object</param>
+		/// <returns>true if the objects are equal; false otherwise.</returns>
+		public override bool Equals(object obj)
+		{
+			var otherBitmap = obj as RenderableBitmap;
+			if (otherBitmap == null)
+			{
+				return false;
+			}
+
+			return otherBitmap.Image == this.Image;
+		}
+
+		/// <summary>
 		/// Serves as a hash function for a <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> object.
 		/// </summary>
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>

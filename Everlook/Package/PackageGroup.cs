@@ -69,7 +69,7 @@ namespace Everlook.Package
 		{
 			if (string.IsNullOrEmpty(groupName))
 			{
-				throw new ArgumentNullException(groupName, "A package group must be provided with a name.");
+				throw new ArgumentNullException(nameof(groupName), "A package group must be provided with a name.");
 			}
 
 			this.GroupName = groupName;
@@ -87,7 +87,7 @@ namespace Everlook.Package
 		{
 			if (string.IsNullOrEmpty(groupName))
 			{
-				throw new ArgumentNullException(groupName, "A package group must be provided with a name.");
+				throw new ArgumentNullException(nameof(groupName), "A package group must be provided with a name.");
 			}
 
 			this.GroupName = groupName;
