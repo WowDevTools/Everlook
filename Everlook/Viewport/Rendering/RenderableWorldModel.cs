@@ -220,101 +220,106 @@ namespace Everlook.Viewport.Rendering
 			// TODO: Upload vertices, UVs and normals of groups in parallel buffers
 			foreach (ModelGroup modelGroup in this.Model.Groups)
 			{
-				/*
-					Buffers
-				*/
-
-				int vertexBufferID;
-				GL.GenBuffers(1, out vertexBufferID);
-
-				int normalBufferID;
-				GL.GenBuffers(1, out normalBufferID);
-
-				int coordinateBufferID;
-				GL.GenBuffers(1, out coordinateBufferID);
-
-				int vertexIndicesID;
-				GL.GenBuffers(1, out vertexIndicesID);
-
-				// Upload all of the vertices in this group
-				float[] groupVertexValues = modelGroup
-					.GetVertices()
-					.Select(v => v.Flatten())
-					.SelectMany(f => f)
-					.ToArray();
-
-				GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferID);
-				GL.BufferData
-				(
-					BufferTarget.ArrayBuffer,
-					(IntPtr)(groupVertexValues.Length * sizeof(float)),
-					groupVertexValues,
-					BufferUsageHint.StaticDraw
-				);
-
-				this.VertexBufferLookup.Add(modelGroup, vertexBufferID);
-
-				// Upload all of the normals in this group
-				float[] groupNormalValues = modelGroup
-					.GetNormals()
-					.Select(v => v.Flatten())
-					.SelectMany(f => f)
-					.ToArray();
-
-				GL.BindBuffer(BufferTarget.ArrayBuffer, normalBufferID);
-				GL.BufferData
-				(
-					BufferTarget.ArrayBuffer,
-					(IntPtr)(groupNormalValues.Length * sizeof(float)),
-					groupNormalValues,
-					BufferUsageHint.StaticDraw
-				);
-
-				this.NormalBufferLookup.Add(modelGroup, normalBufferID);
-
-				// Upload all of the UVs in this group
-				float[] groupTextureCoordinateValues = modelGroup
-					.GetTextureCoordinates()
-					.Select(v => v.Flatten())
-					.SelectMany(f => f)
-					.ToArray();
-
-				GL.BindBuffer(BufferTarget.ArrayBuffer, coordinateBufferID);
-				GL.BufferData
-				(
-					BufferTarget.ArrayBuffer,
-					(IntPtr)(groupTextureCoordinateValues.Length * sizeof(float)),
-					groupTextureCoordinateValues,
-					BufferUsageHint.StaticDraw
-				);
-
-				this.TextureCoordinateBufferLookup.Add(modelGroup, coordinateBufferID);
-
-				// Upload vertex indices for this group
-				ushort[] groupVertexIndexValuesArray = modelGroup.GetVertexIndices().ToArray();
-				GL.BindBuffer(BufferTarget.ElementArrayBuffer, vertexIndicesID);
-				GL.BufferData
-				(
-					BufferTarget.ElementArrayBuffer,
-					(IntPtr)(groupVertexIndexValuesArray.Length * sizeof(ushort)),
-					groupVertexIndexValuesArray,
-					BufferUsageHint.StaticDraw
-				);
-
-				this.VertexIndexBufferLookup.Add(modelGroup, vertexIndicesID);
-
-				RenderableBoundingBox boundingBox = new RenderableBoundingBox
-				(
-					modelGroup.GetBoundingBox().ToOpenGLBoundingBox(),
-					this.ActorTransform
-				);
-
-				boundingBox.Initialize();
-
-				this.BoundingBoxLookup.Add(modelGroup, boundingBox);
+				InitializeModelGroup(modelGroup);
 			}
 
 			this.IsInitialized = true;
+		}
+
+		private void InitializeModelGroup(ModelGroup modelGroup)
+		{
+			/*
+				Buffers
+			*/
+
+			int vertexBufferID;
+			GL.GenBuffers(1, out vertexBufferID);
+
+			int normalBufferID;
+			GL.GenBuffers(1, out normalBufferID);
+
+			int coordinateBufferID;
+			GL.GenBuffers(1, out coordinateBufferID);
+
+			int vertexIndicesID;
+			GL.GenBuffers(1, out vertexIndicesID);
+
+			// Upload all of the vertices in this group
+			float[] groupVertexValues = modelGroup
+				.GetVertices()
+				.Select(v => v.Flatten())
+				.SelectMany(f => f)
+				.ToArray();
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferID);
+			GL.BufferData
+			(
+				BufferTarget.ArrayBuffer,
+				(IntPtr) (groupVertexValues.Length * sizeof(float)),
+				groupVertexValues,
+				BufferUsageHint.StaticDraw
+			);
+
+			this.VertexBufferLookup.Add(modelGroup, vertexBufferID);
+
+			// Upload all of the normals in this group
+			float[] groupNormalValues = modelGroup
+				.GetNormals()
+				.Select(v => v.Flatten())
+				.SelectMany(f => f)
+				.ToArray();
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, normalBufferID);
+			GL.BufferData
+			(
+				BufferTarget.ArrayBuffer,
+				(IntPtr) (groupNormalValues.Length * sizeof(float)),
+				groupNormalValues,
+				BufferUsageHint.StaticDraw
+			);
+
+			this.NormalBufferLookup.Add(modelGroup, normalBufferID);
+
+			// Upload all of the UVs in this group
+			float[] groupTextureCoordinateValues = modelGroup
+				.GetTextureCoordinates()
+				.Select(v => v.Flatten())
+				.SelectMany(f => f)
+				.ToArray();
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, coordinateBufferID);
+			GL.BufferData
+			(
+				BufferTarget.ArrayBuffer,
+				(IntPtr) (groupTextureCoordinateValues.Length * sizeof(float)),
+				groupTextureCoordinateValues,
+				BufferUsageHint.StaticDraw
+			);
+
+			this.TextureCoordinateBufferLookup.Add(modelGroup, coordinateBufferID);
+
+			// Upload vertex indices for this group
+			ushort[] groupVertexIndexValuesArray = modelGroup.GetVertexIndices().ToArray();
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, vertexIndicesID);
+			GL.BufferData
+			(
+				BufferTarget.ElementArrayBuffer,
+				(IntPtr) (groupVertexIndexValuesArray.Length * sizeof(ushort)),
+				groupVertexIndexValuesArray,
+				BufferUsageHint.StaticDraw
+			);
+
+			this.VertexIndexBufferLookup.Add(modelGroup, vertexIndicesID);
+
+			RenderableBoundingBox boundingBox = new RenderableBoundingBox
+			(
+				modelGroup.GetBoundingBox().ToOpenGLBoundingBox(),
+				this.ActorTransform
+			);
+
+			boundingBox.Initialize();
+
+			this.BoundingBoxLookup.Add(modelGroup, boundingBox);
 		}
 
 		/// <summary>
