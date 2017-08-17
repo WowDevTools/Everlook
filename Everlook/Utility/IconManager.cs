@@ -295,11 +295,13 @@ namespace Everlook.Utility
 		private static Pixbuf LoadIconPixbuf(string iconName, int size = 16)
 		{
 			var key = (iconName, size);
-			if (!IconCache.ContainsKey(key))
+			if (IconCache.ContainsKey(key))
 			{
-				Pixbuf icon = IconTheme.Default.LoadIcon(iconName, size, IconLookupFlags.UseBuiltin);
-				IconCache.Add(key, icon);
+				return IconCache[key];
 			}
+
+			Pixbuf icon = IconTheme.Default.LoadIcon(iconName, size, IconLookupFlags.UseBuiltin);
+			IconCache.Add(key, icon);
 
 			return IconCache[key];
 		}
