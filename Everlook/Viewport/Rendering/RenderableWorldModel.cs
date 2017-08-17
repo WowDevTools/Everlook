@@ -232,17 +232,10 @@ namespace Everlook.Viewport.Rendering
 				Buffers
 			*/
 
-			int vertexBufferID;
-			GL.GenBuffers(1, out vertexBufferID);
-
-			int normalBufferID;
-			GL.GenBuffers(1, out normalBufferID);
-
-			int coordinateBufferID;
-			GL.GenBuffers(1, out coordinateBufferID);
-
-			int vertexIndicesID;
-			GL.GenBuffers(1, out vertexIndicesID);
+			int vertexBufferID = GL.GenBuffer();
+			int normalBufferID = GL.GenBuffer();
+			int coordinateBufferID = GL.GenBuffer();
+			int vertexIndicesID = GL.GenBuffer();
 
 			// Upload all of the vertices in this group
 			float[] groupVertexValues = modelGroup
