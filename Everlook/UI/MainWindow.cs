@@ -98,8 +98,10 @@ namespace Everlook.UI
 		/// <returns>An initialized instance of the MainWindow class.</returns>
 		public static MainWindow Create()
 		{
-			Builder builder = new Builder(null, "Everlook.interfaces.Everlook.glade", null);
-			return new MainWindow(builder, builder.GetObject("MainWindow").Handle);
+			using (Builder builder = new Builder(null, "Everlook.interfaces.Everlook.glade", null))
+			{
+				return new MainWindow(builder, builder.GetObject("MainWindow").Handle);
+			}
 		}
 
 		/// <summary>

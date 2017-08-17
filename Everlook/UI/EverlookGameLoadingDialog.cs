@@ -68,8 +68,10 @@ namespace Everlook.UI
 		/// <returns>An initialized instance of the EverlookGameLoadingDialog class.</returns>
 		public static EverlookGameLoadingDialog Create(Window parent)
 		{
-			Builder builder = new Builder(null, "Everlook.interfaces.EverlookGameLoadingDialog.glade", null);
-			return new EverlookGameLoadingDialog(builder, builder.GetObject("GameLoadingDialog").Handle, parent);
+			using (Builder builder = new Builder(null, "Everlook.interfaces.EverlookGameLoadingDialog.glade", null))
+			{
+				return new EverlookGameLoadingDialog(builder, builder.GetObject("GameLoadingDialog").Handle, parent);
+			}
 		}
 
 		private EverlookGameLoadingDialog(Builder builder, IntPtr handle, Window parent)

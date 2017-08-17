@@ -61,13 +61,15 @@ namespace Everlook.UI
 		/// <returns>An initialized instance of the EverlookImageExportDialog class.</returns>
 		public static EverlookImageExportDialog Create(FileReference inExportTarget)
 		{
-			Builder builder = new Builder(null, "Everlook.interfaces.EverlookImageExport.glade", null);
-			return new EverlookImageExportDialog
-			(
-				builder,
-				builder.GetObject("EverlookImageExportDialog").Handle,
-				inExportTarget
-			);
+			using (Builder builder = new Builder(null, "Everlook.interfaces.EverlookImageExport.glade", null))
+			{
+				return new EverlookImageExportDialog
+				(
+					builder,
+					builder.GetObject("EverlookImageExportDialog").Handle,
+					inExportTarget
+				);
+			}
 		}
 
 		/// <summary>

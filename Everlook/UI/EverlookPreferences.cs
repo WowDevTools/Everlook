@@ -55,8 +55,10 @@ namespace Everlook.UI
 		/// <returns>An initialized instance of the EverlookPreferences class.</returns>
 		public static EverlookPreferences Create()
 		{
-			Builder builder = new Builder(null, "Everlook.interfaces.EverlookPreferences.glade", null);
-			return new EverlookPreferences(builder, builder.GetObject("PreferencesDialog").Handle);
+			using (Builder builder = new Builder(null, "Everlook.interfaces.EverlookPreferences.glade", null))
+			{
+				return new EverlookPreferences(builder, builder.GetObject("PreferencesDialog").Handle);
+			}
 		}
 
 		/// <summary>
