@@ -27,6 +27,7 @@ using System.Runtime.InteropServices;
 using Everlook.Configuration;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Interfaces;
+using Gdk;
 using log4net;
 using OpenTK;
 using OpenTK.Graphics;
@@ -203,6 +204,21 @@ namespace Everlook.Viewport
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 			this.IsInitialized = true;
+		}
+
+		/// <summary>
+		/// Sets the clear colour of the OpenGL viewport.
+		/// </summary>
+		/// <param name="colour">The new colour to use.</param>
+		public void SetClearColour(RGBA colour)
+		{
+			GL.ClearColor
+			(
+				(float)colour.Red,
+				(float)colour.Green,
+				(float)colour.Blue,
+				(float)colour.Alpha
+			);
 		}
 
 		private static void OnGLDebugMessage(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userparam)

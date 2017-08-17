@@ -584,6 +584,8 @@ namespace Everlook.UI
 		private async void ReloadRuntimeValues()
 		{
 			this.ViewportWidget.OverrideBackgroundColor(StateFlags.Normal, this.Config.GetViewportBackgroundColour());
+			this.RenderingEngine.SetClearColour(this.Config.GetViewportBackgroundColour());
+			this.ViewportHasPendingRedraw = true;
 
 			this.GamePages.Clear();
 			this.GameTabNotebook.ClearPages();
