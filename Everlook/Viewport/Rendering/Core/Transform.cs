@@ -28,7 +28,7 @@ namespace Everlook.Viewport.Rendering.Core
 	/// A structure representing a set of transformation data in world space.
 	/// This is mainly used by OpenGL to render objects in different points in the world.
 	/// </summary>
-	public struct Transform
+	public class Transform
 	{
 		/// <summary>
 		/// Gets or sets the translation of the object in world space. One unit is arbitrary, but
