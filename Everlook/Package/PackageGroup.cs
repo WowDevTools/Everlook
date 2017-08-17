@@ -208,6 +208,11 @@ namespace Everlook.Package
 		/// <param name="fileReference">Reference reference.</param>
 		public MPQFileInfo GetReferenceInfo(FileReference fileReference)
 		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
 			return GetFileInfo(fileReference.FilePath);
 		}
 
@@ -219,6 +224,11 @@ namespace Everlook.Package
 		/// <param name="fileReference">Reference reference.</param>
 		public MPQFileInfo GetVersionedReferenceInfo(FileReference fileReference)
 		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
 			PackageInteractionHandler package = GetPackageByName(fileReference.PackageName);
 			if (package != null)
 			{
@@ -236,6 +246,11 @@ namespace Everlook.Package
 		/// <param name="fileReference">Reference reference.</param>
 		public byte[] ExtractVersionedReference(FileReference fileReference)
 		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
 			PackageInteractionHandler package = GetPackageByName(fileReference.PackageName);
 			if (package != null)
 			{
@@ -256,6 +271,11 @@ namespace Everlook.Package
 		/// <param name="fileReference">Reference reference.</param>
 		public byte[] ExtractReference(FileReference fileReference)
 		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
 			return ExtractFile(fileReference.FilePath);
 		}
 
@@ -266,6 +286,11 @@ namespace Everlook.Package
 		/// <param name="fileReference">Reference reference.</param>
 		public bool ContainsReference(FileReference fileReference)
 		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
 			return ContainsFile(fileReference.FilePath);
 		}
 

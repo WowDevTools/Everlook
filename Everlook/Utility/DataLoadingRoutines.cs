@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System;
 using System.Drawing;
 using System.IO;
 using Everlook.Explorer;
@@ -53,6 +54,11 @@ namespace Everlook.Utility
 		/// <returns>A WMO object.</returns>
 		public static WMO LoadWorldModel(FileReference fileReference)
 		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
 			try
 			{
 				byte[] fileData = fileReference.Extract();
@@ -105,6 +111,11 @@ namespace Everlook.Utility
 		/// <returns>A WMO object, containing just the specified model group.</returns>
 		public static WMO LoadWorldModelGroup(FileReference fileReference)
 		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
 			// Get the file name of the root object
 			string modelRootPath = fileReference.FilePath.Remove(fileReference.FilePath.Length - 8, 4);
 
@@ -164,6 +175,11 @@ namespace Everlook.Utility
 		/// <returns>A BLP object containing the image data pointed to by the reference.</returns>
 		public static BLP LoadBinaryImage(FileReference fileReference)
 		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
 			byte[] fileData = fileReference.Extract();
 			if (fileData != null)
 			{
@@ -211,6 +227,11 @@ namespace Everlook.Utility
 		/// <returns>A bitmap containing the image data pointed to by the reference.</returns>
 		public static Bitmap LoadBitmapImage(FileReference fileReference)
 		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
 			byte[] fileData = fileReference.Extract();
 			if (fileData != null)
 			{

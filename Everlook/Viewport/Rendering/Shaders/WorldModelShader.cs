@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders.Components;
 using OpenTK.Graphics.OpenGL;
@@ -66,6 +67,11 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <param name="texture">The texture to bind.</param>
 		public void BindTexture2D(TextureUnit textureUnit, TextureUniform uniform, Texture2D texture)
 		{
+			if (texture == null)
+			{
+				throw new ArgumentNullException(nameof(texture));
+			}
+
 			Enable();
 
 			GL.ActiveTexture(textureUnit);
@@ -81,6 +87,11 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <param name="modelMaterial">The material to use.</param>
 		public void SetMaterial(ModelMaterial modelMaterial)
 		{
+			if (modelMaterial == null)
+			{
+				throw new ArgumentNullException(nameof(modelMaterial));
+			}
+
 			Enable();
 
 			// Set two-sided rendering

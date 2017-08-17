@@ -115,6 +115,11 @@ namespace Everlook.Audio.MP3
 		/// <exception cref="ArgumentNullException">Thrown if the file data can't be extracted.</exception>
 		public MP3AudioAsset(FileReference fileReference)
 		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
 			if (fileReference.GetReferencedFileType() != WarcraftFileType.MP3Audio)
 			{
 				throw new ArgumentException("The provided file reference was not an MP3 audio file.", nameof(fileReference));
@@ -123,7 +128,7 @@ namespace Everlook.Audio.MP3
 			byte[] fileBytes = fileReference.Extract();
 			if (fileBytes == null)
 			{
-				throw new ArgumentNullException(nameof(fileReference), "The file data could not be extracted.");
+				throw new ArgumentException("The file data could not be extracted.", nameof(fileReference));
 			}
 
 			this.PCMStream = new MP3Stream(new MemoryStream(fileBytes));

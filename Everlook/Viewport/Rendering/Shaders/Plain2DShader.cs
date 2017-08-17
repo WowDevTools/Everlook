@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System;
 using Everlook.Viewport.Rendering.Core;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -64,6 +65,11 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <param name="texture">The texture.</param>
 		public void SetTexture(Texture2D texture)
 		{
+			if (texture == null)
+			{
+				throw new ArgumentNullException(nameof(texture));
+			}
+
 			Enable();
 
 			GL.ActiveTexture(TextureUnit.Texture0);

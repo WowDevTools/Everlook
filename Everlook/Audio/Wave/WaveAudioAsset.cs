@@ -113,6 +113,11 @@ namespace Everlook.Audio.Wave
 		/// <exception cref="ArgumentNullException">Thrown if the file data can't be extracted.</exception>
 		public WaveAudioAsset(FileReference fileReference)
 		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
 			if (fileReference.GetReferencedFileType() != WarcraftFileType.WaveAudio)
 			{
 				throw new ArgumentException("The provided file reference was not a wave audio file.", nameof(fileReference));
@@ -121,7 +126,7 @@ namespace Everlook.Audio.Wave
 			byte[] fileBytes = fileReference.Extract();
 			if (fileBytes == null)
 			{
-				throw new ArgumentNullException(nameof(fileReference), "The file data could not be extracted.");
+				throw new ArgumentException("The file data could not be extracted.", nameof(fileReference));
 			}
 
 			using (MemoryStream ms = new MemoryStream(fileBytes))

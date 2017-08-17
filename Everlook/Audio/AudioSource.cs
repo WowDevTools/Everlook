@@ -294,6 +294,11 @@ namespace Everlook.Audio
 		/// <returns>An AudioSource.</returns>
 		public static AudioSource CreateFromSoundEntry(SoundEntriesRecord soundEntry)
 		{
+			if (soundEntry == null)
+			{
+				throw new ArgumentNullException(nameof(soundEntry));
+			}
+
 			AudioSource source = CreateNew();
 			source.Attenuation = soundEntry.DistanceCutoff;
 
@@ -344,6 +349,11 @@ namespace Everlook.Audio
 		/// <returns>An asynchronous task.</returns>
 		public async Task SetAudioAsync(FileReference fileReference)
 		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
 			// First, clear the old audio
 			ClearAudio();
 
