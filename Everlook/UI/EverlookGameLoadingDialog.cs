@@ -48,7 +48,7 @@ namespace Everlook.UI
 		/// <summary>
 		/// Gets the notifier object which can be used to update the loading dialog with new information.
 		/// </summary>
-		public Progress<GameLoadingProgress> ProgressNotifier { get; }
+		public Progress<GameLoadingProgress> GameLoadProgressNotifier { get; }
 
 		/// <summary>
 		/// Creates a new dialog with the given window as its parent.
@@ -77,7 +77,7 @@ namespace Everlook.UI
 				this.CancellationSource.Cancel();
 			};
 
-			this.ProgressNotifier = new Progress<GameLoadingProgress>(loadingProgress =>
+			this.GameLoadProgressNotifier = new Progress<GameLoadingProgress>(loadingProgress =>
 			{
 				SetFraction(loadingProgress.CompletionPercentage);
 

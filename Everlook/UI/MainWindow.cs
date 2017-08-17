@@ -424,7 +424,7 @@ namespace Everlook.UI
 						gameTarget.Alias,
 						gameTarget.Path,
 						dialog.CancellationSource.Token,
-						dialog.ProgressNotifier
+						dialog.GameLoadProgressNotifier
 					);
 
 					AddGamePage(gameTarget.Alias, gameTarget.Version, group, nodeTree);
