@@ -38,6 +38,7 @@ struct TriangleProjectionIndices
 
 const TriangleProjectionIndices ProjectionLookup[8] = TriangleProjectionIndices[]
 (
+	// These indices follow a truth table of the visible vertices. F means not visible, T means visible
 	TriangleProjectionIndices(-1, -1, -1, -1), // All visible, never accessed
 	TriangleProjectionIndices(0, 1, 2, 2), // TTF
 	TriangleProjectionIndices(0, 2, 1, 1), // TFT
