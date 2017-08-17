@@ -495,72 +495,74 @@ namespace Everlook.UI
 				return;
 			}
 
-			if (Enum.IsDefined(typeof(ControlPage), pageToEnable))
+			if (!Enum.IsDefined(typeof(ControlPage), pageToEnable))
 			{
-				// Set the page
-				this.ItemControlNotebook.Page = (int)pageToEnable;
+				return;
+			}
 
-				// Disable the other pages
-				foreach (ControlPage otherPage in Enum.GetValues(typeof(ControlPage)))
+			// Set the page
+			this.ItemControlNotebook.Page = (int)pageToEnable;
+
+			// Disable the other pages
+			foreach (ControlPage otherPage in Enum.GetValues(typeof(ControlPage)))
+			{
+				if (otherPage == pageToEnable)
 				{
-					if (otherPage == pageToEnable)
-					{
-						continue;
-					}
-
-					DisableControlPage(otherPage);
+					continue;
 				}
 
-				switch (pageToEnable)
+				DisableControlPage(otherPage);
+			}
+
+			switch (pageToEnable)
+			{
+				case ControlPage.Image:
 				{
-					case ControlPage.Image:
+					RenderableImage image = this.RenderingEngine.RenderTarget as RenderableImage;
+					if (image == null)
 					{
-						RenderableImage image = this.RenderingEngine.RenderTarget as RenderableImage;
-						if (image == null)
-						{
-							return;
-						}
-
-						this.MipCountLabel.Text = image.MipCount.ToString();
-
-						this.RenderAlphaCheckButton.Sensitive = true;
-						this.RenderRedCheckButton.Sensitive = true;
-						this.RenderGreenCheckButton.Sensitive = true;
-						this.RenderBlueCheckButton.Sensitive = true;
-
-						image.RenderAlphaChannel = this.RenderAlphaCheckButton.Active;
-						image.RenderRedChannel = this.RenderRedCheckButton.Active;
-						image.RenderGreenChannel = this.RenderGreenCheckButton.Active;
-						image.RenderBlueChannel = this.RenderBlueCheckButton.Active;
-						break;
+						return;
 					}
-					case ControlPage.Model:
+
+					this.MipCountLabel.Text = image.MipCount.ToString();
+
+					this.RenderAlphaCheckButton.Sensitive = true;
+					this.RenderRedCheckButton.Sensitive = true;
+					this.RenderGreenCheckButton.Sensitive = true;
+					this.RenderBlueCheckButton.Sensitive = true;
+
+					image.RenderAlphaChannel = this.RenderAlphaCheckButton.Active;
+					image.RenderRedChannel = this.RenderRedCheckButton.Active;
+					image.RenderGreenChannel = this.RenderGreenCheckButton.Active;
+					image.RenderBlueChannel = this.RenderBlueCheckButton.Active;
+					break;
+				}
+				case ControlPage.Model:
+				{
+					this.RenderBoundsCheckButton.Sensitive = true;
+					this.RenderWireframeCheckButton.Sensitive = true;
+					RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
+					if (wmo != null)
 					{
-						this.RenderBoundsCheckButton.Sensitive = true;
-						this.RenderWireframeCheckButton.Sensitive = true;
-						RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
-						if (wmo != null)
-						{
-							wmo.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
-							wmo.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
-						}
+						wmo.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
+						wmo.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
+					}
 
-						RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
-						if (mdx != null)
-						{
-							mdx.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
-						}
+					RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
+					if (mdx != null)
+					{
+						mdx.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
+					}
 
-						break;
-					}
-					case ControlPage.Animation:
-					{
-						break;
-					}
-					case ControlPage.Audio:
-					{
-						break;
-					}
+					break;
+				}
+				case ControlPage.Animation:
+				{
+					break;
+				}
+				case ControlPage.Audio:
+				{
+					break;
 				}
 			}
 		}
@@ -925,7 +927,6 @@ namespace Everlook.UI
 
 				if (preferencesDialog.ShouldRefilterTree)
 				{
-					// Simulate a filter change
 					await RefilterTrees();
 				}
 			}
