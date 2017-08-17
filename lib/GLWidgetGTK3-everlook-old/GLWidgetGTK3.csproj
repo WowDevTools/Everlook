@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>OpenTK</RootNamespace>
+    <AssemblyName>GLWidgetGTK3</AssemblyName>
+    <TargetFramework>net461</TargetFramework>
+    <Platform>x86</Platform>
+    <DefineConstants>$(DefineConstants);GTK3</DefineConstants>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="OpenTK.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="gtk-sharp-3" Version="3.22.6.4" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="OpenTK" Version="3.0.0-pre" />
+  </ItemGroup>
+</Project>
