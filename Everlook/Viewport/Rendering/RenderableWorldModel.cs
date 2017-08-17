@@ -169,7 +169,7 @@ namespace Everlook.Viewport.Rendering
 			this.ActorTransform = new Transform
 			(
 				new Vector3(0.0f, 0.0f, 0.0f),
-				Quaternion.FromAxisAngle(Vector3.UnitX, MathHelper.Pi),
+				Quaternion.Identity,
 				new Vector3(1.0f, 1.0f, 1.0f)
 			);
 
@@ -306,7 +306,7 @@ namespace Everlook.Viewport.Rendering
 				RenderableBoundingBox boundingBox = new RenderableBoundingBox
 				(
 					modelGroup.GetBoundingBox().ToOpenGLBoundingBox(),
-					modelGroup.GetPosition().ToOpenGLVector()
+					this.ActorTransform
 				);
 
 				boundingBox.Initialize();

@@ -65,16 +65,16 @@ namespace Everlook.Viewport.Rendering
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableBoundingBox"/> class. The bounds data is taken from
-		/// the given <see cref="BoundingBox"/>, and the world translation is set to <paramref name="location"/>.
+		/// the given <see cref="BoundingBox"/>, and the world translation is set to <paramref name="transform"/>.
 		/// </summary>
 		/// <param name="boundingBox">The BoundingBox to get data from.</param>
-		/// <param name="location">The world location of the box.</param>
-		public RenderableBoundingBox(BoundingBox boundingBox, Vector3 location)
+		/// <param name="transform">The world transform of the box.</param>
+		public RenderableBoundingBox(BoundingBox boundingBox, Transform transform)
 		{
 			this.BoundingBoxData = boundingBox;
 			this.LineColour = Color4.LimeGreen;
 
-			this.ActorTransform = new Transform(location);
+			this.ActorTransform = transform;
 			this.BoxShader = RenderCache.Instance.GetShader(EverlookShader.BoundingBox) as BoundingBoxShader;
 		}
 
@@ -137,6 +137,7 @@ namespace Everlook.Viewport.Rendering
 			this.BoxShader.SetLineColour(this.LineColour);
 
 			GL.Disable(EnableCap.CullFace);
+			GL.Disable(EnableCap.DepthTest);
 
 			// Render the object
 			// Send the vertices to the shader
