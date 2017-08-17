@@ -108,7 +108,7 @@ namespace Everlook.Configuration
 			{
 				lock (this.StorageLock)
 				{
-					using (FileStream fs = File.Open(GetPathStoragePath(), FileMode.Append))
+					using (FileStream fs = File.Open(GetPathStoragePath(), FileMode.Append, FileAccess.Write))
 					{
 						using (BinaryWriter bw = new BinaryWriter(fs))
 						{
@@ -138,7 +138,7 @@ namespace Everlook.Configuration
 				{
 					storedPaths.Remove((alias, version, pathToRemove));
 
-					using (FileStream fs = File.Open(GetPathStoragePath(), FileMode.Append))
+					using (FileStream fs = File.Open(GetPathStoragePath(), FileMode.Append, FileAccess.Write))
 					{
 						using (BinaryWriter bw = new BinaryWriter(fs))
 						{
