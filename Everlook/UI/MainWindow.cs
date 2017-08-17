@@ -415,8 +415,16 @@ namespace Everlook.UI
 			EverlookGameLoadingDialog dialog = EverlookGameLoadingDialog.Create(this);
 			dialog.ShowAll();
 
+			var loadingProgress = default(OverallLoadingProgress);
+			loadingProgress.OperationCount = GamePathStorage.Instance.GamePaths.Count;
+			int loadedGames = 0;
+
 			foreach (var gameTarget in GamePathStorage.Instance.GamePaths)
 			{
+				loadedGames++;
+				loadingProgress.FinishedOperations = loadedGames;
+				dialog.OverallProgressNotifier.Report(loadingProgress);
+
 				try
 				{
 					(PackageGroup group, OptimizedNodeTree nodeTree) = await loader.LoadGameAsync

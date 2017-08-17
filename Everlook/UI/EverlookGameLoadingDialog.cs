@@ -46,9 +46,20 @@ namespace Everlook.UI
 		private readonly uint JokeTimeoutID;
 
 		/// <summary>
-		/// Gets the notifier object which can be used to update the loading dialog with new information.
+		/// Gets the notifier object which can be used to update the loading dialog with new information about the
+		/// currently loading game.
 		/// </summary>
-		public Progress<GameLoadingProgress> GameLoadProgressNotifier { get; }
+		public IProgress<GameLoadingProgress> GameLoadProgressNotifier { get; }
+
+		/// <summary>
+		/// Gets the notifier object used for tracking how many games have been loaded.
+		/// </summary>
+		public IProgress<OverallLoadingProgress> OverallProgressNotifier { get; }
+
+		/// <summary>
+		/// The current overall loading progress.
+		/// </summary>
+		private OverallLoadingProgress CurrentLoadingProgress;
 
 		/// <summary>
 		/// Creates a new dialog with the given window as its parent.
@@ -76,6 +87,11 @@ namespace Everlook.UI
 
 				this.CancellationSource.Cancel();
 			};
+
+			this.OverallProgressNotifier = new Progress<OverallLoadingProgress>(overallProgress =>
+			{
+				this.CurrentLoadingProgress = overallProgress;
+			});
 
 			this.GameLoadProgressNotifier = new Progress<GameLoadingProgress>(loadingProgress =>
 			{
@@ -169,7 +185,7 @@ namespace Everlook.UI
 		/// <param name="statusMessage">The status message to set.</param>
 		public void SetStatusMessage(string statusMessage)
 		{
-			this.GameLoadingDialogLabel.Text = statusMessage;
+			this.GameLoadingDialogLabel.Text = $"({this.CurrentLoadingProgress.FinishedOperations}/{this.CurrentLoadingProgress.OperationCount}) {statusMessage}";
 		}
 
 		/// <summary>
