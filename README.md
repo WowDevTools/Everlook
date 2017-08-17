@@ -25,7 +25,7 @@ Currently, Everlook is in early development and may not be usable in your day-to
 * View textures stored in most major image formats, as well as BLP
 * View WMO models
 
-![Everlook](https://i.imgur.com/ZusgxJ7.png)
+![Everlook](https://i.imgur.com/Y34yY3R.jpg)
 
 ### Known Isssues
 * No format-specific export functions have been implemented.
