@@ -52,17 +52,17 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Raised whenever a file is selected in the tree which can be displayed in the interface.
 		/// </summary>
-		public event FileActionDelegate FileLoadRequested;
+		public event Action<GamePage, FileReference> FileLoadRequested;
 
 		/// <summary>
 		/// Raised whenever a file is requested to be queued for exporting.
 		/// </summary>
-		public event FileActionDelegate EnqueueFileExportRequested;
+		public event Action<GamePage, FileReference> EnqueueFileExportRequested;
 
 		/// <summary>
 		/// Raised whenever a file is requeste to be exported.
 		/// </summary>
-		public event FileActionDelegate ExportItemRequested;
+		public event Action<GamePage, FileReference> ExportItemRequested;
 
 		/// <summary>
 		/// Gets the widget which is at the top level of the page.
