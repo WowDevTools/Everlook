@@ -217,7 +217,6 @@ namespace Everlook.Viewport.Rendering
 
 			// TODO: Upload convex planes for debug rendering
 
-			// TODO: Upload vertices, UVs and normals of groups in parallel buffers
 			foreach (ModelGroup modelGroup in this.Model.Groups)
 			{
 				InitializeModelGroup(modelGroup);
