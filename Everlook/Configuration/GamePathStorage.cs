@@ -60,7 +60,7 @@ namespace Everlook.Configuration
 		/// Gets the stored game paths.
 		/// </summary>
 		/// <value>The game paths.</value>
-		public List<(string Alias, WarcraftVersion Version, string Path)> GamePaths => ReadStoredPaths();
+		public ICollection<(string Alias, WarcraftVersion Version, string Path)> GamePaths => ReadStoredPaths();
 
 		private GamePathStorage()
 		{
@@ -130,7 +130,7 @@ namespace Everlook.Configuration
 		/// <param name="pathToRemove">Path to remove.</param>
 		public void RemoveStoredPath(string alias, WarcraftVersion version, string pathToRemove)
 		{
-			List<(string Alias, WarcraftVersion Version, string Path)> storedPaths = this.GamePaths;
+			ICollection<(string Alias, WarcraftVersion Version, string Path)> storedPaths = this.GamePaths;
 			if (storedPaths.Contains((alias, version, pathToRemove)))
 			{
 				ClearPaths();
@@ -155,9 +155,9 @@ namespace Everlook.Configuration
 			}
 		}
 
-		private List<(string Alias, WarcraftVersion Version, string Path)> ReadStoredPaths()
+		private ICollection<(string Alias, WarcraftVersion Version, string Path)> ReadStoredPaths()
 		{
-			List<(string, WarcraftVersion, string)> storedPaths = new List<(string, WarcraftVersion, string)>();
+			ICollection<(string, WarcraftVersion, string)> storedPaths = new List<(string, WarcraftVersion, string)>();
 			lock (this.StorageLock)
 			{
 				try
