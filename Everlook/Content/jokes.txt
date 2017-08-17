@@ -197,3 +197,27 @@ Hey! Rebasing.
 Connecting to Barrens chat...
 [Airhorns blaring]
 Ach! Hans, run! It's the model viewer!
+Future fighter!
+Sörmlandsleden
+Bring me my broadsword!
+Does this loading bar make me look fat?
+Congratulations! You are the millionth viewer of this joke! Please wait to receive your complimentary joke.
+The treasure is buried under the crossing of Main St. and
+Knight to e6
+Do you play chess?
+Hiding porn on your hard drive...
+Calling your mother...
+this.AdditionalInfoLabel.Markup = this.Jokes[new Random().Next(this.Jokes.Count)];
+Recursive jokes!
+Come visit sometime!
+Behold... The REQUESTINATOR!
+Tunak tunak tun!
+Schysst!
+I'm addicted to stress - it's the way that I get things done!
+This lulcow's been tipped over
+Remind yourself that overconfidence is a slow and insidious killer
+Hello, my name is Everlook, and welcome to jackass.
+doot
+thank mr skeltal for strong codes
+Hello, we're the slow load guys!
+Las paelleras!
