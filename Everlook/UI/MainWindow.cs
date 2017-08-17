@@ -358,11 +358,16 @@ namespace Everlook.UI
 		/// <param name="e">The event arguments.</param>
 		private async void OnFilterChanged(object sender, EventArgs e)
 		{
-			ComboBox box = sender as ComboBox;
-			if (box == null)
-			{
-				return;
-			}
+			await RefilterTrees();
+		}
+
+		/// <summary>
+		/// Rerun the filtering operation on all loaded game trees.
+		/// </summary>
+		/// <returns>A task wrapping the refiltering of the loaded game trees.</returns>
+		private async Task RefilterTrees()
+		{
+			ComboBox box = this.FileFilterComboBox;
 
 			this.StatusSpinner.Active = true;
 			uint refilterStatusContextID = this.MainStatusBar.GetContextId("refreshFilter");
@@ -372,26 +377,35 @@ namespace Everlook.UI
 				"Refiltering node trees..."
 			);
 
+			// Disable the pages
+			foreach (var page in this.GamePages)
+			{
+				page.SetTreeSensitivity(false);
+			}
+
 			FilterType filterType = (FilterType)box.Active;
 			foreach (GamePage page in this.GamePages)
 			{
+				page.ShouldDisplayUnknownFiles = this.Config.GetShowUnknownFilesWhenFiltering();
+
 				if (filterType == FilterType.All)
 				{
 					page.SetFilterState(false);
-
-					page.SetTreeSensitivity(false);
 					await page.RefilterAsync();
-					page.SetTreeSensitivity(true);
 				}
 				else
 				{
 					page.SetFilterState(true);
 					page.SetFilter(filterType.GetFileTypeSet());
 
-					page.SetTreeSensitivity(false);
 					await page.RefilterAsync();
-					page.SetTreeSensitivity(true);
 				}
+			}
+
+			// Reenable the pages
+			foreach (var page in this.GamePages)
+			{
+				page.SetTreeSensitivity(true);
 			}
 
 			this.StatusSpinner.Active = false;
@@ -907,6 +921,12 @@ namespace Everlook.UI
 				if (preferencesDialog.DidGameListChange)
 				{
 					await ReloadGames();
+				}
+
+				if (preferencesDialog.ShouldRefilterTree)
+				{
+					// Simulate a filter change
+					await RefilterTrees();
 				}
 			}
 		}

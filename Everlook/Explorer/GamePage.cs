@@ -114,6 +114,11 @@ namespace Everlook.Explorer
 		private bool IsFiltered;
 
 		/// <summary>
+		/// Gets or sets a value indicating whether to show unknown file formats in the tree view.
+		/// </summary>
+		public bool ShouldDisplayUnknownFiles { get; set; }
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="GamePage"/> class. The given package group and node tree are
 		/// wrapped by the page.
 		/// </summary>
@@ -280,7 +285,7 @@ namespace Everlook.Explorer
 		/// <returns>A task which when finished signifies that the tree has been filtered.</returns>
 		public Task RefilterAsync()
 		{
-			 return Task.Factory.StartNew
+			return Task.Factory.StartNew
 			(
 				this.TreeFilter.Refilter,
 				CancellationToken.None,
@@ -304,6 +309,15 @@ namespace Everlook.Explorer
 
 			FileNode node = (FileNode)model.GetValue(iter, 0);
 			WarcraftFileType nodeTypes = node.FileType;
+
+			if (!this.ShouldDisplayUnknownFiles)
+			{
+				// If the node is strictly an unknown file, don't display it.
+				if (nodeTypes == WarcraftFileType.Unknown)
+				{
+					return false;
+				}
+			}
 
 			// If the file types of the node and the filtered types overlap in any way, then it should
 			// be displayed.

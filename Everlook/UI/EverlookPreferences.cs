@@ -50,6 +50,11 @@ namespace Everlook.UI
 		public bool DidGameListChange { get; private set; }
 
 		/// <summary>
+		/// Gets a value indicating whether the file explorer should be refiltered.
+		/// </summary>
+		public bool ShouldRefilterTree { get; private set; }
+
+		/// <summary>
 		/// Creates an instance of the Preferences dialog, using the glade XML UI file.
 		/// </summary>
 		/// <returns>An initialized instance of the EverlookPreferences class.</returns>
@@ -82,7 +87,40 @@ namespace Everlook.UI
 			this.NewGamePathDialog.KeyPressEvent += OnKeyPressedNewPathDialog;
 			this.AliasEntry.KeyPressEvent += OnKeyPressedNewPathDialog;
 
+			this.AllowStatsCheckButton.Toggled += OnAllowStatsToggled;
+			this.ShowUnknownFilesCheckButton.Toggled += OnShowUnknownFilesToggled;
+
 			LoadPreferences();
+		}
+
+		[ConnectBefore]
+		private void OnShowUnknownFilesToggled(object sender, EventArgs e)
+		{
+			// Refilter if the option has changed
+			if (this.ShowUnknownFilesCheckButton.Active != this.Config.GetShowUnknownFilesWhenFiltering())
+			{
+				this.ShouldRefilterTree = true;
+				return;
+			}
+
+			this.ShouldRefilterTree = false;
+		}
+
+		/// <summary>
+		/// Handles enabling and disabling of the statistical suboptions.
+		/// </summary>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="e">The event arguments.</param>
+		[ConnectBefore]
+		private void OnAllowStatsToggled(object sender, EventArgs e)
+		{
+			bool suboptionSensitivity = this.AllowStatsCheckButton.Active;
+
+			this.SendMachineIDCheckButton.Sensitive = suboptionSensitivity;
+			this.SendInstallIDCheckButton.Sensitive = suboptionSensitivity;
+			this.SendOSCheckButton.Sensitive = suboptionSensitivity;
+			this.SendAppVersionCheckButton.Sensitive = suboptionSensitivity;
+			this.SendRuntimeInfoCheckButton.Sensitive = suboptionSensitivity;
 		}
 
 		/// <summary>
