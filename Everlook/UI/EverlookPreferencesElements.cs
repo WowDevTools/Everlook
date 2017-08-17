@@ -32,10 +32,18 @@ namespace Everlook.UI
 {
 	public partial class EverlookPreferences
 	{
+		/*
+			New game dialog
+		*/
+
 		[UIElement] private readonly Dialog NewGamePathDialog;
 		[UIElement] private readonly Entry AliasEntry;
 		[UIElement] private readonly ComboBox GameVersionCombo;
 		[UIElement] private readonly FileChooserButton PathChooser;
+
+		/*
+			General settings
+		*/
 
 		[UIElement] private readonly TreeView GamePathSelectionTreeView;
 		[UIElement] private readonly ListStore GamePathListStore;
@@ -44,14 +52,40 @@ namespace Everlook.UI
 
 		[UIElement] private readonly ColorButton ViewportColourButton;
 
+		/*
+			Export settings
+		*/
+
 		[UIElement] private readonly FileChooserButton DefaultExportDirectoryFileChooserButton;
 		[UIElement] private readonly ComboBox DefaultModelExportFormatComboBox;
 		[UIElement] private readonly ComboBox DefaultImageExportFormatComboBox;
 		[UIElement] private readonly ComboBox DefaultAudioExportFormatComboBox;
 		[UIElement] private readonly CheckButton KeepDirectoryStructureCheckButton;
 
-		[UIElement] private readonly CheckButton SendStatsCheckButton;
+		/*
+			Privacy settings
+		*/
+
+		[UIElement] private readonly CheckButton AllowStatsCheckButton;
+
+		[UIElement] private readonly CheckButton SendMachineIDCheckButton;
+		[UIElement] private readonly CheckButton SendInstallIDCheckButton;
+		[UIElement] private readonly CheckButton SendOSCheckButton;
+		[UIElement] private readonly CheckButton SendAppVersionCheckButton;
+		[UIElement] private readonly CheckButton SendRuntimeInfoCheckButton;
+
+		/*
+			Model settings
+		*/
 
 		[UIElement] private readonly ColorButton WireframeColourButton;
+		[UIElement] private readonly CheckButton OccludeBoundingBoxesCheckButton;
+
+		/*
+			Explorer settings
+		*/
+
+		[UIElement] private readonly CheckButton ShowUnknownFilesCheckButton;
+		[UIElement] private readonly CheckButton AutoplayAudioCheckButton;
 	}
 }

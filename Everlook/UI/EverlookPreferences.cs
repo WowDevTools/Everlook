@@ -210,9 +210,19 @@ namespace Everlook.UI
 			this.DefaultImageExportFormatComboBox.Active = (int)this.Config.GetDefaultImageFormat();
 			this.DefaultAudioExportFormatComboBox.Active = (int)this.Config.GetDefaultAudioFormat();
 			this.KeepDirectoryStructureCheckButton.Active = this.Config.GetShouldKeepFileDirectoryStructure();
-			this.SendStatsCheckButton.Active = this.Config.GetAllowSendAnonymousStats();
+
+			this.AllowStatsCheckButton.Active = this.Config.GetAllowSendAnonymousStats();
+			this.SendMachineIDCheckButton.Active = this.Config.GetSendMachineID();
+			this.SendInstallIDCheckButton.Active = this.Config.GetSendInstallID();
+			this.SendOSCheckButton.Active = this.Config.GetSendOS();
+			this.SendAppVersionCheckButton.Active = this.Config.GetSendAppVersion();
+			this.SendRuntimeInfoCheckButton.Active = this.Config.GetSendRuntimeInfo();
 
 			this.WireframeColourButton.Rgba = this.Config.GetWireframeColour();
+			this.OccludeBoundingBoxesCheckButton.Active = this.Config.GetOccludeBoundingBoxes();
+
+			this.ShowUnknownFilesCheckButton.Active = this.Config.GetShowUnknownFilesWhenFiltering();
+			this.AutoplayAudioCheckButton.Active = this.Config.GetAutoplayAudio();
 		}
 
 		/// <summary>
@@ -235,16 +245,6 @@ namespace Everlook.UI
 
 			this.Config.SetViewportBackgroundColour(this.ViewportColourButton.Rgba);
 
-			/*Uri exportPathURI;
-			if (!this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri.StartsWith("file://"))
-			{
-				exportPathURI = new Uri("file://" + this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri);
-			}
-			else
-			{
-				exportPathURI = new Uri(this.DefaultExportDirectoryFileChooserButton.CurrentFolderUri);
-			}*/
-
 			string exportPath = this.DefaultExportDirectoryFileChooserButton.CurrentFolderFile.Uri.LocalPath;
 			this.Config.SetDefaultExportDirectory(exportPath);
 
@@ -252,9 +252,19 @@ namespace Everlook.UI
 			this.Config.SetDefaultImageFormat((ImageFormat)this.DefaultImageExportFormatComboBox.Active);
 			this.Config.SetDefaultAudioFormat((AudioFormat)this.DefaultAudioExportFormatComboBox.Active);
 			this.Config.SetKeepFileDirectoryStructure(this.KeepDirectoryStructureCheckButton.Active);
-			this.Config.SetAllowSendAnonymousStats(this.SendStatsCheckButton.Active);
+
+			this.Config.SetAllowSendAnonymousStats(this.AllowStatsCheckButton.Active);
+			this.Config.SetSendMachineID(this.SendMachineIDCheckButton.Active);
+			this.Config.SetSendInstallID(this.SendInstallIDCheckButton.Active);
+			this.Config.SetSendOS(this.SendOSCheckButton.Active);
+			this.Config.SetSendAppVersion(this.SendAppVersionCheckButton.Active);
+			this.Config.SetSendRuntimeInfo(this.SendRuntimeInfoCheckButton.Active);
 
 			this.Config.SetWireframeColour(this.WireframeColourButton.Rgba);
+			this.Config.SetOccludeBoundingBoxes(this.OccludeBoundingBoxesCheckButton.Active);
+
+			this.Config.SetShowUnknownFilesWhenFiltering(this.ShowUnknownFilesCheckButton.Active);
+			this.Config.SetAutoplayAudio(this.AutoplayAudioCheckButton.Active);
 		}
 	}
 }

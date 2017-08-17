@@ -46,13 +46,21 @@ namespace Everlook.Configuration
 		private const string Export = nameof(Export);
 		private const string Privacy = nameof(Privacy);
 		private const string Model = nameof(Model);
+		private const string Explorer = nameof(Explorer);
 
 		/*
 			Key names
 		*/
 
+		/*
+			General
+		*/
+
 		private const string ViewportBackgroundColour = nameof(ViewportBackgroundColour);
-		private const string ShowUnknownFilesWhenFiltering = nameof(ShowUnknownFilesWhenFiltering);
+
+		/*
+			Export
+		*/
 
 		private const string DefaultExportDirectory = nameof(DefaultExportDirectory);
 		private const string DefaultExportModelFormat = nameof(DefaultExportModelFormat);
@@ -60,9 +68,30 @@ namespace Everlook.Configuration
 		private const string DefaultExportAudioFormat = nameof(DefaultExportAudioFormat);
 		private const string KeepFileDirectoryStructure = nameof(KeepFileDirectoryStructure);
 
+		/*
+			Privacy
+		*/
+
 		private const string AllowSendAnonymousStats = nameof(AllowSendAnonymousStats);
+		private const string SendMachineID = nameof(SendMachineID);
+		private const string SendInstallID = nameof(SendInstallID);
+		private const string SendOS = nameof(SendOS);
+		private const string SendAppVersion = nameof(SendAppVersion);
+		private const string SendRuntimeInfo = nameof(SendRuntimeInfo);
+
+		/*
+			Models
+		*/
 
 		private const string WireframeColour = nameof(WireframeColour);
+		private const string OccludeBoundingBoxes = nameof(OccludeBoundingBoxes);
+
+		/*
+			Explorer
+		*/
+
+		private const string ShowUnknownFilesWhenFiltering = nameof(ShowUnknownFilesWhenFiltering);
+		private const string AutoplayAudioFiles = nameof(AutoplayAudioFiles);
 
 		/// <summary>
 		/// The publicly accessibly instance of the configuration.
@@ -89,9 +118,9 @@ namespace Everlook.Configuration
 					data.Sections.AddSection(Export);
 					data.Sections.AddSection(Privacy);
 					data.Sections.AddSection(Model);
+					data.Sections.AddSection(Explorer);
 
 					data[General].AddKey(ViewportBackgroundColour, "rgb(133, 146, 173)");
-					data[General].AddKey(ShowUnknownFilesWhenFiltering, "true");
 
 					data[Export].AddKey(DefaultExportDirectory, Export);
 
@@ -147,9 +176,18 @@ namespace Everlook.Configuration
 
 					data[Export].AddKey(KeepFileDirectoryStructure, "false");
 
-					data[Privacy].AddKey(AllowSendAnonymousStats, "true");
+					data[Privacy].AddKey(AllowSendAnonymousStats, "false");
+					data[Privacy].AddKey(SendMachineID, "true");
+					data[Privacy].AddKey(SendInstallID, "true");
+					data[Privacy].AddKey(SendOS, "true");
+					data[Privacy].AddKey(SendAppVersion, "true");
+					data[Privacy].AddKey(SendRuntimeInfo, "true");
 
 					data[Model].AddKey(WireframeColour, "rgb(234, 161, 0)");
+					data[Model].AddKey(OccludeBoundingBoxes, "false");
+
+					data[Explorer].AddKey(ShowUnknownFilesWhenFiltering, "true");
+					data[Explorer].AddKey(AutoplayAudioFiles, "true");
 
 					lock (this.WriteLock)
 					{
@@ -188,6 +226,19 @@ namespace Everlook.Configuration
 
 					// June 13, 2017 - Removed hungarian prefix.
 					RenameConfigurationOption(data, General, "bShowUnknownFilesWhenFiltering", ShowUnknownFilesWhenFiltering);
+
+					// August 17, 2016 - Add extended privacy options, bounding box occlusion, and audio autoplay
+					AddNewConfigurationSection(data, Explorer);
+					MoveConfigurationOption(data, General, Explorer, ShowUnknownFilesWhenFiltering);
+					AddNewConfigurationOption(data, Explorer, AutoplayAudioFiles, "true");
+
+					AddNewConfigurationOption(data, Privacy, SendMachineID, "true");
+					AddNewConfigurationOption(data, Privacy, SendInstallID, "true");
+					AddNewConfigurationOption(data, Privacy, SendOS, "true");
+					AddNewConfigurationOption(data, Privacy, SendAppVersion, "true");
+					AddNewConfigurationOption(data, Privacy, SendRuntimeInfo, "true");
+
+					AddNewConfigurationOption(data, Model, OccludeBoundingBoxes, "false");
 
 					lock (this.WriteLock)
 					{
@@ -238,6 +289,343 @@ namespace Everlook.Configuration
 				configData.Sections.RemoveSection(oldSectionName);
 				configData.Sections.AddSection(newSectionName);
 				configData.Sections.SetSectionData(newSectionName, oldSectionData);
+			}
+		}
+
+		private void MoveConfigurationOption(IniData configData, string oldKeySection, string newKeySection, string keyName)
+		{
+			string keyValue = configData.Sections[oldKeySection][keyName];
+
+			configData.Sections[newKeySection].AddKey(keyName, keyValue);
+
+			configData.Sections[oldKeySection].RemoveKey(keyName);
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether to display unknown files when filtering the explorer tree.
+		/// </summary>
+		/// <returns>true if unknown files should be shown; false otherwise.</returns>
+		public bool GetShowUnknownFilesWhenFiltering()
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				bool showUnknown;
+				if (bool.TryParse(data[Explorer][ShowUnknownFilesWhenFiltering], out showUnknown))
+				{
+					return showUnknown;
+				}
+
+				return showUnknown;
+			}
+		}
+
+		/// <summary>
+		/// Sets a value indicating whether to display unknown files when filtering the explorer tree.
+		/// </summary>
+		/// <param name="showUnknown">Whether or not to show unknown files.</param>
+		public void SetShowUnknownFilesWhenFiltering(bool showUnknown)
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				data[Explorer][ShowUnknownFilesWhenFiltering] = showUnknown.ToString();
+
+				lock (this.WriteLock)
+				{
+					WriteConfig(parser, data);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether to send the machine ID when sending statistics.
+		/// </summary>
+		/// <returns>true if the machine ID should be sent; false otherwise.</returns>
+		public bool GetSendMachineID()
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				bool sendData;
+				if (bool.TryParse(data[Privacy][SendMachineID], out sendData))
+				{
+					return sendData;
+				}
+
+				return sendData;
+			}
+		}
+
+		/// <summary>
+		/// Sets a value indicating whether to send the machine ID when sending statistics.
+		/// </summary>
+		/// <param name="sendData">Whether or not to send the data.</param>
+		public void SetSendMachineID(bool sendData)
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				data[Privacy][SendMachineID] = sendData.ToString();
+
+				lock (this.WriteLock)
+				{
+					WriteConfig(parser, data);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether to send the installation ID when sending statistics.
+		/// </summary>
+		/// <returns>true if the installation ID should be sent; false otherwise.</returns>
+		public bool GetSendInstallID()
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				bool sendData;
+				if (bool.TryParse(data[Privacy][SendInstallID], out sendData))
+				{
+					return sendData;
+				}
+
+				return sendData;
+			}
+		}
+
+		/// <summary>
+		/// Sets a value indicating whether to send the installation ID when sending statistics.
+		/// </summary>
+		/// <param name="sendData">Whether or not to send the data.</param>
+		public void SetSendInstallID(bool sendData)
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				data[Privacy][SendInstallID] = sendData.ToString();
+
+				lock (this.WriteLock)
+				{
+					WriteConfig(parser, data);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether to send the operating system when sending statistics.
+		/// </summary>
+		/// <returns>true if the operating system should be sent; false otherwise.</returns>
+		public bool GetSendOS()
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				bool sendData;
+				if (bool.TryParse(data[Privacy][SendOS], out sendData))
+				{
+					return sendData;
+				}
+
+				return sendData;
+			}
+		}
+
+		/// <summary>
+		/// Sets a value indicating whether to send the operating system when sending statistics.
+		/// </summary>
+		/// <param name="sendData">Whether or not to send the data.</param>
+		public void SetSendOS(bool sendData)
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				data[Privacy][SendOS] = sendData.ToString();
+
+				lock (this.WriteLock)
+				{
+					WriteConfig(parser, data);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether to send the application version when sending statistics.
+		/// </summary>
+		/// <returns>true if the application version should be sent; false otherwise.</returns>
+		public bool GetSendAppVersion()
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				bool sendData;
+				if (bool.TryParse(data[Privacy][SendAppVersion], out sendData))
+				{
+					return sendData;
+				}
+
+				return sendData;
+			}
+		}
+
+		/// <summary>
+		/// Sets a value indicating whether to send the application version when sending statistics.
+		/// </summary>
+		/// <param name="sendData">Whether or not to send the data.</param>
+		public void SetSendAppVersion(bool sendData)
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				data[Privacy][SendAppVersion] = sendData.ToString();
+
+				lock (this.WriteLock)
+				{
+					WriteConfig(parser, data);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets a value indicating whether to send information about the runtime when sending statistics.
+		/// </summary>
+		/// <param name="sendData">Whether or not to send the data.</param>
+		public void SetSendRuntimeInfo(bool sendData)
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				data[Privacy][SendRuntimeInfo] = sendData.ToString();
+
+				lock (this.WriteLock)
+				{
+					WriteConfig(parser, data);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether to send information about the runtime when sending statistics.
+		/// </summary>
+		/// <returns>true if the application version should be sent; false otherwise.</returns>
+		public bool GetSendRuntimeInfo()
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				bool sendData;
+				if (bool.TryParse(data[Privacy][SendRuntimeInfo], out sendData))
+				{
+					return sendData;
+				}
+
+				return sendData;
+			}
+		}
+
+		/// <summary>
+		/// Sets a value indicating whether bounding boxes should be occluded by geometry.
+		/// </summary>
+		/// <param name="occlude">Whether or not to occlude bounding boxes.</param>
+		public void SetOccludeBoundingBoxes(bool occlude)
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				data[Model][OccludeBoundingBoxes] = occlude.ToString();
+
+				lock (this.WriteLock)
+				{
+					WriteConfig(parser, data);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether bounding boxes should be occluded by geometry.
+		/// </summary>
+		/// <returns>true if boxes should be occluded; false otherwise.</returns>
+		public bool GetOccludeBoundingBoxes()
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				bool occlude;
+				if (bool.TryParse(data[Model][OccludeBoundingBoxes], out occlude))
+				{
+					return occlude;
+				}
+
+				return occlude;
+			}
+		}
+
+		/// <summary>
+		/// Sets a value indicating whether to automatically play audio files when selected.
+		/// </summary>
+		/// <param name="autoplay">Whether or not to automatically play audio.</param>
+		public void SetAutoplayAudio(bool autoplay)
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				data[Explorer][AutoplayAudioFiles] = autoplay.ToString();
+
+				lock (this.WriteLock)
+				{
+					WriteConfig(parser, data);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether to automatically play audio files when selected.
+		/// </summary>
+		/// <returns>true if audio should be automatically played; false otherwise.</returns>
+		public bool GetAutoplayAudio()
+		{
+			lock (this.ReadLock)
+			{
+				FileIniDataParser parser = new FileIniDataParser();
+				IniData data = parser.ReadFile(GetConfigurationFilePath());
+
+				bool autoplay;
+				if (bool.TryParse(data[Explorer][AutoplayAudioFiles], out autoplay))
+				{
+					return autoplay;
+				}
+
+				return autoplay;
 			}
 		}
 
