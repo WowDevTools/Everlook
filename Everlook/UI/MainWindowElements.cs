@@ -62,6 +62,9 @@ namespace Everlook.UI
 		[UIElement] private readonly Menu QueueContextMenu;
 		[UIElement] private readonly ImageMenuItem RemoveQueueItem;
 
+		[UIElement] private readonly Button ClearExportQueueButton;
+		[UIElement] private readonly Button RunExportQueueButton;
+
 		/*
 			Game explorer elements
 		*/

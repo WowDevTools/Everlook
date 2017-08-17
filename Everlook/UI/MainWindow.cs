@@ -179,6 +179,9 @@ namespace Everlook.UI
 
 			this.RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
 
+			this.ClearExportQueueButton.Clicked += OnClearExportQueueButtonClicked;
+			this.RunExportQueueButton.Clicked += OnRunExportQueueButtonClicked;
+
 			this.FileFilterComboBox.Changed += OnFilterChanged;
 
 			/*
@@ -258,6 +261,28 @@ namespace Everlook.UI
 					wmo.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
 				}
 			};
+		}
+
+		/// <summary>
+		/// Runs the export queue.
+		/// </summary>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="e">The event arguments.</param>
+		[ConnectBefore]
+		private void OnRunExportQueueButtonClicked(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// Clears the export queue.
+		/// </summary>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="e">The event arguments.</param>
+		[ConnectBefore]
+		private void OnClearExportQueueButtonClicked(object sender, EventArgs e)
+		{
+			this.ExportQueueListStore.Clear();
 		}
 
 		/// <summary>
