@@ -279,9 +279,9 @@ namespace Everlook.Explorer
 		/// Asynchronously refilters the node tree.
 		/// </summary>
 		/// <returns>A task which when finished signifies that the tree has been filtered.</returns>
-		public async Task RefilterAsync()
+		public Task RefilterAsync()
 		{
-			await Task.Factory.StartNew
+			 return Task.Factory.StartNew
 			(
 				() => this.TreeFilter.Refilter(),
 				CancellationToken.None,
