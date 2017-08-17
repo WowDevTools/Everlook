@@ -61,7 +61,7 @@ namespace Everlook.Viewport.Rendering.Core
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Transform"/> struct. This contstructor creates the instance from
+		/// Initializes a new instance of the <see cref="Transform"/> class. This contstructor creates the instance from
 		/// a single translation vector. The rotation and scale are assumed to be 0,0,0 and 1,1,1, respectively.
 		/// </summary>
 		/// <param name="translation">The translation in world space.</param>
@@ -71,7 +71,7 @@ namespace Everlook.Viewport.Rendering.Core
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Transform"/> struct. This constructor creates the instances from
+		/// Initializes a new instance of the <see cref="Transform"/> class. This constructor creates the instances from
 		/// a translation vector, a quaternion and a scale vector.
 		/// </summary>
 		/// <param name="translation">The translation in world space.</param>

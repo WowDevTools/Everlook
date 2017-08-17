@@ -33,12 +33,12 @@ namespace Everlook.Viewport.Rendering.Core
 	public struct Plane
 	{
 		/// <summary>
-		/// The normal of the plane.
+		/// Gets or sets the normal of the plane.
 		/// </summary>
 		public Vector3 Normal { get; set; }
 
 		/// <summary>
-		/// A point on the plane.
+		/// Gets or sets a point on the plane.
 		/// </summary>
 		public Vector3 PointOnPlane { get; set; }
 

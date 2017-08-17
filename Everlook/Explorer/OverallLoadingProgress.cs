@@ -28,12 +28,12 @@ namespace Everlook.Explorer
 	public struct OverallLoadingProgress
 	{
 		/// <summary>
-		/// The total number of operations in this loading operation.
+		/// Gets or sets the total number of operations in this loading operation.
 		/// </summary>
 		public int OperationCount { get; set; }
 
 		/// <summary>
-		/// The number of finished operations.
+		/// Gets or sets the number of finished operations.
 		/// </summary>
 		public int FinishedOperations { get; set; }
 	}

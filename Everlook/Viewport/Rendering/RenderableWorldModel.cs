@@ -216,7 +216,6 @@ namespace Everlook.Viewport.Rendering
 			// TODO: Implement antiportal handling. For now, skip them
 
 			// TODO: Upload convex planes for debug rendering
-
 			foreach (ModelGroup modelGroup in this.Model.Groups)
 			{
 				InitializeModelGroup(modelGroup);
@@ -247,7 +246,7 @@ namespace Everlook.Viewport.Rendering
 			GL.BufferData
 			(
 				BufferTarget.ArrayBuffer,
-				(IntPtr) (groupVertexValues.Length * sizeof(float)),
+				(IntPtr)(groupVertexValues.Length * sizeof(float)),
 				groupVertexValues,
 				BufferUsageHint.StaticDraw
 			);
@@ -265,7 +264,7 @@ namespace Everlook.Viewport.Rendering
 			GL.BufferData
 			(
 				BufferTarget.ArrayBuffer,
-				(IntPtr) (groupNormalValues.Length * sizeof(float)),
+				(IntPtr)(groupNormalValues.Length * sizeof(float)),
 				groupNormalValues,
 				BufferUsageHint.StaticDraw
 			);
@@ -283,7 +282,7 @@ namespace Everlook.Viewport.Rendering
 			GL.BufferData
 			(
 				BufferTarget.ArrayBuffer,
-				(IntPtr) (groupTextureCoordinateValues.Length * sizeof(float)),
+				(IntPtr)(groupTextureCoordinateValues.Length * sizeof(float)),
 				groupTextureCoordinateValues,
 				BufferUsageHint.StaticDraw
 			);
@@ -296,7 +295,7 @@ namespace Everlook.Viewport.Rendering
 			GL.BufferData
 			(
 				BufferTarget.ElementArrayBuffer,
-				(IntPtr) (groupVertexIndexValuesArray.Length * sizeof(ushort)),
+				(IntPtr)(groupVertexIndexValuesArray.Length * sizeof(ushort)),
 				groupVertexIndexValuesArray,
 				BufferUsageHint.StaticDraw
 			);
