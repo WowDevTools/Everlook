@@ -86,6 +86,11 @@ namespace Everlook.Viewport.Rendering
 		private readonly MDX Model;
 
 		/// <summary>
+		/// Gets or sets a value indicating whether this object has been disposed.
+		/// </summary>
+		private bool IsDisposed { get; set; }
+
+		/// <summary>
 		/// Gets or sets the transform of the actor.
 		/// </summary>
 		public Transform ActorTransform { get; set; }
@@ -119,6 +124,8 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Initialize()
 		{
+			ThrowIfDisposed();
+
 			this.Shader = this.Cache.GetShader(EverlookShader.GameModel) as GameModelShader;
 
 			this.VertexBufferID = GL.GenBuffer();
@@ -163,6 +170,8 @@ namespace Everlook.Viewport.Rendering
 		/// <inheritdoc />
 		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
 		{
+			ThrowIfDisposed();
+
 			if (!this.IsInitialized)
 			{
 				return;
@@ -257,6 +266,18 @@ namespace Everlook.Viewport.Rendering
 			if (shouldInitialize)
 			{
 				Initialize();
+			}
+		}
+
+		/// <summary>
+		/// Throws an <see cref="ObjectDisposedException"/> if the object has been disposed.
+		/// </summary>
+		/// <exception cref="ObjectDisposedException">Thrown if the object is disposed.</exception>
+		private void ThrowIfDisposed()
+		{
+			if (this.IsDisposed)
+			{
+				throw new ObjectDisposedException(ToString());
 			}
 		}
 

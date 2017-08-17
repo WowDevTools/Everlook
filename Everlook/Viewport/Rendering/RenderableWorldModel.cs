@@ -60,6 +60,11 @@ namespace Everlook.Viewport.Rendering
 		private static readonly ILog Log = LogManager.GetLogger(typeof(RenderableWorldModel));
 
 		/// <summary>
+		/// Gets or sets a value indicating whether this object has been disposed.
+		/// </summary>
+		private bool IsDisposed { get; set; }
+
+		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is,
 		/// a single frame is rendered and then reused. Useful as an optimization for images.
 		/// </summary>
@@ -183,6 +188,8 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Initialize()
 		{
+			ThrowIfDisposed();
+
 			this.Shader = this.Cache.GetShader(EverlookShader.WorldModel) as WorldModelShader;
 
 			if (this.Shader == null)
@@ -326,6 +333,8 @@ namespace Everlook.Viewport.Rendering
 		/// <inheritdoc />
 		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
 		{
+			ThrowIfDisposed();
+
 			if (!this.IsInitialized)
 			{
 				return;
@@ -472,6 +481,18 @@ namespace Everlook.Viewport.Rendering
 							 $"A fallback texture has been loaded instead.");
 					this.TextureLookup.Add(texturePath, this.Cache.FallbackTexture);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Throws an <see cref="ObjectDisposedException"/> if the object has been disposed.
+		/// </summary>
+		/// <exception cref="ObjectDisposedException">Thrown if the object is disposed.</exception>
+		private void ThrowIfDisposed()
+		{
+			if (this.IsDisposed)
+			{
+				throw new ObjectDisposedException(ToString());
 			}
 		}
 

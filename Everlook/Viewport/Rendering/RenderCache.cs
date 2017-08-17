@@ -57,6 +57,11 @@ namespace Everlook.Viewport.Rendering
 		private readonly Dictionary<EverlookShader, ShaderProgram> ShaderCache = new Dictionary<EverlookShader, ShaderProgram>();
 
 		/// <summary>
+		/// Gets or sets a value indicating whether this object has been disposed.
+		/// </summary>
+		private bool IsDisposed { get; set; }
+
+		/// <summary>
 		/// Gets the the fallback texture.
 		/// </summary>
 		public Texture2D FallbackTexture { get; }
@@ -79,6 +84,8 @@ namespace Everlook.Viewport.Rendering
 		/// <returns>A shader program object.</returns>
 		public ShaderProgram GetShader(EverlookShader shader)
 		{
+			ThrowIfDisposed();
+
 			if (HasCachedShader(shader))
 			{
 				return GetCachedShader(shader);
@@ -95,6 +102,8 @@ namespace Everlook.Viewport.Rendering
 		/// <returns>true if a cached textures exists with the given path as a lookup key; false otherwise</returns>
 		public bool HasCachedTextureForPath(string texturePath)
 		{
+			ThrowIfDisposed();
+
 			if (string.IsNullOrEmpty(texturePath))
 			{
 				throw new ArgumentNullException(nameof(texturePath));
@@ -109,6 +118,8 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		private bool HasCachedShader(EverlookShader shader)
 		{
+			ThrowIfDisposed();
+
 			if (!Enum.IsDefined(typeof(EverlookShader), shader))
 			{
 				throw new ArgumentException("An unknown shader was passed to the rendering cache.", nameof(shader));
@@ -124,6 +135,8 @@ namespace Everlook.Viewport.Rendering
 		/// <returns>A texture object.</returns>
 		public Texture2D GetCachedTexture(string texturePath)
 		{
+			ThrowIfDisposed();
+
 			return this.TextureCache[texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant()];
 		}
 
@@ -132,6 +145,8 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		private ShaderProgram GetCachedShader(EverlookShader shader)
 		{
+			ThrowIfDisposed();
+
 			return this.ShaderCache[shader];
 		}
 
@@ -147,6 +162,8 @@ namespace Everlook.Viewport.Rendering
 		/// <returns>A new cached texture created from the data.</returns>
 		public Texture2D CreateCachedTexture(BLP imageData, string texturePath, TextureWrapMode wrappingMode = TextureWrapMode.Repeat)
 		{
+			ThrowIfDisposed();
+
 			Texture2D texture = new Texture2D(imageData, wrappingMode);
 
 			this.TextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), texture);
@@ -164,6 +181,8 @@ namespace Everlook.Viewport.Rendering
 		/// <returns>A new cached texture created from the data.</returns>
 		public Texture2D CreateCachedTexture(Bitmap imageData, string texturePath)
 		{
+			ThrowIfDisposed();
+
 			Texture2D texture = new Texture2D(imageData);
 
 			this.TextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), texture);
@@ -212,6 +231,18 @@ namespace Everlook.Viewport.Rendering
 
 			this.ShaderCache.Add(shader, shaderProgram);
 			return shaderProgram;
+		}
+
+		/// <summary>
+		/// Throws an <see cref="ObjectDisposedException"/> if the object has been disposed.
+		/// </summary>
+		/// <exception cref="ObjectDisposedException">Thrown if the object is disposed.</exception>
+		private void ThrowIfDisposed()
+		{
+			if (this.IsDisposed)
+			{
+				throw new ObjectDisposedException(ToString());
+			}
 		}
 
 		/// <summary>

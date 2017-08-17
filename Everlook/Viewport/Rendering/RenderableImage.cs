@@ -44,6 +44,11 @@ namespace Everlook.Viewport.Rendering
 		protected static RenderCache Cache => RenderCache.Instance;
 
 		/// <summary>
+		/// Gets or sets a value indicating whether this object has been disposed.
+		/// </summary>
+		private bool IsDisposed { get; set; }
+
+		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is,
 		/// a single frame is rendered and then reused. Useful as an optimization for images.
 		/// </summary>
@@ -168,8 +173,10 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Initialize()
 		{
+			ThrowIfDisposed();
+
 			this.VertexBufferID = GenerateVertices();
-			this.VertexIndexBufferID = GenerateVertexIndices();
+			this.VertexIndexBufferID = GenerateVertexIndexes();
 			this.UVBufferID = GenerateTextureCoordinates();
 
 			// Use cached textures whenever possible
@@ -196,6 +203,8 @@ namespace Everlook.Viewport.Rendering
 		/// <inheritdoc />
 		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
 		{
+			ThrowIfDisposed();
+
 			if (!this.IsInitialized)
 			{
 				return;
@@ -285,18 +294,18 @@ namespace Everlook.Viewport.Rendering
 		/// Generates a vertex index buffer for the four corner vertices.
 		/// </summary>
 		/// <returns>The native OpenGL ID of the buffer.</returns>
-		protected static int GenerateVertexIndices()
+		protected static int GenerateVertexIndexes()
 		{
-			// Generate vertex indices
-			List<ushort> vertexIndices = new List<ushort> { 1, 0, 2, 2, 3, 1 };
+			// Generate vertex indexes
+			List<ushort> vertexIndexes = new List<ushort> { 1, 0, 2, 2, 3, 1 };
 
-			int vertexIndicesID;
-			GL.GenBuffers(1, out vertexIndicesID);
+			int vertexIndexesID;
+			GL.GenBuffers(1, out vertexIndexesID);
 
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, vertexIndicesID);
-			GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(vertexIndices.Count * sizeof(ushort)), vertexIndices.ToArray(), BufferUsageHint.StaticDraw);
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, vertexIndexesID);
+			GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(vertexIndexes.Count * sizeof(ushort)), vertexIndexes.ToArray(), BufferUsageHint.StaticDraw);
 
-			return vertexIndicesID;
+			return vertexIndexesID;
 		}
 
 		/// <summary>
@@ -322,6 +331,18 @@ namespace Everlook.Viewport.Rendering
 			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(textureCoordinates.Count * sizeof(float)), textureCoordinates.ToArray(), BufferUsageHint.StaticDraw);
 
 			return bufferID;
+		}
+
+		/// <summary>
+		/// Throws an <see cref="ObjectDisposedException"/> if the object has been disposed.
+		/// </summary>
+		/// <exception cref="ObjectDisposedException">Thrown if the object is disposed.</exception>
+		private void ThrowIfDisposed()
+		{
+			if (this.IsDisposed)
+			{
+				throw new ObjectDisposedException(ToString());
+			}
 		}
 
 		/// <summary>

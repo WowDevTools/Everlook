@@ -442,6 +442,8 @@ namespace Everlook.Viewport.Rendering.Core
 		{
 			lock (this.TextureLock)
 			{
+				GC.SuppressFinalize(this);
+
 				GL.DeleteTexture(this.NativeTextureID);
 				this.NativeTextureID = -1;
 			}

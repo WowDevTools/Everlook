@@ -59,6 +59,11 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public Color4 LineColour { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this object has been disposed.
+		/// </summary>
+		private bool IsDisposed { get; set; }
+
 		private BoundingBox BoundingBoxData;
 		private int VertexBufferID;
 		private int VertexIndicesBufferID;
@@ -81,6 +86,8 @@ namespace Everlook.Viewport.Rendering
 		/// <inheritdoc />
 		public void Initialize()
 		{
+			ThrowIfDisposed();
+
 			if (this.BoxShader == null)
 			{
 				throw new ShaderNullException(typeof(BoundingBoxShader));
@@ -130,6 +137,8 @@ namespace Everlook.Viewport.Rendering
 		/// <inheritdoc />
 		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
 		{
+			ThrowIfDisposed();
+
 			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
 			this.BoxShader.Enable();
@@ -168,6 +177,18 @@ namespace Everlook.Viewport.Rendering
 			);
 
 			GL.DisableVertexAttribArray(0);
+		}
+
+		/// <summary>
+		/// Throws an <see cref="ObjectDisposedException"/> if the object has been disposed.
+		/// </summary>
+		/// <exception cref="ObjectDisposedException">Thrown if the object is disposed.</exception>
+		private void ThrowIfDisposed()
+		{
+			if (this.IsDisposed)
+			{
+				throw new ObjectDisposedException(ToString());
+			}
 		}
 
 		/// <summary>

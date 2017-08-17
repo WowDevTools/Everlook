@@ -40,7 +40,7 @@ namespace Everlook.Viewport
 	/// Viewport renderer for the main Everlook UI. This class manages an OpenGL rendering thread, which
 	/// uses rendering built into the different renderable objects
 	/// </summary>
-	public class ViewportRenderer : IDisposable
+	public sealed class ViewportRenderer : IDisposable
 	{
 		/// <summary>
 		/// Logger instance for this class.
@@ -62,6 +62,11 @@ namespace Everlook.Viewport
 		/// frame before a new one is assigned.
 		/// </summary>
 		private readonly object RenderTargetLock = new object();
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="ViewportRenderer"/> has been disposed.
+		/// </summary>
+		private bool IsDisposed { get; set; }
 
 		/// <summary>
 		/// Gets a value indicating whether or not the renderer currently has an object to render.
@@ -155,6 +160,8 @@ namespace Everlook.Viewport
 		/// </summary>
 		public void Initialize()
 		{
+			ThrowIfDisposed();
+
 			Log.Info($"Initializing {nameof(ViewportRenderer)} and setting up default OpenGL state...");
 
 			int numExtensions = GL.GetInteger(GetPName.NumExtensions);
@@ -239,6 +246,8 @@ namespace Everlook.Viewport
 		/// </summary>
 		public void RenderFrame()
 		{
+			ThrowIfDisposed();
+
 			lock (this.RenderTargetLock)
 			{
 				this.FrameWatch.Reset();
@@ -342,6 +351,8 @@ namespace Everlook.Viewport
 		/// <param name="inRenderable">inRenderable.</param>
 		public void SetRenderTarget(IRenderable inRenderable)
 		{
+			ThrowIfDisposed();
+
 			lock (this.RenderTargetLock)
 			{
 				// Dispose of the old render target
@@ -370,11 +381,25 @@ namespace Everlook.Viewport
 		}
 
 		/// <summary>
+		/// Throws an <see cref="ObjectDisposedException"/> if the object has been disposed.
+		/// </summary>
+		/// <exception cref="ObjectDisposedException">Thrown if the object is disposed.</exception>
+		private void ThrowIfDisposed()
+		{
+			if (this.IsDisposed)
+			{
+				throw new ObjectDisposedException(ToString());
+			}
+		}
+
+		/// <summary>
 		/// Disposes the viewport renderer, releasing the current rendering target and current
 		/// OpenGL arrays and buffers.
 		/// </summary>
 		public void Dispose()
 		{
+			this.IsDisposed = true;
+
 			this.RenderTarget?.Dispose();
 
 			GL.DeleteVertexArrays(1, ref this.VertexArrayID);
