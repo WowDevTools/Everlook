@@ -261,10 +261,6 @@ namespace Everlook.Configuration
 			if (!configData.Sections[keySection].ContainsKey(keyName))
 			{
 				configData.Sections[keySection].AddKey(keyName);
-			}
-
-			if (!configData.Sections[keySection][keyName].Equals(keyData))
-			{
 				configData.Sections[keySection][keyName] = keyData;
 			}
 		}
@@ -294,11 +290,13 @@ namespace Everlook.Configuration
 
 		private void MoveConfigurationOption(IniData configData, string oldKeySection, string newKeySection, string keyName)
 		{
-			string keyValue = configData.Sections[oldKeySection][keyName];
+			if (!configData.Sections[newKeySection].ContainsKey(keyName))
+			{
+				string keyValue = configData.Sections[oldKeySection][keyName];
+				configData.Sections[newKeySection].AddKey(keyName, keyValue);
 
-			configData.Sections[newKeySection].AddKey(keyName, keyValue);
-
-			configData.Sections[oldKeySection].RemoveKey(keyName);
+				configData.Sections[oldKeySection].RemoveKey(keyName);
+			}
 		}
 
 		/// <summary>
@@ -333,7 +331,7 @@ namespace Everlook.Configuration
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
-				data[Explorer][ShowUnknownFilesWhenFiltering] = showUnknown.ToString();
+				data[Explorer][ShowUnknownFilesWhenFiltering] = showUnknown.ToString().ToLower();
 
 				lock (this.WriteLock)
 				{
@@ -374,7 +372,7 @@ namespace Everlook.Configuration
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
-				data[Privacy][SendMachineID] = sendData.ToString();
+				data[Privacy][SendMachineID] = sendData.ToString().ToLower();
 
 				lock (this.WriteLock)
 				{
@@ -415,7 +413,7 @@ namespace Everlook.Configuration
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
-				data[Privacy][SendInstallID] = sendData.ToString();
+				data[Privacy][SendInstallID] = sendData.ToString().ToLower();
 
 				lock (this.WriteLock)
 				{
@@ -456,7 +454,7 @@ namespace Everlook.Configuration
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
-				data[Privacy][SendOS] = sendData.ToString();
+				data[Privacy][SendOS] = sendData.ToString().ToLower();
 
 				lock (this.WriteLock)
 				{
@@ -497,7 +495,7 @@ namespace Everlook.Configuration
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
-				data[Privacy][SendAppVersion] = sendData.ToString();
+				data[Privacy][SendAppVersion] = sendData.ToString().ToLower();
 
 				lock (this.WriteLock)
 				{
@@ -517,7 +515,7 @@ namespace Everlook.Configuration
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
-				data[Privacy][SendRuntimeInfo] = sendData.ToString();
+				data[Privacy][SendRuntimeInfo] = sendData.ToString().ToLower();
 
 				lock (this.WriteLock)
 				{
@@ -558,7 +556,7 @@ namespace Everlook.Configuration
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
-				data[Model][OccludeBoundingBoxes] = occlude.ToString();
+				data[Model][OccludeBoundingBoxes] = occlude.ToString().ToLower();
 
 				lock (this.WriteLock)
 				{
@@ -599,7 +597,7 @@ namespace Everlook.Configuration
 				FileIniDataParser parser = new FileIniDataParser();
 				IniData data = parser.ReadFile(GetConfigurationFilePath());
 
-				data[Explorer][AutoplayAudioFiles] = autoplay.ToString();
+				data[Explorer][AutoplayAudioFiles] = autoplay.ToString().ToLower();
 
 				lock (this.WriteLock)
 				{
