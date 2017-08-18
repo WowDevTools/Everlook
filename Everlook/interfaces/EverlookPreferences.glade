@@ -400,6 +400,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="rgba">rgb(133,146,173)</property>
                                   </object>
                                 </child>
                               </object>
