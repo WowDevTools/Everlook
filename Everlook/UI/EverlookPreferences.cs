@@ -97,7 +97,7 @@ namespace Everlook.UI
 		private void OnShowUnknownFilesToggled(object sender, EventArgs e)
 		{
 			// Refilter if the option has changed
-			if (this.ShowUnknownFilesCheckButton.Active != this.Config.GetShowUnknownFilesWhenFiltering())
+			if (this.ShowUnknownFilesCheckButton.Active != this.Config.ShowUnknownFilesWhenFiltering)
 			{
 				this.ShouldRefilterTree = true;
 				return;
@@ -237,30 +237,31 @@ namespace Everlook.UI
 				}
 			}
 
-			this.ViewportColourButton.Rgba = this.Config.GetViewportBackgroundColour();
+			this.ViewportColourButton.Rgba = this.Config.ViewportBackgroundColour;
 
-			if (!string.IsNullOrEmpty(this.Config.GetDefaultExportDirectory()))
+			if (!string.IsNullOrEmpty(this.Config.DefaultExportDirectory))
 			{
-				this.DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(new Uri(new Uri("file://"), this.Config.GetDefaultExportDirectory()).AbsoluteUri);
+				this.DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(new Uri(new Uri("file://"), this.Config.DefaultExportDirectory).AbsoluteUri);
 			}
 
-			this.DefaultModelExportFormatComboBox.Active = (int)this.Config.GetDefaultModelFormat();
-			this.DefaultImageExportFormatComboBox.Active = (int)this.Config.GetDefaultImageFormat();
-			this.DefaultAudioExportFormatComboBox.Active = (int)this.Config.GetDefaultAudioFormat();
-			this.KeepDirectoryStructureCheckButton.Active = this.Config.GetShouldKeepFileDirectoryStructure();
+			this.DefaultModelExportFormatComboBox.Active = (int)this.Config.DefaultModelExportFormat;
+			this.DefaultImageExportFormatComboBox.Active = (int)this.Config.DefaultImageExportFormat;
+			this.DefaultAudioExportFormatComboBox.Active = (int)this.Config.DefaultAudioExportFormat;
+			this.KeepDirectoryStructureCheckButton.Active = this.Config.KeepFileDirectoryStructure;
 
-			this.AllowStatsCheckButton.Active = this.Config.GetAllowSendAnonymousStats();
-			this.SendMachineIDCheckButton.Active = this.Config.GetSendMachineID();
-			this.SendInstallIDCheckButton.Active = this.Config.GetSendInstallID();
-			this.SendOSCheckButton.Active = this.Config.GetSendOS();
-			this.SendAppVersionCheckButton.Active = this.Config.GetSendAppVersion();
-			this.SendRuntimeInfoCheckButton.Active = this.Config.GetSendRuntimeInfo();
+			this.AllowStatsCheckButton.Active = this.Config.AllowSendingStatistics;
+			this.SendMachineIDCheckButton.Active = this.Config.SendMachineID;
+			this.SendInstallIDCheckButton.Active = this.Config.SendInstallID;
+			this.SendOSCheckButton.Active = this.Config.SendOperatingSystem;
+			this.SendAppVersionCheckButton.Active = this.Config.SendAppVersion;
+			this.SendRuntimeInfoCheckButton.Active = this.Config.SendRuntimeInformation;
 
-			this.WireframeColourButton.Rgba = this.Config.GetWireframeColour();
-			this.OccludeBoundingBoxesCheckButton.Active = this.Config.GetOccludeBoundingBoxes();
+			this.WireframeColourButton.Rgba = this.Config.WireframeColour;
+			this.OccludeBoundingBoxesCheckButton.Active = this.Config.OccludeBoundingBoxes;
+			this.CameraSpeedAdjustment.Value = this.Config.CameraSpeed;
 
-			this.ShowUnknownFilesCheckButton.Active = this.Config.GetShowUnknownFilesWhenFiltering();
-			this.AutoplayAudioCheckButton.Active = this.Config.GetAutoplayAudio();
+			this.ShowUnknownFilesCheckButton.Active = this.Config.ShowUnknownFilesWhenFiltering;
+			this.AutoplayAudioCheckButton.Active = this.Config.AutoplayAudioFiles;
 		}
 
 		/// <summary>
@@ -281,28 +282,31 @@ namespace Everlook.UI
 				}
 			);
 
-			this.Config.SetViewportBackgroundColour(this.ViewportColourButton.Rgba);
+			this.Config.ViewportBackgroundColour = this.ViewportColourButton.Rgba;
 
 			string exportPath = this.DefaultExportDirectoryFileChooserButton.CurrentFolderFile.Uri.LocalPath;
-			this.Config.SetDefaultExportDirectory(exportPath);
+			this.Config.DefaultExportDirectory = exportPath;
 
-			this.Config.SetDefaultModelFormat((ModelFormat)this.DefaultModelExportFormatComboBox.Active);
-			this.Config.SetDefaultImageFormat((ImageFormat)this.DefaultImageExportFormatComboBox.Active);
-			this.Config.SetDefaultAudioFormat((AudioFormat)this.DefaultAudioExportFormatComboBox.Active);
-			this.Config.SetKeepFileDirectoryStructure(this.KeepDirectoryStructureCheckButton.Active);
+			this.Config.DefaultModelExportFormat = (ModelFormat)this.DefaultModelExportFormatComboBox.Active;
+			this.Config.DefaultImageExportFormat = (ImageFormat)this.DefaultImageExportFormatComboBox.Active;
+			this.Config.DefaultAudioExportFormat = (AudioFormat)this.DefaultAudioExportFormatComboBox.Active;
+			this.Config.KeepFileDirectoryStructure = this.KeepDirectoryStructureCheckButton.Active;
 
-			this.Config.SetAllowSendAnonymousStats(this.AllowStatsCheckButton.Active);
-			this.Config.SetSendMachineID(this.SendMachineIDCheckButton.Active);
-			this.Config.SetSendInstallID(this.SendInstallIDCheckButton.Active);
-			this.Config.SetSendOS(this.SendOSCheckButton.Active);
-			this.Config.SetSendAppVersion(this.SendAppVersionCheckButton.Active);
-			this.Config.SetSendRuntimeInfo(this.SendRuntimeInfoCheckButton.Active);
+			this.Config.AllowSendingStatistics = this.AllowStatsCheckButton.Active;
+			this.Config.SendMachineID = this.SendMachineIDCheckButton.Active;
+			this.Config.SendInstallID = this.SendInstallIDCheckButton.Active;
+			this.Config.SendOperatingSystem = this.SendOSCheckButton.Active;
+			this.Config.SendAppVersion = this.SendAppVersionCheckButton.Active;
+			this.Config.SendRuntimeInformation = this.SendRuntimeInfoCheckButton.Active;
 
-			this.Config.SetWireframeColour(this.WireframeColourButton.Rgba);
-			this.Config.SetOccludeBoundingBoxes(this.OccludeBoundingBoxesCheckButton.Active);
+			this.Config.WireframeColour = this.WireframeColourButton.Rgba;
+			this.Config.OccludeBoundingBoxes = this.OccludeBoundingBoxesCheckButton.Active;
+			this.Config.CameraSpeed = this.CameraSpeedAdjustment.Value;
 
-			this.Config.SetShowUnknownFilesWhenFiltering(this.ShowUnknownFilesCheckButton.Active);
-			this.Config.SetAutoplayAudio(this.AutoplayAudioCheckButton.Active);
+			this.Config.ShowUnknownFilesWhenFiltering = this.ShowUnknownFilesCheckButton.Active;
+			this.Config.AutoplayAudioFiles = this.AutoplayAudioCheckButton.Active;
+
+			this.Config.Commit();
 		}
 	}
 }

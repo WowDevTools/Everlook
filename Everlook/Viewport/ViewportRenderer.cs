@@ -202,10 +202,10 @@ namespace Everlook.Viewport
 			GL.Viewport(0, 0, widgetWidth, widgetHeight);
 			GL.ClearColor
 			(
-				(float)this.Configuration.GetViewportBackgroundColour().Red,
-				(float)this.Configuration.GetViewportBackgroundColour().Green,
-				(float)this.Configuration.GetViewportBackgroundColour().Blue,
-				(float)this.Configuration.GetViewportBackgroundColour().Alpha
+				(float)this.Configuration.ViewportBackgroundColour.Red,
+				(float)this.Configuration.ViewportBackgroundColour.Green,
+				(float)this.Configuration.ViewportBackgroundColour.Blue,
+				(float)this.Configuration.ViewportBackgroundColour.Alpha
 			);
 
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);

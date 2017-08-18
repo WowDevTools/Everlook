@@ -197,7 +197,7 @@ namespace Everlook.Viewport.Rendering
 				throw new ShaderNullException(typeof(WorldModelShader));
 			}
 
-			this.Shader.Wireframe.SetWireframeColour(EverlookConfiguration.Instance.GetWireframeColour());
+			this.Shader.Wireframe.SetWireframeColour(EverlookConfiguration.Instance.WireframeColour);
 
 			// TODO: Load and cache doodads in their respective sets
 

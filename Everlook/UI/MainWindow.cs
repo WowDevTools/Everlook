@@ -411,7 +411,7 @@ namespace Everlook.UI
 			FilterType filterType = (FilterType)box.Active;
 			foreach (GamePage page in this.GamePages)
 			{
-				page.ShouldDisplayUnknownFiles = this.Config.GetShowUnknownFilesWhenFiltering();
+				page.ShouldDisplayUnknownFiles = this.Config.ShowUnknownFilesWhenFiltering;
 
 				if (filterType == FilterType.All)
 				{
@@ -646,8 +646,8 @@ namespace Everlook.UI
 		/// </summary>
 		private void ReloadViewportBackground()
 		{
-			this.ViewportWidget.OverrideBackgroundColor(StateFlags.Normal, this.Config.GetViewportBackgroundColour());
-			this.RenderingEngine.SetClearColour(this.Config.GetViewportBackgroundColour());
+			this.ViewportWidget.OverrideBackgroundColor(StateFlags.Normal, this.Config.ViewportBackgroundColour);
+			this.RenderingEngine.SetClearColour(this.Config.ViewportBackgroundColour);
 			this.ViewportHasPendingRedraw = true;
 		}
 
@@ -1047,7 +1047,7 @@ namespace Everlook.UI
 				{
 					AudioManager.UnregisterSource(this.GlobalAudio);
 
-					if (this.Config.GetAutoplayAudio())
+					if (this.Config.AutoplayAudioFiles)
 					{
 						this.GlobalAudio = AudioSource.CreateNew();
 						await this.GlobalAudio.SetAudioAsync(fileReference);

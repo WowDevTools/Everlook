@@ -88,7 +88,7 @@ namespace Everlook.UI
 		private void LoadInformation()
 		{
 			this.Title = "Export Directory | " + this.ExportTarget.Filename;
-			this.ExportDirectoryFileChooserButton.SetFilename(this.Config.GetDefaultExportDirectory());
+			this.ExportDirectoryFileChooserButton.SetFilename(this.Config.DefaultExportDirectory);
 
 			// Load all references
 			/*

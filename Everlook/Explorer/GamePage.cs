@@ -505,15 +505,15 @@ namespace Everlook.Explorer
 
 			string cleanFilepath = fileReference.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
 			string exportpath;
-			if (this.Config.GetShouldKeepFileDirectoryStructure())
+			if (this.Config.KeepFileDirectoryStructure)
 			{
-				exportpath = this.Config.GetDefaultExportDirectory() + cleanFilepath;
+				exportpath = Path.Combine(this.Config.DefaultExportDirectory, cleanFilepath);
 				Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
 			}
 			else
 			{
 				string filename = Path.GetFileName(cleanFilepath);
-				exportpath = this.Config.GetDefaultExportDirectory() + filename;
+				exportpath = Path.Combine(this.Config.DefaultExportDirectory, filename);
 				Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
 			}
 

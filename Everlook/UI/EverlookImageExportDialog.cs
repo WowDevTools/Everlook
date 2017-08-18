@@ -106,7 +106,7 @@ namespace Everlook.UI
 			byte[] file = this.ExportTarget.Extract();
 			this.Image = new BLP(file);
 
-			this.ExportFormatComboBox.Active = (int)this.Config.GetDefaultImageFormat();
+			this.ExportFormatComboBox.Active = (int)this.Config.DefaultImageExportFormat;
 
 			this.MipLevelListStore.Clear();
 			foreach (string mipString in this.Image.GetMipMapLevelStrings())
@@ -114,7 +114,7 @@ namespace Everlook.UI
 				this.MipLevelListStore.AppendValues(true, mipString);
 			}
 
-			this.ExportDirectoryFileChooserButton.SetFilename(this.Config.GetDefaultExportDirectory());
+			this.ExportDirectoryFileChooserButton.SetFilename(this.Config.DefaultExportDirectory);
 		}
 
 		/// <summary>
@@ -125,14 +125,21 @@ namespace Everlook.UI
 			string imageFilename = IOPath.GetFileNameWithoutExtension(this.ExportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
 
 			string exportPath;
-			if (this.Config.GetShouldKeepFileDirectoryStructure())
+			if (this.Config.KeepFileDirectoryStructure)
 			{
-				exportPath =
-					$"{this.ExportDirectoryFileChooserButton.Filename}{IOPath.DirectorySeparatorChar}{this.ExportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator().Replace(".blp", string.Empty)}";
+				exportPath = IOPath.Combine
+				(
+					this.ExportDirectoryFileChooserButton.Filename,
+					this.ExportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator().Replace(".blp", string.Empty)
+				);
 			}
 			else
 			{
-				exportPath = $"{this.ExportDirectoryFileChooserButton.Filename}{IOPath.DirectorySeparatorChar}{imageFilename}";
+				exportPath = IOPath.Combine
+				(
+					this.ExportDirectoryFileChooserButton.Filename,
+					imageFilename
+				);
 			}
 
 			int i = 0;
