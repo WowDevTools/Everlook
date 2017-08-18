@@ -38,7 +38,7 @@ namespace Everlook.Configuration
 	/// Everlook configuration handler. Reads and writes local user configuration of the application.
 	/// This class is threadsafe.
 	/// </summary>
-	public class EverlookConfiguration
+	public class EverlookConfiguration : IDisposable
 	{
 		/*
 			Section names
@@ -54,6 +54,13 @@ namespace Everlook.Configuration
 		/// The publicly accessibly instance of the configuration.
 		/// </summary>
 		public static readonly EverlookConfiguration Instance = new EverlookConfiguration();
+
+		private readonly FileSystemWatcher ConfigurationFileWatcher;
+
+		/// <summary>
+		/// Raised whenever the configuration file is altered externally, for example, if it is editing manually.
+		/// </summary>
+		public event Action ConfigurationAlteredExternally;
 
 		private readonly object ReadLock = new object();
 		private readonly object WriteLock = new object();
@@ -228,6 +235,20 @@ namespace Everlook.Configuration
 
 		private EverlookConfiguration()
 		{
+			this.ConfigurationFileWatcher = new FileSystemWatcher(Directory.GetParent(GetConfigurationFilePath()).FullName)
+			{
+				EnableRaisingEvents = true,
+				Filter = "everlook.ini",
+				IncludeSubdirectories = false,
+				NotifyFilter = NotifyFilters.LastWrite
+			};
+
+			this.ConfigurationFileWatcher.Changed += (sender, args) =>
+			{
+				Reload();
+				this.ConfigurationAlteredExternally?.Invoke();
+			};
+
 			lock (this.ReadLock)
 			{
 				if (!File.Exists(GetConfigurationFilePath()))
@@ -251,16 +272,24 @@ namespace Everlook.Configuration
 					*/
 
 					// Uncomment this when needed
-					IniData data = this.DefaultParser.ReadFile(GetConfigurationFilePath());
+					Reload();
 
-					lock (this.WriteLock)
-					{
-						WriteConfig(this.DefaultParser, data);
-					}
+					/*
+						Place any changes after this comment.
+					*/
 
+					Commit();
 					Reload();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Finalizes an instance of the <see cref="EverlookConfiguration"/> class.
+		/// </summary>
+		~EverlookConfiguration()
+		{
+			Dispose();
 		}
 
 		/// <summary>
@@ -281,7 +310,9 @@ namespace Everlook.Configuration
 		{
 			lock (this.WriteLock)
 			{
+				this.ConfigurationFileWatcher.EnableRaisingEvents = false;
 				WriteConfig(this.DefaultParser, this.ConfigurationData);
+				this.ConfigurationFileWatcher.EnableRaisingEvents = true;
 			}
 		}
 
@@ -361,6 +392,7 @@ namespace Everlook.Configuration
 			this.ConfigurationData[Viewport].AddKey(nameof(this.WireframeColour), "rgb(234, 161, 0)");
 			this.ConfigurationData[Viewport].AddKey(nameof(this.OccludeBoundingBoxes), "false");
 			this.ConfigurationData[Viewport].AddKey(nameof(this.CameraSpeed), "1.0");
+			this.ConfigurationData[Viewport].AddKey(nameof(this.SprintMultiplier), "2.0");
 
 			this.ConfigurationData[Explorer].AddKey(nameof(this.ShowUnknownFilesWhenFiltering), "true");
 			this.ConfigurationData[Explorer].AddKey(nameof(this.AutoplayAudioFiles), "true");
@@ -434,11 +466,6 @@ namespace Everlook.Configuration
 			}
 
 			this.ConfigurationData[section][keyName] = value;
-
-			lock (this.WriteLock)
-			{
-				WriteConfig(this.DefaultParser, this.ConfigurationData);
-			}
 		}
 
 		/// <summary>
@@ -554,6 +581,15 @@ namespace Everlook.Configuration
 			return
 				$"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{Path.DirectorySeparatorChar}" +
 				$"Everlook{Path.DirectorySeparatorChar}everlook.ini";
+		}
+
+		/// <summary>
+		/// Disposes the unmanaged resources in use.
+		/// </summary>
+		public void Dispose()
+		{
+			GC.SuppressFinalize(this);
+			this.ConfigurationFileWatcher?.Dispose();
 		}
 	}
 }

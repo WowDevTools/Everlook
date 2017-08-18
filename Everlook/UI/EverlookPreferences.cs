@@ -91,6 +91,8 @@ namespace Everlook.UI
 			this.AllowStatsCheckButton.Toggled += OnAllowStatsToggled;
 			this.ShowUnknownFilesCheckButton.Toggled += OnShowUnknownFilesToggled;
 
+			this.Config.ConfigurationAlteredExternally += LoadConfigurationValues;
+
 			LoadPreferences();
 		}
 
@@ -243,11 +245,23 @@ namespace Everlook.UI
 				}
 			}
 
+			// Make sure we've got the latest from disk
+			this.Config.Reload();
+
+			LoadConfigurationValues();
+		}
+
+		/// <summary>
+		/// Loads the configuration values into the UI.
+		/// </summary>
+		private void LoadConfigurationValues()
+		{
 			this.ViewportColourButton.Rgba = this.Config.ViewportBackgroundColour;
 
 			if (!string.IsNullOrEmpty(this.Config.DefaultExportDirectory))
 			{
-				this.DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(new Uri(new Uri("file://"), this.Config.DefaultExportDirectory).AbsoluteUri);
+				this.DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(
+					new Uri(new Uri("file://"), this.Config.DefaultExportDirectory).AbsoluteUri);
 			}
 
 			this.DefaultModelExportFormatComboBox.Active = (int)this.Config.DefaultModelExportFormat;
