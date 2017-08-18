@@ -38,7 +38,7 @@ namespace Everlook.Configuration
 	/// Everlook configuration handler. Reads and writes local user configuration of the application.
 	/// This class is threadsafe.
 	/// </summary>
-	public class EverlookConfiguration : IDisposable
+	public class EverlookConfiguration
 	{
 		/*
 			Section names
@@ -54,13 +54,6 @@ namespace Everlook.Configuration
 		/// The publicly accessibly instance of the configuration.
 		/// </summary>
 		public static readonly EverlookConfiguration Instance = new EverlookConfiguration();
-
-		private readonly FileSystemWatcher ConfigurationFileWatcher;
-
-		/// <summary>
-		/// Raised whenever the configuration file is altered externally, for example, if it is editing manually.
-		/// </summary>
-		public event Action ConfigurationAlteredExternally;
 
 		private readonly object ReadLock = new object();
 		private readonly object WriteLock = new object();
@@ -235,20 +228,6 @@ namespace Everlook.Configuration
 
 		private EverlookConfiguration()
 		{
-			this.ConfigurationFileWatcher = new FileSystemWatcher(Directory.GetParent(GetConfigurationFilePath()).FullName)
-			{
-				EnableRaisingEvents = true,
-				Filter = "everlook.ini",
-				IncludeSubdirectories = false,
-				NotifyFilter = NotifyFilters.LastWrite
-			};
-
-			this.ConfigurationFileWatcher.Changed += (sender, args) =>
-			{
-				Reload();
-				this.ConfigurationAlteredExternally?.Invoke();
-			};
-
 			lock (this.ReadLock)
 			{
 				if (!File.Exists(GetConfigurationFilePath()))
@@ -285,14 +264,6 @@ namespace Everlook.Configuration
 		}
 
 		/// <summary>
-		/// Finalizes an instance of the <see cref="EverlookConfiguration"/> class.
-		/// </summary>
-		~EverlookConfiguration()
-		{
-			Dispose();
-		}
-
-		/// <summary>
 		/// Reloads the configuration from disk.
 		/// </summary>
 		public void Reload()
@@ -310,9 +281,7 @@ namespace Everlook.Configuration
 		{
 			lock (this.WriteLock)
 			{
-				this.ConfigurationFileWatcher.EnableRaisingEvents = false;
 				WriteConfig(this.DefaultParser, this.ConfigurationData);
-				this.ConfigurationFileWatcher.EnableRaisingEvents = true;
 			}
 		}
 
@@ -581,15 +550,6 @@ namespace Everlook.Configuration
 			return
 				$"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{Path.DirectorySeparatorChar}" +
 				$"Everlook{Path.DirectorySeparatorChar}everlook.ini";
-		}
-
-		/// <summary>
-		/// Disposes the unmanaged resources in use.
-		/// </summary>
-		public void Dispose()
-		{
-			GC.SuppressFinalize(this);
-			this.ConfigurationFileWatcher?.Dispose();
 		}
 	}
 }

@@ -91,8 +91,6 @@ namespace Everlook.UI
 			this.AllowStatsCheckButton.Toggled += OnAllowStatsToggled;
 			this.ShowUnknownFilesCheckButton.Toggled += OnShowUnknownFilesToggled;
 
-			this.Config.ConfigurationAlteredExternally += LoadConfigurationValues;
-
 			LoadPreferences();
 		}
 
