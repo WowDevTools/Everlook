@@ -54,6 +54,14 @@ namespace Everlook.UI
 		[UIElement] private readonly ComboBox FileFilterComboBox;
 
 		/*
+			Viewport controls elements
+		*/
+		[UIElement] private readonly ButtonBox ViewportControlsButtonBox;
+		[UIElement] private readonly Button ViewportSettingsButton;
+		[UIElement] private readonly Button ViewportCameraButton;
+		[UIElement] private readonly Overlay ViewportOverlay;
+
+		/*
 			Export queue elements
 		*/
 		[UIElement] private readonly TreeView ExportQueueTreeView;
