@@ -66,8 +66,8 @@ namespace Everlook.Configuration
 		/// </summary>
 		public double CameraSpeed
 		{
-			get => GetDoubleOption(Model, nameof(CameraSpeed));
-			set => SetOption(Model, nameof(CameraSpeed), value);
+			get => GetDoubleOption(Model, nameof(this.CameraSpeed));
+			set => SetOption(Model, nameof(this.CameraSpeed), value);
 		}
 
 		/// <summary>
