@@ -119,6 +119,12 @@
       </row>
     </data>
   </object>
+  <object class="GtkAdjustment" id="SprintMultiplierAdjustment">
+    <property name="upper">100</property>
+    <property name="value">1</property>
+    <property name="step_increment">0.10000000000000001</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkDialog" id="PreferencesDialog">
     <property name="width_request">420</property>
     <property name="height_request">360</property>
@@ -977,7 +983,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkAlignment" id="ModelsSettingsAlignment">
+              <object class="GtkAlignment" id="ViewportSettingsAlignment">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="top_padding">6</property>
@@ -1106,7 +1112,6 @@
                               <object class="GtkAlignment" id="alignment31">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="right_padding">24</property>
                                 <child>
                                   <object class="GtkLabel" id="label3">
                                     <property name="visible">True</property>
@@ -1125,6 +1130,7 @@
                               <object class="GtkAlignment" id="alignment32">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="left_padding">24</property>
                                 <child>
                                   <object class="GtkScale" id="scale1">
                                     <property name="visible">True</property>
@@ -1140,6 +1146,7 @@
                               <packing>
                                 <property name="expand">True</property>
                                 <property name="fill">True</property>
+                                <property name="pack_type">end</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
@@ -1153,6 +1160,65 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkAlignment" id="alignment33">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="top_padding">6</property>
+                        <child>
+                          <object class="GtkBox" id="box21">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkAlignment" id="alignment34">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <child>
+                                  <object class="GtkLabel" id="SprintMultiplierLabel">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Sprint Multiplier</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkAlignment" id="alignment35">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <child>
+                                  <object class="GtkSpinButton" id="spinbutton1">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">SprintMultiplierAdjustment</property>
+                                    <property name="digits">2</property>
+                                    <property name="numeric">True</property>
+                                    <property name="update_policy">if-valid</property>
+                                    <property name="value">1</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="pack_type">end</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">4</property>
+                      </packing>
+                    </child>
+                    <child>
                       <placeholder/>
                     </child>
                   </object>
@@ -1163,7 +1229,7 @@
               </packing>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="ModelsSettingsLabel">
+              <object class="GtkLabel" id="ViewportSettingsLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Viewport</property>
@@ -1324,6 +1390,13 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkSizeGroup" id="ViewportSettingsSizeGroup">
+    <property name="mode">both</property>
+    <widgets>
+      <widget name="scale1"/>
+      <widget name="spinbutton1"/>
+    </widgets>
   </object>
   <object class="GtkFileChooserDialog" id="GamePathChooser">
     <property name="can_focus">False</property>

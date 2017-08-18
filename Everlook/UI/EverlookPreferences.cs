@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Globalization;
 using System.IO;
 using Everlook.Configuration;
 using Everlook.Export.Audio;
@@ -93,6 +94,11 @@ namespace Everlook.UI
 			LoadPreferences();
 		}
 
+		/// <summary>
+		/// Handles tree refiltering if the unknown files option changes.
+		/// </summary>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="e">The event arguments.</param>
 		[ConnectBefore]
 		private void OnShowUnknownFilesToggled(object sender, EventArgs e)
 		{
@@ -259,6 +265,7 @@ namespace Everlook.UI
 			this.WireframeColourButton.Rgba = this.Config.WireframeColour;
 			this.OccludeBoundingBoxesCheckButton.Active = this.Config.OccludeBoundingBoxes;
 			this.CameraSpeedAdjustment.Value = this.Config.CameraSpeed;
+			this.SprintMultiplierAdjustment.Value = this.Config.SprintMultiplier;
 
 			this.ShowUnknownFilesCheckButton.Active = this.Config.ShowUnknownFilesWhenFiltering;
 			this.AutoplayAudioCheckButton.Active = this.Config.AutoplayAudioFiles;
@@ -302,6 +309,7 @@ namespace Everlook.UI
 			this.Config.WireframeColour = this.WireframeColourButton.Rgba;
 			this.Config.OccludeBoundingBoxes = this.OccludeBoundingBoxesCheckButton.Active;
 			this.Config.CameraSpeed = this.CameraSpeedAdjustment.Value;
+			this.Config.SprintMultiplier = this.SprintMultiplierAdjustment.Value;
 
 			this.Config.ShowUnknownFilesWhenFiltering = this.ShowUnknownFilesCheckButton.Active;
 			this.Config.AutoplayAudioFiles = this.AutoplayAudioCheckButton.Active;

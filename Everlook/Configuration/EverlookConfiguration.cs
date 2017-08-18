@@ -47,7 +47,7 @@ namespace Everlook.Configuration
 		private const string General = nameof(General);
 		private const string Export = nameof(Export);
 		private const string Privacy = nameof(Privacy);
-		private const string Model = nameof(Model);
+		private const string Viewport = nameof(Viewport);
 		private const string Explorer = nameof(Explorer);
 
 		/// <summary>
@@ -62,12 +62,21 @@ namespace Everlook.Configuration
 		private IniData ConfigurationData;
 
 		/// <summary>
-		/// Gets or sets the movement speed of the camera in the viewport.
+		/// Gets or sets the sprinting speed multiplier.
+		/// </summary>
+		public double SprintMultiplier
+		{
+			get => GetDoubleOption(Viewport, nameof(this.SprintMultiplier), 1.0);
+			set => SetOption(Viewport, nameof(this.SprintMultiplier), value);
+		}
+
+		/// <summary>
+		/// Gets or sets the movement speed multiplier of the camera in the viewport.
 		/// </summary>
 		public double CameraSpeed
 		{
-			get => GetDoubleOption(Model, nameof(this.CameraSpeed));
-			set => SetOption(Model, nameof(this.CameraSpeed), value);
+			get => GetDoubleOption(Viewport, nameof(this.CameraSpeed), 1.0);
+			set => SetOption(Viewport, nameof(this.CameraSpeed), value);
 		}
 
 		/// <summary>
@@ -132,8 +141,8 @@ namespace Everlook.Configuration
 		/// </summary>
 		public bool OccludeBoundingBoxes
 		{
-			get => GetBooleanOption(Model, nameof(this.OccludeBoundingBoxes));
-			set => SetOption(Model, nameof(this.OccludeBoundingBoxes), value);
+			get => GetBooleanOption(Viewport, nameof(this.OccludeBoundingBoxes));
+			set => SetOption(Viewport, nameof(this.OccludeBoundingBoxes), value);
 		}
 
 		/// <summary>
@@ -159,8 +168,8 @@ namespace Everlook.Configuration
 		/// </summary>
 		public RGBA WireframeColour
 		{
-			get => GetColourOption(Model, nameof(this.WireframeColour));
-			set => SetOption(Model, nameof(this.WireframeColour), value);
+			get => GetColourOption(Viewport, nameof(this.WireframeColour));
+			set => SetOption(Viewport, nameof(this.WireframeColour), value);
 		}
 
 		/// <summary>
@@ -283,7 +292,7 @@ namespace Everlook.Configuration
 			this.ConfigurationData.Sections.AddSection(General);
 			this.ConfigurationData.Sections.AddSection(Export);
 			this.ConfigurationData.Sections.AddSection(Privacy);
-			this.ConfigurationData.Sections.AddSection(Model);
+			this.ConfigurationData.Sections.AddSection(Viewport);
 			this.ConfigurationData.Sections.AddSection(Explorer);
 
 			this.ConfigurationData[General].AddKey(nameof(this.ViewportBackgroundColour), "rgb(133, 146, 173)");
@@ -349,9 +358,9 @@ namespace Everlook.Configuration
 			this.ConfigurationData[Privacy].AddKey(nameof(this.SendAppVersion), "true");
 			this.ConfigurationData[Privacy].AddKey(nameof(this.SendRuntimeInformation), "true");
 
-			this.ConfigurationData[Model].AddKey(nameof(this.WireframeColour), "rgb(234, 161, 0)");
-			this.ConfigurationData[Model].AddKey(nameof(this.OccludeBoundingBoxes), "false");
-			this.ConfigurationData[Model].AddKey(nameof(this.CameraSpeed), "1.0");
+			this.ConfigurationData[Viewport].AddKey(nameof(this.WireframeColour), "rgb(234, 161, 0)");
+			this.ConfigurationData[Viewport].AddKey(nameof(this.OccludeBoundingBoxes), "false");
+			this.ConfigurationData[Viewport].AddKey(nameof(this.CameraSpeed), "1.0");
 
 			this.ConfigurationData[Explorer].AddKey(nameof(this.ShowUnknownFilesWhenFiltering), "true");
 			this.ConfigurationData[Explorer].AddKey(nameof(this.AutoplayAudioFiles), "true");

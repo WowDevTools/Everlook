@@ -75,12 +75,13 @@ namespace Everlook.UI
 		[UIElement] private readonly CheckButton SendRuntimeInfoCheckButton;
 
 		/*
-			Model settings
+			Viewport settings
 		*/
 
 		[UIElement] private readonly ColorButton WireframeColourButton;
 		[UIElement] private readonly CheckButton OccludeBoundingBoxesCheckButton;
 		[UIElement] private readonly Adjustment CameraSpeedAdjustment;
+		[UIElement] private readonly Adjustment SprintMultiplierAdjustment;
 
 		/*
 			Explorer settings

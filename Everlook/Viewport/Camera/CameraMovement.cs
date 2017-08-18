@@ -21,6 +21,7 @@
 //
 
 using System;
+using Everlook.Configuration;
 using log4net;
 using OpenTK;
 using OpenTK.Input;
@@ -157,34 +158,41 @@ namespace Everlook.Viewport.Camera
 				}
 			}
 
+			float speedMultiplier = (float)(DefaultMovementSpeed * EverlookConfiguration.Instance.CameraSpeed);
+
+			if (Keyboard.GetState().IsKeyDown(Key.ShiftLeft))
+			{
+				speedMultiplier *= (float)EverlookConfiguration.Instance.SprintMultiplier;
+			}
+
 			// Perform axial movement
 			if (Keyboard.GetState().IsKeyDown(Key.W))
 			{
-				MoveForward(deltaTime * DefaultMovementSpeed);
+				MoveForward(deltaTime * speedMultiplier);
 			}
 
 			if (Keyboard.GetState().IsKeyDown(Key.S))
 			{
-				MoveBackward(deltaTime * DefaultMovementSpeed);
+				MoveBackward(deltaTime * speedMultiplier);
 			}
 
 			if (Keyboard.GetState().IsKeyDown(Key.A))
 			{
-				MoveLeft(deltaTime * DefaultMovementSpeed);
+				MoveLeft(deltaTime * speedMultiplier);
 			}
 			if (Keyboard.GetState().IsKeyDown(Key.D))
 			{
-				MoveRight(deltaTime * DefaultMovementSpeed);
+				MoveRight(deltaTime * speedMultiplier);
 			}
 
 			if (Keyboard.GetState().IsKeyDown(Key.Q))
 			{
-				MoveUp(deltaTime * DefaultMovementSpeed);
+				MoveUp(deltaTime * speedMultiplier);
 			}
 
 			if (Keyboard.GetState().IsKeyDown(Key.E))
 			{
-				MoveDown(deltaTime * DefaultMovementSpeed);
+				MoveDown(deltaTime * speedMultiplier);
 			}
 		}
 
