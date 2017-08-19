@@ -29,8 +29,6 @@ using Everlook.Export.Model;
 using Gdk;
 using IniParser;
 using IniParser.Model;
-using IniParser.Parser;
-using OpenTK.Graphics;
 
 namespace Everlook.Configuration
 {

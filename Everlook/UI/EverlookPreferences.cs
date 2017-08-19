@@ -21,7 +21,6 @@
 //
 
 using System;
-using System.Globalization;
 using System.IO;
 using Everlook.Configuration;
 using Everlook.Export.Audio;
