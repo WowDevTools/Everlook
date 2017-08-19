@@ -101,11 +101,11 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Dictionary that maps texture paths to OpenGL texture IDs.
 		/// </summary>
-		private readonly Dictionary<string, int> TextureLookup = new Dictionary<string, int>();
+		private readonly Dictionary<string, Texture2D> TextureLookup = new Dictionary<string, Texture2D>();
 
-		private readonly Dictionary<MDXSkin, int> SkinIndexArrayLookup = new Dictionary<MDXSkin, int>();
+		private readonly Dictionary<MDXSkin, Buffer<ushort>> SkinIndexArrayBuffers = new Dictionary<MDXSkin, Buffer<ushort>>();
 
-		private int VertexBufferID;
+		private Buffer<byte> VertexBuffer;
 
 		private GameModelShader Shader;
 
@@ -128,40 +128,21 @@ namespace Everlook.Viewport.Rendering
 
 			this.Shader = this.Cache.GetShader(EverlookShader.GameModel) as GameModelShader;
 
-			this.VertexBufferID = GL.GenBuffer();
-
-			byte[] vertexBufferData = this.Model.Vertices
-				.Select(v => v.PackForOpenGL())
-				.SelectMany(b => b)
-				.ToArray();
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, this.VertexBufferID);
-			GL.BufferData
-			(
-				BufferTarget.ArrayBuffer,
-				(IntPtr)vertexBufferData.Length,
-				vertexBufferData,
-				BufferUsageHint.StaticDraw
-			);
+			this.VertexBuffer = new Buffer<byte>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+			{
+				Data = this.Model.Vertices.Select(v => v.PackForOpenGL()).SelectMany(b => b).ToArray()
+			};
 
 			// TODO: Textures
-
-			// TODO: Per-skin array index buffers
 			foreach (MDXSkin skin in this.Model.Skins)
 			{
-				int skinIndexBuffer = GL.GenBuffer();
-				ushort[] absoluteTriangleVertexIndices = skin.Triangles.Select(relativeIndex => skin.VertexIndices[relativeIndex]).ToArray();
+				ushort[] absoluteTriangleVertexIndexes = skin.Triangles.Select(relativeIndex => skin.VertexIndices[relativeIndex]).ToArray();
+				var skinIndexBuffer = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
+				{
+					Data = absoluteTriangleVertexIndexes
+				};
 
-				GL.BindBuffer(BufferTarget.ElementArrayBuffer, skinIndexBuffer);
-				GL.BufferData
-				(
-					BufferTarget.ElementArrayBuffer,
-					absoluteTriangleVertexIndices.Length * sizeof(ushort),
-					absoluteTriangleVertexIndices,
-					BufferUsageHint.StaticDraw
-				);
-
-				this.SkinIndexArrayLookup.Add(skin, skinIndexBuffer);
+				this.SkinIndexArrayBuffers.Add(skin, skinIndexBuffer);
 			}
 
 			this.IsInitialized = true;
@@ -181,7 +162,7 @@ namespace Everlook.Viewport.Rendering
 
 			this.Shader.Enable();
 
-			GL.BindBuffer(BufferTarget.ArrayBuffer, this.VertexBufferID);
+			this.VertexBuffer.Bind();
 			GL.EnableVertexAttribArray(0);
 
 			// Position pointer
@@ -291,6 +272,12 @@ namespace Everlook.Viewport.Rendering
 		/// <see cref="RenderableGameModel"/> was occupying.</remarks>
 		public void Dispose()
 		{
+			this.VertexBuffer.Dispose();
+
+			foreach (var skinIndexArrayBuffer in this.SkinIndexArrayBuffers)
+			{
+				skinIndexArrayBuffer.Value.Dispose();
+			}
 		}
 
 		/// <summary>

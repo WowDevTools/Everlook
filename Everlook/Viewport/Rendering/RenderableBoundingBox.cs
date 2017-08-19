@@ -65,8 +65,8 @@ namespace Everlook.Viewport.Rendering
 		private bool IsDisposed { get; set; }
 
 		private BoundingBox BoundingBoxData;
-		private int VertexBufferID;
-		private int VertexIndicesBufferID;
+		private Buffer<Vector3> VertexBuffer;
+		private Buffer<byte> VertexIndexesBuffer;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableBoundingBox"/> class. The bounds data is taken from
@@ -93,26 +93,12 @@ namespace Everlook.Viewport.Rendering
 				throw new ShaderNullException(typeof(BoundingBoxShader));
 			}
 
-			this.VertexBufferID = GL.GenBuffer();
+			this.VertexBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+			{
+				Data = this.BoundingBoxData.GetCorners().ToArray()
+			};
 
-			float[] boxVertexPositions = this.BoundingBoxData
-				.GetCorners()
-				.Select(v => v.AsSIMDVector().Flatten())
-				.SelectMany(f => f)
-				.ToArray();
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, this.VertexBufferID);
-			GL.BufferData
-			(
-				BufferTarget.ArrayBuffer,
-				(IntPtr)(boxVertexPositions.Length * sizeof(float)),
-				boxVertexPositions,
-				BufferUsageHint.StaticDraw
-			);
-
-			this.VertexIndicesBufferID = GL.GenBuffer();
-
-			byte[] boundingBoxIndexValuesArray =
+			byte[] boundingBoxIndexValues =
 			{
 				0, 1, 1, 2,
 				2, 3, 3, 0,
@@ -122,14 +108,10 @@ namespace Everlook.Viewport.Rendering
 				5, 4, 5, 1
 			};
 
-			GL.BindBuffer(BufferTarget.ArrayBuffer, this.VertexIndicesBufferID);
-			GL.BufferData
-			(
-				BufferTarget.ArrayBuffer,
-				(IntPtr)(boundingBoxIndexValuesArray.Length * sizeof(byte)),
-				boundingBoxIndexValuesArray,
-				BufferUsageHint.StaticDraw
-			);
+			this.VertexIndexesBuffer = new Buffer<byte>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
+			{
+				Data = boundingBoxIndexValues
+			};
 
 			this.IsInitialized = true;
 		}
@@ -151,7 +133,7 @@ namespace Everlook.Viewport.Rendering
 			// Render the object
 			// Send the vertices to the shader
 			GL.EnableVertexAttribArray(0);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, this.VertexBufferID);
+			this.VertexBuffer.Bind();
 			GL.VertexAttribPointer
 			(
 				0,
@@ -162,8 +144,7 @@ namespace Everlook.Viewport.Rendering
 				0
 			);
 
-			// Bind the index buffer
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.VertexIndicesBufferID);
+			this.VertexIndexesBuffer.Bind();
 
 			// Now draw the box
 			GL.DrawRangeElements
@@ -196,8 +177,8 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Dispose()
 		{
-			GL.DeleteBuffer(this.VertexBufferID);
-			GL.DeleteBuffer(this.VertexIndicesBufferID);
+			this.VertexBuffer.Dispose();
+			this.VertexIndexesBuffer.Dispose();
 		}
 	}
 }

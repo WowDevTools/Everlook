@@ -69,17 +69,17 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Gets the native OpenGL ID for the vertex buffer.
 		/// </summary>
-		protected int VertexBufferID { get; private set; }
+		protected Buffer<Vector2> VertexBuffer { get; private set; }
 
 		/// <summary>
 		/// Gets the native OpenGL ID for the UV coordinate buffer.
 		/// </summary>
-		protected int UVBufferID { get; private set; }
+		protected Buffer<Vector2> UVBuffer { get; private set; }
 
 		/// <summary>
 		/// Gets the native OpenGL ID for the vertex index buffer.
 		/// </summary>
-		protected int VertexIndexBufferID { get; private set; }
+		protected Buffer<ushort> VertexIndexBuffer { get; private set; }
 
 		/// <summary>
 		/// Gets or sets the native OpenGL ID for the image on the GPU.
@@ -175,9 +175,9 @@ namespace Everlook.Viewport.Rendering
 		{
 			ThrowIfDisposed();
 
-			this.VertexBufferID = GenerateVertices();
-			this.VertexIndexBufferID = GenerateVertexIndexes();
-			this.UVBufferID = GenerateTextureCoordinates();
+			this.VertexBuffer = GenerateVertices();
+			this.VertexIndexBuffer = GenerateVertexIndexes();
+			this.UVBuffer = GenerateTextureCoordinates();
 
 			// Use cached textures whenever possible
 			this.Texture = LoadTexture();
@@ -215,7 +215,7 @@ namespace Everlook.Viewport.Rendering
 			// Render the object
 			// Send the vertices to the shader
 			GL.EnableVertexAttribArray(0);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, this.VertexBufferID);
+			this.VertexBuffer.Bind();
 			GL.VertexAttribPointer(
 				0,
 				2,
@@ -226,7 +226,7 @@ namespace Everlook.Viewport.Rendering
 
 			// Send the UV coordinates to the shader
 			GL.EnableVertexAttribArray(1);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, this.UVBufferID);
+			this.UVBuffer.Bind();
 			GL.VertexAttribPointer(
 				1,
 				2,
@@ -248,7 +248,7 @@ namespace Everlook.Viewport.Rendering
 			this.Shader.SetMVPMatrix(modelViewProjection);
 
 			// Finally, draw the image
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.VertexIndexBufferID);
+			this.VertexIndexBuffer.Bind();
 			GL.DrawElements(BeginMode.Triangles, 6, DrawElementsType.UnsignedShort, 0);
 
 			// Release the attribute arrays
@@ -265,72 +265,63 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Generates the four corner vertices of the encapsulated image.
 		/// </summary>
-		/// <returns>The native OpenGL ID of the buffer.</returns>
-		protected int GenerateVertices()
+		/// <returns>The vertex buffer.</returns>
+		protected Buffer<Vector2> GenerateVertices()
 		{
 			// Generate vertex positions
 			uint halfWidth = GetResolution().X / 2;
 			uint halfHeight = GetResolution().Y / 2;
 
-			List<float> vertexPositions = new List<float>
+			List<Vector2> vertexPositions = new List<Vector2>
 			{
-				-halfWidth, halfHeight,
-				halfWidth, halfHeight,
-				-halfWidth, -halfHeight,
-				halfWidth, -halfHeight
+				new Vector2(-halfWidth, halfHeight),
+				new Vector2(halfWidth, halfHeight),
+				new Vector2(-halfWidth, -halfHeight),
+				new Vector2(halfWidth, -halfHeight)
 			};
 
 			// Buffer the generated vertices in the GPU
-			int bufferID;
-			GL.GenBuffers(1, out bufferID);
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, bufferID);
-			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexPositions.Count * sizeof(float)), vertexPositions.ToArray(), BufferUsageHint.StaticDraw);
-
-			return bufferID;
+			return new Buffer<Vector2>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+			{
+				Data = vertexPositions.ToArray()
+			};
 		}
 
 		/// <summary>
 		/// Generates a vertex index buffer for the four corner vertices.
 		/// </summary>
-		/// <returns>The native OpenGL ID of the buffer.</returns>
-		protected static int GenerateVertexIndexes()
+		/// <returns>The vertex index buffer.</returns>
+		protected static Buffer<ushort> GenerateVertexIndexes()
 		{
 			// Generate vertex indexes
 			List<ushort> vertexIndexes = new List<ushort> { 1, 0, 2, 2, 3, 1 };
 
-			int vertexIndexesID;
-			GL.GenBuffers(1, out vertexIndexesID);
-
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, vertexIndexesID);
-			GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(vertexIndexes.Count * sizeof(ushort)), vertexIndexes.ToArray(), BufferUsageHint.StaticDraw);
-
-			return vertexIndexesID;
+			return new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
+			{
+				Data = vertexIndexes.ToArray()
+			};
 		}
 
 		/// <summary>
 		/// Generates a UV coordinate buffer for the four corner vertices.
 		/// </summary>
 		/// <returns>The native OpenGL ID of the buffer.</returns>
-		protected static int GenerateTextureCoordinates()
+		protected static Buffer<Vector2> GenerateTextureCoordinates()
 		{
 			// Generate UV coordinates
-			List<float> textureCoordinates = new List<float>
+			List<Vector2> textureCoordinates = new List<Vector2>
 			{
-				0, 0,
-				1, 0,
-				0, 1,
-				1, 1
+				new Vector2(0, 0),
+				new Vector2(1, 0),
+				new Vector2(0, 1),
+				new Vector2(1, 1)
 			};
 
 			// Buffer the generated UV coordinates in the GPU
-			int bufferID;
-			GL.GenBuffers(1, out bufferID);
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, bufferID);
-			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(textureCoordinates.Count * sizeof(float)), textureCoordinates.ToArray(), BufferUsageHint.StaticDraw);
-
-			return bufferID;
+			return new Buffer<Vector2>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+			{
+				Data = textureCoordinates.ToArray()
+			};
 		}
 
 		/// <summary>
@@ -355,9 +346,9 @@ namespace Everlook.Viewport.Rendering
 		/// <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> was occupying.</remarks>
 		public virtual void Dispose()
 		{
-			GL.DeleteBuffer(this.VertexBufferID);
-			GL.DeleteBuffer(this.VertexIndexBufferID);
-			GL.DeleteBuffer(this.UVBufferID);
+			this.VertexBuffer.Dispose();
+			this.VertexIndexBuffer.Dispose();
+			this.UVBuffer.Dispose();
 		}
 	}
 }
