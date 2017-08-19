@@ -131,10 +131,10 @@ namespace Everlook.Viewport.Rendering
 		private readonly Dictionary<string, Texture2D> TextureLookup = new Dictionary<string, Texture2D>();
 
 		// Actual model data
-		private readonly Dictionary<ModelGroup, int> VertexBufferLookup = new Dictionary<ModelGroup, int>();
-		private readonly Dictionary<ModelGroup, int> NormalBufferLookup = new Dictionary<ModelGroup, int>();
-		private readonly Dictionary<ModelGroup, int> TextureCoordinateBufferLookup = new Dictionary<ModelGroup, int>();
-		private readonly Dictionary<ModelGroup, int> VertexIndexBufferLookup = new Dictionary<ModelGroup, int>();
+		private readonly Dictionary<ModelGroup, Buffer<Vector3>> VertexBufferLookup = new Dictionary<ModelGroup, Buffer<Vector3>>();
+		private readonly Dictionary<ModelGroup, Buffer<Vector3>> NormalBufferLookup = new Dictionary<ModelGroup, Buffer<Vector3>>();
+		private readonly Dictionary<ModelGroup, Buffer<Vector2>> TextureCoordinateBufferLookup = new Dictionary<ModelGroup, Buffer<Vector2>>();
+		private readonly Dictionary<ModelGroup, Buffer<ushort>> VertexIndexBufferLookup = new Dictionary<ModelGroup, Buffer<ushort>>();
 
 		// Bounding boxes
 		private readonly Dictionary<ModelGroup, RenderableBoundingBox> BoundingBoxLookup = new Dictionary<ModelGroup, RenderableBoundingBox>();
@@ -235,77 +235,26 @@ namespace Everlook.Viewport.Rendering
 				Buffers
 			*/
 
-			int vertexBufferID = GL.GenBuffer();
-			int normalBufferID = GL.GenBuffer();
-			int coordinateBufferID = GL.GenBuffer();
-			int vertexIndicesID = GL.GenBuffer();
+			Buffer<Vector3> vertexBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
+			Buffer<Vector3> normalBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
+			Buffer<Vector2> coordinateBuffer = new Buffer<Vector2>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
+			Buffer<ushort> vertexIndexes = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw);
 
 			// Upload all of the vertices in this group
-			float[] groupVertexValues = modelGroup
-				.GetVertices()
-				.Select(v => v.Flatten())
-				.SelectMany(f => f)
-				.ToArray();
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferID);
-			GL.BufferData
-			(
-				BufferTarget.ArrayBuffer,
-				(IntPtr)(groupVertexValues.Length * sizeof(float)),
-				groupVertexValues,
-				BufferUsageHint.StaticDraw
-			);
-
-			this.VertexBufferLookup.Add(modelGroup, vertexBufferID);
+			vertexBuffer.Data = modelGroup.GetVertices().Select(v => v.AsOpenTKVector()).ToArray();
+			this.VertexBufferLookup.Add(modelGroup, vertexBuffer);
 
 			// Upload all of the normals in this group
-			float[] groupNormalValues = modelGroup
-				.GetNormals()
-				.Select(v => v.Flatten())
-				.SelectMany(f => f)
-				.ToArray();
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, normalBufferID);
-			GL.BufferData
-			(
-				BufferTarget.ArrayBuffer,
-				(IntPtr)(groupNormalValues.Length * sizeof(float)),
-				groupNormalValues,
-				BufferUsageHint.StaticDraw
-			);
-
-			this.NormalBufferLookup.Add(modelGroup, normalBufferID);
+			normalBuffer.Data = modelGroup.GetNormals().Select(v => v.AsOpenTKVector()).ToArray();
+			this.NormalBufferLookup.Add(modelGroup, normalBuffer);
 
 			// Upload all of the UVs in this group
-			float[] groupTextureCoordinateValues = modelGroup
-				.GetTextureCoordinates()
-				.Select(v => v.Flatten())
-				.SelectMany(f => f)
-				.ToArray();
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, coordinateBufferID);
-			GL.BufferData
-			(
-				BufferTarget.ArrayBuffer,
-				(IntPtr)(groupTextureCoordinateValues.Length * sizeof(float)),
-				groupTextureCoordinateValues,
-				BufferUsageHint.StaticDraw
-			);
-
-			this.TextureCoordinateBufferLookup.Add(modelGroup, coordinateBufferID);
+			coordinateBuffer.Data = modelGroup.GetTextureCoordinates().Select(v => v.AsOpenTKVector()).ToArray();
+			this.TextureCoordinateBufferLookup.Add(modelGroup, coordinateBuffer);
 
 			// Upload vertex indices for this group
-			ushort[] groupVertexIndexValuesArray = modelGroup.GetVertexIndices().ToArray();
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, vertexIndicesID);
-			GL.BufferData
-			(
-				BufferTarget.ElementArrayBuffer,
-				(IntPtr)(groupVertexIndexValuesArray.Length * sizeof(ushort)),
-				groupVertexIndexValuesArray,
-				BufferUsageHint.StaticDraw
-			);
-
-			this.VertexIndexBufferLookup.Add(modelGroup, vertexIndicesID);
+			vertexIndexes.Data = modelGroup.GetVertexIndices().ToArray();
+			this.VertexIndexBufferLookup.Add(modelGroup, vertexIndexes);
 
 			RenderableBoundingBox boundingBox = new RenderableBoundingBox
 			(
@@ -386,7 +335,7 @@ namespace Everlook.Viewport.Rendering
 			// Render the object
 			// Send the vertices to the shader
 			GL.EnableVertexAttribArray(0);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, this.VertexBufferLookup[modelGroup]);
+			this.VertexBufferLookup[modelGroup].Bind();
 			GL.VertexAttribPointer(
 				0,
 				3,
@@ -397,7 +346,7 @@ namespace Everlook.Viewport.Rendering
 
 			// Send the normals to the shader
 			GL.EnableVertexAttribArray(1);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, this.NormalBufferLookup[modelGroup]);
+			this.NormalBufferLookup[modelGroup].Bind();
 			GL.VertexAttribPointer(
 				1,
 				3,
@@ -408,7 +357,7 @@ namespace Everlook.Viewport.Rendering
 
 			// Send the texture coordinates to the shader
 			GL.EnableVertexAttribArray(2);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, this.TextureCoordinateBufferLookup[modelGroup]);
+			this.TextureCoordinateBufferLookup[modelGroup].Bind();
 			GL.VertexAttribPointer(
 				2,
 				2,
@@ -418,8 +367,7 @@ namespace Everlook.Viewport.Rendering
 				0);
 
 			// Bind the index buffer
-			int indexBufferID = this.VertexIndexBufferLookup[modelGroup];
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, indexBufferID);
+			this.VertexIndexBufferLookup[modelGroup].Bind();
 
 			// Render all the different materials (opaque first, transparent after)
 			foreach (RenderBatch renderBatch in modelGroup.GetRenderBatches()
@@ -522,26 +470,22 @@ namespace Everlook.Viewport.Rendering
 
 			foreach (var vertexBuffer in this.VertexBufferLookup)
 			{
-				int bufferID = vertexBuffer.Value;
-				GL.DeleteBuffer(bufferID);
+				vertexBuffer.Value.Dispose();
 			}
 
 			foreach (var normalBuffer in this.NormalBufferLookup)
 			{
-				int bufferID = normalBuffer.Value;
-				GL.DeleteBuffer(bufferID);
+				normalBuffer.Value.Dispose();
 			}
 
 			foreach (var coordinateBuffer in this.TextureCoordinateBufferLookup)
 			{
-				int bufferID = coordinateBuffer.Value;
-				GL.DeleteBuffer(bufferID);
+				coordinateBuffer.Value.Dispose();
 			}
 
 			foreach (var indexBuffer in this.VertexIndexBufferLookup)
 			{
-				int bufferID = indexBuffer.Value;
-				GL.DeleteBuffer(bufferID);
+				indexBuffer.Value.Dispose();
 			}
 		}
 
