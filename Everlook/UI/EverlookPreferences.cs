@@ -40,7 +40,7 @@ namespace Everlook.UI
 	/// Everlook preferences dialog. The "partial" qualifier is not strictly needed, but prevents the compiler from
 	/// generating errors about the autoconnected members that relate to UI elements.
 	/// </summary>
-	public partial class EverlookPreferences : Dialog
+	public sealed partial class EverlookPreferences : Dialog
 	{
 		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
 
@@ -71,7 +71,7 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="builder">Builder.</param>
 		/// <param name="handle">Handle.</param>
-		protected EverlookPreferences(Builder builder, IntPtr handle)
+		private EverlookPreferences(Builder builder, IntPtr handle)
 			: base(handle)
 		{
 			builder.Autoconnect(this);

@@ -30,7 +30,7 @@ using UIElement = Gtk.Builder.ObjectAttribute;
 
 namespace Everlook.UI
 {
-	public partial class EverlookPreferences
+	public sealed partial class EverlookPreferences
 	{
 		/*
 			New game dialog
