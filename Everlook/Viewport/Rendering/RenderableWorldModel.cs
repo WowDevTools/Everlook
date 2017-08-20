@@ -195,8 +195,6 @@ namespace Everlook.Viewport.Rendering
 				throw new ShaderNullException(typeof(WorldModelShader));
 			}
 
-			this.Shader.Wireframe.SetWireframeColour(EverlookConfiguration.Instance.WireframeColour);
-
 			// TODO: Load and cache doodads in their respective sets
 
 			// TODO: Load and cache sound emitters
@@ -369,6 +367,14 @@ namespace Everlook.Viewport.Rendering
 			// Bind the index buffer
 			this.VertexIndexBufferLookup[modelGroup].Bind();
 
+			if (this.ShouldRenderWireframe)
+			{
+				this.Shader.Wireframe.SetWireframeColour(EverlookConfiguration.Instance.WireframeColour);
+
+				// Override blend setting
+				GL.Enable(EnableCap.Blend);
+			}
+
 			// Render all the different materials (opaque first, transparent after)
 			foreach (RenderBatch renderBatch in modelGroup.GetRenderBatches()
 				.OrderBy(batch => batch.MaterialIndex)
@@ -380,12 +386,6 @@ namespace Everlook.Viewport.Rendering
 
 				this.Shader.SetMaterial(modelMaterial);
 				this.Shader.SetMVPMatrix(modelViewProjection);
-
-				if (this.ShouldRenderWireframe)
-				{
-					// Override blend setting
-					GL.Enable(EnableCap.Blend);
-				}
 
 				// Set the texture as the first diffuse texture in unit 0
 				Texture2D texture = this.Cache.GetCachedTexture(modelMaterial.Texture0);

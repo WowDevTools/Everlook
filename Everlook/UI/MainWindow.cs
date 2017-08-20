@@ -260,6 +260,12 @@ namespace Everlook.UI
 				{
 					wmo.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
 				}
+
+				RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
+				if (mdx != null)
+				{
+					mdx.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
+				}
 			};
 		}
 
@@ -577,6 +583,7 @@ namespace Everlook.UI
 					if (mdx != null)
 					{
 						mdx.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
+						mdx.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
 					}
 
 					break;
@@ -1056,6 +1063,23 @@ namespace Everlook.UI
 
 						this.GlobalAudio.Play();
 					}
+
+					break;
+				}
+				case WarcraftFileType.GameObjectModel:
+				{
+					this.FileLoadingCancellationSource.Cancel();
+					this.FileLoadingCancellationSource = new CancellationTokenSource();
+
+					await DisplayRenderableFile
+					(
+						page,
+						fileReference,
+						DataLoadingRoutines.LoadGameModel,
+						DataLoadingRoutines.CreateRenderableGameModel,
+						ControlPage.Model,
+						this.FileLoadingCancellationSource.Token
+					);
 
 					break;
 				}

@@ -29,6 +29,7 @@ using Everlook.Viewport.Rendering.Interfaces;
 using log4net;
 using Warcraft.BLP;
 using Warcraft.Core;
+using Warcraft.MDX;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
 
@@ -154,7 +155,7 @@ namespace Everlook.Utility
 		/// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
 		/// </summary>
 		/// <param name="worldModel">The model object.</param>
-		/// <param name="fileReference">The package group it belongs to.</param>
+		/// <param name="fileReference">The reference it was constructed from.</param>
 		/// <param name="version">The contextually relevant version.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
 		public static IRenderable CreateRenderableWorldModel(WMO worldModel, FileReference fileReference, WarcraftVersion version)
@@ -206,7 +207,7 @@ namespace Everlook.Utility
 		/// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
 		/// </summary>
 		/// <param name="binaryImage">The image object.</param>
-		/// <param name="fileReference">The package group it belongs to.</param>
+		/// <param name="fileReference">The reference it was constructed from.</param>
 		/// <param name="version">Unused.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
 		public static IRenderable CreateRenderableBinaryImage(BLP binaryImage, FileReference fileReference, WarcraftVersion version)
@@ -261,7 +262,7 @@ namespace Everlook.Utility
 		/// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
 		/// </summary>
 		/// <param name="bitmapImage">The image object.</param>
-		/// <param name="fileReference">The package group it belongs to.</param>
+		/// <param name="fileReference">The reference it was constructed from.</param>
 		/// <param name="version">Unused.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
 		public static IRenderable CreateRenderableBitmapImage(Bitmap bitmapImage, FileReference fileReference, WarcraftVersion version)
@@ -273,6 +274,57 @@ namespace Everlook.Utility
 
 			RenderableBitmap renderableImage = new RenderableBitmap(bitmapImage, fileReference.FilePath);
 			return renderableImage;
+		}
+
+		/// <summary>
+		/// Loads the specified game model from the archives and deserializes it into an <see cref="MDX"/> model.
+		/// </summary>
+		/// <param name="fileReference">A reference to a model.</param>
+		/// <returns>An object containing the model data pointed to by the reference.</returns>
+		public static MDX LoadGameModel(FileReference fileReference)
+		{
+			if (fileReference == null)
+			{
+				throw new ArgumentNullException(nameof(fileReference));
+			}
+
+			try
+			{
+				byte[] fileData = fileReference.Extract();
+				if (fileData != null)
+				{
+					return new MDX(fileData);
+				}
+			}
+			catch (InvalidFileSectorTableException fex)
+			{
+				Log.Warn($"Failed to load the model \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
+				return null;
+			}
+
+			Log.Warn($"Failed to load the model \"{fileReference.FilePath}\". The file data could not be extracted.");
+			return null;
+		}
+
+		/// <summary>
+		/// Creates a renderable object from the specified <see cref="MDX"/> object, and the specified
+		/// <see cref="FileReference"/> it is associated with.
+		/// NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
+		/// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
+		/// </summary>
+		/// <param name="gameModel">The model object.</param>
+		/// <param name="fileReference">The reference it was constructed from.</param>
+		/// <param name="version">The contextually relevant version.</param>
+		/// <returns>An encapsulated renderable OpenGL object.</returns>
+		public static IRenderable CreateRenderableGameModel(MDX gameModel, FileReference fileReference, WarcraftVersion version)
+		{
+			if (gameModel == null)
+			{
+				return null;
+			}
+
+			RenderableGameModel renderableModel = new RenderableGameModel(gameModel, fileReference.PackageGroup, version);
+			return renderableModel;
 		}
 	}
 }

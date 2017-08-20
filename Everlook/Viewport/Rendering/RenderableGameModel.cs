@@ -22,6 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Everlook.Configuration;
+using Everlook.Database;
+using Everlook.Exceptions.Shader;
 using Everlook.Package;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
@@ -30,9 +33,12 @@ using Everlook.Viewport.Rendering.Shaders;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using SlimTK;
+using Warcraft.Core;
 using Warcraft.Core.Extensions;
 using Warcraft.MDX;
+using Warcraft.MDX.Geometry;
 using Warcraft.MDX.Geometry.Skin;
+using Warcraft.MDX.Visual;
 
 namespace Everlook.Viewport.Rendering
 {
@@ -97,9 +103,10 @@ namespace Everlook.Viewport.Rendering
 
 		private readonly PackageGroup ModelPackageGroup;
 		private readonly RenderCache Cache = RenderCache.Instance;
+		private readonly ClientDatabaseProvider DatabaseProvider;
 
 		/// <summary>
-		/// Dictionary that maps texture paths to OpenGL texture IDs.
+		/// Dictionary that maps texture paths to OpenGL textures.
 		/// </summary>
 		private readonly Dictionary<string, Texture2D> TextureLookup = new Dictionary<string, Texture2D>();
 
@@ -115,9 +122,39 @@ namespace Everlook.Viewport.Rendering
 		public bool IsInitialized { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether the bounding box of the model should be rendered.
-		/// </summary>
+		/// Gets or sets a value indicating whether or not the bounding box of the model should be rendered.
+		/// </summary
 		public bool ShouldRenderBounds { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether or not the wireframe of the object should be rendered.
+		/// </summary>
+		public bool ShouldRenderWireframe { get; set; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RenderableGameModel"/> class.
+		/// </summary>
+		/// <param name="inModel">The model to render.</param>
+		/// <param name="inPackageGroup">The package group the model belongs to.</param>
+		/// <param name="inVersion">The game version of the package group.</param>
+		public RenderableGameModel(MDX inModel, PackageGroup inPackageGroup, WarcraftVersion inVersion)
+		{
+			this.Model = inModel;
+			this.ModelPackageGroup = inPackageGroup;
+
+			this.DatabaseProvider = new ClientDatabaseProvider(inVersion, this.ModelPackageGroup);
+
+			this.ActorTransform = new Transform
+			(
+				new Vector3(0.0f, 0.0f, 0.0f),
+				Quaternion.Identity,
+				new Vector3(1.0f, 1.0f, 1.0f)
+			);
+
+			this.IsInitialized = false;
+
+			Initialize();
+		}
 
 		/// <summary>
 		/// Initializes the required data for rendering.
@@ -127,6 +164,11 @@ namespace Everlook.Viewport.Rendering
 			ThrowIfDisposed();
 
 			this.Shader = this.Cache.GetShader(EverlookShader.GameModel) as GameModelShader;
+
+			if (this.Shader == null)
+			{
+				throw new ShaderNullException(typeof(GameModelShader));
+			}
 
 			this.VertexBuffer = new Buffer<byte>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
 			{
@@ -160,94 +202,129 @@ namespace Everlook.Viewport.Rendering
 
 			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
-			this.Shader.Enable();
-
 			this.VertexBuffer.Bind();
-			GL.EnableVertexAttribArray(0);
+
+			this.Shader.Enable();
+			this.Shader.SetMVPMatrix(modelViewProjection);
 
 			// Position pointer
+			GL.EnableVertexAttribArray(0);
 			GL.VertexAttribPointer
 			(
 				0,
 				3,
 				VertexAttribPointerType.Float,
 				false,
-				0,
+				MDXVertex.GetSize(),
 				0
 			);
 
 			// Bone weight pointer
+			GL.EnableVertexAttribArray(1);
 			GL.VertexAttribPointer
 			(
 				1,
 				4,
-				VertexAttribPointerType.Byte,
+				VertexAttribPointerType.UnsignedByte,
 				false,
-				12,
+				MDXVertex.GetSize(),
 				12
 			);
 
 			// Bone index pointer
+			GL.EnableVertexAttribArray(2);
 			GL.VertexAttribPointer
 			(
 				2,
 				4,
-				VertexAttribPointerType.Byte,
+				VertexAttribPointerType.UnsignedByte,
 				false,
-				16,
+				MDXVertex.GetSize(),
 				16
 			);
 
 			// Normal pointer
+			GL.EnableVertexAttribArray(3);
 			GL.VertexAttribPointer
 			(
 				3,
 				3,
 				VertexAttribPointerType.Float,
 				false,
-				20,
+				MDXVertex.GetSize(),
 				20
 			);
 
 			// UV1 pointer
+			GL.EnableVertexAttribArray(4);
 			GL.VertexAttribPointer
 			(
 				4,
 				2,
 				VertexAttribPointerType.Float,
 				false,
-				32,
+				MDXVertex.GetSize(),
 				32
 			);
 
 			// UV2 pointer
+			GL.EnableVertexAttribArray(5);
 			GL.VertexAttribPointer
 			(
 				5,
 				2,
 				VertexAttribPointerType.Float,
 				false,
-				40,
+				MDXVertex.GetSize(),
 				40
 			);
-		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="RenderableGameModel"/> class.
-		/// </summary>
-		/// <param name="inModel">The model to render.</param>
-		/// <param name="inPackageGroup">The package group the model belongs to.</param>
-		/// <param name="shouldInitialize">Whether or not the model should be initialized right away.</param>
-		public RenderableGameModel(MDX inModel, PackageGroup inPackageGroup, bool shouldInitialize)
-		{
-			this.Model = inModel;
-			this.ModelPackageGroup = inPackageGroup;
-
-			this.IsInitialized = false;
-			if (shouldInitialize)
+			this.Shader.Wireframe.Enabled = this.ShouldRenderWireframe;
+			if (this.ShouldRenderWireframe)
 			{
-				Initialize();
+				this.Shader.Wireframe.SetWireframeColour(EverlookConfiguration.Instance.WireframeColour);
+				this.Shader.Wireframe.SetViewportMatrix(camera.GetViewportMatrix());
+
+				// Override blend setting
+				GL.Enable(EnableCap.Blend);
 			}
+
+			foreach (MDXSkin skin in this.Model.Skins)
+			{
+				this.SkinIndexArrayBuffers[skin].Bind();
+				this.Shader.Enable();
+
+				if (this.ShouldRenderWireframe)
+				{
+					// Override blend setting
+					GL.Enable(EnableCap.Blend);
+				}
+
+				foreach (MDXRenderBatch renderBatch in skin.RenderBatches)
+				{
+					var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
+
+					GL.DrawRangeElements
+					(
+						PrimitiveType.Triangles,
+						skinSection.StartTriangleIndex,
+						skinSection.StartTriangleIndex + skinSection.TriangleCount - 1,
+						skinSection.TriangleCount,
+						DrawElementsType.UnsignedShort,
+						new IntPtr(skinSection.StartTriangleIndex * 2)
+					);
+
+					var error = GL.GetError();
+				}
+			}
+
+			// Release the attribute arrays
+			GL.DisableVertexAttribArray(0);
+			GL.DisableVertexAttribArray(1);
+			GL.DisableVertexAttribArray(2);
+			GL.DisableVertexAttribArray(3);
+			GL.DisableVertexAttribArray(4);
+			GL.DisableVertexAttribArray(5);
 		}
 
 		/// <summary>

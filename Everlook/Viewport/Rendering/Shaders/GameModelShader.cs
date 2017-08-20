@@ -21,6 +21,7 @@
 //
 
 using Everlook.Viewport.Rendering.Core;
+using Everlook.Viewport.Rendering.Shaders.Components;
 
 namespace Everlook.Viewport.Rendering.Shaders
 {
@@ -36,6 +37,19 @@ namespace Everlook.Viewport.Rendering.Shaders
 		protected override string FragmentShaderResourceName => "GameModel.GameModelFragment";
 
 		/// <inheritdoc />
-		protected override string GeometryShaderResourceName => null;
+		protected override string GeometryShaderResourceName => "GameModel.GameModelGeometry";
+
+		/// <summary>
+		/// Gets the <see cref="SolidWireframe"/> shader component, which enables solid wireframe rendering.
+		/// </summary>
+		public SolidWireframe Wireframe { get; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GameModelShader"/> class.
+		/// </summary>
+		public GameModelShader()
+		{
+			this.Wireframe = new SolidWireframe(this.NativeShaderProgramID);
+		}
 	}
 }

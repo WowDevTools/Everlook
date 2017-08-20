@@ -28,20 +28,11 @@
     <RepositoryUrl>https://github.com/WowDevTools/Everlook</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\Shaders\BoundingBox\BoundingBoxFragment.glsl" />
-    <EmbeddedResource Include="Content\Shaders\BoundingBox\BoundingBoxVertex.glsl" />
-    <EmbeddedResource Include="Content\Shaders\GameModel\GameModelFragment.glsl" />
-    <EmbeddedResource Include="Content\Shaders\GameModel\GameModelVertex.glsl" />
-    <EmbeddedResource Include="Content\Shaders\Plain2D\Plain2DFragment.glsl" />
-    <EmbeddedResource Include="Content\Shaders\Plain2D\Plain2DVertex.glsl" />
-    <EmbeddedResource Include="Content\Shaders\WorldModel\WorldModelFragment.glsl" />
-    <EmbeddedResource Include="Content\Shaders\WorldModel\WorldModelVertex.glsl" />
-    <EmbeddedResource Include="Content\Shaders\WorldModel\WorldModelGeometry.glsl" />
-    <EmbeddedResource Include="interfaces\Everlook.glade" />
-    <EmbeddedResource Include="interfaces\EverlookPreferences.glade" />
-    <EmbeddedResource Include="interfaces\EverlookImageExport.glade" />
-    <EmbeddedResource Include="interfaces\EverlookDirectoryExport.glade" />
-    <EmbeddedResource Include="interfaces\EverlookGameLoadingDialog.glade" />
+    <EmbeddedResource Include="Content\Shaders\BoundingBox\*.glsl" />
+    <EmbeddedResource Include="Content\Shaders\GameModel\*.glsl" />
+    <EmbeddedResource Include="Content\Shaders\Plain2D\*.glsl" />
+    <EmbeddedResource Include="Content\Shaders\WorldModel\*.glsl" />
+    <EmbeddedResource Include="interfaces\*.glade" />
     <EmbeddedResource Include="Content\Icons\Blender\*.svg" />
     <EmbeddedResource Include="Content\Icons\Mint-X\*.png" />
     <EmbeddedResource Include="Content\Icons\Mint-Y\*.png" />

@@ -221,6 +221,10 @@ namespace Everlook.Viewport.Rendering
 					break;
 				}
 				case EverlookShader.GameModel:
+				{
+					shaderProgram = new GameModelShader();
+					break;
+				}
 				case EverlookShader.Model:
 				case EverlookShader.ParticleSystem:
 				default:
