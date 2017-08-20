@@ -22,6 +22,7 @@
 
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Everlook.Audio;
@@ -178,6 +179,12 @@ namespace Everlook.UI
 				RenderExportQueueReferenceName
 			);
 
+			this.ModelVariationComboBox.SetCellDataFunc
+			(
+				this.ModelVariationTextRenderer,
+				RenderModelVariationName
+			);
+
 			this.RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
 
 			this.ClearExportQueueButton.Clicked += OnClearExportQueueButtonClicked;
@@ -233,6 +240,17 @@ namespace Everlook.UI
 				{
 					mdx.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
 				}
+			};
+
+			this.RenderDoodadsCheckButton.Toggled += (sender, args) =>
+			{
+				RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
+				if (wmo != null)
+				{
+					wmo.ShouldRenderDoodads = this.RenderDoodadsCheckButton.Active;
+				}
+
+				this.ModelVariationComboBox.Sensitive = this.RenderDoodadsCheckButton.Active;
 			};
 
 			this.ModelVariationComboBox.Changed += (sender, args) =>
@@ -363,6 +381,38 @@ namespace Everlook.UI
 			{
 				this.Window.Cursor = new Cursor(CursorType.Hand2);
 			}
+		}
+
+		/// <summary>
+		/// Renders the name of a model variation in the variation dropdown.
+		/// </summary>
+		/// <param name="cellLayout">The layout of the cell.</param>
+		/// <param name="cell">The cell.</param>
+		/// <param name="model">The model of the combobox.</param>
+		/// <param name="iter">The iter pointing to the rendered row.</param>
+		private void RenderModelVariationName(ICellLayout cellLayout, CellRenderer cell, ITreeModel model, TreeIter iter)
+		{
+			CellRendererText cellText = cell as CellRendererText;
+			if (cellText == null)
+			{
+				return;
+			}
+
+			string storedText = (string)model.GetValue(iter, 0);
+
+			// Builtin override for the standard set name
+			if (storedText.ToLowerInvariant().Contains("set_$defaultglobal"))
+			{
+				cellText.Text = "Default";
+				return;
+			}
+
+			string transientText = storedText.ReplaceCaseInsensitive("set_", string.Empty);
+
+			// Insert spaces between words and abbreviations
+			transientText = Regex.Replace(transientText, @"(\B[A-Z0-9]+?(?=[A-Z][^A-Z])|\B[A-Z0-9]+?(?=[^A-Z]))", " $1");
+
+			cellText.Text = transientText;
 		}
 
 		/// <summary>
@@ -601,11 +651,16 @@ namespace Everlook.UI
 				{
 					this.RenderBoundsCheckButton.Sensitive = true;
 					this.RenderWireframeCheckButton.Sensitive = true;
+					this.RenderDoodadsCheckButton.Sensitive = true;
+
+					this.ModelVariationComboBox.Sensitive = true;
+
 					RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
 					if (wmo != null)
 					{
 						wmo.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
 						wmo.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
+						wmo.ShouldRenderDoodads = this.RenderDoodadsCheckButton.Active;
 
 						var doodadSetNames = wmo.GetDoodadSetNames().ToList();
 						this.ModelVariationListStore.Clear();
@@ -615,6 +670,7 @@ namespace Everlook.UI
 						}
 
 						this.ModelVariationComboBox.Active = 0;
+						this.ModelVariationComboBox.Sensitive = this.RenderDoodadsCheckButton.Active;
 					}
 
 					RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
@@ -662,6 +718,10 @@ namespace Everlook.UI
 				{
 					this.RenderBoundsCheckButton.Sensitive = false;
 					this.RenderWireframeCheckButton.Sensitive = false;
+					this.RenderDoodadsCheckButton.Sensitive = false;
+
+					this.ModelVariationListStore.Clear();
+					this.ModelVariationComboBox.Sensitive = false;
 					break;
 				}
 				case ControlPage.Animation:

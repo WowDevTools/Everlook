@@ -162,6 +162,11 @@ namespace Everlook.Viewport.Rendering
 		public bool ShouldRenderWireframe { get; set; }
 
 		/// <summary>
+		/// Gets or sets a value indicating whether the doodads in the current doodad set should be rendered.
+		/// </summary>
+		public bool ShouldRenderDoodads { get; set; }
+
+		/// <summary>
 		/// Gets or sets the current doodad set.
 		/// </summary>
 		public string DoodadSet { get; set; }
@@ -367,6 +372,11 @@ namespace Everlook.Viewport.Rendering
 		/// <param name="deltaTime">The time delta, in seconds.</param>
 		public void Tick(float deltaTime)
 		{
+			if (!this.ShouldRenderDoodads)
+			{
+				return;
+			}
+
 			foreach (var doodad in this.DoodadCache.Select(k => k.Value))
 			{
 				doodad.Tick(deltaTime);
@@ -399,9 +409,12 @@ namespace Everlook.Viewport.Rendering
 				RenderGroup(modelGroup, modelViewProjection);
 			}
 
-			foreach (var doodad in this.DoodadSets[this.DoodadSet])
+			if (this.ShouldRenderDoodads)
 			{
-				doodad.Render(viewMatrix, projectionMatrix, camera);
+				foreach (var doodad in this.DoodadSets[this.DoodadSet])
+				{
+					doodad.Render(viewMatrix, projectionMatrix, camera);
+				}
 			}
 
 			// Render bounding boxes

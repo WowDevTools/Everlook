@@ -99,9 +99,11 @@ namespace Everlook.UI
 
 		[UIElement] private readonly CheckButton RenderBoundsCheckButton;
 		[UIElement] private readonly CheckButton RenderWireframeCheckButton;
+		[UIElement] private readonly CheckButton RenderDoodadsCheckButton;
 
 		[UIElement] private readonly ComboBox ModelVariationComboBox;
 		[UIElement] private readonly ListStore ModelVariationListStore;
+		[UIElement] private readonly CellRendererText ModelVariationTextRenderer;
 
 		/*
 			Animation control elements
