@@ -128,9 +128,43 @@ namespace Everlook.Viewport.Rendering.Core
 		/// Mipmaps are loaded from the compressed texture.
 		/// </summary>
 		/// <param name="imageData">The image data to create the texture from.</param>
-		/// <param name="wrapMode">Optional. The wrapping mode to use for the texture.</param>
+		/// <param name="magFilter">Optional. The magnification filter to use for the texture.</param>
+		/// <param name="minFilter">Optional. The miniaturization filter to use for the texture.</param>
 		/// <exception cref="ArgumentNullException">Thrown if the image data is null.</exception>
-		public Texture2D(BLP imageData, TextureWrapMode wrapMode = TextureWrapMode.Repeat)
+		public Texture2D(BLP imageData, TextureMagFilter magFilter, TextureMinFilter minFilter)
+			: this(imageData, TextureWrapMode.Repeat, TextureWrapMode.Repeat, magFilter, minFilter)
+		{
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Texture2D"/> class from a given compressed texture.
+		/// Mipmaps are loaded from the compressed texture.
+		/// </summary>
+		/// <param name="imageData">The image data to create the texture from.</param>
+		/// <param name="magFilter">The magnification filter to use for the texture.</param>
+		/// <param name="minFilter">The miniaturization filter to use for the texture.</param>
+		/// <exception cref="ArgumentNullException">Thrown if the image data is null.</exception>
+		public Texture2D(BLP imageData, TextureMinFilter minFilter, TextureMagFilter magFilter)
+			: this(imageData, magFilter, minFilter)
+		{
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Texture2D"/> class from a given compressed texture.
+		/// Mipmaps are loaded from the compressed texture.
+		/// </summary>
+		/// <param name="imageData">The image data to create the texture from.</param>
+		/// <param name="wrapModeS">The wrapping mode to use for the texture on the S axis.</param>
+		/// <param name="wrapModeT">The wrapping mode to use for the texture on the T axis.</param>
+		/// <param name="magFilter">The magnification filter to use for the texture.</param>
+		/// <param name="minFilter">The miniaturization filter to use for the texture.</param>
+		/// <exception cref="ArgumentNullException">Thrown if the image data is null.</exception>
+		public Texture2D(
+			BLP imageData,
+			TextureWrapMode wrapModeS = TextureWrapMode.Repeat,
+			TextureWrapMode wrapModeT = TextureWrapMode.Repeat,
+			TextureMagFilter magFilter = TextureMagFilter.Linear,
+			TextureMinFilter minFilter = TextureMinFilter.LinearMipmapLinear)
 			: this()
 		{
 			if (imageData == null)
@@ -166,9 +200,10 @@ namespace Everlook.Viewport.Rendering.Core
 				}
 			}
 
-			this.MagnificationFilter = TextureMagFilter.Linear;
-			this.MiniaturizationFilter = TextureMinFilter.LinearMipmapLinear;
-			this.WrappingMode = wrapMode;
+			this.MagnificationFilter = magFilter;
+			this.MiniaturizationFilter = minFilter;
+			this.WrappingModeS = wrapModeS;
+			this.WrappingModeT = wrapModeT;
 		}
 
 		/// <summary>

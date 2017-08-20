@@ -52,7 +52,7 @@ float DistanceToLine(vec2 F, vec2 Q, vec2 QDir)
 
 void main()
 {
-	vec4 texCol = vec4(0.18, 0.204, 0.212, 1.0);
+	vec4 texCol = texture(Diffuse0, gIn.UV1);
 
     if (IsWireframeEnabled)
     {

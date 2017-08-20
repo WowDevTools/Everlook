@@ -22,12 +22,16 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Text;
 using Everlook.Utility;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders;
 using log4net;
 using OpenTK.Graphics.OpenGL;
 using Warcraft.BLP;
+using Warcraft.Core;
+using Warcraft.MPQ;
 using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 using SysPixelFormat = System.Drawing.Imaging.PixelFormat;
 
@@ -151,6 +155,59 @@ namespace Everlook.Viewport.Rendering
 		}
 
 		/// <summary>
+		/// Gets a <see cref="Texture2D"/> instance from the cache.. If the texture is not already cached, it is
+		/// extracted from the given <see cref="IPackage"/>. If it is cached, the cached version is returned. If no
+		/// texture can be extracted, a fallback texture is returned.
+		/// </summary>
+		/// <param name="texturePath">The path to the texture in the package.</param>
+		/// <param name="package">The package where the texture is stored.</param>
+		/// <param name="wrappingModeS">The wrapping mode to use for the texture on the S axis.</param>
+		/// <param name="wrappingModeT">The wrapping mode to use for the texture on the T axis.</param>
+		/// <returns>A <see cref="Texture2D"/> object.</returns>
+		public Texture2D GetTexture(string texturePath, IPackage package, TextureWrapMode wrappingModeS = TextureWrapMode.Repeat, TextureWrapMode wrappingModeT = TextureWrapMode.Repeat)
+		{
+			if (HasCachedTextureForPath(texturePath))
+			{
+				return GetCachedTexture(texturePath);
+			}
+
+			try
+			{
+				WarcraftFileType textureType = FileInfoUtilities.GetFileType(texturePath);
+				switch (textureType)
+				{
+					case WarcraftFileType.BinaryImage:
+					{
+						BLP texture = new BLP(package.ExtractFile(texturePath));
+						return CreateCachedTexture(texture, texturePath, wrappingModeS, wrappingModeT);
+					}
+					case WarcraftFileType.BitmapImage:
+					case WarcraftFileType.GIFImage:
+					case WarcraftFileType.IconImage:
+					case WarcraftFileType.PNGImage:
+					case WarcraftFileType.JPGImage:
+					case WarcraftFileType.TargaImage:
+					{
+						using (MemoryStream ms = new MemoryStream(package.ExtractFile(texturePath)))
+						{
+							Bitmap texture = new Bitmap(ms);
+							return CreateCachedTexture(texture, texturePath);
+						}
+					}
+				}
+			}
+			catch (InvalidFileSectorTableException fex)
+			{
+				Log.Warn
+				(
+					$"Failed to load the texture \"{texturePath}\" due to an invalid sector table (\"{fex.Message}\").\nA fallback texture has been loaded instead."
+				);
+			}
+
+			return this.FallbackTexture;
+		}
+
+		/// <summary>
 		/// Creates a cached texture for the specifed texture, using the specified path
 		/// as a lookup key. This method will create a new texture, and cache it.
 		/// </summary>
@@ -158,13 +215,14 @@ namespace Everlook.Viewport.Rendering
 		/// <param name="texturePath">
 		/// The path to the texture in its corresponding package group. This is used as a lookup key.
 		/// </param>
-		/// <param name="wrappingMode">How the texture should wrap.</param>
+		/// <param name="wrappingModeS">How the texture should wrap on the S axis.</param>
+		/// <param name="wrappingModeT">How the texture should wrap on the T axis.</param>
 		/// <returns>A new cached texture created from the data.</returns>
-		public Texture2D CreateCachedTexture(BLP imageData, string texturePath, TextureWrapMode wrappingMode = TextureWrapMode.Repeat)
+		public Texture2D CreateCachedTexture(BLP imageData, string texturePath, TextureWrapMode wrappingModeS = TextureWrapMode.Repeat, TextureWrapMode wrappingModeT = TextureWrapMode.Repeat)
 		{
 			ThrowIfDisposed();
 
-			Texture2D texture = new Texture2D(imageData, wrappingMode);
+			Texture2D texture = new Texture2D(imageData, wrappingModeS, wrappingModeT);
 
 			this.TextureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), texture);
 			return texture;

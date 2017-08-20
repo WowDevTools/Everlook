@@ -204,7 +204,10 @@ namespace Everlook.Viewport.Rendering
 			{
 				if (!string.IsNullOrEmpty(texture))
 				{
-					CacheTexture(texture);
+					if (!this.TextureLookup.ContainsKey(texture))
+					{
+						this.TextureLookup.Add(texture, this.Cache.GetTexture(texture, this.ModelPackageGroup));
+					}
 				}
 			}
 
@@ -416,32 +419,6 @@ namespace Everlook.Viewport.Rendering
 			GL.DisableVertexAttribArray(0);
 			GL.DisableVertexAttribArray(1);
 			GL.DisableVertexAttribArray(2);
-		}
-
-		// TODO: This has to go
-		private void CacheTexture(string texturePath, TextureWrapMode textureWrapMode = TextureWrapMode.Repeat)
-		{
-			if (this.Cache.HasCachedTextureForPath(texturePath))
-			{
-				if (!this.TextureLookup.ContainsKey(texturePath))
-				{
-					this.TextureLookup.Add(texturePath, this.Cache.GetCachedTexture(texturePath));
-				}
-			}
-			else
-			{
-				try
-				{
-					BLP texture = new BLP(this.ModelPackageGroup.ExtractFile(texturePath));
-					this.TextureLookup.Add(texturePath, this.Cache.CreateCachedTexture(texture, texturePath, textureWrapMode));
-				}
-				catch (InvalidFileSectorTableException fex)
-				{
-					Log.Warn($"Failed to load the texture \"{texturePath}\" due to an invalid sector table (\"{fex.Message}\").\n" +
-							 $"A fallback texture has been loaded instead.");
-					this.TextureLookup.Add(texturePath, this.Cache.FallbackTexture);
-				}
-			}
 		}
 
 		/// <summary>

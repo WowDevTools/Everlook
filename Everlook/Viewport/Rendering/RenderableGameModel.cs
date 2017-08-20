@@ -26,10 +26,12 @@ using Everlook.Configuration;
 using Everlook.Database;
 using Everlook.Exceptions.Shader;
 using Everlook.Package;
+using Everlook.Utility;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
+using Gtk;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using SlimTK;
@@ -116,6 +118,8 @@ namespace Everlook.Viewport.Rendering
 
 		private GameModelShader Shader;
 
+		private RenderableBoundingBox BoundingBox;
+
 		/// <summary>
 		/// Gets or sets a value indicating whether the current renderable has been initialized.
 		/// </summary>
@@ -175,7 +179,40 @@ namespace Everlook.Viewport.Rendering
 				Data = this.Model.Vertices.Select(v => v.PackForOpenGL()).SelectMany(b => b).ToArray()
 			};
 
-			// TODO: Textures
+			this.BoundingBox = new RenderableBoundingBox(this.Model.BoundingBox.ToOpenGLBoundingBox(), this.ActorTransform);
+			this.BoundingBox.Initialize();
+
+			foreach (MDXTexture texture in this.Model.Textures)
+			{
+				if (!this.TextureLookup.ContainsKey(texture.Filename))
+				{
+					if (!string.IsNullOrEmpty(texture.Filename))
+					{
+						var wrapS = texture.Flags.HasFlag(EMDXTextureFlags.TextureWrapX)
+							? TextureWrapMode.Repeat
+							: TextureWrapMode.Clamp;
+
+						var wrapT = texture.Flags.HasFlag(EMDXTextureFlags.TextureWrapY)
+							? TextureWrapMode.Repeat
+							: TextureWrapMode.Clamp;
+
+						this.TextureLookup.Add
+						(
+							texture.Filename,
+							this.Cache.GetTexture(texture.Filename, this.ModelPackageGroup, wrapS, wrapT)
+						);
+					}
+					else
+					{
+						this.TextureLookup.Add
+						(
+							texture.Filename,
+							this.Cache.FallbackTexture
+						);
+					}
+				}
+			}
+
 			foreach (MDXSkin skin in this.Model.Skins)
 			{
 				ushort[] absoluteTriangleVertexIndexes = skin.Triangles.Select(relativeIndex => skin.VertexIndices[relativeIndex]).ToArray();
@@ -289,6 +326,8 @@ namespace Everlook.Viewport.Rendering
 				GL.Enable(EnableCap.Blend);
 			}
 
+			GL.Enable(EnableCap.DepthTest);
+
 			foreach (MDXSkin skin in this.Model.Skins)
 			{
 				this.SkinIndexArrayBuffers[skin].Bind();
@@ -300,9 +339,28 @@ namespace Everlook.Viewport.Rendering
 					GL.Enable(EnableCap.Blend);
 				}
 
-				foreach (MDXRenderBatch renderBatch in skin.RenderBatches)
+				foreach
+				(
+					MDXRenderBatch renderBatch in skin.RenderBatches
+					.OrderByDescending
+					(
+						renderBatch => VectorMath.Distance
+						(
+							camera.Position,
+							skin.Sections[renderBatch.SkinSectionIndex].SortCenterPosition.AsOpenTKVector()
+						)
+					)
+				)
 				{
 					var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
+
+					var textureIndexes = this.Model.TextureLookupTable.Skip(renderBatch.TextureLookupTableIndex).Take(renderBatch.TextureCount);
+					var textureNames = this.Model.Textures.Where((t, i) => textureIndexes.Contains((short)i)).Select(t => t.Filename);
+					var textures = this.TextureLookup.Where(entry => textureNames.Contains(entry.Key)).Select(entry => entry.Value);
+
+					var textureUnit = this.Model.TextureSlotLookupTable[renderBatch.TextureSlotLookupTableIndex];
+
+					this.Shader.BindTexture2D(TranslateModelTextureUnit(textureUnit), TextureUniform.Diffuse0, textures.First());
 
 					GL.DrawRangeElements
 					(
@@ -313,9 +371,13 @@ namespace Everlook.Viewport.Rendering
 						DrawElementsType.UnsignedShort,
 						new IntPtr(skinSection.StartTriangleIndex * 2)
 					);
-
-					var error = GL.GetError();
 				}
+			}
+
+			// Render bounding boxes
+			if (this.ShouldRenderBounds)
+			{
+				this.BoundingBox.Render(viewMatrix, projectionMatrix, camera);
 			}
 
 			// Release the attribute arrays
@@ -325,6 +387,25 @@ namespace Everlook.Viewport.Rendering
 			GL.DisableVertexAttribArray(3);
 			GL.DisableVertexAttribArray(4);
 			GL.DisableVertexAttribArray(5);
+		}
+
+		/// <summary>
+		/// Translates the stored model texture unit to an OpenGL texture unit.
+		/// </summary>
+		/// <param name="textureUnit">The model texture unit.</param>
+		/// <returns>An OpenGL texture unit.</returns>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// Thrown if <paramref name="textureUnit"/> is not -1, 0, or 1.
+		/// </exception>
+		private TextureUnit TranslateModelTextureUnit(short textureUnit)
+		{
+			switch (textureUnit)
+			{
+				case 0: return TextureUnit.Texture0;
+				case 1: return TextureUnit.Texture1;
+				case -1: return TextureUnit.Texture2;
+				default: throw new ArgumentOutOfRangeException(nameof(textureUnit));
+			}
 		}
 
 		/// <summary>

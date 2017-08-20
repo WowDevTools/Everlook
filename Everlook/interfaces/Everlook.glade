@@ -42,6 +42,20 @@
       </row>
     </data>
   </object>
+  <object class="GtkListStore" id="MipLevelListStore">
+    <columns>
+      <!-- column-name mipDescription -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="ModelVariationListStore">
+    <columns>
+      <!-- column-name VariationName -->
+      <column type="gchararray"/>
+      <!-- column-name VariationLookupIndex -->
+      <column type="gint"/>
+    </columns>
+  </object>
   <object class="GtkWindow" id="MainWindow">
     <property name="width_request">940</property>
     <property name="height_request">712</property>
@@ -569,19 +583,57 @@
                                                   <object class="GtkBox" id="box2">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">False</property>
-                                                    <property name="orientation">vertical</property>
                                                     <child>
-                                                      <object class="GtkAlignment" id="alignment15">
+                                                      <object class="GtkAlignment" id="ModelCheckboxControls">
                                                         <property name="visible">True</property>
                                                         <property name="can_focus">False</property>
                                                         <child>
-                                                          <object class="GtkCheckButton" id="RenderBoundsCheckButton">
+                                                          <object class="GtkBox" id="box11">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="orientation">vertical</property>
+                                                            <child>
+                                                            <object class="GtkAlignment" id="alignment16">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <child>
+                                                            <object class="GtkCheckButton" id="RenderBoundsCheckButton">
                                                             <property name="label" translatable="yes">Render model group bounds</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="receives_default">False</property>
                                                             <property name="xalign">0</property>
                                                             <property name="draw_indicator">True</property>
+                                                            </object>
+                                                            </child>
+                                                            </object>
+                                                            <packing>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">0</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <object class="GtkAlignment" id="alignment18">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <child>
+                                                            <object class="GtkCheckButton" id="RenderWireframeCheckButton">
+                                                            <property name="label" translatable="yes">Render wireframe</property>
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="receives_default">False</property>
+                                                            <property name="xalign">0</property>
+                                                            <property name="draw_indicator">True</property>
+                                                            </object>
+                                                            </child>
+                                                            </object>
+                                                            <packing>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">1</property>
+                                                            </packing>
+                                                            </child>
                                                           </object>
                                                         </child>
                                                       </object>
@@ -592,17 +644,16 @@
                                                       </packing>
                                                     </child>
                                                     <child>
-                                                      <object class="GtkAlignment" id="alignment16">
+                                                      <object class="GtkAlignment" id="alignment12">
                                                         <property name="visible">True</property>
                                                         <property name="can_focus">False</property>
+                                                        <property name="left_padding">6</property>
+                                                        <property name="right_padding">6</property>
                                                         <child>
-                                                          <object class="GtkCheckButton" id="RenderWireframeCheckButton">
-                                                            <property name="label" translatable="yes">Render wireframe</property>
+                                                          <object class="GtkSeparator" id="separator7">
                                                             <property name="visible">True</property>
-                                                            <property name="can_focus">True</property>
-                                                            <property name="receives_default">False</property>
-                                                            <property name="xalign">0</property>
-                                                            <property name="draw_indicator">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="orientation">vertical</property>
                                                           </object>
                                                         </child>
                                                       </object>
@@ -613,7 +664,67 @@
                                                       </packing>
                                                     </child>
                                                     <child>
-                                                      <placeholder/>
+                                                      <object class="GtkAlignment" id="alignment13">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <property name="left_padding">6</property>
+                                                        <child>
+                                                          <object class="GtkBox" id="box12">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="orientation">vertical</property>
+                                                            <child>
+                                                            <object class="GtkAlignment" id="alignment15">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="xalign">0</property>
+                                                            <child>
+                                                            <object class="GtkLabel" id="label7">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Variation</property>
+                                                            <property name="xalign">0</property>
+                                                            </object>
+                                                            </child>
+                                                            </object>
+                                                            <packing>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">0</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <object class="GtkAlignment" id="alignment19">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <child>
+                                                            <object class="GtkComboBox" id="ModelVariationComboBox">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="model">ModelVariationListStore</property>
+                                                            <child>
+                                                            <object class="GtkCellRendererText" id="cellrenderertext1"/>
+                                                            <attributes>
+                                                            <attribute name="text">0</attribute>
+                                                            </attributes>
+                                                            </child>
+                                                            </object>
+                                                            </child>
+                                                            </object>
+                                                            <packing>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">1</property>
+                                                            </packing>
+                                                            </child>
+                                                          </object>
+                                                        </child>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">2</property>
+                                                      </packing>
                                                     </child>
                                                   </object>
                                                 </child>
@@ -1179,12 +1290,6 @@ Any bugs in the software or underlying libraries should be reported to the distr
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkListStore" id="MipLevelListStore">
-    <columns>
-      <!-- column-name mipDescription -->
-      <column type="gchararray"/>
-    </columns>
   </object>
   <object class="GtkMenu" id="QueueContextMenu">
     <property name="visible">True</property>
