@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -496,32 +497,41 @@ namespace Everlook.Explorer
 				return;
 			}
 
+			List<FileReference> exportTargets = new List<FileReference>();
 			if (fileReference.IsDirectory)
 			{
 				foreach (FileReference subfile in this.TreeModel.EnumerateFilesOfReference(fileReference))
 				{
-					Console.WriteLine(subfile.FilePath);
+					exportTargets.Add(subfile);
 				}
-			}
-
-			string cleanFilepath = fileReference.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
-			string exportpath;
-			if (this.Config.KeepFileDirectoryStructure)
-			{
-				exportpath = Path.Combine(this.Config.DefaultExportDirectory, cleanFilepath);
-				Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
 			}
 			else
 			{
-				string filename = Path.GetFileName(cleanFilepath);
-				exportpath = Path.Combine(this.Config.DefaultExportDirectory, filename);
-				Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
+				exportTargets.Add(fileReference);
 			}
 
-			byte[] file = fileReference.Extract();
-			if (file != null)
+			foreach (var exportTarget in exportTargets)
 			{
-				File.WriteAllBytes(exportpath, file);
+				string cleanFilepath = exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
+
+				string exportpath;
+				if (this.Config.KeepFileDirectoryStructure)
+				{
+					exportpath = Path.Combine(this.Config.DefaultExportDirectory, cleanFilepath);
+					Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
+				}
+				else
+				{
+					string filename = Path.GetFileName(cleanFilepath);
+					exportpath = Path.Combine(this.Config.DefaultExportDirectory, filename);
+					Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
+				}
+
+				byte[] file = exportTarget.Extract();
+				if (file != null)
+				{
+					File.WriteAllBytes(exportpath, file);
+				}
 			}
 		}
 
