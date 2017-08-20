@@ -27,6 +27,7 @@ using System.Linq;
 using Everlook.Configuration;
 using Everlook.Database;
 using Everlook.Exceptions.Shader;
+using Everlook.Explorer;
 using Everlook.Package;
 using Everlook.Utility;
 using Everlook.Viewport.Camera;
@@ -262,7 +263,7 @@ namespace Everlook.Viewport.Rendering
 
 					// Then create a new renderable game model
 					MDX doodadModel = new MDX(doodadData);
-					RenderableGameModel renderableDoodad = new RenderableGameModel(doodadModel, this.ModelPackageGroup, this.Version)
+					RenderableGameModel renderableDoodad = new RenderableGameModel(doodadModel, this.ModelPackageGroup, this.Version, doodadInstance.Name)
 					{
 						ActorTransform = new Transform
 						(

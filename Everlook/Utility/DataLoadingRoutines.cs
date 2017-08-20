@@ -330,7 +330,7 @@ namespace Everlook.Utility
 				return null;
 			}
 
-			RenderableGameModel renderableModel = new RenderableGameModel(gameModel, fileReference.PackageGroup, version);
+			RenderableGameModel renderableModel = new RenderableGameModel(gameModel, fileReference.PackageGroup, version, fileReference.FilePath);
 			renderableModel.Initialize();
 
 			return renderableModel;

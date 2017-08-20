@@ -21,10 +21,12 @@
 //
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Everlook.Configuration;
 using Everlook.Database;
 using Everlook.Exceptions.Shader;
+using Everlook.Explorer;
 using Everlook.Package;
 using Everlook.Utility;
 using Everlook.Viewport.Camera;
@@ -37,6 +39,7 @@ using OpenTK.Graphics.OpenGL;
 using SlimTK;
 using Warcraft.Core;
 using Warcraft.Core.Extensions;
+using Warcraft.DBC.Definitions;
 using Warcraft.MDX;
 using Warcraft.MDX.Geometry;
 using Warcraft.MDX.Geometry.Skin;
@@ -103,6 +106,7 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public Transform ActorTransform { get; set; }
 
+		private readonly string ModelPath;
 		private readonly PackageGroup ModelPackageGroup;
 		private readonly RenderCache Cache = RenderCache.Instance;
 		private readonly ClientDatabaseProvider DatabaseProvider;
@@ -127,13 +131,26 @@ namespace Everlook.Viewport.Rendering
 
 		/// <summary>
 		/// Gets or sets a value indicating whether or not the bounding box of the model should be rendered.
-		/// </summary
+		/// </summary>
 		public bool ShouldRenderBounds { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether or not the wireframe of the object should be rendered.
 		/// </summary>
 		public bool ShouldRenderWireframe { get; set; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RenderableGameModel"/> class.
+		/// </summary>
+		/// <param name="inModel">The model to render.</param>
+		/// <param name="inPackageGroup">The package group the model belongs to.</param>
+		/// <param name="inVersion">The game version of the package group.</param>
+		/// <param name="modelPath">The full path of the model in the package group.</param>
+		public RenderableGameModel(MDX inModel, PackageGroup inPackageGroup, WarcraftVersion inVersion, string modelPath)
+			: this(inModel, inPackageGroup, inVersion)
+		{
+			this.ModelPath = modelPath;
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableGameModel"/> class.
@@ -402,10 +419,31 @@ namespace Everlook.Viewport.Rendering
 		/// Gets the names of the skin variations of this model.
 		/// </summary>
 		/// <returns>The names of the variations.</returns>
-		/// <exception cref="NotImplementedException">Not implemented.</exception>
 		public IEnumerable<string> GetSkinNames()
 		{
-			throw new NotImplementedException();
+			// Just like other places, sometimes the files are stored as *.mdx. We'll force that extension on both.
+			var modelDataRecords = this.DatabaseProvider.GetDatabase<CreatureModelDataRecord>().Where
+			(
+				r =>
+				string.Equals
+				(
+					Path.ChangeExtension(r.ModelPath.Value, "mdx"),
+					Path.ChangeExtension(this.ModelPath, "mdx"),
+					StringComparison.InvariantCultureIgnoreCase
+				)
+			);
+
+			var modelDataRecordIDs = modelDataRecords.Select(r => r.ID);
+
+			var displayInfoDatabase = this.DatabaseProvider.GetDatabase<CreatureDisplayInfoRecord>();
+			var modelDisplayRecords = displayInfoDatabase.Where
+			(
+				r => modelDataRecordIDs.Contains(r.Model.Key)
+			);
+
+			var modelDisplayTextureNames = modelDisplayRecords.Select(r => r.TextureVariations.FirstOrDefault()?.Value);
+
+			return modelDisplayTextureNames;
 		}
 
 		/// <summary>

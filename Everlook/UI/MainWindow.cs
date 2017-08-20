@@ -671,6 +671,7 @@ namespace Everlook.UI
 
 						this.ModelVariationComboBox.Active = 0;
 						this.ModelVariationComboBox.Sensitive = this.RenderDoodadsCheckButton.Active;
+						this.RenderDoodadsCheckButton.Sensitive = true;
 					}
 
 					RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
@@ -678,6 +679,19 @@ namespace Everlook.UI
 					{
 						mdx.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
 						mdx.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
+
+						/*
+						var skinNames = mdx.GetSkinNames().ToList();
+						this.ModelVariationListStore.Clear();
+						for (int i = 0; i < skinNames.Count; ++i)
+						{
+							this.ModelVariationListStore.AppendValues(skinNames[i], i);
+						}
+						*/
+
+						this.ModelVariationComboBox.Active = 0;
+						this.ModelVariationComboBox.Sensitive = true;
+						this.RenderDoodadsCheckButton.Sensitive = false;
 					}
 
 					break;
