@@ -45,9 +45,8 @@ namespace Everlook.Viewport.Rendering
 		{
 			this.Image = inImage;
 			this.TexturePath = inTexturePath;
-			this.IsInitialized = false;
 
-			Initialize();
+			this.IsInitialized = false;
 		}
 
 		/// <inheritdoc />

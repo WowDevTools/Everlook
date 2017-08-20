@@ -47,10 +47,9 @@ namespace Everlook.Viewport.Rendering
 		public RenderableBitmap(Bitmap inImage, string inTexturePath)
 		{
 			this.Image = inImage;
-			this.IsInitialized = false;
 			this.TexturePath = inTexturePath;
 
-			Initialize();
+			this.IsInitialized = false;
 		}
 
 		/// <inheritdoc />

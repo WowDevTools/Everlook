@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Everlook.Configuration;
 using Everlook.Database;
@@ -39,6 +40,7 @@ using SlimTK;
 using Warcraft.BLP;
 using Warcraft.Core;
 using Warcraft.Core.Extensions;
+using Warcraft.MDX;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
 using Warcraft.WMO.GroupFile.Chunks;
@@ -124,6 +126,7 @@ namespace Everlook.Viewport.Rendering
 		private readonly PackageGroup ModelPackageGroup;
 		private readonly RenderCache Cache = RenderCache.Instance;
 		private readonly ClientDatabaseProvider DatabaseProvider;
+		private readonly WarcraftVersion Version;
 
 		/// <summary>
 		/// Dictionary that maps texture paths to OpenGL textures.
@@ -138,6 +141,10 @@ namespace Everlook.Viewport.Rendering
 
 		// Bounding boxes
 		private readonly Dictionary<ModelGroup, RenderableBoundingBox> BoundingBoxLookup = new Dictionary<ModelGroup, RenderableBoundingBox>();
+
+		// Doodad sets
+		private readonly Dictionary<string, RenderableGameModel> DoodadCache = new Dictionary<string, RenderableGameModel>();
+		private readonly Dictionary<string, List<RenderableActorInstance>> DoodadSets = new Dictionary<string, List<RenderableActorInstance>>();
 
 		/// <summary>
 		/// Gets or sets a value indicating whether or not the current renderable has been initialized.
@@ -154,6 +161,11 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public bool ShouldRenderWireframe { get; set; }
 
+		/// <summary>
+		/// Gets or sets the current doodad set.
+		/// </summary>
+		public string DoodadSet { get; set; }
+
 		private WorldModelShader Shader;
 
 		/// <summary>
@@ -166,8 +178,9 @@ namespace Everlook.Viewport.Rendering
 		{
 			this.Model = inModel;
 			this.ModelPackageGroup = inPackageGroup;
+			this.Version = inVersion;
 
-			this.DatabaseProvider = new ClientDatabaseProvider(inVersion, this.ModelPackageGroup);
+			this.DatabaseProvider = new ClientDatabaseProvider(this.Version, this.ModelPackageGroup);
 
 			this.ActorTransform = new Transform
 			(
@@ -177,8 +190,6 @@ namespace Everlook.Viewport.Rendering
 			);
 
 			this.IsInitialized = false;
-
-			Initialize();
 		}
 
 		/// <summary>
@@ -188,6 +199,11 @@ namespace Everlook.Viewport.Rendering
 		{
 			ThrowIfDisposed();
 
+			if (this.IsInitialized)
+			{
+				return;
+			}
+
 			this.Shader = this.Cache.GetShader(EverlookShader.WorldModel) as WorldModelShader;
 
 			if (this.Shader == null)
@@ -195,7 +211,84 @@ namespace Everlook.Viewport.Rendering
 				throw new ShaderNullException(typeof(WorldModelShader));
 			}
 
-			// TODO: Load and cache doodads in their respective sets
+			foreach (var doodadSet in this.Model.RootInformation.DoodadSets.DoodadSets)
+			{
+				var doodadInstances = this.Model.RootInformation.DoodadInstances.DoodadInstances
+					.Skip((int)doodadSet.FirstDoodadInstanceIndex)
+					.Take((int)doodadSet.DoodadInstanceCount);
+
+				List<RenderableActorInstance> doodads = new List<RenderableActorInstance>();
+
+				foreach (var doodadInstance in doodadInstances)
+				{
+					// Check if we've cached the doodad first
+					if (this.DoodadCache.ContainsKey(doodadInstance.Name))
+					{
+						doodads.Add
+						(
+							new RenderableActorInstance
+							(
+								this.DoodadCache[doodadInstance.Name],
+								new Transform
+								(
+									doodadInstance.Position.AsOpenTKVector(),
+									doodadInstance.Orientation.AsOpenTKQuaternion(),
+									new Vector3(doodadInstance.Scale)
+								)
+							)
+						);
+
+						continue;
+					}
+
+					// If not, extract the doodad data
+					byte[] doodadData = this.ModelPackageGroup.ExtractFile(doodadInstance.Name);
+					if (doodadData == null)
+					{
+						// Doodads may have the *.mdx extension instead of *.m2. Try with that as well.
+						doodadData = this.ModelPackageGroup.ExtractFile(Path.ChangeExtension(doodadInstance.Name, "m2"));
+
+						if (doodadData == null)
+						{
+							Log.Warn($"Failed to load doodad: {doodadInstance.Name}");
+							continue;
+						}
+					}
+
+					// Then create a new renderable game model
+					MDX doodadModel = new MDX(doodadData);
+					RenderableGameModel renderableDoodad = new RenderableGameModel(doodadModel, this.ModelPackageGroup, this.Version)
+					{
+						ActorTransform = new Transform
+						(
+							doodadInstance.Position.AsOpenTKVector(),
+							doodadInstance.Orientation.AsOpenTKQuaternion(),
+							new Vector3(doodadInstance.Scale)
+						)
+					};
+					renderableDoodad.Initialize();
+
+					// And cache it
+					this.DoodadCache.Add(doodadInstance.Name, renderableDoodad);
+
+					// Then add it as an instance to the set
+					doodads.Add
+					(
+						new RenderableActorInstance
+						(
+							renderableDoodad,
+							new Transform
+							(
+								doodadInstance.Position.AsOpenTKVector(),
+								doodadInstance.Orientation.AsOpenTKQuaternion(),
+								new Vector3(doodadInstance.Scale)
+							)
+						)
+					);
+				}
+
+				this.DoodadSets.Add(doodadSet.Name, doodads);
+			}
 
 			// TODO: Load and cache sound emitters
 
@@ -274,8 +367,10 @@ namespace Everlook.Viewport.Rendering
 		/// <param name="deltaTime">The time delta, in seconds.</param>
 		public void Tick(float deltaTime)
 		{
-			// TODO: Tick the animations of all referenced doodads.
-			// Doodads that are not rendered should still have their states advanced.
+			foreach (var doodad in this.DoodadCache.Select(k => k.Value))
+			{
+				doodad.Tick(deltaTime);
+			}
 		}
 
 		/// <inheritdoc />
@@ -302,6 +397,11 @@ namespace Everlook.Viewport.Rendering
 				.OrderByDescending(modelGroup => VectorMath.Distance(camera.Position, modelGroup.GetPosition().AsOpenTKVector())))
 			{
 				RenderGroup(modelGroup, modelViewProjection);
+			}
+
+			foreach (var doodad in this.DoodadSets[this.DoodadSet])
+			{
+				doodad.Render(viewMatrix, projectionMatrix, camera);
 			}
 
 			// Render bounding boxes
@@ -422,6 +522,15 @@ namespace Everlook.Viewport.Rendering
 		}
 
 		/// <summary>
+		/// Gets the names of the doodad sets for this model.
+		/// </summary>
+		/// <returns>The names of the doodad sets.</returns>
+		public IEnumerable<string> GetDoodadSetNames()
+		{
+			return this.Model.RootInformation.DoodadSets.DoodadSets.Select(ds => ds.Name);
+		}
+
+		/// <summary>
 		/// Throws an <see cref="ObjectDisposedException"/> if the object has been disposed.
 		/// </summary>
 		/// <exception cref="ObjectDisposedException">Thrown if the object is disposed.</exception>
@@ -463,6 +572,11 @@ namespace Everlook.Viewport.Rendering
 			foreach (var indexBuffer in this.VertexIndexBufferLookup)
 			{
 				indexBuffer.Value.Dispose();
+			}
+
+			foreach (var doodad in this.DoodadCache.Select(k => k.Value))
+			{
+				doodad.Dispose();
 			}
 		}
 

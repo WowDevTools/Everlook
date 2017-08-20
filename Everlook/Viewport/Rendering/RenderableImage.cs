@@ -175,6 +175,11 @@ namespace Everlook.Viewport.Rendering
 		{
 			ThrowIfDisposed();
 
+			if (this.IsInitialized)
+			{
+				return;
+			}
+
 			this.VertexBuffer = GenerateVertices();
 			this.VertexIndexBuffer = GenerateVertexIndexes();
 			this.UVBuffer = GenerateTextureCoordinates();

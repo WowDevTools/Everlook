@@ -23,6 +23,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using Everlook.Explorer;
 using Everlook.Viewport.Rendering;
 using Everlook.Viewport.Rendering.Interfaces;
@@ -166,6 +167,8 @@ namespace Everlook.Utility
 			}
 
 			IRenderable renderableWorldModel = new RenderableWorldModel(worldModel, fileReference.PackageGroup, version);
+			renderableWorldModel.Initialize();
+
 			return renderableWorldModel;
 		}
 
@@ -218,6 +221,8 @@ namespace Everlook.Utility
 			}
 
 			RenderableBLP renderableImage = new RenderableBLP(binaryImage, fileReference.FilePath);
+			renderableImage.Initialize();
+
 			return renderableImage;
 		}
 
@@ -273,6 +278,8 @@ namespace Everlook.Utility
 			}
 
 			RenderableBitmap renderableImage = new RenderableBitmap(bitmapImage, fileReference.FilePath);
+			renderableImage.Initialize();
+
 			return renderableImage;
 		}
 
@@ -324,6 +331,8 @@ namespace Everlook.Utility
 			}
 
 			RenderableGameModel renderableModel = new RenderableGameModel(gameModel, fileReference.PackageGroup, version);
+			renderableModel.Initialize();
+
 			return renderableModel;
 		}
 	}

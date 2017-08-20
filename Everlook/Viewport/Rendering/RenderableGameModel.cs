@@ -47,7 +47,7 @@ namespace Everlook.Viewport.Rendering
 	/// <summary>
 	/// Represents a renderable Game Object Model.
 	/// </summary>
-	public sealed class RenderableGameModel : IRenderable, IDefaultCameraPositionProvider
+	public sealed class RenderableGameModel : ITickingActor, IDefaultCameraPositionProvider
 	{
 		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is,
@@ -156,8 +156,6 @@ namespace Everlook.Viewport.Rendering
 			);
 
 			this.IsInitialized = false;
-
-			Initialize();
 		}
 
 		/// <summary>
@@ -166,6 +164,11 @@ namespace Everlook.Viewport.Rendering
 		public void Initialize()
 		{
 			ThrowIfDisposed();
+
+			if (this.IsInitialized)
+			{
+				return;
+			}
 
 			this.Shader = this.Cache.GetShader(EverlookShader.GameModel) as GameModelShader;
 
@@ -225,6 +228,12 @@ namespace Everlook.Viewport.Rendering
 			}
 
 			this.IsInitialized = true;
+		}
+
+		/// <inheritdoc />
+		public void Tick(float deltaTime)
+		{
+			// TODO: Tick animations
 		}
 
 		/// <inheritdoc />
@@ -387,6 +396,16 @@ namespace Everlook.Viewport.Rendering
 			GL.DisableVertexAttribArray(3);
 			GL.DisableVertexAttribArray(4);
 			GL.DisableVertexAttribArray(5);
+		}
+
+		/// <summary>
+		/// Gets the names of the skin variations of this model.
+		/// </summary>
+		/// <returns>The names of the variations.</returns>
+		/// <exception cref="NotImplementedException">Not implemented.</exception>
+		public IEnumerable<string> GetSkinNames()
+		{
+			throw new NotImplementedException();
 		}
 
 		/// <summary>

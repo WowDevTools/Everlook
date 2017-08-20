@@ -483,6 +483,7 @@ namespace Everlook.Explorer
 		}
 
 		/// <summary>
+		/// TODO: Move elsewhere and add UI notification
 		/// Handles extraction of files from the archive triggered by a context menu press.
 		/// </summary>
 		/// <param name="sender">The sending object.</param>

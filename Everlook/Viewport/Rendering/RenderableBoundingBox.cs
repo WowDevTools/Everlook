@@ -81,12 +81,19 @@ namespace Everlook.Viewport.Rendering
 
 			this.ActorTransform = transform;
 			this.BoxShader = RenderCache.Instance.GetShader(EverlookShader.BoundingBox) as BoundingBoxShader;
+
+			this.IsInitialized = false;
 		}
 
 		/// <inheritdoc />
 		public void Initialize()
 		{
 			ThrowIfDisposed();
+
+			if (this.IsInitialized)
+			{
+				return;
+			}
 
 			if (this.BoxShader == null)
 			{

@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Everlook.Audio;
@@ -194,6 +195,64 @@ namespace Everlook.UI
 				Bind item control events
 			*/
 
+			BindImageControlEvents();
+
+			BindModelControlEvents();
+		}
+
+		/// <summary>
+		/// Binds event handlers to the model control UI elements.
+		/// </summary>
+		private void BindModelControlEvents()
+		{
+			this.RenderBoundsCheckButton.Toggled += (sender, args) =>
+			{
+				RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
+				if (wmo != null)
+				{
+					wmo.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
+				}
+
+				RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
+				if (mdx != null)
+				{
+					mdx.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
+				}
+			};
+
+			this.RenderWireframeCheckButton.Toggled += (sender, args) =>
+			{
+				RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
+				if (wmo != null)
+				{
+					wmo.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
+				}
+
+				RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
+				if (mdx != null)
+				{
+					mdx.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
+				}
+			};
+
+			this.ModelVariationComboBox.Changed += (sender, args) =>
+			{
+				RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
+				if (wmo != null)
+				{
+					this.ModelVariationComboBox.GetActiveIter(out TreeIter activeIter);
+					var doodadSetName = (string)this.ModelVariationListStore.GetValue(activeIter, 0);
+
+					wmo.DoodadSet = doodadSetName;
+				}
+			};
+		}
+
+		/// <summary>
+		/// Binds event handlers to the image control UI elements.
+		/// </summary>
+		private void BindImageControlEvents()
+		{
 			this.RenderAlphaCheckButton.Toggled += (sender, args) =>
 			{
 				RenderableImage image = this.RenderingEngine.RenderTarget as RenderableImage;
@@ -236,36 +295,6 @@ namespace Everlook.UI
 				}
 
 				image.RenderBlueChannel = this.RenderBlueCheckButton.Active;
-			};
-
-			this.RenderBoundsCheckButton.Toggled += (sender, args) =>
-			{
-				RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
-				if (wmo != null)
-				{
-					wmo.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
-				}
-
-				RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
-				if (mdx != null)
-				{
-					mdx.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
-				}
-			};
-
-			this.RenderWireframeCheckButton.Toggled += (sender, args) =>
-			{
-				RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
-				if (wmo != null)
-				{
-					wmo.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
-				}
-
-				RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
-				if (mdx != null)
-				{
-					mdx.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
-				}
 			};
 		}
 
@@ -577,6 +606,15 @@ namespace Everlook.UI
 					{
 						wmo.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
 						wmo.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
+
+						var doodadSetNames = wmo.GetDoodadSetNames().ToList();
+						this.ModelVariationListStore.Clear();
+						for (int i = 0; i < doodadSetNames.Count; ++i)
+						{
+							this.ModelVariationListStore.AppendValues(doodadSetNames[i], i);
+						}
+
+						this.ModelVariationComboBox.Active = 0;
 					}
 
 					RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;

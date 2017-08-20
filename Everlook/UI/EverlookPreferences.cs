@@ -257,9 +257,21 @@ namespace Everlook.UI
 
 			if (!string.IsNullOrEmpty(this.Config.DefaultExportDirectory))
 			{
-				this.DefaultExportDirectoryFileChooserButton.SetCurrentFolderUri(
-					new Uri(new Uri("file://"), this.Config.DefaultExportDirectory).AbsoluteUri);
+				if (!Directory.Exists(this.Config.DefaultExportDirectory))
+				{
+					try
+					{
+						Directory.CreateDirectory(this.Config.DefaultExportDirectory);
+					}
+					catch (UnauthorizedAccessException uax)
+					{
+						Console.WriteLine($"Failed to create the export directory: {uax}");
+						throw;
+					}
+				}
 			}
+
+			this.DefaultExportDirectoryFileChooserButton.SetFilename(this.Config.DefaultExportDirectory);
 
 			this.DefaultModelExportFormatComboBox.Active = (int)this.Config.DefaultModelExportFormat;
 			this.DefaultImageExportFormatComboBox.Active = (int)this.Config.DefaultImageExportFormat;
@@ -302,8 +314,20 @@ namespace Everlook.UI
 
 			this.Config.ViewportBackgroundColour = this.ViewportColourButton.Rgba;
 
-			string exportPath = this.DefaultExportDirectoryFileChooserButton.CurrentFolderFile.Uri.LocalPath;
-			this.Config.DefaultExportDirectory = exportPath;
+			if (!Directory.Exists(this.DefaultExportDirectoryFileChooserButton.Filename))
+			{
+				try
+				{
+					Directory.CreateDirectory(this.DefaultExportDirectoryFileChooserButton.Filename);
+				}
+				catch (UnauthorizedAccessException uax)
+				{
+					Console.WriteLine($"Failed to create the export directory: {uax}");
+					throw;
+				}
+			}
+
+			this.Config.DefaultExportDirectory = this.DefaultExportDirectoryFileChooserButton.Filename;
 
 			this.Config.DefaultModelExportFormat = (ModelFormat)this.DefaultModelExportFormatComboBox.Active;
 			this.Config.DefaultImageExportFormat = (ImageFormat)this.DefaultImageExportFormatComboBox.Active;

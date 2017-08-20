@@ -176,7 +176,7 @@ namespace Everlook.Configuration
 		public string DefaultExportDirectory
 		{
 			get => GetOption(Export, nameof(this.DefaultExportDirectory));
-			set => SetOption(Export, nameof(this.DefaultExportDirectory), value);
+			set => SetOption(Export, nameof(this.DefaultExportDirectory), value, false);
 		}
 
 		/// <summary>
