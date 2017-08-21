@@ -31,7 +31,9 @@ Currently, Everlook is in early development and may not be usable in your day-to
 * No format-specific export functions have been implemented.
 * The export queue does not work beyond the UI.
 * Everlook lacks any testing on Windows-based systems.
-* Standard models are not rendered in the viewport.
+* Model rendering is not fully fleshed out.
+* Animations are not yet supported.
+* The audio controls do nothing.
 
 ### Useful Information
 * Everlook will mark files that have been deleted in the archives with red colour and an exclamation mark icon in the file explorer. However, it will still allow you to access the underlying file.
@@ -39,14 +41,21 @@ Currently, Everlook is in early development and may not be usable in your day-to
 * Files shown in the primary top-level tree are versioned in the same way as is visible to the game. If you want a file from a specific archive, look in the "Packages" node.
 
 ### Planned Features
-* M2 rendering
+* Fully compliant M2 rendering
 * Fully compliant WMO rendering
-* Audio playback
+* More fine-grained audio playback controls
 * Collada exporter
+* glTF exporter
 * Animation controls
 
 ### Compiling
-In order to compile Everlook, you will need a Nuget-capable IDE that supports the C# language. The most commonly used ones are Visual Studio, MonoDevelop and more recently Project Rider. 
+In order to compile Everlook, you will need a Nuget-capable IDE that supports the C# language. The most commonly used ones are Visual Studio, MonoDevelop and more recently Project Rider.
+Everlook uses .NET Standard 2.0 libraries and tooling, so you need at least one of the following:
+
+* Visual Studio 15.3
+* JetBrains Rider 2017.1
+* Mono >= 5.2.0.215
+* .NET Framework 4.6.1
 
 Beyond that, downloading and compiling Everlook is as simple as the following commands:
 
