@@ -178,7 +178,14 @@ namespace Everlook.Viewport.Rendering
 				{
 					case WarcraftFileType.BinaryImage:
 					{
-						BLP texture = new BLP(package.ExtractFile(texturePath));
+						var textureData = package.ExtractFile(texturePath);
+
+						if (textureData == null)
+						{
+							return this.FallbackTexture;
+						}
+
+						BLP texture = new BLP(textureData);
 						return CreateCachedTexture(texture, texturePath, wrappingModeS, wrappingModeT);
 					}
 					case WarcraftFileType.BitmapImage:

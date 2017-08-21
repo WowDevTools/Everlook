@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,13 +34,16 @@ using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
+using GLib;
 using Gtk;
+using log4net;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using SlimTK;
 using Warcraft.Core;
 using Warcraft.Core.Extensions;
 using Warcraft.DBC.Definitions;
+using Warcraft.DBC.SpecialFields;
 using Warcraft.MDX;
 using Warcraft.MDX.Geometry;
 using Warcraft.MDX.Geometry.Skin;
@@ -52,6 +56,11 @@ namespace Everlook.Viewport.Rendering
 	/// </summary>
 	public sealed class RenderableGameModel : ITickingActor, IDefaultCameraPositionProvider
 	{
+		/// <summary>
+		/// Logger instance for this class.
+		/// </summary>
+		private static readonly ILog Log = LogManager.GetLogger(typeof(RenderableGameModel));
+
 		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is,
 		/// a single frame is rendered and then reused. Useful as an optimization for images.
@@ -138,6 +147,11 @@ namespace Everlook.Viewport.Rendering
 		/// Gets or sets a value indicating whether or not the wireframe of the object should be rendered.
 		/// </summary>
 		public bool ShouldRenderWireframe { get; set; }
+
+		/// <summary>
+		/// Gets or sets the current display info for this model.
+		/// </summary>
+		public CreatureDisplayInfoRecord CurrentDisplayInfo { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableGameModel"/> class.
@@ -242,6 +256,14 @@ namespace Everlook.Viewport.Rendering
 				};
 
 				this.SkinIndexArrayBuffers.Add(skin, skinIndexBuffer);
+			}
+
+			// Set a default display info for this model
+			var displayInfo = GetSkinVariations().FirstOrDefault();
+			if (displayInfo != null)
+			{
+				CacheDisplayInfo(displayInfo);
+				this.CurrentDisplayInfo = displayInfo;
 			}
 
 			this.IsInitialized = true;
@@ -378,15 +400,59 @@ namespace Everlook.Viewport.Rendering
 					)
 				)
 				{
+					var batchMaterial = this.Model.Materials[renderBatch.MaterialIndex];
+					this.Shader.SetMaterial(batchMaterial);
+
 					var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
 
 					var textureIndexes = this.Model.TextureLookupTable.Skip(renderBatch.TextureLookupTableIndex).Take(renderBatch.TextureCount);
-					var textureNames = this.Model.Textures.Where((t, i) => textureIndexes.Contains((short)i)).Select(t => t.Filename);
-					var textures = this.TextureLookup.Where(entry => textureNames.Contains(entry.Key)).Select(entry => entry.Value);
+					var textures = this.Model.Textures.Where((t, i) => textureIndexes.Contains((short)i));
 
-					var textureUnit = this.Model.TextureSlotLookupTable[renderBatch.TextureSlotLookupTableIndex];
+					foreach (var texture in textures)
+					{
+						string textureName;
+						TextureUniform uniform = TextureUniform.Diffuse0;
 
-					this.Shader.BindTexture2D(TranslateModelTextureUnit(textureUnit), TextureUniform.Diffuse0, textures.First());
+						switch (texture.TextureType)
+						{
+							case EMDXTextureType.Regular:
+							{
+								textureName = texture.Filename;
+								uniform = TextureUniform.Diffuse0;
+								break;
+							}
+							case EMDXTextureType.MonsterSkin1:
+							{
+								textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[0].Value);
+								uniform = TextureUniform.Diffuse0;
+								break;
+							}
+							case EMDXTextureType.MonsterSkin2:
+							{
+								textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[1].Value);
+								uniform = TextureUniform.Diffuse0;
+								break;
+							}
+							case EMDXTextureType.MonsterSkin3:
+							{
+								textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[2].Value);
+								uniform = TextureUniform.Diffuse0;
+								break;
+							}
+							default:
+							{
+								// Use the fallback texture if we don't know how to load the texture type
+								textureName = string.Empty;
+								uniform = TextureUniform.Diffuse0;
+								break;
+							}
+						}
+
+						var textureObject = this.TextureLookup[textureName];
+						var textureUnit = this.Model.TextureSlotLookupTable[renderBatch.TextureSlotLookupTableIndex];
+
+						this.Shader.BindTexture2D(TranslateModelTextureUnit(textureUnit), uniform, textureObject);
+					}
 
 					GL.DrawRangeElements
 					(
@@ -419,9 +485,10 @@ namespace Everlook.Viewport.Rendering
 		/// Gets the names of the skin variations of this model.
 		/// </summary>
 		/// <returns>The names of the variations.</returns>
-		public IEnumerable<string> GetSkinNames()
+		public IEnumerable<CreatureDisplayInfoRecord> GetSkinVariations()
 		{
 			// Just like other places, sometimes the files are stored as *.mdx. We'll force that extension on both.
+			// Get any model data record which uses this model
 			var modelDataRecords = this.DatabaseProvider.GetDatabase<CreatureModelDataRecord>().Where
 			(
 				r =>
@@ -431,19 +498,127 @@ namespace Everlook.Viewport.Rendering
 					Path.ChangeExtension(this.ModelPath, "mdx"),
 					StringComparison.InvariantCultureIgnoreCase
 				)
-			);
+			).ToList();
 
-			var modelDataRecordIDs = modelDataRecords.Select(r => r.ID);
+			// Then flatten out their IDs
+			var modelDataRecordIDs = modelDataRecords.Select(r => r.ID).ToList();
 
+			// Then get any display info record which references this model
 			var displayInfoDatabase = this.DatabaseProvider.GetDatabase<CreatureDisplayInfoRecord>();
 			var modelDisplayRecords = displayInfoDatabase.Where
 			(
 				r => modelDataRecordIDs.Contains(r.Model.Key)
-			);
+			).ToList();
 
-			var modelDisplayTextureNames = modelDisplayRecords.Select(r => r.TextureVariations.FirstOrDefault()?.Value);
+			var textureListMapping = new Dictionary<List<StringReference>, CreatureDisplayInfoRecord>(new StringReferenceListComparer());
 
-			return modelDisplayTextureNames;
+			// Finally, return any record with a unique set of textures
+			foreach (var displayRecord in modelDisplayRecords)
+			{
+				if (!textureListMapping.ContainsKey(displayRecord.TextureVariations))
+				{
+					textureListMapping.Add(displayRecord.TextureVariations, displayRecord);
+					yield return displayRecord;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the full texture path for a given texture name.
+		/// </summary>
+		/// <param name="textureName">The name of the texture.</param>
+		/// <returns>The full path to the texture.</returns>
+		private string GetDisplayInfoTexturePath(string textureName)
+		{
+			// An empty string represents the fallback texture
+			if (textureName == null)
+			{
+				return string.Empty;
+			}
+
+			var modelDirectory = this.ModelPath.Remove(this.ModelPath.LastIndexOf('\\'));
+			return $"{modelDirectory}\\{textureName}.blp";
+		}
+
+		/// <summary>
+		/// Sets the current display info to the record pointed to by the given ID.
+		/// </summary>
+		/// <param name="variationID">The ID of the record.</param>
+		public void SetDisplayInfoByID(int variationID)
+		{
+			this.CurrentDisplayInfo = this.DatabaseProvider.GetDatabase<CreatureDisplayInfoRecord>().GetRecordByID(variationID);
+			CacheDisplayInfo(this.CurrentDisplayInfo);
+		}
+
+		/// <summary>
+		/// Caches the textures used in a display info record for use.
+		/// </summary>
+		/// <param name="displayInfoRecord">The display info record to cache.</param>
+		private void CacheDisplayInfo(CreatureDisplayInfoRecord displayInfoRecord)
+		{
+			if (displayInfoRecord == null)
+			{
+				throw new ArgumentNullException(nameof(displayInfoRecord));
+			}
+
+			foreach (MDXTexture texture in this.Model.Textures)
+			{
+				var textureIndex = 0;
+				switch (texture.TextureType)
+				{
+					case EMDXTextureType.MonsterSkin1:
+					{
+						textureIndex = 0;
+						break;
+					}
+					case EMDXTextureType.MonsterSkin2:
+					{
+						textureIndex = 1;
+						break;
+					}
+					case EMDXTextureType.MonsterSkin3:
+					{
+						textureIndex = 2;
+						break;
+					}
+					default:
+					{
+						continue;
+					}
+				}
+
+				var textureName = displayInfoRecord.TextureVariations[textureIndex].Value;
+				var modelDirectory = this.ModelPath.Remove(this.ModelPath.LastIndexOf('\\'));
+				var texturePath = $"{modelDirectory}\\{textureName}.blp";
+
+				if (!this.TextureLookup.ContainsKey(texturePath))
+				{
+					if (!string.IsNullOrEmpty(texturePath))
+					{
+						var wrapS = texture.Flags.HasFlag(EMDXTextureFlags.TextureWrapX)
+							? TextureWrapMode.Repeat
+							: TextureWrapMode.Clamp;
+
+						var wrapT = texture.Flags.HasFlag(EMDXTextureFlags.TextureWrapY)
+							? TextureWrapMode.Repeat
+							: TextureWrapMode.Clamp;
+
+						this.TextureLookup.Add
+						(
+							texturePath,
+							this.Cache.GetTexture(texturePath, this.ModelPackageGroup, wrapS, wrapT)
+						);
+					}
+					else
+					{
+						this.TextureLookup.Add
+						(
+							texturePath,
+							this.Cache.FallbackTexture
+						);
+					}
+				}
+			}
 		}
 
 		/// <summary>

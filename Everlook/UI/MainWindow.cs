@@ -263,6 +263,20 @@ namespace Everlook.UI
 
 					wmo.DoodadSet = doodadSetName;
 				}
+
+				RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
+				if (mdx != null)
+				{
+					this.ModelVariationComboBox.GetActiveIter(out TreeIter activeIter);
+
+					var variationObject = this.ModelVariationListStore.GetValue(activeIter, 1);
+					if (variationObject != null)
+					{
+						int variationID = (int)variationObject;
+
+						mdx.SetDisplayInfoByID(variationID);
+					}
+				}
 			};
 		}
 
@@ -680,14 +694,16 @@ namespace Everlook.UI
 						mdx.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
 						mdx.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
 
-						/*
-						var skinNames = mdx.GetSkinNames().ToList();
+						var skinVariations = mdx.GetSkinVariations().ToList();
 						this.ModelVariationListStore.Clear();
-						for (int i = 0; i < skinNames.Count; ++i)
+						for (int i = 0; i < skinVariations.Count; ++i)
 						{
-							this.ModelVariationListStore.AppendValues(skinNames[i], i);
+							var firstTextureName = skinVariations[i].TextureVariations.First().Value;
+							if (!string.IsNullOrEmpty(firstTextureName))
+							{
+								this.ModelVariationListStore.AppendValues(skinVariations[i].TextureVariations.First().Value, skinVariations[i].ID);
+							}
 						}
-						*/
 
 						this.ModelVariationComboBox.Active = 0;
 						this.ModelVariationComboBox.Sensitive = true;

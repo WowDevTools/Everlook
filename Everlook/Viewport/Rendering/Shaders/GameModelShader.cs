@@ -116,6 +116,20 @@ namespace Everlook.Viewport.Rendering.Shaders
 				GL.Disable(EnableCap.Blend);
 			}
 
+			var dstA = BlendingState.DestinationAlpha[modelMaterial.BlendMode];
+			var srcA = BlendingState.SourceAlpha[modelMaterial.BlendMode];
+
+			var dstC = BlendingState.DestinationColour[modelMaterial.BlendMode];
+			var srcC = BlendingState.SourceColour[modelMaterial.BlendMode];
+
+			GL.BlendFuncSeparate
+			(
+				(BlendingFactorSrc)srcC,
+				(BlendingFactorDest)dstC,
+				(BlendingFactorSrc)srcA,
+				(BlendingFactorDest)dstA
+			);
+
 			switch (modelMaterial.BlendMode)
 			{
 				case BlendingMode.AlphaKey:
