@@ -1,5 +1,5 @@
 ﻿//
-//  EverlookImageExportDialog.cs
+//  EverlookDirectoryExportDialog.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>

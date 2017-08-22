@@ -1,5 +1,5 @@
 ﻿//
-//  Program.cs
+//  IconManager.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>

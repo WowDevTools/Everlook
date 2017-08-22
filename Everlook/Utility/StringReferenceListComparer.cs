@@ -1,5 +1,5 @@
 ﻿//
-//  StringReferenceComparer.cs
+//  StringReferenceListComparer.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>

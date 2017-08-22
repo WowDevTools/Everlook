@@ -1,5 +1,5 @@
 //
-//  AudioCollection.cs
+//  AudioGroup.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>

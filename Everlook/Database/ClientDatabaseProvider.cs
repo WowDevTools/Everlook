@@ -1,5 +1,5 @@
 //
-//  GamePathStorage.cs
+//  ClientDatabaseProvider.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>

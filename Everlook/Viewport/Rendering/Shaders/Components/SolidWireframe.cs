@@ -1,5 +1,5 @@
 //
-//  WorldModelShader.cs
+//  SolidWireframe.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>

@@ -1,5 +1,5 @@
 //
-//  AudioSource.cs
+//  AudioManager.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
