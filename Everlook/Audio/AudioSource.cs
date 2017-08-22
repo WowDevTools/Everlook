@@ -271,7 +271,7 @@ namespace Everlook.Audio
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AudioSource"/> class.
 		/// </summary>
-		protected AudioSource()
+		private AudioSource()
 		{
 		}
 

@@ -46,7 +46,7 @@ namespace Everlook.Audio
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AudioManager"/> class.
 		/// </summary>
-		protected AudioManager()
+		private AudioManager()
 		{
 			this.Context = new AudioContext();
 			this.Context.MakeCurrent();
