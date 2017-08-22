@@ -44,7 +44,7 @@
             "variables" : {
                 "licenseFile": "LICENSE",
                 "year" : "2017",
-                "author" : "Jarl Gullberg <jarl.gullberg@gmail.com"
+                "author" : "Jarl Gullberg <jarl.gullberg@gmail.com>"
             },
             "xmlHeader" : false,
             "documentInterfaces" : true,
