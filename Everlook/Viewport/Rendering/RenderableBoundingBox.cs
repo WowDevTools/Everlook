@@ -38,7 +38,7 @@ namespace Everlook.Viewport.Rendering
 	/// <summary>
 	/// Wraps a <see cref="BoundingBox"/> as a renderable in-world actor.
 	/// </summary>
-	public sealed class RenderableBoundingBox : IActor
+	public sealed class RenderableBoundingBox : IRenderable, IActor
 	{
 		private readonly BoundingBoxShader BoxShader;
 

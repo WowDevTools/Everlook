@@ -28,7 +28,7 @@ namespace Everlook.Viewport.Rendering.Interfaces
 	/// Interface defining functionality for a renderable object with a position,
 	/// rotation and scale in the world.
 	/// </summary>
-	public interface IActor : IRenderable
+	public interface IActor
 	{
 		/// <summary>
 		/// Gets or sets the transform of the actor.

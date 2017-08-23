@@ -54,7 +54,7 @@ namespace Everlook.Viewport.Rendering
 	/// <summary>
 	/// Represents a renderable Game Object Model.
 	/// </summary>
-	public sealed class RenderableGameModel : ITickingActor, IDefaultCameraPositionProvider
+	public sealed class RenderableGameModel : IRenderable, ITickingActor, IDefaultCameraPositionProvider
 	{
 		/// <summary>
 		/// Logger instance for this class.

@@ -31,7 +31,8 @@ namespace Everlook.Viewport.Rendering.Core
 	/// Represents an instanced renderable. This class acts as a proxied instance of a given actor with its own
 	/// transform.
 	/// </summary>
-	public class RenderableActorInstance : IActor
+	/// <typeparam name="T">The renderable type that is encapsulated.</typeparam>
+	public class RenderableActorInstance<T> : IRenderable, IActor where T : class, IRenderable, IActor
 	{
 		/// <inheritdoc />
 		public bool IsStatic { get; }
@@ -45,24 +46,24 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <inheritdoc />
 		public Transform ActorTransform { get; set; }
 
-		private readonly IActor Target;
+		private readonly T Target;
 		private readonly Transform DefaultTransform;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="RenderableActorInstance"/> class.
+		/// Initializes a new instance of the <see cref="RenderableActorInstance{T}"/> class.
 		/// </summary>
 		/// <param name="target">The target actor to act as an instance of.</param>
-		public RenderableActorInstance(IActor target)
+		public RenderableActorInstance(T target)
 			: this(target, target.ActorTransform)
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="RenderableActorInstance"/> class.
+		/// Initializes a new instance of the <see cref="RenderableActorInstance{T}"/> class.
 		/// </summary>
 		/// <param name="target">The target actor to act as an instance of.</param>
 		/// <param name="transform">The transform of the instance.</param>
-		public RenderableActorInstance(IActor target, Transform transform)
+		public RenderableActorInstance(T target, Transform transform)
 		{
 			if (target == null)
 			{

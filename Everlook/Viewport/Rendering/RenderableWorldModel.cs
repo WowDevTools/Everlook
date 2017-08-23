@@ -53,7 +53,7 @@ namespace Everlook.Viewport.Rendering
 	/// <summary>
 	/// Represents a renderable World Model Object
 	/// </summary>
-	public sealed class RenderableWorldModel : ITickingActor, IDefaultCameraPositionProvider
+	public sealed class RenderableWorldModel : IRenderable, ITickingActor, IDefaultCameraPositionProvider
 	{
 		/// <summary>
 		/// Logger instance for this class.
@@ -145,7 +145,7 @@ namespace Everlook.Viewport.Rendering
 
 		// Doodad sets
 		private readonly Dictionary<string, RenderableGameModel> DoodadCache = new Dictionary<string, RenderableGameModel>();
-		private readonly Dictionary<string, List<RenderableActorInstance>> DoodadSets = new Dictionary<string, List<RenderableActorInstance>>();
+		private readonly Dictionary<string, List<RenderableActorInstance<RenderableGameModel>>> DoodadSets = new Dictionary<string, List<RenderableActorInstance<RenderableGameModel>>>();
 
 		/// <summary>
 		/// Gets or sets a value indicating whether or not the current renderable has been initialized.
@@ -223,7 +223,7 @@ namespace Everlook.Viewport.Rendering
 					.Skip((int)doodadSet.FirstDoodadInstanceIndex)
 					.Take((int)doodadSet.DoodadInstanceCount);
 
-				List<RenderableActorInstance> doodads = new List<RenderableActorInstance>();
+				var doodads = new List<RenderableActorInstance<RenderableGameModel>>();
 
 				foreach (var doodadInstance in doodadInstances)
 				{
@@ -232,7 +232,7 @@ namespace Everlook.Viewport.Rendering
 					{
 						doodads.Add
 						(
-							new RenderableActorInstance
+							new RenderableActorInstance<RenderableGameModel>
 							(
 								this.DoodadCache[doodadInstance.Name],
 								new Transform
@@ -262,8 +262,8 @@ namespace Everlook.Viewport.Rendering
 					}
 
 					// Then create a new renderable game model
-					MDX doodadModel = new MDX(doodadData);
-					RenderableGameModel renderableDoodad = new RenderableGameModel(doodadModel, this.ModelPackageGroup, this.Version, doodadInstance.Name)
+					var doodadModel = new MDX(doodadData);
+					var renderableDoodad = new RenderableGameModel(doodadModel, this.ModelPackageGroup, this.Version, doodadInstance.Name)
 					{
 						ActorTransform = new Transform
 						(
@@ -280,7 +280,7 @@ namespace Everlook.Viewport.Rendering
 					// Then add it as an instance to the set
 					doodads.Add
 					(
-						new RenderableActorInstance
+						new RenderableActorInstance<RenderableGameModel>
 						(
 							renderableDoodad,
 							new Transform

@@ -36,7 +36,7 @@ namespace Everlook.Viewport.Rendering
 	/// <summary>
 	/// Represents a renderable 2D image, and contains common functionality required to render one.
 	/// </summary>
-	public abstract class RenderableImage : IRenderable, IDefaultCameraPositionProvider
+	public abstract class RenderableImage : IRenderable, IActor, IDefaultCameraPositionProvider
 	{
 		/// <summary>
 		/// Gets a reference to the global shader cache.
@@ -59,7 +59,7 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Gets or sets the model transformation of the image. Used for moving and zooming.
 		/// </summary>
-		protected Transform ImageTransform { get; set; }
+		public Transform ActorTransform { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether or not the current renderable has been initialized.
@@ -190,7 +190,7 @@ namespace Everlook.Viewport.Rendering
 			// Use cached shaders whenever possible
 			this.Shader = Cache.GetShader(EverlookShader.Plain2D) as Plain2DShader;
 
-			this.ImageTransform = new Transform(
+			this.ActorTransform = new Transform(
 				new Vector3(0.0f, 0.0f, 0.0f),
 				Quaternion.FromAxisAngle(Vector3.UnitX, 0.0f),
 				new Vector3(1.0f, 1.0f, 1.0f));
@@ -247,7 +247,7 @@ namespace Everlook.Viewport.Rendering
 			this.Shader.SetTexture(this.Texture);
 
 			// Set the model view matrix
-			Matrix4 modelViewProjection = this.ImageTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
+			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
 			// Send the model matrix to the shader
 			this.Shader.SetMVPMatrix(modelViewProjection);
