@@ -182,7 +182,7 @@
     <Rule Id="SA1633" Action="Error" /> <!-- File must have header -->
     <Rule Id="SA1634" Action="Error" /> <!-- File header must show copyright -->
     <Rule Id="SA1635" Action="Error" /> <!-- File header must have copyright text -->
-    <Rule Id="SA1636" Action="None" Intentional="true" /> <!-- File header copyright text must match -->
+    <Rule Id="SA1636" Action="Error" Intentional="true" /> <!-- File header copyright text must match -->
     <Rule Id="SA1637" Action="Error" /> <!-- File header must contain file name -->
     <Rule Id="SA1638" Action="Error" /> <!-- File header file name documentation must match file name -->
     <Rule Id="SA1639" Action="Error" /> <!-- File header must have summary -->
