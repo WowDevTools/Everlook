@@ -27,7 +27,6 @@ using System.Linq;
 using Everlook.Configuration;
 using Everlook.Database;
 using Everlook.Exceptions.Shader;
-using Everlook.Explorer;
 using Everlook.Package;
 using Everlook.Utility;
 using Everlook.Viewport.Camera;
@@ -38,9 +37,7 @@ using log4net;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using SlimTK;
-using Warcraft.BLP;
 using Warcraft.Core;
-using Warcraft.Core.Extensions;
 using Warcraft.MDX;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
@@ -217,84 +214,7 @@ namespace Everlook.Viewport.Rendering
 				throw new ShaderNullException(typeof(WorldModelShader));
 			}
 
-			foreach (var doodadSet in this.Model.RootInformation.DoodadSets.DoodadSets)
-			{
-				var doodadInstances = this.Model.RootInformation.DoodadInstances.DoodadInstances
-					.Skip((int)doodadSet.FirstDoodadInstanceIndex)
-					.Take((int)doodadSet.DoodadInstanceCount);
-
-				var doodads = new List<RenderableActorInstance<RenderableGameModel>>();
-
-				foreach (var doodadInstance in doodadInstances)
-				{
-					// Check if we've cached the doodad first
-					if (this.DoodadCache.ContainsKey(doodadInstance.Name))
-					{
-						doodads.Add
-						(
-							new RenderableActorInstance<RenderableGameModel>
-							(
-								this.DoodadCache[doodadInstance.Name],
-								new Transform
-								(
-									doodadInstance.Position.AsOpenTKVector(),
-									doodadInstance.Orientation.AsOpenTKQuaternion(),
-									new Vector3(doodadInstance.Scale)
-								)
-							)
-						);
-
-						continue;
-					}
-
-					// If not, extract the doodad data
-					byte[] doodadData = this.ModelPackageGroup.ExtractFile(doodadInstance.Name);
-					if (doodadData == null)
-					{
-						// Doodads may have the *.mdx extension instead of *.m2. Try with that as well.
-						doodadData = this.ModelPackageGroup.ExtractFile(Path.ChangeExtension(doodadInstance.Name, "m2"));
-
-						if (doodadData == null)
-						{
-							Log.Warn($"Failed to load doodad: {doodadInstance.Name}");
-							continue;
-						}
-					}
-
-					// Then create a new renderable game model
-					var doodadModel = new MDX(doodadData);
-					var renderableDoodad = new RenderableGameModel(doodadModel, this.ModelPackageGroup, this.Version, doodadInstance.Name)
-					{
-						ActorTransform = new Transform
-						(
-							doodadInstance.Position.AsOpenTKVector(),
-							doodadInstance.Orientation.AsOpenTKQuaternion(),
-							new Vector3(doodadInstance.Scale)
-						)
-					};
-					renderableDoodad.Initialize();
-
-					// And cache it
-					this.DoodadCache.Add(doodadInstance.Name, renderableDoodad);
-
-					// Then add it as an instance to the set
-					doodads.Add
-					(
-						new RenderableActorInstance<RenderableGameModel>
-						(
-							renderableDoodad,
-							new Transform
-							(
-								doodadInstance.Position.AsOpenTKVector(),
-								doodadInstance.Orientation.AsOpenTKQuaternion(),
-								new Vector3(doodadInstance.Scale)
-							)
-						)
-					);
-				}
-
-				this.DoodadSets.Add(doodadSet.Name, doodads);
-			}
+			InitializeDoodads();
 
 			// TODO: Load and cache sound emitters
 
@@ -329,6 +249,117 @@ namespace Everlook.Viewport.Rendering
 			this.IsInitialized = true;
 		}
 
+		/// <summary>
+		/// Initialize the OpenGL state of the world model's referenced doodads.
+		/// </summary>
+		private void InitializeDoodads()
+		{
+			foreach (var doodad in this.DoodadCache.Select(d => d.Value))
+			{
+				doodad.Initialize();
+			}
+		}
+
+		/// <summary>
+		/// Load all of the world model's referenced doodads into memory.
+		/// </summary>
+		public void LoadDoodads()
+		{
+			foreach (var doodadSet in this.Model.RootInformation.DoodadSets.DoodadSets)
+			{
+				var doodadInstances = this.Model.RootInformation.DoodadInstances.DoodadInstances
+					.Skip((int)doodadSet.FirstDoodadInstanceIndex)
+					.Take((int)doodadSet.DoodadInstanceCount);
+
+				var renderingDoodads = new List<RenderableActorInstance<RenderableGameModel>>();
+
+				foreach (var doodadInstance in doodadInstances)
+				{
+					if (string.IsNullOrEmpty(doodadInstance.Name))
+					{
+						Log.Warn("Failed to load doodad. The instance name was null or empty.");
+						continue;
+					}
+
+					// Check if we've cached the doodad first
+					if (this.DoodadCache.ContainsKey(doodadInstance.Name))
+					{
+						renderingDoodads.Add
+						(
+							new RenderableActorInstance<RenderableGameModel>
+							(
+								this.DoodadCache[doodadInstance.Name],
+								new Transform
+								(
+									doodadInstance.Position.AsOpenTKVector(),
+									doodadInstance.Orientation.AsOpenTKQuaternion(),
+									new Vector3(doodadInstance.Scale)
+								)
+							)
+						);
+
+						continue;
+					}
+
+					// If not, extract the doodad data
+					byte[] doodadData = this.ModelPackageGroup.ExtractFile(doodadInstance.Name);
+					if (doodadData == null)
+					{
+						// Doodads may have the *.mdx extension instead of *.m2. Try with that as well.
+						doodadData = this.ModelPackageGroup.ExtractFile(Path.ChangeExtension(doodadInstance.Name, "m2"));
+
+						if (doodadData == null)
+						{
+							Log.Warn($"Failed to load doodad: {doodadInstance.Name}");
+							continue;
+						}
+					}
+
+					// Then create a new renderable game model
+					var doodadModel = new MDX(doodadData);
+					var renderableDoodad = new RenderableGameModel
+					(
+						doodadModel,
+						this.ModelPackageGroup,
+						this.Version,
+						doodadInstance.Name
+					)
+					{
+						ActorTransform = new Transform
+						(
+							doodadInstance.Position.AsOpenTKVector(),
+							doodadInstance.Orientation.AsOpenTKQuaternion(),
+							new Vector3(doodadInstance.Scale)
+						)
+					};
+
+					// And cache it
+					this.DoodadCache.Add(doodadInstance.Name, renderableDoodad);
+
+					// Then add it as an instance to the set
+					renderingDoodads.Add
+					(
+						new RenderableActorInstance<RenderableGameModel>
+						(
+							renderableDoodad,
+							new Transform
+							(
+								doodadInstance.Position.AsOpenTKVector(),
+								doodadInstance.Orientation.AsOpenTKQuaternion(),
+								new Vector3(doodadInstance.Scale)
+							)
+						)
+					);
+				}
+
+				this.DoodadSets.Add(doodadSet.Name, renderingDoodads);
+			}
+		}
+
+		/// <summary>
+		/// Initialize the OpenGL state of the given model group.
+		/// </summary>
+		/// <param name="modelGroup">The model group to initialize.</param>
 		private void InitializeModelGroup(ModelGroup modelGroup)
 		{
 			/*

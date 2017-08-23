@@ -166,7 +166,8 @@ namespace Everlook.Utility
 				return null;
 			}
 
-			IRenderable renderableWorldModel = new RenderableWorldModel(worldModel, fileReference.PackageGroup, version);
+			RenderableWorldModel renderableWorldModel = new RenderableWorldModel(worldModel, fileReference.PackageGroup, version);
+			renderableWorldModel.LoadDoodads();
 			renderableWorldModel.Initialize();
 
 			return renderableWorldModel;
