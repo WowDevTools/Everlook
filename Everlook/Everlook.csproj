@@ -64,8 +64,8 @@
     <PackageReference Include="MP3Sharp" Version="1.0.3" />
     <PackageReference Include="NETStandard.Library.NETFramework" Version="2.0.0-preview2-25405-01" />
     <PackageReference Include="liblistfile" Version="2.0.1" />
-    <PackageReference Include="OpenTK" Version="3.0.0-git00001" />
-    <PackageReference Include="OpenTK.GLWidget" Version="3.0.0-git00001" />
+    <PackageReference Include="OpenTK" Version="3.0.0-git00002" />
+    <PackageReference Include="OpenTK.GLWidget" Version="3.0.0-git00002" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" />
   </ItemGroup>
   <PropertyGroup>
