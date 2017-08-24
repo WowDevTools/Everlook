@@ -186,6 +186,13 @@ namespace Everlook.Viewport.Rendering
 				new Vector3(1.0f, 1.0f, 1.0f)
 			);
 
+			// Set a default display info for this model
+			var displayInfo = GetSkinVariations().FirstOrDefault();
+			if (displayInfo != null)
+			{
+				this.CurrentDisplayInfo = displayInfo;
+			}
+
 			this.IsInitialized = false;
 		}
 
@@ -258,12 +265,10 @@ namespace Everlook.Viewport.Rendering
 				this.SkinIndexArrayBuffers.Add(skin, skinIndexBuffer);
 			}
 
-			// Set a default display info for this model
-			var displayInfo = GetSkinVariations().FirstOrDefault();
-			if (displayInfo != null)
+			// Cache the default display info
+			if (this.CurrentDisplayInfo != null)
 			{
-				CacheDisplayInfo(displayInfo);
-				this.CurrentDisplayInfo = displayInfo;
+				CacheDisplayInfo(this.CurrentDisplayInfo);
 			}
 
 			this.IsInitialized = true;

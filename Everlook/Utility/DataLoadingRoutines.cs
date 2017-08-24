@@ -168,7 +168,6 @@ namespace Everlook.Utility
 
 			RenderableWorldModel renderableWorldModel = new RenderableWorldModel(worldModel, fileReference.PackageGroup, version);
 			renderableWorldModel.LoadDoodads();
-			renderableWorldModel.Initialize();
 
 			return renderableWorldModel;
 		}
@@ -222,7 +221,6 @@ namespace Everlook.Utility
 			}
 
 			RenderableBLP renderableImage = new RenderableBLP(binaryImage, fileReference.FilePath);
-			renderableImage.Initialize();
 
 			return renderableImage;
 		}
@@ -279,7 +277,6 @@ namespace Everlook.Utility
 			}
 
 			RenderableBitmap renderableImage = new RenderableBitmap(bitmapImage, fileReference.FilePath);
-			renderableImage.Initialize();
 
 			return renderableImage;
 		}
@@ -332,7 +329,6 @@ namespace Everlook.Utility
 			}
 
 			RenderableGameModel renderableModel = new RenderableGameModel(gameModel, fileReference.PackageGroup, version, fileReference.FilePath);
-			renderableModel.Initialize();
 
 			return renderableModel;
 		}

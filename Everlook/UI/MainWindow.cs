@@ -835,10 +835,10 @@ namespace Everlook.UI
 				IRenderable renderable = await Task.Factory.StartNew
 				(
 					() => createRenderable(item, fileReference, gamePage.Version),
-					ct,
-					TaskCreationOptions.None,
-					this.UiThreadScheduler
+					ct
 				);
+
+				renderable.Initialize();
 
 				if (renderable != null)
 				{

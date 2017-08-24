@@ -68,17 +68,25 @@ namespace Everlook.Viewport.Rendering
 		/// <summary>
 		/// Gets the the fallback texture.
 		/// </summary>
-		public Texture2D FallbackTexture { get; }
+		public Texture2D FallbackTexture
+		{
+			get
+			{
+				if (this.FallbackTextureInternal == null)
+				{
+					this.FallbackTextureInternal = new Texture2D(ResourceManager.GetFallbackImage());
+				}
+
+				return this.FallbackTextureInternal;
+			}
+		}
+
+		private Texture2D FallbackTextureInternal;
 
 		/// <summary>
 		/// A singleton instance of the rendering cache.
 		/// </summary>
 		public static readonly RenderCache Instance = new RenderCache();
-
-		private RenderCache()
-		{
-			this.FallbackTexture = new Texture2D(ResourceManager.GetFallbackImage());
-		}
 
 		/// <summary>
 		/// Gets a <see cref="ShaderProgram"/> for the specified shader type. If one is not already in the cache, it
