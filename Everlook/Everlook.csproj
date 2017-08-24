@@ -43,7 +43,6 @@
     <Content Include="OpenTK.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\GSettings\gschemas.compiled" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="$(SolutionDir)\stylecop.json">
