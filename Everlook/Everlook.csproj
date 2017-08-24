@@ -68,10 +68,11 @@
     <PackageReference Include="OpenTK.GLWidget" Version="3.0.0-git00002" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" />
   </ItemGroup>
-  <PropertyGroup>
-    <PrepareForRunDependsOn>$(PrepareForRunDependsOn);CopyGSettingsSchemas</PrepareForRunDependsOn>
-  </PropertyGroup>
-  <Target Name="CopyGSettingsSchemas">
-    <Copy SourceFiles="Content\GSettings\gschemas.compiled" DestinationFolder="$(OutDir)\share\glib-2.0\schemas\" />
+  <Target Name="CopyGTK" AfterTargets="Build">
+    <ItemGroup>
+      <GTK Include="$(SolutionDir)\lib\gtk+-3.6-bundle-win32\**\*.*" />
+    </ItemGroup>
+    <Message Text="Copying GTK+ libraries..." />
+    <Copy SourceFiles="@(GTK)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" SkipUnchangedFiles="true" />
   </Target>
 </Project>
