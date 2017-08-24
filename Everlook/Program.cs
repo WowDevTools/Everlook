@@ -23,6 +23,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using Everlook.Explorer;
 using Everlook.UI;
 using Everlook.Utility;
