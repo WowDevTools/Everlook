@@ -35,13 +35,13 @@ namespace Everlook.Viewport.Rendering.Core
 	public class RenderableActorInstance<T> : IRenderable, IActor where T : class, IRenderable, IActor
 	{
 		/// <inheritdoc />
-		public bool IsStatic { get; }
+		public bool IsStatic => this.Target.IsStatic;
 
 		/// <inheritdoc />
 		public bool IsInitialized { get; set; }
 
 		/// <inheritdoc />
-		public ProjectionType Projection { get; }
+		public ProjectionType Projection => this.Target.Projection;
 
 		/// <inheritdoc />
 		public Transform ActorTransform { get; set; }
