@@ -30,6 +30,7 @@ using Everlook.Utility;
 using GLib;
 using log4net;
 using OpenTK;
+using OpenTK.Graphics;
 using Application = Gtk.Application;
 using FileNode = liblistfile.NodeTree.Node;
 
@@ -64,7 +65,7 @@ namespace Everlook
 			Log.Info("Initializing OpenTK...");
 
 			// OpenGL
-			Toolkit.Init(new ToolkitOptions
+			var openTKToolkit = Toolkit.Init(new ToolkitOptions
 			{
 				Backend = PlatformBackend.PreferNative
 			});
@@ -89,6 +90,8 @@ namespace Everlook
 			MainWindow win = MainWindow.Create();
 			win.Show();
 			Application.Run();
+
+			openTKToolkit.Dispose();
 		}
 
 		/// <summary>
