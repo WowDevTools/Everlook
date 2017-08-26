@@ -38,7 +38,8 @@ namespace Everlook.Utility
 		public static string GetLocalDir()
 		{
 			Uri codeBaseURI = new UriBuilder(Assembly.GetExecutingAssembly().Location).Uri;
-			return Path.GetDirectoryName(Uri.UnescapeDataString(codeBaseURI.AbsolutePath)) + Path.DirectorySeparatorChar;
+
+			return Path.GetDirectoryName(Uri.UnescapeDataString(codeBaseURI.AbsolutePath));
 		}
 	}
 }

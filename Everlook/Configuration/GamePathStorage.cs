@@ -216,9 +216,12 @@ namespace Everlook.Configuration
 		/// <returns>The path storage path.</returns>
 		private static string GetPathStoragePath()
 		{
-			return
-				$"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{Path.DirectorySeparatorChar}" +
-				$"Everlook{Path.DirectorySeparatorChar}gamepaths.store";
+			return Path.Combine
+			(
+				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+				"Everlook",
+				"gamepaths.store"
+			);
 		}
 	}
 }

@@ -687,7 +687,7 @@ namespace Everlook.Explorer
 					if (fileData != null)
 					{
 						// create a temporary file and write the data to it.
-						string tempPath = Path.GetTempPath() + fileReference.Filename;
+						string tempPath = Path.Combine(Path.GetTempPath(), fileReference.Filename);
 						if (File.Exists(tempPath))
 						{
 							File.Delete(tempPath);

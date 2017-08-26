@@ -134,7 +134,7 @@ namespace Everlook.UI
 					}
 				}
 
-				SetStatusMessage(loadingProgress.Alias + " - " + statusText);
+				SetStatusMessage($"{loadingProgress.Alias} - {statusText}");
 			});
 
 			using (Stream shaderStream =
@@ -150,7 +150,7 @@ namespace Everlook.UI
 					while (sr.BaseStream.Length > sr.BaseStream.Position)
 					{
 						// Add italics to all jokes. Jokes are in Pango markup format
-						this.Jokes.Add("<i>" + sr.ReadLine() + "</i>");
+						this.Jokes.Add($"<i>{sr.ReadLine()}</i>");
 					}
 				}
 			}

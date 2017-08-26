@@ -165,18 +165,18 @@ namespace Everlook
 					);
 				}
 
-				Log.Fatal("Exception type: " + unhandledException.GetType().FullName);
-				Log.Fatal("Exception Message: " + unhandledException.Message);
-				Log.Fatal("Exception Stacktrace: " + unhandledException.StackTrace);
+				Log.Fatal($"Exception type: {unhandledException.GetType().FullName}");
+				Log.Fatal($"Exception Message: {unhandledException.Message}");
+				Log.Fatal($"Exception Stacktrace: {unhandledException.StackTrace}");
 
 				if (unhandledException.InnerException == null)
 				{
 					return;
 				}
 
-				Log.Fatal("Inner exception type: " + unhandledException.InnerException.GetType().FullName);
-				Log.Fatal("Inner exception Message: " + unhandledException.InnerException.Message);
-				Log.Fatal("Inner exception Stacktrace: " + unhandledException.InnerException.StackTrace);
+				Log.Fatal($"Inner exception type: {unhandledException.InnerException.GetType().FullName}");
+				Log.Fatal($"Inner exception Message: {unhandledException.InnerException.Message}");
+				Log.Fatal($"Inner exception Stacktrace: {unhandledException.InnerException.StackTrace}");
 			}
 		}
 	}

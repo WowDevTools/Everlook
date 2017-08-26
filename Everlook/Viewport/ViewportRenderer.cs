@@ -234,10 +234,7 @@ namespace Everlook.Viewport
 
 			Log.Debug
 			(
-				"=======\n" +
-				$"An OpenGL debug message has been received from \"{source}\" of type \"{type}\"." +
-				"=======\n" +
-				$"{messageContent}"
+				$"An OpenGL debug message has been received from \"{source}\" of type \"{type}\".\n{messageContent}"
 			);
 		}
 

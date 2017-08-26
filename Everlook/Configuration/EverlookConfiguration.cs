@@ -545,9 +545,12 @@ namespace Everlook.Configuration
 
 		private static string GetConfigurationFilePath()
 		{
-			return
-				$"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{Path.DirectorySeparatorChar}" +
-				$"Everlook{Path.DirectorySeparatorChar}everlook.ini";
+			return Path.Combine
+			(
+				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+				"Everlook",
+				"everlook.ini"
+			);
 		}
 	}
 }
