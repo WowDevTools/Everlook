@@ -781,7 +781,6 @@ namespace Everlook.UI
 		/// </summary>
 		private void ReloadViewportBackground()
 		{
-			this.ViewportWidget.OverrideBackgroundColor(StateFlags.Normal, this.Config.ViewportBackgroundColour);
 			this.RenderingEngine.SetClearColour(this.Config.ViewportBackgroundColour);
 			this.ViewportHasPendingRedraw = true;
 		}
