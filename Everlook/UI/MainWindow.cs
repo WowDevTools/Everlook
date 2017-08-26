@@ -838,11 +838,11 @@ namespace Everlook.UI
 					ct
 				);
 
-				renderable.Initialize();
-
 				if (renderable != null)
 				{
 					ct.ThrowIfCancellationRequested();
+
+					renderable.Initialize();
 
 					// Replace the renderable on the UI thread
 					await Task.Factory.StartNew
