@@ -51,12 +51,12 @@ namespace Everlook.Utility
 		private static readonly ILog Log = LogManager.GetLogger(typeof(DataLoadingRoutines));
 
 		/// <summary>
-		/// TODO: Refactor this and LoadWorldModelGroup
 		/// Loads the specified WMO file from the archives and deserialize it.
 		/// </summary>
 		/// <param name="fileReference">The archive reference to the WMO root object.</param>
+		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>A WMO object.</returns>
-		public static WMO LoadWorldModel(FileReference fileReference)
+		public static WMO LoadWorldModel(FileReference fileReference, IGameContext gameContext)
 		{
 			if (fileReference == null)
 			{
@@ -112,8 +112,9 @@ namespace Everlook.Utility
 		/// Loads the specified WMO group file from the archives and deserialize it.
 		/// </summary>
 		/// <param name="fileReference">The archive reference to the model group.</param>
+		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>A WMO object, containing just the specified model group.</returns>
-		public static WMO LoadWorldModelGroup(FileReference fileReference)
+		public static WMO LoadWorldModelGroup(FileReference fileReference, IGameContext gameContext)
 		{
 			if (fileReference == null)
 			{
@@ -159,16 +160,23 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <param name="worldModel">The model object.</param>
 		/// <param name="fileReference">The reference it was constructed from.</param>
-		/// <param name="version">The contextually relevant version.</param>
+		/// <param name="gameContext">The game context of the object. This must be a <see cref="WarcraftGameContext"/>.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
-		public static IRenderable CreateRenderableWorldModel(WMO worldModel, FileReference fileReference, WarcraftVersion version)
+		public static IRenderable CreateRenderableWorldModel(WMO worldModel, FileReference fileReference, IGameContext gameContext)
 		{
 			if (worldModel == null)
 			{
 				return null;
 			}
 
-			RenderableWorldModel renderableWorldModel = new RenderableWorldModel(worldModel, fileReference.PackageGroup, version);
+			var warcraftContext = gameContext as WarcraftGameContext;
+			if (warcraftContext == null)
+			{
+				// TODO: This is bad practice. Refactor
+				throw new ArgumentException("The given context must be a warcraft-typed context.", nameof(gameContext));
+			}
+
+			RenderableWorldModel renderableWorldModel = new RenderableWorldModel(worldModel, warcraftContext);
 			renderableWorldModel.LoadDoodads();
 
 			return renderableWorldModel;
@@ -178,8 +186,9 @@ namespace Everlook.Utility
 		/// Loads the specified BLP image from the archives and deserialize it.
 		/// </summary>
 		/// <param name="fileReference">A reference to a BLP image.</param>
+		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>A BLP object containing the image data pointed to by the reference.</returns>
-		public static BLP LoadBinaryImage(FileReference fileReference)
+		public static BLP LoadBinaryImage(FileReference fileReference, IGameContext gameContext)
 		{
 			if (fileReference == null)
 			{
@@ -213,9 +222,9 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <param name="binaryImage">The image object.</param>
 		/// <param name="fileReference">The reference it was constructed from.</param>
-		/// <param name="version">Unused.</param>
+		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
-		public static IRenderable CreateRenderableBinaryImage(BLP binaryImage, FileReference fileReference, WarcraftVersion version)
+		public static IRenderable CreateRenderableBinaryImage(BLP binaryImage, FileReference fileReference, IGameContext gameContext)
 		{
 			if (binaryImage == null)
 			{
@@ -231,8 +240,9 @@ namespace Everlook.Utility
 		/// Loads the specified image from the archives and deserializes it into a bitmap.
 		/// </summary>
 		/// <param name="fileReference">A reference to an image.</param>
+		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>A bitmap containing the image data pointed to by the reference.</returns>
-		public static Bitmap LoadBitmapImage(FileReference fileReference)
+		public static Bitmap LoadBitmapImage(FileReference fileReference, IGameContext gameContext)
 		{
 			if (fileReference == null)
 			{
@@ -269,9 +279,9 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <param name="bitmapImage">The image object.</param>
 		/// <param name="fileReference">The reference it was constructed from.</param>
-		/// <param name="version">Unused.</param>
+		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
-		public static IRenderable CreateRenderableBitmapImage(Bitmap bitmapImage, FileReference fileReference, WarcraftVersion version)
+		public static IRenderable CreateRenderableBitmapImage(Bitmap bitmapImage, FileReference fileReference, IGameContext gameContext)
 		{
 			if (bitmapImage == null)
 			{
@@ -287,8 +297,9 @@ namespace Everlook.Utility
 		/// Loads the specified game model from the archives and deserializes it into an <see cref="MDX"/> model.
 		/// </summary>
 		/// <param name="fileReference">A reference to a model.</param>
+		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>An object containing the model data pointed to by the reference.</returns>
-		public static MDX LoadGameModel(FileReference fileReference)
+		public static MDX LoadGameModel(FileReference fileReference, IGameContext gameContext)
 		{
 			if (fileReference == null)
 			{
@@ -359,16 +370,23 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <param name="gameModel">The model object.</param>
 		/// <param name="fileReference">The reference it was constructed from.</param>
-		/// <param name="version">The contextually relevant version.</param>
+		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
-		public static IRenderable CreateRenderableGameModel(MDX gameModel, FileReference fileReference, WarcraftVersion version)
+		public static IRenderable CreateRenderableGameModel(MDX gameModel, FileReference fileReference, IGameContext gameContext)
 		{
 			if (gameModel == null)
 			{
 				return null;
 			}
 
-			RenderableGameModel renderableModel = new RenderableGameModel(gameModel, fileReference.PackageGroup, version, fileReference.FilePath);
+			var warcraftContext = gameContext as WarcraftGameContext;
+			if (warcraftContext == null)
+			{
+				// TODO: This is bad practice. Refactor
+				throw new ArgumentException("The given context must be a warcraft-typed context.", nameof(gameContext));
+			}
+
+			RenderableGameModel renderableModel = new RenderableGameModel(gameModel, warcraftContext, fileReference.FilePath);
 
 			return renderableModel;
 		}

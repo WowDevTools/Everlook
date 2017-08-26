@@ -112,9 +112,8 @@ namespace Everlook.Viewport.Rendering
 		public Transform ActorTransform { get; set; }
 
 		private readonly string ModelPath;
-		private readonly PackageGroup ModelPackageGroup;
 		private readonly RenderCache Cache = RenderCache.Instance;
-		private readonly ClientDatabaseProvider DatabaseProvider;
+		private readonly WarcraftGameContext GameContext;
 
 		/// <summary>
 		/// Dictionary that maps texture paths to OpenGL textures.
@@ -153,11 +152,10 @@ namespace Everlook.Viewport.Rendering
 		/// Initializes a new instance of the <see cref="RenderableGameModel"/> class.
 		/// </summary>
 		/// <param name="inModel">The model to render.</param>
-		/// <param name="inPackageGroup">The package group the model belongs to.</param>
-		/// <param name="inVersion">The game version of the package group.</param>
+		/// <param name="gameContext">The game context.</param>
 		/// <param name="modelPath">The full path of the model in the package group.</param>
-		public RenderableGameModel(MDX inModel, PackageGroup inPackageGroup, WarcraftVersion inVersion, string modelPath)
-			: this(inModel, inPackageGroup, inVersion)
+		public RenderableGameModel(MDX inModel, WarcraftGameContext gameContext, string modelPath)
+			: this(inModel, gameContext)
 		{
 			this.ModelPath = modelPath;
 		}
@@ -166,14 +164,11 @@ namespace Everlook.Viewport.Rendering
 		/// Initializes a new instance of the <see cref="RenderableGameModel"/> class.
 		/// </summary>
 		/// <param name="inModel">The model to render.</param>
-		/// <param name="inPackageGroup">The package group the model belongs to.</param>
-		/// <param name="inVersion">The game version of the package group.</param>
-		public RenderableGameModel(MDX inModel, PackageGroup inPackageGroup, WarcraftVersion inVersion)
+		/// <param name="gameContext">The game context.</param>
+		public RenderableGameModel(MDX inModel, WarcraftGameContext gameContext)
 		{
 			this.Model = inModel;
-			this.ModelPackageGroup = inPackageGroup;
-
-			this.DatabaseProvider = new ClientDatabaseProvider(inVersion, this.ModelPackageGroup);
+			this.GameContext = gameContext;
 
 			this.ActorTransform = new Transform
 			(
@@ -236,7 +231,7 @@ namespace Everlook.Viewport.Rendering
 						this.TextureLookup.Add
 						(
 							texture.Filename,
-							this.Cache.GetTexture(texture.Filename, this.ModelPackageGroup, wrapS, wrapT)
+							this.Cache.GetTexture(texture.Filename, this.GameContext.Assets, wrapS, wrapT)
 						);
 					}
 					else
@@ -490,7 +485,7 @@ namespace Everlook.Viewport.Rendering
 		{
 			// Just like other places, sometimes the files are stored as *.mdx. We'll force that extension on both.
 			// Get any model data record which uses this model
-			var modelDataRecords = this.DatabaseProvider.GetDatabase<CreatureModelDataRecord>().Where
+			var modelDataRecords = this.GameContext.Database.GetDatabase<CreatureModelDataRecord>().Where
 			(
 				r =>
 				string.Equals
@@ -505,7 +500,7 @@ namespace Everlook.Viewport.Rendering
 			var modelDataRecordIDs = modelDataRecords.Select(r => r.ID).ToList();
 
 			// Then get any display info record which references this model
-			var displayInfoDatabase = this.DatabaseProvider.GetDatabase<CreatureDisplayInfoRecord>();
+			var displayInfoDatabase = this.GameContext.Database.GetDatabase<CreatureDisplayInfoRecord>();
 			var modelDisplayRecords = displayInfoDatabase.Where
 			(
 				r => modelDataRecordIDs.Contains(r.Model.Key)
@@ -547,7 +542,7 @@ namespace Everlook.Viewport.Rendering
 		/// <param name="variationID">The ID of the record.</param>
 		public void SetDisplayInfoByID(int variationID)
 		{
-			this.CurrentDisplayInfo = this.DatabaseProvider.GetDatabase<CreatureDisplayInfoRecord>().GetRecordByID(variationID);
+			this.CurrentDisplayInfo = this.GameContext.Database.GetDatabase<CreatureDisplayInfoRecord>().GetRecordByID(variationID);
 			CacheDisplayInfo(this.CurrentDisplayInfo);
 		}
 
@@ -607,7 +602,7 @@ namespace Everlook.Viewport.Rendering
 						this.TextureLookup.Add
 						(
 							texturePath,
-							this.Cache.GetTexture(texturePath, this.ModelPackageGroup, wrapS, wrapT)
+							this.Cache.GetTexture(texturePath, this.GameContext.Assets, wrapS, wrapT)
 						);
 					}
 					else
@@ -687,7 +682,7 @@ namespace Everlook.Viewport.Rendering
 			}
 
 			return (otherModel.Model == this.Model) &&
-					(otherModel.ModelPackageGroup == this.ModelPackageGroup) &&
+					(otherModel.GameContext == this.GameContext) &&
 					(otherModel.IsStatic == this.IsStatic);
 		}
 
@@ -697,7 +692,7 @@ namespace Everlook.Viewport.Rendering
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()
 		{
-			return (this.IsStatic.GetHashCode() + this.Model.GetHashCode() + this.ModelPackageGroup.GetHashCode()).GetHashCode();
+			return (this.IsStatic.GetHashCode() + this.Model.GetHashCode() + this.GameContext.GetHashCode()).GetHashCode();
 		}
 	}
 }

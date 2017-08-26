@@ -37,7 +37,7 @@ namespace Everlook.Explorer
 	public class FileReference : GLib.Object, IEquatable<FileReference>
 	{
 		/// <summary>
-		/// Gets the group this reference belongs to.
+		/// Gets the package this reference belongs to.
 		/// </summary>
 		/// <value>The group.</value>
 		public PackageGroup PackageGroup { get; }

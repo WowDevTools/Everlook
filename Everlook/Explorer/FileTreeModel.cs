@@ -187,7 +187,7 @@ namespace Everlook.Explorer
 			FileNode node = this.Tree.GetNode((ulong)iter.UserData);
 			if (node == null)
 			{
-				return null;
+				throw new InvalidDataException("The iter did not contain a valid node offset.");
 			}
 
 			return new FileReference(packageGroup, node, GetNodePackage(node), GetNodeFilePath(node));
@@ -204,6 +204,55 @@ namespace Everlook.Explorer
 			TreeIter iter;
 			GetIter(out iter, path);
 			return GetReferenceByIter(packageGroup, iter);
+		}
+
+		/// <summary>
+		/// Gets the path to the node pointed to by <paramref name="nodePath"/>. If the path doesn't point to a specific
+		/// node, it will be set to the deepest possible node.
+		/// </summary>
+		/// <param name="nodePath">The path to the node. Expected to have '\' as its separator character.</param>
+		/// <returns>The path to the node.</returns>
+		public TreePath GetPath(string nodePath)
+		{
+			if (string.IsNullOrEmpty(nodePath))
+			{
+				throw new ArgumentNullException(nameof(nodePath));
+			}
+
+			FileNode parentNode = null;
+			FileNode currentNode = this.Tree.Root;
+			var pathParts = nodePath.Split('\\');
+
+			TreePath result = new TreePath();
+
+			foreach (var part in pathParts)
+			{
+				foreach (var nodeOffset in currentNode.ChildOffsets)
+				{
+					var node = this.Tree.GetNode(nodeOffset);
+					if (this.Tree.GetNodeName(node) == part)
+					{
+						if (parentNode == null)
+						{
+							result.AppendIndex(0);
+						}
+						else
+						{
+							result.AppendIndex(parentNode.ChildOffsets.IndexOf(nodeOffset));
+						}
+						parentNode = currentNode;
+						currentNode = node;
+
+						continue;
+					}
+
+					// If we reach this point, we did not find a matching node on this level. Therefore, the path is
+					// invalid.
+					return null;
+				}
+			}
+
+			return result;
 		}
 
 		/// <summary>

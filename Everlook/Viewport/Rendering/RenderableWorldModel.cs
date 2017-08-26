@@ -35,7 +35,7 @@ using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
 using log4net;
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.ES20;
 using SlimTK;
 using Warcraft.Core;
 using Warcraft.MDX;
@@ -43,7 +43,16 @@ using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
 using Warcraft.WMO.GroupFile.Chunks;
 using Warcraft.WMO.RootFile.Chunks;
+using BufferTarget = OpenTK.Graphics.OpenGL.BufferTarget;
+using BufferUsageHint = OpenTK.Graphics.OpenGL.BufferUsageHint;
+using DrawElementsType = OpenTK.Graphics.OpenGL.DrawElementsType;
+using EnableCap = OpenTK.Graphics.OpenGL.EnableCap;
+using GL = OpenTK.Graphics.OpenGL.GL;
+using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 using Quaternion = OpenTK.Quaternion;
+using TextureUnit = OpenTK.Graphics.OpenGL.TextureUnit;
+using TextureWrapMode = OpenTK.Graphics.OpenGL.TextureWrapMode;
+using VertexAttribPointerType = OpenTK.Graphics.OpenGL.VertexAttribPointerType;
 
 namespace Everlook.Viewport.Rendering
 {
@@ -121,10 +130,8 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public Transform ActorTransform { get; set; }
 
-		private readonly PackageGroup ModelPackageGroup;
 		private readonly RenderCache Cache = RenderCache.Instance;
-		private readonly ClientDatabaseProvider DatabaseProvider;
-		private readonly WarcraftVersion Version;
+		private readonly WarcraftGameContext GameContext;
 
 		/// <summary>
 		/// Dictionary that maps texture paths to OpenGL textures.
@@ -175,15 +182,11 @@ namespace Everlook.Viewport.Rendering
 		/// Initializes a new instance of the <see cref="RenderableWorldModel"/> class.
 		/// </summary>
 		/// <param name="inModel">The model to render.</param>
-		/// <param name="inPackageGroup">The package group the model belongs to.</param>
-		/// <param name="inVersion">The game version of the package group.</param>
-		public RenderableWorldModel(WMO inModel, PackageGroup inPackageGroup, WarcraftVersion inVersion)
+		/// <param name="gameContext">The game context.</param>
+		public RenderableWorldModel(WMO inModel, WarcraftGameContext gameContext)
 		{
 			this.Model = inModel;
-			this.ModelPackageGroup = inPackageGroup;
-			this.Version = inVersion;
-
-			this.DatabaseProvider = new ClientDatabaseProvider(this.Version, this.ModelPackageGroup);
+			this.GameContext = gameContext;
 
 			this.ActorTransform = new Transform
 			(
@@ -225,7 +228,7 @@ namespace Everlook.Viewport.Rendering
 				{
 					if (!this.TextureLookup.ContainsKey(texture))
 					{
-						this.TextureLookup.Add(texture, this.Cache.GetTexture(texture, this.ModelPackageGroup));
+						this.TextureLookup.Add(texture, this.Cache.GetTexture(texture, this.GameContext.Assets));
 					}
 				}
 			}
@@ -302,17 +305,13 @@ namespace Everlook.Viewport.Rendering
 					}
 
 					// If not, extract the doodad data
-					byte[] doodadData = this.ModelPackageGroup.ExtractFile(doodadInstance.Name);
+					var doodadReference = this.GameContext.GetReferenceForDoodad(doodadInstance);
+					var doodadData = doodadReference.Extract();
+
 					if (doodadData == null)
 					{
-						// Doodads may have the *.mdx extension instead of *.m2. Try with that as well.
-						doodadData = this.ModelPackageGroup.ExtractFile(Path.ChangeExtension(doodadInstance.Name, "m2"));
-
-						if (doodadData == null)
-						{
-							Log.Warn($"Failed to load doodad: {doodadInstance.Name}");
-							continue;
-						}
+						Log.Warn($"Failed to load doodad \"{doodadInstance.Name}\"");
+						continue;
 					}
 
 					// Then create a new renderable game model
@@ -320,8 +319,7 @@ namespace Everlook.Viewport.Rendering
 					var renderableDoodad = new RenderableGameModel
 					(
 						doodadModel,
-						this.ModelPackageGroup,
-						this.Version,
+						this.GameContext,
 						doodadInstance.Name
 					)
 					{
@@ -641,7 +639,7 @@ namespace Everlook.Viewport.Rendering
 			}
 
 			return (otherModel.Model == this.Model) &&
-					(otherModel.ModelPackageGroup == this.ModelPackageGroup) &&
+					(otherModel.GameContext == this.GameContext) &&
 					(otherModel.IsStatic == this.IsStatic);
 		}
 
@@ -651,7 +649,7 @@ namespace Everlook.Viewport.Rendering
 		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode()
 		{
-			return (this.IsStatic.GetHashCode() + this.Model.GetHashCode() + this.ModelPackageGroup.GetHashCode()).GetHashCode();
+			return (this.IsStatic.GetHashCode() + this.Model.GetHashCode() + this.GameContext.GetHashCode()).GetHashCode();
 		}
 	}
 }

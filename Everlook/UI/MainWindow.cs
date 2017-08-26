@@ -829,13 +829,13 @@ namespace Everlook.UI
 			{
 				T item = await Task.Run
 				(
-					() => referenceLoadingRoutine(fileReference),
+					() => referenceLoadingRoutine(fileReference, gamePage.GameContext),
 					ct
 				);
 
 				IRenderable renderable = await Task.Factory.StartNew
 				(
-					() => createRenderable(item, fileReference, gamePage.Version),
+					() => createRenderable(item, fileReference, gamePage.GameContext),
 					ct
 				);
 

@@ -92,12 +92,9 @@ namespace Everlook.Explorer
 		private readonly ImageMenuItem CopyPathItem;
 
 		/// <summary>
-		/// Gets the <see cref="WarcraftVersion"/> of the game that is loaded into this page.
-		/// TODO: This should probably be broken out into an IGameContext with WarcraftVersion, ClientDatabaseProvider and IPackage exposed
+		/// Gets the game context associated with this page.
 		/// </summary>
-		public WarcraftVersion Version { get; }
-
-		private readonly ClientDatabaseProvider DatabaseProvider;
+		public WarcraftGameContext GameContext { get; }
 
 		/// <summary>
 		/// Static reference to the configuration handler.
@@ -128,11 +125,8 @@ namespace Everlook.Explorer
 		/// <param name="version">The Warcraft version that the game page is contextually relevant for.</param>
 		public GamePage(PackageGroup packageGroup, OptimizedNodeTree nodeTree, WarcraftVersion version)
 		{
-			this.Packages = packageGroup;
-			this.Version = version;
-			this.DatabaseProvider = new ClientDatabaseProvider(this.Version, this.Packages);
-
 			this.TreeModel = new FileTreeModel(nodeTree);
+			this.GameContext = new WarcraftGameContext(version, packageGroup, this.TreeModel);
 
 			this.TreeAlignment = new Alignment(0.5f, 0.5f, 1.0f, 1.0f)
 			{
