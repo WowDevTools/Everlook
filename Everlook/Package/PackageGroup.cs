@@ -230,12 +230,7 @@ namespace Everlook.Package
 			}
 
 			PackageInteractionHandler package = GetPackageByName(fileReference.PackageName);
-			if (package != null)
-			{
-				return package.GetReferenceInfo(fileReference);
-			}
-
-			return null;
+			return package.GetReferenceInfo(fileReference);
 		}
 
 		/// <summary>
@@ -309,7 +304,7 @@ namespace Everlook.Package
 				}
 			}
 
-			return null;
+			throw new ArgumentException($"No package with the given name could be found: {packageName}", nameof(packageName));
 		}
 
 		/// <summary>
