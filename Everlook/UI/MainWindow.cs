@@ -43,7 +43,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Input;
 using Warcraft.Core;
-
+using Warcraft.DBC.Definitions;
 using Application = Gtk.Application;
 using EventArgs = System.EventArgs;
 using FileNode = liblistfile.NodeTree.Node;
@@ -696,12 +696,12 @@ namespace Everlook.UI
 
 						var skinVariations = mdx.GetSkinVariations().ToList();
 						this.ModelVariationListStore.Clear();
-						for (int i = 0; i < skinVariations.Count; ++i)
+						foreach (var variation in skinVariations)
 						{
-							var firstTextureName = skinVariations[i].TextureVariations.First().Value;
+							var firstTextureName = variation.TextureVariations.First().Value;
 							if (!string.IsNullOrEmpty(firstTextureName))
 							{
-								this.ModelVariationListStore.AppendValues(skinVariations[i].TextureVariations.First().Value, skinVariations[i].ID);
+								this.ModelVariationListStore.AppendValues(variation.TextureVariations.First().Value, variation.ID);
 							}
 						}
 
