@@ -351,6 +351,8 @@ namespace Everlook.Viewport.Rendering
 		/// <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> was occupying.</remarks>
 		public virtual void Dispose()
 		{
+			this.IsDisposed = true;
+
 			this.VertexBuffer.Dispose();
 			this.VertexIndexBuffer.Dispose();
 			this.UVBuffer.Dispose();

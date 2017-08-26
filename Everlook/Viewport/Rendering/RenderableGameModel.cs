@@ -663,6 +663,8 @@ namespace Everlook.Viewport.Rendering
 		/// <see cref="RenderableGameModel"/> was occupying.</remarks>
 		public void Dispose()
 		{
+			this.IsDisposed = true;
+
 			this.VertexBuffer.Dispose();
 
 			foreach (var skinIndexArrayBuffer in this.SkinIndexArrayBuffers)

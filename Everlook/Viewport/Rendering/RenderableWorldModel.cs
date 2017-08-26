@@ -597,6 +597,8 @@ namespace Everlook.Viewport.Rendering
 		/// <see cref="RenderableWorldModel"/> was occupying.</remarks>
 		public void Dispose()
 		{
+			this.IsDisposed = true;
+
 			this.Model.Dispose();
 
 			foreach (var vertexBuffer in this.VertexBufferLookup)

@@ -183,6 +183,8 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Dispose()
 		{
+			this.IsDisposed = true;
+
 			this.VertexBuffer.Dispose();
 			this.VertexIndexesBuffer.Dispose();
 		}
