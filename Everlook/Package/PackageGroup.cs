@@ -246,13 +246,13 @@ namespace Everlook.Package
 				throw new ArgumentNullException(nameof(fileReference));
 			}
 
-			PackageInteractionHandler package = GetPackageByName(fileReference.PackageName);
-			if (package != null)
+			if (fileReference.IsVirtual)
 			{
-				return package.ExtractReference(fileReference);
+				return ExtractReference(fileReference);
 			}
 
-			return ExtractReference(fileReference);
+			PackageInteractionHandler package = GetPackageByName(fileReference.PackageName);
+			return package?.ExtractReference(fileReference);
 		}
 
 		/// <summary>
@@ -296,6 +296,11 @@ namespace Everlook.Package
 		/// <param name="packageName">Package name.</param>
 		private PackageInteractionHandler GetPackageByName(string packageName)
 		{
+			if (string.IsNullOrEmpty(packageName))
+			{
+				throw new ArgumentException("Cannot find a package with an empty name.", nameof(packageName));
+			}
+
 			foreach (PackageInteractionHandler package in this.Packages)
 			{
 				if (package.PackageName == packageName)

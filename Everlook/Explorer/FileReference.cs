@@ -54,10 +54,16 @@ namespace Everlook.Explorer
 		public string PackageName { get; } = string.Empty;
 
 		/// <summary>
-		/// Gets the file path of the file inside the package.
+		/// Gets the file path of the file inside the package. This string uses the backslash character ('\') as its
+		/// directory separator.
 		/// </summary>
 		/// <value>The file path.</value>
 		public string FilePath { get; } = string.Empty;
+
+		/// <summary>
+		/// Gets the directory that the file resides in.
+		/// </summary>
+		public string FileDirectory => Path.GetDirectoryName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar));
 
 		/// <summary>
 		/// Gets the file info of this reference.
@@ -99,6 +105,11 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <value><c>true</c> if this instance is file; otherwise, <c>false</c>.</value>
 		public bool IsFile => this.Node.Type.HasFlag(NodeType.File);
+
+		/// <summary>
+		/// Gets a value indicating whether this reference is a virtual reference.
+		/// </summary>
+		public bool IsVirtual => this.Node.Type.HasFlag(NodeType.Virtual);
 
 		/// <summary>
 		/// Gets the name of the file or directory.

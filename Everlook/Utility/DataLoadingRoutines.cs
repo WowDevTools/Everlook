@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using Everlook.Explorer;
@@ -29,7 +30,9 @@ using Everlook.Viewport.Rendering.Interfaces;
 using log4net;
 using Warcraft.BLP;
 using Warcraft.Core;
+using Warcraft.Core.Extensions;
 using Warcraft.MDX;
+using Warcraft.MDX.Geometry.Skin;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
 
@@ -297,7 +300,45 @@ namespace Everlook.Utility
 				byte[] fileData = fileReference.Extract();
 				if (fileData != null)
 				{
-					return new MDX(fileData);
+					var model = new MDX(fileData);
+
+					if (model.Version >= WarcraftVersion.Wrath)
+					{
+						// Load external skins
+						var modelFilename = Path.GetFileNameWithoutExtension(fileReference.Filename);
+						var modelDirectory = fileReference.FileDirectory.Replace(Path.DirectorySeparatorChar, '\\');
+
+						List<MDXSkin> skins = new List<MDXSkin>();
+						for (int i = 0; i < model.SkinCount; ++i)
+						{
+							var modelSkinPath = $"{modelDirectory}\\{modelFilename}{i:D2}.skin";
+							var skinData = fileReference.PackageGroup.ExtractFile(modelSkinPath);
+
+							if (skinData == null)
+							{
+								Log.Warn($"Failed to load model skin \"{modelSkinPath}\".");
+								break;
+							}
+
+							using (MemoryStream ms = new MemoryStream(skinData))
+							{
+								using (BinaryReader br = new BinaryReader(ms))
+								{
+									var skinIdentifier = new string(br.ReadChars(4));
+									if (skinIdentifier != "SKIN")
+									{
+										break;
+									}
+
+									skins.Add(br.ReadMDXSkin(model.Version));
+								}
+							}
+						}
+
+						model.SetSkins(skins);
+					}
+
+					return model;
 				}
 			}
 			catch (InvalidFileSectorTableException fex)
