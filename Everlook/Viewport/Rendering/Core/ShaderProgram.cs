@@ -51,7 +51,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// Initializes a new instance of the <see cref="ShaderProgram"/> class, compiling and linking its associated shader sources into
 		/// a shader program on the GPU.
 		/// </summary>
-		public ShaderProgram()
+		protected ShaderProgram()
 		{
 			string vertexShaderSource = GetShaderSource(this.VertexShaderResourceName);
 			string fragmentShaderSource = GetShaderSource(this.FragmentShaderResourceName);
