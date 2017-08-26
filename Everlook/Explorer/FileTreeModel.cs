@@ -219,33 +219,31 @@ namespace Everlook.Explorer
 				throw new ArgumentNullException(nameof(nodePath));
 			}
 
-			FileNode parentNode = null;
-			FileNode currentNode = this.Tree.Root;
+			FileNode parentNode = this.Tree.Root;
 			var pathParts = nodePath.Split('\\');
 
 			TreePath result = new TreePath();
 
 			foreach (var part in pathParts)
 			{
-				foreach (var nodeOffset in currentNode.ChildOffsets)
+				bool foundNode = false;
+				foreach (var nodeOffset in parentNode.ChildOffsets)
 				{
 					var node = this.Tree.GetNode(nodeOffset);
-					if (this.Tree.GetNodeName(node) == part)
+					if (string.Equals(this.Tree.GetNodeName(node), part, StringComparison.OrdinalIgnoreCase))
 					{
-						if (parentNode == null)
-						{
-							result.AppendIndex(0);
-						}
-						else
-						{
-							result.AppendIndex(parentNode.ChildOffsets.IndexOf(nodeOffset));
-						}
-						parentNode = currentNode;
-						currentNode = node;
+						var childIndex = parentNode.ChildOffsets.IndexOf(nodeOffset);
+						result.AppendIndex(childIndex);
 
-						continue;
+						parentNode = node;
+
+						foundNode = true;
+						break;
 					}
+				}
 
+				if (!foundNode)
+				{
 					// If we reach this point, we did not find a matching node on this level. Therefore, the path is
 					// invalid.
 					return null;

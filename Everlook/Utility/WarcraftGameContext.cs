@@ -1,5 +1,5 @@
 ﻿//
-//  GameContext.cs
+//  WarcraftGameContext.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -109,7 +109,13 @@ namespace Everlook.Utility
 				throw new ArgumentNullException(nameof(path));
 			}
 
-			return this.FileTree.GetReferenceByPath(this.Assets, this.FileTree.GetPath(path));
+			var treePath = this.FileTree.GetPath(path);
+			if (treePath == null)
+			{
+				return null;
+			}
+
+			return this.FileTree.GetReferenceByPath(this.Assets, treePath);
 		}
 	}
 }

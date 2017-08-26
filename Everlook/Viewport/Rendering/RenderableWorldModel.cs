@@ -306,16 +306,15 @@ namespace Everlook.Viewport.Rendering
 
 					// If not, extract the doodad data
 					var doodadReference = this.GameContext.GetReferenceForDoodad(doodadInstance);
-					var doodadData = doodadReference.Extract();
+					var doodadModel = DataLoadingRoutines.LoadGameModel(doodadReference, this.GameContext);
 
-					if (doodadData == null)
+					if (doodadModel == null)
 					{
 						Log.Warn($"Failed to load doodad \"{doodadInstance.Name}\"");
 						continue;
 					}
 
 					// Then create a new renderable game model
-					var doodadModel = new MDX(doodadData);
 					var renderableDoodad = new RenderableGameModel
 					(
 						doodadModel,

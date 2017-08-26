@@ -78,8 +78,6 @@ namespace Everlook.Explorer
 
 		private TreeView Tree { get; }
 
-		private readonly PackageGroup Packages;
-
 		private readonly FileTreeModel TreeModel;
 		private readonly TreeModelSort TreeSorter;
 		private readonly TreeModelFilter TreeFilter;
@@ -558,7 +556,7 @@ namespace Everlook.Explorer
 				return;
 			}
 
-			FileReference currentFileReference = this.TreeModel.GetReferenceByPath(this.Packages, modelPath);
+			FileReference currentFileReference = this.TreeModel.GetReferenceByPath(this.GameContext.Assets, modelPath);
 			if (currentFileReference.IsFile || currentFileReference.IsDirectory)
 			{
 				this.SaveItem.Sensitive = true;
@@ -642,7 +640,7 @@ namespace Everlook.Explorer
 			TreeIter filterIter = this.TreeSorter.ConvertIterToChildIter(selectedIter);
 			TreeIter modeliter = this.TreeFilter.ConvertIterToChildIter(filterIter);
 
-			return this.TreeModel.GetReferenceByIter(this.Packages, modeliter);
+			return this.TreeModel.GetReferenceByIter(this.GameContext.Assets, modeliter);
 		}
 
 		/// <summary>
@@ -796,7 +794,7 @@ namespace Everlook.Explorer
 		public void Dispose()
 		{
 			this.TreeAlignment?.Dispose();
-			this.Packages?.Dispose();
+			this.GameContext.Assets?.Dispose();
 			this.TreeModel?.Dispose();
 			this.TreeSorter?.Dispose();
 			this.TreeFilter?.Dispose();
