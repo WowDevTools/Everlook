@@ -198,7 +198,7 @@ namespace Everlook.Package
 		/// that one is prioritized over the one stored in the archive.
 		/// </summary>
 		/// <returns>The listfile.</returns>
-		public List<string> GetFileList()
+		public IEnumerable<string> GetFileList()
 		{
 			return this.Package.GetFileList();
 		}
