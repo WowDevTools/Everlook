@@ -564,7 +564,7 @@ namespace Everlook.Viewport.Rendering
 
 			foreach (MDXTexture texture in this.Model.Textures)
 			{
-				var textureIndex = 0;
+				int textureIndex;
 				switch (texture.TextureType)
 				{
 					case EMDXTextureType.MonsterSkin1:
