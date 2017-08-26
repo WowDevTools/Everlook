@@ -34,7 +34,7 @@ namespace Everlook.UI
 	/// The main dialog that is shown when the program is loading games. External processes update the information
 	/// on it.
 	/// </summary>
-	public partial class EverlookGameLoadingDialog : Gtk.Dialog
+	public partial class EverlookGameLoadingDialog : Dialog
 	{
 		/// <summary>
 		/// Gets the source of the cancellation token associated with this dialog.
