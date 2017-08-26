@@ -588,8 +588,10 @@ namespace Everlook.UI
 
 		private void AddGamePage(string alias, WarcraftVersion version, PackageGroup group, OptimizedNodeTree nodeTree)
 		{
-			GamePage page = new GamePage(group, nodeTree, version);
-			page.Alias = alias;
+			GamePage page = new GamePage(group, nodeTree, version)
+			{
+				Alias = alias
+			};
 
 			page.FileLoadRequested += OnFileLoadRequested;
 			page.ExportItemRequested += OnExportItemRequested;
