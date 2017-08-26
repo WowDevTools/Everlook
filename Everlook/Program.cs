@@ -23,14 +23,12 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using Everlook.Explorer;
 using Everlook.UI;
 using Everlook.Utility;
 using GLib;
 using log4net;
 using OpenTK;
-using OpenTK.Graphics;
 using Application = Gtk.Application;
 using FileNode = liblistfile.NodeTree.Node;
 

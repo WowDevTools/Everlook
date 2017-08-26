@@ -31,7 +31,6 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using SlimTK;
-using Warcraft.Core.Extensions;
 
 namespace Everlook.Viewport.Rendering
 {

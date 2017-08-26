@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Text;
 using Everlook.Utility;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders;

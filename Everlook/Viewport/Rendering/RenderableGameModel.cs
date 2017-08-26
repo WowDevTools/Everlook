@@ -20,22 +20,18 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Everlook.Configuration;
 using Everlook.Database;
 using Everlook.Exceptions.Shader;
-using Everlook.Explorer;
 using Everlook.Package;
 using Everlook.Utility;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
-using GLib;
-using Gtk;
 using log4net;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;

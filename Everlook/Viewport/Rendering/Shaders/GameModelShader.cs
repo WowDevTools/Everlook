@@ -26,7 +26,6 @@ using Everlook.Viewport.Rendering.Shaders.Components;
 using OpenTK.Graphics.OpenGL;
 using Warcraft.Core.Shading.Blending;
 using Warcraft.MDX.Visual;
-using Warcraft.WMO.RootFile.Chunks;
 
 namespace Everlook.Viewport.Rendering.Shaders
 {
