@@ -31,6 +31,7 @@ using Everlook.Audio;
 using Everlook.Configuration;
 using Everlook.Explorer;
 using Everlook.Package;
+using Everlook.UI.Helpers;
 using Everlook.Utility;
 using Everlook.Viewport;
 using Everlook.Viewport.Rendering;
@@ -171,20 +172,20 @@ namespace Everlook.UI
 			this.ExportQueueTreeView.GetColumn(0).SetCellDataFunc
 			(
 				this.ExportQueueTreeView.GetColumn(0).Cells[0],
-				RenderExportQueueReferenceIcon
+				CellRenderers.RenderExportQueueReferenceIcon
 			);
 
 			this.ExportQueueTreeView.GetColumn(0).Expand = true;
 			this.ExportQueueTreeView.GetColumn(0).SetCellDataFunc
 			(
 				this.ExportQueueTreeView.GetColumn(0).Cells[1],
-				RenderExportQueueReferenceName
+				CellRenderers.RenderExportQueueReferenceName
 			);
 
 			this.ModelVariationComboBox.SetCellDataFunc
 			(
 				this.ModelVariationTextRenderer,
-				RenderModelVariationName
+				CellRenderers.RenderModelVariationName
 			);
 
 			this.RemoveQueueItem.Activated += OnQueueRemoveContextItemActivated;
@@ -193,6 +194,8 @@ namespace Everlook.UI
 			this.RunExportQueueButton.Clicked += OnRunExportQueueButtonClicked;
 
 			this.FileFilterComboBox.Changed += OnFilterChanged;
+
+			this.CancelCurrentActionButton.Clicked += OnCancelCurrentActionClicked;
 
 			/*
 				Set up item control sections to default states
@@ -355,6 +358,17 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
+		/// Handles cancelling the current topmost cancellable action in the UI.
+		/// </summary>
+		/// <param name="sender">The sending object.</param>
+		/// <param name="e">The event arguments.</param>
+		[ConnectBefore]
+		private void OnCancelCurrentActionClicked(object sender, EventArgs e)
+		{
+			this.FileLoadingCancellationSource.Cancel();
+		}
+
+		/// <summary>
 		/// Handles expansion of the viewport pane when the window is maximized.
 		/// </summary>
 		/// <param name="o">The sending object.</param>
@@ -397,84 +411,6 @@ namespace Everlook.UI
 			{
 				this.Window.Cursor = new Cursor(CursorType.Hand2);
 			}
-		}
-
-		/// <summary>
-		/// Renders the name of a model variation in the variation dropdown.
-		/// </summary>
-		/// <param name="cellLayout">The layout of the cell.</param>
-		/// <param name="cell">The cell.</param>
-		/// <param name="model">The model of the combobox.</param>
-		/// <param name="iter">The iter pointing to the rendered row.</param>
-		private void RenderModelVariationName(ICellLayout cellLayout, CellRenderer cell, ITreeModel model, TreeIter iter)
-		{
-			CellRendererText cellText = cell as CellRendererText;
-			if (cellText == null)
-			{
-				return;
-			}
-
-			string storedText = (string)model.GetValue(iter, 0);
-
-			// Builtin override for the standard set name
-			if (storedText.ToLowerInvariant().Contains("set_$defaultglobal"))
-			{
-				cellText.Text = "Default";
-				return;
-			}
-
-			string transientText = storedText.ReplaceCaseInsensitive("set_", string.Empty);
-
-			// Insert spaces between words and abbreviations
-			transientText = Regex.Replace(transientText, @"(\B[A-Z0-9]+?(?=[A-Z][^A-Z])|\B[A-Z0-9]+?(?=[^A-Z]))", " $1");
-
-			cellText.Text = transientText;
-		}
-
-		/// <summary>
-		/// Renders the name of a file reference in the export queue.
-		/// </summary>
-		/// <param name="column">The column which the cell is in.</param>
-		/// <param name="cell">The cell which the reference is in.</param>
-		/// <param name="model">The model of the treeview.</param>
-		/// <param name="iter">The <see cref="TreeIter"/> pointing to the row the reference is in.</param>
-		private static void RenderExportQueueReferenceName(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
-		{
-			CellRendererText cellText = cell as CellRendererText;
-			FileReference reference = (FileReference)model.GetValue(iter, 0);
-
-			if (reference == null || cellText == null)
-			{
-				return;
-			}
-
-			cellText.Text = reference.FilePath.Replace('\\', IOPath.DirectorySeparatorChar);
-		}
-
-		/// <summary>
-		/// Renders the icon of a file reference in the export queue.
-		/// </summary>
-		/// <param name="column">The column which the cell is in.</param>
-		/// <param name="cell">The cell which the icon is in.</param>
-		/// <param name="model">The model of the treeview.</param>
-		/// <param name="iter">The <see cref="TreeIter"/> pointing to the row the icon is in.</param>
-		private static void RenderExportQueueReferenceIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
-		{
-			CellRendererPixbuf cellIcon = cell as CellRendererPixbuf;
-			FileReference reference = (FileReference)model.GetValue(iter, 0);
-
-			if (reference == null || cellIcon == null)
-			{
-				return;
-			}
-
-			if (reference.Node.Type.HasFlag(NodeType.Directory))
-			{
-				cellIcon.Pixbuf = IconManager.GetIconForFiletype(WarcraftFileType.Directory);
-				return;
-			}
-
-			cellIcon.Pixbuf = IconManager.GetIconForFiletype(reference.Node.FileType);
 		}
 
 		/// <summary>
@@ -1107,11 +1043,12 @@ namespace Everlook.UI
 		/// <param name="fileReferences">The file references to save.</param>
 		private async void OnSaveRequested(GamePage page, IEnumerable<FileReference> fileReferences)
 		{
+			uint statusMessageContextID = this.MainStatusBar.GetContextId($"itemLoad_{fileReferences.GetHashCode()}");
+
 			foreach (var fileReference in fileReferences)
 			{
 				this.StatusSpinner.Active = true;
 
-				uint statusMessageContextID = this.MainStatusBar.GetContextId($"itemLoad_{fileReference.FilePath}");
 				uint statusMessageID = this.MainStatusBar.Push
 				(
 					statusMessageContextID,
@@ -1175,6 +1112,7 @@ namespace Everlook.UI
 		private async void OnFileLoadRequested(GamePage page, FileReference fileReference)
 		{
 			WarcraftFileType referencedType = fileReference.GetReferencedFileType();
+
 			switch (referencedType)
 			{
 				case WarcraftFileType.BinaryImage:
@@ -1347,6 +1285,8 @@ namespace Everlook.UI
 			this.IsShuttingDown = true;
 
 			Idle.Remove(OnIdleRenderFrame);
+
+			this.FileLoadingCancellationSource?.Cancel();
 
 			this.RenderingEngine.SetRenderTarget(null);
 			this.RenderingEngine.Dispose();

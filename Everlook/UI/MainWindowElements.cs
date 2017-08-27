@@ -53,6 +53,8 @@ namespace Everlook.UI
 
 		[UIElement] private readonly ComboBox FileFilterComboBox;
 
+		[UIElement] private readonly Button CancelCurrentActionButton;
+
 		/*
 			Export queue elements
 		*/
