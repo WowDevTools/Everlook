@@ -1093,11 +1093,13 @@ namespace Everlook.UI
 					{
 						Log.Warn($"Failed to save \"{fileReference.Filename}\": {iex}");
 					}
-					finally
-					{
-						this.MainStatusBar.Remove(statusMessageContextID, statusMessageID);
-					}
 				}
+				else
+				{
+					Log.Warn($"Failed to save \"{fileReference.Filename}\": Could not extract any data from the archives.");
+				}
+
+				this.MainStatusBar.Remove(statusMessageContextID, statusMessageID);
 			}
 
 			this.StatusSpinner.Active = false;
