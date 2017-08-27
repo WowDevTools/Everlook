@@ -22,6 +22,7 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Everlook.Package;
 using liblistfile.NodeTree;
 using Warcraft.Core;
@@ -140,6 +141,15 @@ namespace Everlook.Explorer
 		public FileReference(PackageGroup packageGroup)
 		{
 			this.PackageGroup = packageGroup;
+		}
+
+		/// <summary>
+		/// Asynchronously extracts this instance from the package group it is associated with.
+		/// </summary>
+		/// <returns>A task wrapping the raw data of the file pointed to by the reference.</returns>
+		public Task<byte[]> ExtractAsync()
+		{
+			return Task.Factory.StartNew(Extract);
 		}
 
 		/// <summary>

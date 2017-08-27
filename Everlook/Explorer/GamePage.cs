@@ -55,6 +55,11 @@ namespace Everlook.Explorer
 		public event Action<GamePage, FileReference> FileLoadRequested;
 
 		/// <summary>
+		/// Raised whenever a file or folder is requested to be saved.
+		/// </summary>
+		public event Action<GamePage, IEnumerable<FileReference>> SaveRequested;
+
+		/// <summary>
 		/// Raised whenever a file is requested to be queued for exporting.
 		/// </summary>
 		public event Action<GamePage, FileReference> EnqueueFileExportRequested;
@@ -502,29 +507,7 @@ namespace Everlook.Explorer
 				exportTargets.Add(fileReference);
 			}
 
-			foreach (var exportTarget in exportTargets)
-			{
-				string cleanFilepath = exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
-
-				string exportpath;
-				if (this.Config.KeepFileDirectoryStructure)
-				{
-					exportpath = Path.Combine(this.Config.DefaultExportDirectory, cleanFilepath);
-					Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
-				}
-				else
-				{
-					string filename = Path.GetFileName(cleanFilepath);
-					exportpath = Path.Combine(this.Config.DefaultExportDirectory, filename);
-					Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
-				}
-
-				byte[] file = exportTarget.Extract();
-				if (file != null)
-				{
-					File.WriteAllBytes(exportpath, file);
-				}
-			}
+			RequestSave(exportTargets);
 		}
 
 		/// <summary>
@@ -768,6 +751,15 @@ namespace Everlook.Explorer
 		private void RequestFileLoad(FileReference fileReference)
 		{
 			this.FileLoadRequested?.Invoke(this, fileReference);
+		}
+
+		/// <summary>
+		/// Requests the saving of the specified list of <see cref="FileReference"/> objects in the main UI.
+		/// </summary>
+		/// <param name="fileReferences">The references to save.</param>
+		private void RequestSave(IEnumerable<FileReference> fileReferences)
+		{
+			this.SaveRequested?.Invoke(this, fileReferences);
 		}
 
 		/// <summary>

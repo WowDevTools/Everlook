@@ -21,6 +21,8 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -594,6 +596,7 @@ namespace Everlook.UI
 			};
 
 			page.FileLoadRequested += OnFileLoadRequested;
+			page.SaveRequested += OnSaveRequested;
 			page.ExportItemRequested += OnExportItemRequested;
 			page.EnqueueFileExportRequested += OnEnqueueItemRequested;
 
@@ -1095,6 +1098,72 @@ namespace Everlook.UI
 					await RefilterTrees();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Handles saving of a set of files to disk.
+		/// </summary>
+		/// <param name="page">The <see cref="GamePage"/> in which the event originated.</param>
+		/// <param name="fileReferences">The file references to save.</param>
+		private async void OnSaveRequested(GamePage page, IEnumerable<FileReference> fileReferences)
+		{
+			foreach (var fileReference in fileReferences)
+			{
+				this.StatusSpinner.Active = true;
+
+				uint statusMessageContextID = this.MainStatusBar.GetContextId($"itemLoad_{fileReference.FilePath}");
+				uint statusMessageID = this.MainStatusBar.Push
+				(
+					statusMessageContextID,
+					$"Saving \"{fileReference.Filename}\"..."
+				);
+
+				string cleanFilepath = fileReference.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
+
+				string exportpath;
+				if (this.Config.KeepFileDirectoryStructure)
+				{
+					exportpath = IOPath.Combine(this.Config.DefaultExportDirectory, cleanFilepath);
+					Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
+				}
+				else
+				{
+					string filename = IOPath.GetFileName(cleanFilepath);
+					exportpath = IOPath.Combine(this.Config.DefaultExportDirectory, filename);
+					Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
+				}
+
+				byte[] file = await fileReference.ExtractAsync();
+				if (file != null)
+				{
+					try
+					{
+						if (File.Exists(exportpath))
+						{
+							File.Delete(exportpath);
+						}
+
+						using (var fs = new FileStream(exportpath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+						{
+							await fs.WriteAsync(file, 0, file.Length);
+						}
+					}
+					catch (UnauthorizedAccessException unex)
+					{
+						Log.Warn($"Failed to save \"{fileReference.Filename}\": {unex}");
+					}
+					catch (IOException iex)
+					{
+						Log.Warn($"Failed to save \"{fileReference.Filename}\": {iex}");
+					}
+					finally
+					{
+						this.MainStatusBar.Remove(statusMessageContextID, statusMessageID);
+					}
+				}
+			}
+
+			this.StatusSpinner.Active = false;
 		}
 
 		/// <summary>
