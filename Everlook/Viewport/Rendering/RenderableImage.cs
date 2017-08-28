@@ -195,6 +195,10 @@ namespace Everlook.Viewport.Rendering
 				Quaternion.FromAxisAngle(Vector3.UnitX, 0.0f),
 				new Vector3(1.0f, 1.0f, 1.0f));
 
+			GL.Enable(EnableCap.Blend);
+			GL.BlendEquation(BlendEquationMode.FuncAdd);
+			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
 			this.IsInitialized = true;
 		}
 
