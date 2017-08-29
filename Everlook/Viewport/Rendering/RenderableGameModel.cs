@@ -38,6 +38,7 @@ using OpenTK.Graphics.OpenGL;
 using SlimTK;
 using Warcraft.Core;
 using Warcraft.Core.Extensions;
+using Warcraft.Core.Shading.MDX;
 using Warcraft.DBC.Definitions;
 using Warcraft.DBC.SpecialFields;
 using Warcraft.MDX;
@@ -396,6 +397,7 @@ namespace Everlook.Viewport.Rendering
 					)
 				)
 				{
+					var fragmentShader = MDXShaderHelper.GetFragmentShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
 					var batchMaterial = this.Model.Materials[renderBatch.MaterialIndex];
 					this.Shader.SetMaterial(batchMaterial);
 

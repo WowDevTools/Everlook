@@ -23,6 +23,7 @@
 using System;
 using Everlook.Exceptions.Shader;
 using Everlook.Utility;
+using Everlook.Viewport.Rendering.Shaders.GLSLExtended;
 using log4net;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -211,7 +212,12 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <returns>The source of the shader.</returns>
 		private static string GetShaderSource(string shaderResourceName)
 		{
-			return ResourceManager.LoadStringResource($"Everlook.Content.Shaders.{shaderResourceName}.glsl");
+			var baseDirectory = "Everlook.Content.Shaders";
+			var shaderSource = ResourceManager.LoadStringResource($"{baseDirectory}.{shaderResourceName}.glsl");
+
+			var shaderSourceWithResolvedIncludes = GLSLPreprocessor.ProcessIncludes(shaderSource, baseDirectory);
+
+			return shaderSourceWithResolvedIncludes;
 		}
 
 		/// <summary>
