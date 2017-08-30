@@ -176,7 +176,7 @@ void ComputeEdgeDistanceData()
     }
 }
 
-void SetWireframePrimitiveData(int vertexIndex)
+void SetWireframeVertexData(int vertexIndex)
 {
 	gl_Position = gl_in[vertexIndex].gl_Position;
 

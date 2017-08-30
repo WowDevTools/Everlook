@@ -24,7 +24,7 @@ void main()
 	// Pass through the primitive data to the fragment
 	for (int i = 0; i < 3; ++i)
 	{
-		SetWireframePrimitiveData(i);
+		SetWireframeVertexData(i);
 
         gvOut.UV = vIn[i].UV;
         gvOut.Normal = vIn[i].Normal;
