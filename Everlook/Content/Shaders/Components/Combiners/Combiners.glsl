@@ -110,14 +110,12 @@ vec4 CombinersModOpaque(vec4 colour, vec4 texture0, vec4 texture1)
 
 vec4 CombinersMod2xAdd(vec4 colour, vec4 texture0, vec4 texture1)
 {
-	// TODO
-	return vec4(1.0);
+	return CombinersMod2x(colour, texture0) + texture1;
 }
 
 vec4 CombinersMod2xMod2x(vec4 colour, vec4 texture0, vec4 texture1)
 {
-	// TODO
-	return vec4(1.0);
+	return CombinersMod2x(CombinersMod2x(colour, texture0), texture1);
 }
 
 vec4 CombinersModOpaque(vec4 colour, vec4 texture0, vec4 texture1)
@@ -128,11 +126,7 @@ vec4 CombinersModOpaque(vec4 colour, vec4 texture0, vec4 texture1)
 
 vec4 CombinersOpaqueAdd(vec4 colour, vec4 texture0, vec4 texture1)
 {
-	return vec4
-	(
-		CombinersMod(colour, texture0).rgb + texture1.rgb,
-		CombinersAdd(colour, texture1).a
-	);
+	return CombinersAdd(CombinersOpaque(colour, texture0), texture1);
 }
 
 vec4 CombinersOpaqueAddAlpha(vec4 colour, vec4 texture0, vec4 texture1)
