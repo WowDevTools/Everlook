@@ -255,6 +255,16 @@ namespace Everlook.Viewport.Rendering
 				};
 
 				this.SkinIndexArrayBuffers.Add(skin, skinIndexBuffer);
+
+				if (this.Model.Version <= WarcraftVersion.Wrath)
+				{
+					// In models earlier than Cata, we need to calculate the shader selector value at runtime.
+					foreach (var renderBatch in skin.RenderBatches)
+					{
+						ushort shaderSelector = MDXShaderHelper.GetRuntimeShaderID(renderBatch.ShaderID, renderBatch, this.Model);
+						renderBatch.ShaderID = shaderSelector;
+					}
+				}
 			}
 
 			// Cache the default display info
@@ -400,6 +410,7 @@ namespace Everlook.Viewport.Rendering
 					var fragmentShader = MDXShaderHelper.GetFragmentShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
 					var batchMaterial = this.Model.Materials[renderBatch.MaterialIndex];
 					this.Shader.SetMaterial(batchMaterial);
+					this.Shader.SetShaderPath(fragmentShader);
 
 					var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
 
