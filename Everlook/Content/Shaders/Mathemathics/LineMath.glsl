@@ -20,6 +20,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#ifndef LineMath_I
+#define LineMath_I
+
 /// <summary>
 /// Calculates the distance from a point to a line in screen space.
 /// </summary>
@@ -31,3 +34,5 @@ float DistanceToLine(vec2 F, vec2 Q, vec2 QDir)
 {
 	return sqrt(dot((Q - F), (Q - F)) - dot(QDir, (Q - F)));
 }
+
+#endif

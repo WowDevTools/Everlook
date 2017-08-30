@@ -20,8 +20,13 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#ifndef SpaceProjection_I
+#define SpaceProjection_I
+
 vec4 ProjectToScreen(mat4 viewportMatrix, vec4 clipSpaceCoordinate)
 {
 	vec4 NDC = clipSpaceCoordinate / clipSpaceCoordinate.w;
 	return viewportMatrix * NDC;
 }
+
+#endif

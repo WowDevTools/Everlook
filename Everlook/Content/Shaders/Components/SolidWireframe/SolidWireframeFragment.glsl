@@ -20,6 +20,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#ifndef SolidWireframeFragment_I
+#define SolidWireframeFragment_I
+
 #include "Mathemathics/LineMath.glsl"
 
 /// <summary>
@@ -151,3 +154,5 @@ vec4 OverlayWireframe(vec4 baseColour, float discardThreshold)
 	// Fallback: return unmodified
     return baseColour;
 }
+
+#endif

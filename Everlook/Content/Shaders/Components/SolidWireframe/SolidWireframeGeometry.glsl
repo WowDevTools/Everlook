@@ -20,6 +20,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#ifndef SolidWireframeGeometry_I
+#define SolidWireframeGeometry_I
+
 #include "Mathemathics/LineMath.glsl"
 #include "Mathemathics/SpaceProjection.glsl"
 #include "Components/SolidWireframe/TriangleProjectionIndexes.glsl"
@@ -196,3 +199,5 @@ void SetWireframePrimitiveData(int vertexIndex)
         }
     }
 }
+
+#endif

@@ -20,6 +20,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#ifndef TriangleProjectionIndexes_I
+#define TriangleProjectionIndexes_I
+
 struct TriangleProjectionIndexes
 {
 	int A;
@@ -27,3 +30,5 @@ struct TriangleProjectionIndexes
 	int APrim;
 	int BPrim;
 };
+
+#endif
