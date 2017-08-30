@@ -12,7 +12,7 @@ in GeometryVertexDataOut
 
 layout(location = 0) out vec4 FragColour;
 
-// The shading path to use. Maps to MDXFragmentShader and the above values
+// The shading path to use. Maps to MDXFragmentShader and what's in GameModelShaderPaths.
 uniform int ShaderPath;
 
 /*
