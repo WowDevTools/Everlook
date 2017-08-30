@@ -409,47 +409,38 @@ namespace Everlook.Viewport.Rendering
 					foreach (var texture in textures)
 					{
 						string textureName;
-						TextureUniform uniform = TextureUniform.Diffuse0;
-
 						switch (texture.TextureType)
 						{
 							case EMDXTextureType.Regular:
 							{
 								textureName = texture.Filename;
-								uniform = TextureUniform.Diffuse0;
 								break;
 							}
 							case EMDXTextureType.MonsterSkin1:
 							{
 								textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[0].Value);
-								uniform = TextureUniform.Diffuse0;
 								break;
 							}
 							case EMDXTextureType.MonsterSkin2:
 							{
 								textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[1].Value);
-								uniform = TextureUniform.Diffuse0;
 								break;
 							}
 							case EMDXTextureType.MonsterSkin3:
 							{
 								textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[2].Value);
-								uniform = TextureUniform.Diffuse0;
 								break;
 							}
 							default:
 							{
 								// Use the fallback texture if we don't know how to load the texture type
 								textureName = string.Empty;
-								uniform = TextureUniform.Diffuse0;
 								break;
 							}
 						}
 
 						var textureObject = this.TextureLookup[textureName];
-						var textureUnit = this.Model.TextureSlotLookupTable[renderBatch.TextureSlotLookupTableIndex];
-
-						this.Shader.BindTexture2D(TranslateModelTextureUnit(textureUnit), uniform, textureObject);
+						this.Shader.BindTexture0(textureObject);
 					}
 
 					GL.DrawRangeElements

@@ -109,9 +109,9 @@ vec4 CombinersMod2xMod2x(vec4 colour, vec4 texture0, vec4 texture1)
 	return CombinersMod2x(CombinersMod2x(colour, texture0), texture1);
 }
 
-vec4 CombinersModOpaque(vec4 colour, vec4 texture0, vec4 texture1)
+vec4 CombinersMod2xOpaque(vec4 colour, vec4 texture0, vec4 texture1)
 {
-	return CombinersOpaque(CombinersMod(colour, texture0), texture1);
+	return CombinersOpaque(CombinersMod2x(colour, texture0), texture1);
 }
 
 vec4 CombinersOpaqueAdd(vec4 colour, vec4 texture0, vec4 texture1)

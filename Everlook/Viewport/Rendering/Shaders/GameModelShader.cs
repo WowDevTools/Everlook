@@ -23,8 +23,13 @@
 using System;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders.Components;
+using GLib;
+using Gtk;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using Pango;
 using Warcraft.Core.Shading.Blending;
+using Warcraft.Core.Shading.MDX;
 using Warcraft.MDX.Visual;
 
 namespace Everlook.Viewport.Rendering.Shaders
@@ -35,8 +40,10 @@ namespace Everlook.Viewport.Rendering.Shaders
 	public class GameModelShader : ShaderProgram
 	{
 		private const string AlphaThresholdIdentifier = "alphaThreshold";
-		private const string Diffuse0Identifier = nameof(Diffuse0Identifier);
-		private const string Diffuse1Identifier = nameof(Diffuse1Identifier);
+		private const string Texture0Identifier = nameof(Texture0Identifier);
+		private const string Texture1Identifier = nameof(Texture1Identifier);
+		private const string ShaderPath = nameof(ShaderPath);
+		private const string BaseColour = nameof(BaseColour);
 
 		/// <inheritdoc />
 		protected override string VertexShaderResourceName => "GameModel.GameModelVertex";
@@ -58,6 +65,51 @@ namespace Everlook.Viewport.Rendering.Shaders
 		public GameModelShader()
 		{
 			this.Wireframe = new SolidWireframe(this.NativeShaderProgramID);
+
+			SetBaseInputColour(Color4.White);
+			SetShaderPath(MDXFragmentShaderType.Combiners_Opaque);
+		}
+
+		/// <summary>
+		/// Sets the base input colour for the shader.
+		/// </summary>
+		/// <param name="colour">The base colour</param>
+		public void SetBaseInputColour(Color4 colour)
+		{
+			Enable();
+
+			int colourVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, BaseColour);
+			GL.Uniform4(colourVariableHandle, colour);
+		}
+
+		/// <summary>
+		/// Set the shading path in use.
+		/// </summary>
+		/// <param name="shaderType">The shader path.</param>
+		public void SetShaderPath(MDXFragmentShaderType shaderType)
+		{
+			Enable();
+
+			int shaderPathVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, ShaderPath);
+			GL.Uniform1(shaderPathVariableHandle, (int)shaderType);
+		}
+
+		/// <summary>
+		/// Binds a texture to the first texture in the shader.
+		/// </summary>
+		/// <param name="texture">The texture to bind.</param>
+		public void BindTexture0(Texture2D texture)
+		{
+			BindTexture2D(TextureUnit.Texture0, TextureUniform.Diffuse0, texture);
+		}
+
+		/// <summary>
+		/// Binds a texture to the second texture in the shader.
+		/// </summary>
+		/// <param name="texture">The texture to bind.</param>
+		public void BindTexture1(Texture2D texture)
+		{
+			BindTexture2D(TextureUnit.Texture1, TextureUniform.Diffuse1, texture);
 		}
 
 		/// <summary>
@@ -67,7 +119,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <param name="textureUnit">The texture unit to bind the texture to</param>
 		/// <param name="uniform">The uniform name where the texture should be bound.</param>
 		/// <param name="texture">The texture to bind.</param>
-		public void BindTexture2D(TextureUnit textureUnit, TextureUniform uniform, Texture2D texture)
+		private void BindTexture2D(TextureUnit textureUnit, TextureUniform uniform, Texture2D texture)
 		{
 			if (texture == null)
 			{
@@ -76,11 +128,11 @@ namespace Everlook.Viewport.Rendering.Shaders
 
 			Enable();
 
-			GL.ActiveTexture(textureUnit);
-			texture.Bind();
-
 			int textureVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniform.ToString());
 			GL.Uniform1(textureVariableHandle, (int)uniform);
+
+			GL.ActiveTexture(textureUnit);
+			texture.Bind();
 		}
 
 		/// <summary>
