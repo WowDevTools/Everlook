@@ -21,14 +21,9 @@ uniform int ShaderPath;
 
 uniform float alphaThreshold;
 
-uniform sampler2D Diffuse0;
-uniform sampler2D Specular0;
-uniform sampler2D Diffuse1;
-uniform sampler2D Specular1;
-uniform sampler2D EnvMap;
-
 uniform vec4 colour;
-uniform vec4 baseDiffuseColour;
+uniform sampler2D Texture0;
+uniform sampler2D Texture1;
 
 void main()
 {
