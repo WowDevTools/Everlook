@@ -64,9 +64,6 @@
     <PackageReference Include="OpenTK.GLWidget" Version="3.0.0-git00005" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Viewport\Rendering\Shaders\Extensions" />
-  </ItemGroup>
   <Target Name="CopyGTK" AfterTargets="Build">
     <ItemGroup>
       <GTKbin Include="$(SolutionDir)\lib\gtk+-3.6-bundle-win32\bin\*.*" />

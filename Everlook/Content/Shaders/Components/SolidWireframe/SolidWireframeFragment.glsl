@@ -1,5 +1,5 @@
 //
-//  SolidWireframe.glsl
+//  SolidWireframeFragment.glsl
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -19,6 +19,54 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
+#include "Mathemathics/LineMath.glsl"
+
+/// <summary>
+/// Input interface block for data coming in from the geometry shader.
+/// </summary>
+in GeometryOut
+{
+	/// <summary>
+	/// Gets whether or not this is the simple case where all three vertices are visible.
+	/// </summary>
+	bool IsSimpleWireframeCase;
+
+	/// <summary>
+    /// Gets whether or not a single vertex is visible.
+    /// </summary>
+    bool IsSingleVertexVisible;
+
+    /// <summary>
+    /// Gets the interpolated distances to the three polygon edges from this fragment.
+    /// </summary>
+    noperspective vec3 EdgeDistances;
+
+	/// <summary>
+	/// Gets the screen-space position of the "A" vertex.
+	/// </summary>
+    flat vec2 A;
+
+    /// <summary>
+    /// Gets the screen-space direction of the vector which forms a line along with the "A" vertex.
+    /// </summary>
+    flat vec2 ADir;
+
+    /// <summary>
+    /// Gets the screen-space position of the "B" vertex.
+    /// </summary>
+    flat vec2 B;
+
+    /// <summary>
+    /// Gets the screen-space direction of the vector which forms a line along with the "B" vertex.
+    /// </summary>
+    flat vec2 BDir;
+
+    /// <summary>
+    /// Gets the screen-space direction of the vector which forms a line between the "A" and "B" vertices.
+    /// </summary>
+    flat vec2 ABDir;
+} gIn;
 
 /// <summary>
 /// Gets a uniform value indicating whether the wireframe is enabled.
@@ -48,18 +96,6 @@ uniform int WireframeFadeWidth;
 float SmoothStepEdge(float distance)
 {
 	return exp2(-2.0f * pow(distance, 2));
-}
-
-/// <summary>
-/// Calculates the distance from a point to a line in screen space.
-/// </summary>
-/// <param name="F">The origin point.</param>
-/// <param name="Q">A point on the line.</param>
-/// <param name="QDir">The direction vector of the line.</param>
-/// <returns>The distance from F to Q.</returns>
-float DistanceToLine(vec2 F, vec2 Q, vec2 QDir)
-{
-	return sqrt(dot((Q - F), (Q - F)) - dot(QDir, (Q - F)));
 }
 
 /// <summary>

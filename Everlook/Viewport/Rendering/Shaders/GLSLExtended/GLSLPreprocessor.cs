@@ -62,6 +62,11 @@ namespace Everlook.Viewport.Rendering.Shaders.GLSLExtended
 					throw new FileNotFoundException("No embedded resource found at the given resource path.", resourceName);
 				}
 
+				if (includeRegex.IsMatch(fileContents))
+				{
+					fileContents = ProcessIncludes(fileContents, baseResourceDirectory);
+				}
+
 				// Insert the file contents at the include locations
 				sourceBuilder.Replace(match.Value, fileContents);
 			}
