@@ -1,9 +1,9 @@
 #version 330 core
 
-#include "Components/SolidWireframe/SolidWireframeGeometry.glsl"
-
 layout(triangles) in;
 layout(triangle_strip, max_vertices = 3) out;
+
+#include "Components/SolidWireframe/SolidWireframeGeometry.glsl"
 
 in VertexData
 {
