@@ -28,6 +28,7 @@ void main()
 	{
 		SetWireframeVertexData(i);
 
+		gl_Position = gl_in[vertexIndex].gl_Position;
 		gvOut.UV1 = vIn[i].UV1;
         gvOut.UV2 = vIn[i].UV2;
         gvOut.Normal = vIn[i].Normal;

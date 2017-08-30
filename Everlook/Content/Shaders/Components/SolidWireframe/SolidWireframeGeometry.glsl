@@ -178,8 +178,6 @@ void ComputeEdgeDistanceData()
 
 void SetWireframeVertexData(int vertexIndex)
 {
-	gl_Position = gl_in[vertexIndex].gl_Position;
-
     switch (vertexIndex)
     {
         case 0:
