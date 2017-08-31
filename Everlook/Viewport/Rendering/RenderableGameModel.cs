@@ -364,7 +364,7 @@ namespace Everlook.Viewport.Rendering
 
 			GL.Enable(EnableCap.DepthTest);
 
-			foreach (MDXSkin skin in this.Model.Skins)
+			foreach (var skin in this.Model.Skins)
 			{
 				this.SkinIndexArrayBuffers[skin].Bind();
 				this.Shader.Enable();
@@ -375,18 +375,15 @@ namespace Everlook.Viewport.Rendering
 					GL.Enable(EnableCap.Blend);
 				}
 
-				foreach
+				var batchesBackToFront = skin.RenderBatches.OrderByDescending
 				(
-					MDXRenderBatch renderBatch in skin.RenderBatches
-					.OrderByDescending
-					(
-						renderBatch => VectorMath.Distance
-						(
-							camera.Position,
-							skin.Sections[renderBatch.SkinSectionIndex].SortCenterPosition.AsOpenTKVector()
-						)
+					renderBatch => VectorMath.Distance(
+						camera.Position,
+						skin.Sections[renderBatch.SkinSectionIndex].SortCenterPosition.AsOpenTKVector()
 					)
-				)
+				);
+
+				foreach (var renderBatch in batchesBackToFront)
 				{
 					var fragmentShader = MDXShaderHelper.GetFragmentShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
 					var batchMaterial = this.Model.Materials[renderBatch.MaterialIndex];
@@ -496,11 +493,13 @@ namespace Everlook.Viewport.Rendering
 			// Finally, return any record with a unique set of textures
 			foreach (var displayRecord in modelDisplayRecords)
 			{
-				if (!textureListMapping.ContainsKey(displayRecord.TextureVariations))
+				if (textureListMapping.ContainsKey(displayRecord.TextureVariations))
 				{
-					textureListMapping.Add(displayRecord.TextureVariations, displayRecord);
-					yield return displayRecord;
+					continue;
 				}
+
+				textureListMapping.Add(displayRecord.TextureVariations, displayRecord);
+				yield return displayRecord;
 			}
 		}
 
@@ -542,7 +541,7 @@ namespace Everlook.Viewport.Rendering
 				throw new ArgumentNullException(nameof(displayInfoRecord));
 			}
 
-			foreach (MDXTexture texture in this.Model.Textures)
+			foreach (var texture in this.Model.Textures)
 			{
 				int textureIndex;
 				switch (texture.TextureType)
@@ -572,16 +571,18 @@ namespace Everlook.Viewport.Rendering
 				var modelDirectory = this.ModelPath.Remove(this.ModelPath.LastIndexOf('\\'));
 				var texturePath = $"{modelDirectory}\\{textureName}.blp";
 
-				if (!this.TextureLookup.ContainsKey(texturePath))
+				if (this.TextureLookup.ContainsKey(texturePath))
 				{
-					if (!this.TextureLookup.ContainsKey(texture.Filename))
-					{
-						this.TextureLookup.Add
-						(
-							texture.Filename,
-							this.Cache.GetTexture(texture, this.GameContext)
-						);
-					}
+					continue;
+				}
+
+				if (!this.TextureLookup.ContainsKey(texture.Filename))
+				{
+					this.TextureLookup.Add
+					(
+						texture.Filename,
+						this.Cache.GetTexture(texture, this.GameContext)
+					);
 				}
 			}
 		}

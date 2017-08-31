@@ -82,15 +82,16 @@ namespace Everlook.Utility
 		public FileReference GetReferenceForDoodad(DoodadInstance doodadInstance)
 		{
 			var doodadReference = GetReferenceForPath(doodadInstance.Name);
+			if (doodadReference != null)
+			{
+				return doodadReference;
+			}
+
+			// Doodads may have the *.mdx extension instead of *.m2. Try with that as well.
+			doodadReference = GetReferenceForPath(Path.ChangeExtension(doodadInstance.Name, "m2"));
 			if (doodadReference == null)
 			{
-				// Doodads may have the *.mdx extension instead of *.m2. Try with that as well.
-				doodadReference = GetReferenceForPath(Path.ChangeExtension(doodadInstance.Name, "m2"));
-
-				if (doodadReference == null)
-				{
-					throw new ArgumentException($"Failed to retrieve doodad reference for {doodadInstance.Name}", nameof(doodadInstance));
-				}
+				throw new ArgumentException($"Failed to retrieve doodad reference for {doodadInstance.Name}", nameof(doodadInstance));
 			}
 
 			return doodadReference;

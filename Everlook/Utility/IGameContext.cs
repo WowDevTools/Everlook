@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System;
 using Everlook.Database;
 using Everlook.Explorer;
 using Everlook.Package;
@@ -52,5 +53,13 @@ namespace Everlook.Utility
 		/// Gets the UI file tree for the context.
 		/// </summary>
 		FileTreeModel FileTree { get; }
+
+		/// <summary>
+		/// Gets the file reference pointing to a given path.
+		/// </summary>
+		/// <param name="path">The path to the file.</param>
+		/// <returns>A file reference pointing to the path.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if the path is null or empty.</exception>
+		FileReference GetReferenceForPath(string path);
 	}
 }
