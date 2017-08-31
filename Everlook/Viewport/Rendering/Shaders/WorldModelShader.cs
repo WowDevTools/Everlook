@@ -130,10 +130,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <param name="threshold">The alpha value threshold.</param>
 		public void SetAlphaDiscardThreshold(float threshold)
 		{
-			Enable();
-
-			int alphaThresholdLoc = GL.GetUniformLocation(this.NativeShaderProgramID, AlphaThresholdIdentifier);
-			GL.Uniform1(alphaThresholdLoc, threshold);
+			SetFloat(threshold, AlphaThresholdIdentifier);
 		}
 	}
 }
