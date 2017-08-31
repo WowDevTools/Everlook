@@ -204,4 +204,17 @@ vec4 CombinersOpaqueOpaque(vec4 colour, vec4 texture0, vec4 texture1)
 	return CombinersOpaque(CombinersOpaque(colour, texture0), texture1);
 }
 
+/*
+	"Special" combiners not directly used by the game, but used internally to modify combiners.
+*/
+
+vec4 CombinersNoAlpha(vec4 colour, vec4 texture0)
+{
+	return vec4
+	(
+		texture0.rgb,
+		colour.a
+	);
+}
+
 #endif
