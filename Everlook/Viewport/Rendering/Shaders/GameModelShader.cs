@@ -25,6 +25,7 @@ using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders.Components;
 using GLib;
 using Gtk;
+using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Pango;
@@ -42,8 +43,12 @@ namespace Everlook.Viewport.Rendering.Shaders
 		private const string AlphaThresholdIdentifier = "alphaThreshold";
 		private const string Texture0Identifier = nameof(Texture0Identifier);
 		private const string Texture1Identifier = nameof(Texture1Identifier);
-		private const string ShaderPath = nameof(ShaderPath);
+		private const string VertexShaderPath = nameof(VertexShaderPath);
+		private const string FragmentShaderPath = nameof(FragmentShaderPath);
 		private const string BaseColour = nameof(BaseColour);
+
+		private const string ModelViewMatrix = nameof(ModelViewMatrix);
+		private const string ProjectionMatrix = nameof(ProjectionMatrix);
 
 		/// <inheritdoc />
 		protected override string VertexShaderResourceName => "GameModel.GameModelVertex";
@@ -67,7 +72,33 @@ namespace Everlook.Viewport.Rendering.Shaders
 			this.Wireframe = new SolidWireframe(this.NativeShaderProgramID);
 
 			SetBaseInputColour(Color4.White);
-			SetShaderPath(MDXFragmentShaderType.Combiners_Opaque);
+			SetFragmentShaderType(MDXFragmentShaderType.Combiners_Opaque);
+		}
+
+		/// <summary>
+		/// Sets the current model-view matrix of the shader.
+		/// </summary>
+		/// <param name="modelViewMatrix">The model-view matrix.</param>
+		public void SetModelViewMatrix(Matrix4 modelViewMatrix)
+		{
+			SetMatrix(modelViewMatrix, ModelViewMatrix);
+		}
+
+		/// <summary>
+		/// Sets the current projection matrix of the shader.
+		/// </summary>
+		/// <param name="projectionMatrix">The projection matrix.</param>
+		public void SetProjectionMatrix(Matrix4 projectionMatrix)
+		{
+			SetMatrix(projectionMatrix, ProjectionMatrix);
+		}
+
+		private void SetMatrix(Matrix4 matrix, string uniformName, bool shouldTranspose = false)
+		{
+			Enable();
+
+			int matrixVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+			GL.UniformMatrix4(matrixVariableHandle, shouldTranspose, ref matrix);
 		}
 
 		/// <summary>
@@ -83,14 +114,26 @@ namespace Everlook.Viewport.Rendering.Shaders
 		}
 
 		/// <summary>
-		/// Set the shading path in use.
+		/// Set the fragment shading path in use.
 		/// </summary>
 		/// <param name="shaderType">The shader path.</param>
-		public void SetShaderPath(MDXFragmentShaderType shaderType)
+		public void SetFragmentShaderType(MDXFragmentShaderType shaderType)
 		{
 			Enable();
 
-			int shaderPathVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, ShaderPath);
+			int shaderPathVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, FragmentShaderPath);
+			GL.Uniform1(shaderPathVariableHandle, (int)shaderType);
+		}
+
+		/// <summary>
+		/// Set the vertex shading path in use.
+		/// </summary>
+		/// <param name="shaderType">The shader path.</param>
+		public void SetVertexShaderType(MDXVertexShaderType shaderType)
+		{
+			Enable();
+
+			int shaderPathVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, VertexShaderPath);
 			GL.Uniform1(shaderPathVariableHandle, (int)shaderType);
 		}
 

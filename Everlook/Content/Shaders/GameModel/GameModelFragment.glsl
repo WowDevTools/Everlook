@@ -1,7 +1,7 @@
 ﻿#version 330 core
 
 #include "Components/SolidWireframe/SolidWireframeFragment.glsl"
-#include "GameModel/GameModelShaderPaths.glsl"
+#include "GameModel/GameModelFragmentShaderPaths.glsl"
 #include "Components/Combiners/Combiners.glsl"
 
 in GeometryVertexDataOut
@@ -14,7 +14,7 @@ in GeometryVertexDataOut
 layout(location = 0) out vec4 FragColour;
 
 // The shading path to use. Maps to MDXFragmentShader and what's in GameModelShaderPaths.
-uniform int ShaderPath;
+uniform int FragmentShaderPath;
 
 /*
 	Base shader inputs
@@ -31,7 +31,7 @@ void main()
 	vec4 fragOutput = vec4(0);
 	vec4 tex0 = texture(Diffuse0, gvIn.UV1);
 	vec4 tex1 = texture(Diffuse1, gvIn.UV2);
-	switch (ShaderPath)
+	switch (FragmentShaderPath)
 	{
 		case Opaque: fragOutput = CombinersOpaque(BaseColour, tex0); break;
 		case Mod: fragOutput = CombinersMod(BaseColour, tex0); break;

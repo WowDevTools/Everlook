@@ -169,13 +169,20 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		/// <param name="texture">The texture definition.</param>
 		/// <param name="gameContext">The context of the texture definition.</param>
+		/// <param name="texturePathOverride">Optional. Overrides the filename in the texture definition.</param>
 		/// <returns>A <see cref="Texture2D"/> object.</returns>
-		public Texture2D GetTexture(MDXTexture texture, IGameContext gameContext)
+		public Texture2D GetTexture(MDXTexture texture, IGameContext gameContext, string texturePathOverride = null)
 		{
+			string filename = texture.Filename;
 			if (string.IsNullOrEmpty(texture.Filename))
 			{
-				Log.Warn("Texture with empty filename requested.");
-				return this.FallbackTexture;
+				if (string.IsNullOrEmpty(texturePathOverride))
+				{
+					Log.Warn("Texture with empty filename requested.");
+					return this.FallbackTexture;
+				}
+
+				filename = texturePathOverride;
 			}
 
 			var wrapS = texture.Flags.HasFlag(EMDXTextureFlags.TextureWrapX)
@@ -186,7 +193,7 @@ namespace Everlook.Viewport.Rendering
 				? TextureWrapMode.Repeat
 				: TextureWrapMode.Clamp;
 
-			return GetTexture(texture.Filename, gameContext.Assets, wrapS, wrapT);
+			return GetTexture(filename, gameContext.Assets, wrapS, wrapT);
 		}
 
 		/// <summary>

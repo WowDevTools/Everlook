@@ -273,11 +273,14 @@ namespace Everlook.Viewport.Rendering
 				return;
 			}
 
-			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
+			Matrix4 modelViewMatrix = this.ActorTransform.GetModelMatrix() * viewMatrix;
+			Matrix4 modelViewProjection = modelViewMatrix * projectionMatrix;
 
 			this.VertexBuffer.Bind();
 
 			this.Shader.Enable();
+			this.Shader.SetModelViewMatrix(modelViewMatrix);
+			this.Shader.SetProjectionMatrix(projectionMatrix);
 			this.Shader.SetMVPMatrix(modelViewProjection);
 
 			// Position pointer
@@ -386,9 +389,12 @@ namespace Everlook.Viewport.Rendering
 				foreach (var renderBatch in batchesBackToFront)
 				{
 					var fragmentShader = MDXShaderHelper.GetFragmentShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
+					var vertexShader = MDXShaderHelper.GetVertexShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
 					var batchMaterial = this.Model.Materials[renderBatch.MaterialIndex];
+
+					this.Shader.SetVertexShaderType(vertexShader);
+					this.Shader.SetFragmentShaderType(fragmentShader);
 					this.Shader.SetMaterial(batchMaterial);
-					this.Shader.SetShaderPath(fragmentShader);
 
 					var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
 
@@ -576,14 +582,11 @@ namespace Everlook.Viewport.Rendering
 					continue;
 				}
 
-				if (!this.TextureLookup.ContainsKey(texture.Filename))
-				{
-					this.TextureLookup.Add
-					(
-						texture.Filename,
-						this.Cache.GetTexture(texture, this.GameContext)
-					);
-				}
+				this.TextureLookup.Add
+				(
+					texturePath,
+					this.Cache.GetTexture(texture, this.GameContext, texturePath)
+				);
 			}
 		}
 

@@ -59,7 +59,7 @@ namespace Everlook.Viewport.Rendering.Shaders.GLSLExtended
 				var fileContents = Utility.ResourceManager.LoadStringResource($"{baseResourceDirectory}.{resourceName}");
 				if (fileContents == null)
 				{
-					throw new FileNotFoundException("No embedded resource found at the given resource path.", resourceName);
+					throw new FileNotFoundException($"No embedded resource found at the given resource path: {resourceName}", resourceName);
 				}
 
 				if (includeRegex.IsMatch(fileContents))
