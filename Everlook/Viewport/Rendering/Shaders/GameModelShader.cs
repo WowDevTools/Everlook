@@ -93,24 +93,13 @@ namespace Everlook.Viewport.Rendering.Shaders
 			SetMatrix(projectionMatrix, ProjectionMatrix);
 		}
 
-		private void SetMatrix(Matrix4 matrix, string uniformName, bool shouldTranspose = false)
-		{
-			Enable();
-
-			int matrixVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
-			GL.UniformMatrix4(matrixVariableHandle, shouldTranspose, ref matrix);
-		}
-
 		/// <summary>
 		/// Sets the base input colour for the shader.
 		/// </summary>
 		/// <param name="colour">The base colour</param>
 		public void SetBaseInputColour(Color4 colour)
 		{
-			Enable();
-
-			int colourVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, BaseColour);
-			GL.Uniform4(colourVariableHandle, colour);
+			SetColor4(colour, BaseColour);
 		}
 
 		/// <summary>
@@ -119,10 +108,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <param name="shaderType">The shader path.</param>
 		public void SetFragmentShaderType(MDXFragmentShaderType shaderType)
 		{
-			Enable();
-
-			int shaderPathVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, FragmentShaderPath);
-			GL.Uniform1(shaderPathVariableHandle, (int)shaderType);
+			SetInteger((int)shaderType, FragmentShaderPath);
 		}
 
 		/// <summary>
@@ -131,10 +117,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <param name="shaderType">The shader path.</param>
 		public void SetVertexShaderType(MDXVertexShaderType shaderType)
 		{
-			Enable();
-
-			int shaderPathVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, VertexShaderPath);
-			GL.Uniform1(shaderPathVariableHandle, (int)shaderType);
+			SetInteger((int)shaderType, VertexShaderPath);
 		}
 
 		/// <summary>
@@ -153,29 +136,6 @@ namespace Everlook.Viewport.Rendering.Shaders
 		public void BindTexture1(Texture2D texture)
 		{
 			BindTexture2D(TextureUnit.Texture1, TextureUniform.Diffuse1, texture);
-		}
-
-		/// <summary>
-		/// Binds a texture to a sampler in the shader
-		/// TODO: Refactor or remove this
-		/// </summary>
-		/// <param name="textureUnit">The texture unit to bind the texture to</param>
-		/// <param name="uniform">The uniform name where the texture should be bound.</param>
-		/// <param name="texture">The texture to bind.</param>
-		private void BindTexture2D(TextureUnit textureUnit, TextureUniform uniform, Texture2D texture)
-		{
-			if (texture == null)
-			{
-				throw new ArgumentNullException(nameof(texture));
-			}
-
-			Enable();
-
-			int textureVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniform.ToString());
-			GL.Uniform1(textureVariableHandle, (int)uniform);
-
-			GL.ActiveTexture(textureUnit);
-			texture.Bind();
 		}
 
 		/// <summary>
@@ -250,10 +210,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <param name="threshold">The alpha value threshold.</param>
 		public void SetAlphaDiscardThreshold(float threshold)
 		{
-			Enable();
-
-			int alphaThresholdLoc = GL.GetUniformLocation(this.NativeShaderProgramID, AlphaThresholdIdentifier);
-			GL.Uniform1(alphaThresholdLoc, threshold);
+			SetFloat(threshold, AlphaThresholdIdentifier);
 		}
 	}
 }

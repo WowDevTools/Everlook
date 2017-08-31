@@ -53,10 +53,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// </param>
 		public void SetChannelMask(Vector4 channelMask)
 		{
-			Enable();
-
-			int channelMaskVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, ChannelMaskIdentifier);
-			GL.Uniform4(channelMaskVariableHandle, channelMask);
+			SetVector4(channelMask, ChannelMaskIdentifier);
 		}
 
 		/// <summary>
@@ -65,20 +62,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <param name="texture">The texture.</param>
 		public void SetTexture(Texture2D texture)
 		{
-			if (texture == null)
-			{
-				throw new ArgumentNullException(nameof(texture));
-			}
-
-			Enable();
-
-			GL.ActiveTexture(TextureUnit.Texture0);
-
-			texture.Bind();
-
-			int textureVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, TextureIdentifier);
-			int textureUnit = 0;
-			GL.Uniform1(textureVariableHandle, 1, ref textureUnit);
+			BindTexture2D(TextureUnit.Texture0, TextureUniform.Diffuse0, texture);
 		}
 	}
 }

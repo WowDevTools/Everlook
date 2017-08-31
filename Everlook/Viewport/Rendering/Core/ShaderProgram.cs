@@ -26,6 +26,7 @@ using Everlook.Utility;
 using Everlook.Viewport.Rendering.Shaders.GLSLExtended;
 using log4net;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Core
@@ -78,8 +79,96 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <param name="mvpMatrix">The ModelViewProjection matrix.</param>
 		public void SetMVPMatrix(Matrix4 mvpMatrix)
 		{
-			int projectionShaderVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, MVPIdentifier);
-			GL.UniformMatrix4(projectionShaderVariableHandle, false, ref mvpMatrix);
+			SetMatrix(mvpMatrix, MVPIdentifier);
+		}
+
+		/// <summary>
+		/// Sets the uniform named by <paramref name="uniformName"/> to <paramref name="matrix"/>.
+		/// </summary>
+		/// <param name="matrix">The matrix.</param>
+		/// <param name="uniformName">The name of the uniform variable.</param>
+		/// <param name="shouldTranspose">Whether or not the matrix should be transposed.</param>
+		protected void SetMatrix(Matrix4 matrix, string uniformName, bool shouldTranspose = false)
+		{
+			Enable();
+
+			int variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+			GL.UniformMatrix4(variableHandle, shouldTranspose, ref matrix);
+		}
+
+		/// <summary>
+		/// Sets the uniform named by <paramref name="uniformName"/> to <paramref name="value"/>.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="uniformName">The name of the uniform variable.</param>
+		protected void SetInteger(int value, string uniformName)
+		{
+			Enable();
+
+			int variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+			GL.Uniform1(variableHandle, value);
+		}
+
+		/// <summary>
+		/// Sets the uniform named by <paramref name="uniformName"/> to <paramref name="value"/>.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="uniformName">The name of the uniform variable.</param>
+		protected void SetVector4(Vector4 value, string uniformName)
+		{
+			Enable();
+
+			int variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+			GL.Uniform4(variableHandle, value);
+		}
+
+		/// <summary>
+		/// Sets the uniform named by <paramref name="uniformName"/> to <paramref name="value"/>.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="uniformName">The name of the uniform variable.</param>
+		protected void SetColor4(Color4 value, string uniformName)
+		{
+			Enable();
+
+			int variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+			GL.Uniform4(variableHandle, value);
+		}
+
+		/// <summary>
+		/// Sets the uniform named by <paramref name="uniformName"/> to <paramref name="value"/>.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="uniformName">The name of the uniform variable.</param>
+		protected void SetFloat(float value, string uniformName)
+		{
+			Enable();
+
+			int variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+			GL.Uniform1(variableHandle, value);
+		}
+
+		/// <summary>
+		/// Binds a texture to a sampler in the shader. The name of the sampler must match one of the values in
+		/// <see cref="TextureUniform"/>.
+		/// </summary>
+		/// <param name="textureUnit">The texture unit to bind the texture to</param>
+		/// <param name="uniform">The uniform where the texture should be bound.</param>
+		/// <param name="texture">The texture to bind.</param>
+		public void BindTexture2D(TextureUnit textureUnit, TextureUniform uniform, Texture2D texture)
+		{
+			if (texture == null)
+			{
+				throw new ArgumentNullException(nameof(texture));
+			}
+
+			Enable();
+
+			int textureVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniform.ToString());
+			GL.Uniform1(textureVariableHandle, (int)uniform);
+
+			GL.ActiveTexture(textureUnit);
+			texture.Bind();
 		}
 
 		/// <summary>

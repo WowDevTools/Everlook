@@ -59,29 +59,6 @@ namespace Everlook.Viewport.Rendering.Shaders
 		}
 
 		/// <summary>
-		/// Binds a texture to a sampler in the shader
-		/// TODO: Refactor or remove this
-		/// </summary>
-		/// <param name="textureUnit">The texture unit to bind the texture to</param>
-		/// <param name="uniform">The uniform name where the texture should be bound.</param>
-		/// <param name="texture">The texture to bind.</param>
-		public void BindTexture2D(TextureUnit textureUnit, TextureUniform uniform, Texture2D texture)
-		{
-			if (texture == null)
-			{
-				throw new ArgumentNullException(nameof(texture));
-			}
-
-			Enable();
-
-			GL.ActiveTexture(textureUnit);
-			texture.Bind();
-
-			int textureVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniform.ToString());
-			GL.Uniform1(textureVariableHandle, (int)uniform);
-		}
-
-		/// <summary>
 		/// Sets the current <see cref="ModelMaterial"/> that the shader renders.
 		/// </summary>
 		/// <param name="modelMaterial">The material to use.</param>

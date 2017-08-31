@@ -48,10 +48,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <param name="colour">The colour to set the lines to.</param>
 		public void SetLineColour(Color4 colour)
 		{
-			Enable();
-
-			int boxColourShaderVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, ColourIdentifier);
-			GL.Uniform4(boxColourShaderVariableHandle, colour);
+			SetColor4(colour, ColourIdentifier);
 		}
 	}
 }
