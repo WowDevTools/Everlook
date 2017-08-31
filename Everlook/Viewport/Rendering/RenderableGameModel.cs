@@ -219,30 +219,11 @@ namespace Everlook.Viewport.Rendering
 			{
 				if (!this.TextureLookup.ContainsKey(texture.Filename))
 				{
-					if (!string.IsNullOrEmpty(texture.Filename))
-					{
-						var wrapS = texture.Flags.HasFlag(EMDXTextureFlags.TextureWrapX)
-							? TextureWrapMode.Repeat
-							: TextureWrapMode.Clamp;
-
-						var wrapT = texture.Flags.HasFlag(EMDXTextureFlags.TextureWrapY)
-							? TextureWrapMode.Repeat
-							: TextureWrapMode.Clamp;
-
-						this.TextureLookup.Add
-						(
-							texture.Filename,
-							this.Cache.GetTexture(texture.Filename, this.GameContext.Assets, wrapS, wrapT)
-						);
-					}
-					else
-					{
-						this.TextureLookup.Add
-						(
-							texture.Filename,
-							this.Cache.FallbackTexture
-						);
-					}
+					this.TextureLookup.Add
+					(
+						texture.Filename,
+						this.Cache.GetTexture(texture, this.GameContext)
+					);
 				}
 			}
 
@@ -593,28 +574,12 @@ namespace Everlook.Viewport.Rendering
 
 				if (!this.TextureLookup.ContainsKey(texturePath))
 				{
-					if (!string.IsNullOrEmpty(texturePath))
-					{
-						var wrapS = texture.Flags.HasFlag(EMDXTextureFlags.TextureWrapX)
-							? TextureWrapMode.Repeat
-							: TextureWrapMode.Clamp;
-
-						var wrapT = texture.Flags.HasFlag(EMDXTextureFlags.TextureWrapY)
-							? TextureWrapMode.Repeat
-							: TextureWrapMode.Clamp;
-
-						this.TextureLookup.Add
-						(
-							texturePath,
-							this.Cache.GetTexture(texturePath, this.GameContext.Assets, wrapS, wrapT)
-						);
-					}
-					else
+					if (!this.TextureLookup.ContainsKey(texture.Filename))
 					{
 						this.TextureLookup.Add
 						(
-							texturePath,
-							this.Cache.FallbackTexture
+							texture.Filename,
+							this.Cache.GetTexture(texture, this.GameContext)
 						);
 					}
 				}

@@ -30,6 +30,7 @@ using log4net;
 using OpenTK.Graphics.OpenGL;
 using Warcraft.BLP;
 using Warcraft.Core;
+using Warcraft.MDX.Visual;
 using Warcraft.MPQ;
 using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 using SysPixelFormat = System.Drawing.Imaging.PixelFormat;
@@ -162,7 +163,34 @@ namespace Everlook.Viewport.Rendering
 		}
 
 		/// <summary>
-		/// Gets a <see cref="Texture2D"/> instance from the cache.. If the texture is not already cached, it is
+		/// Gets a <see cref="Texture2D"/> instance from the cache. If the texture is not already cached, it is
+		/// extracted from the given <see cref="IGameContext"/>. If it is cached, the cached version is returned. If no
+		/// texture can be extracted, a fallback texture is returned.
+		/// </summary>
+		/// <param name="texture">The texture definition.</param>
+		/// <param name="gameContext">The context of the texture definition.</param>
+		/// <returns>A <see cref="Texture2D"/> object.</returns>
+		public Texture2D GetTexture(MDXTexture texture, IGameContext gameContext)
+		{
+			if (string.IsNullOrEmpty(texture.Filename))
+			{
+				Log.Warn("Texture with empty filename requested.");
+				return this.FallbackTexture;
+			}
+
+			var wrapS = texture.Flags.HasFlag(EMDXTextureFlags.TextureWrapX)
+				? TextureWrapMode.Repeat
+				: TextureWrapMode.Clamp;
+
+			var wrapT = texture.Flags.HasFlag(EMDXTextureFlags.TextureWrapY)
+				? TextureWrapMode.Repeat
+				: TextureWrapMode.Clamp;
+
+			return GetTexture(texture.Filename, gameContext.Assets, wrapS, wrapT);
+		}
+
+		/// <summary>
+		/// Gets a <see cref="Texture2D"/> instance from the cache. If the texture is not already cached, it is
 		/// extracted from the given <see cref="IPackage"/>. If it is cached, the cached version is returned. If no
 		/// texture can be extracted, a fallback texture is returned.
 		/// </summary>
