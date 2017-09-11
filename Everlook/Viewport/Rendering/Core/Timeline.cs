@@ -26,7 +26,6 @@ using System.Linq;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
 using Warcraft.Core.Interpolation;
-using Warcraft.Core.Structures;
 
 namespace Everlook.Viewport.Rendering.Core
 {

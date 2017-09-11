@@ -22,7 +22,6 @@
 
 using System.Collections.Generic;
 using Everlook.Viewport.Rendering.Interfaces;
-using OpenTK;
 using Warcraft.MDX.Animation;
 
 namespace Everlook.Viewport.Rendering.Core

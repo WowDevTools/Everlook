@@ -26,8 +26,6 @@ using System.IO;
 using Everlook.Explorer;
 using Everlook.UI;
 using Everlook.Utility;
-using Everlook.Viewport.Rendering.Shaders.GLSLExtended;
-using Gdk;
 using GLib;
 using log4net;
 using OpenTK;

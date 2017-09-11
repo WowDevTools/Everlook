@@ -22,7 +22,6 @@
 
 using Everlook.Viewport.Rendering.Core;
 using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Shaders
 {

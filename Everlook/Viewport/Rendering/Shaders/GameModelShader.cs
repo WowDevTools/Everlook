@@ -23,12 +23,9 @@
 using System;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders.Components;
-using GLib;
-using Gtk;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using Pango;
 using Warcraft.Core.Shading.Blending;
 using Warcraft.Core.Shading.MDX;
 using Warcraft.MDX.Visual;

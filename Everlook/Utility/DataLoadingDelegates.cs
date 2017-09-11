@@ -22,7 +22,6 @@
 
 using Everlook.Explorer;
 using Everlook.Viewport.Rendering.Interfaces;
-using Warcraft.Core;
 
 namespace Everlook.Utility
 {

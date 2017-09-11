@@ -22,12 +22,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Everlook.Configuration;
-using Everlook.Database;
 using Everlook.Exceptions.Shader;
-using Everlook.Package;
 using Everlook.Utility;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
@@ -35,10 +32,7 @@ using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
 using log4net;
 using OpenTK;
-using OpenTK.Graphics.ES20;
 using SlimTK;
-using Warcraft.Core;
-using Warcraft.MDX;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
 using Warcraft.WMO.GroupFile.Chunks;

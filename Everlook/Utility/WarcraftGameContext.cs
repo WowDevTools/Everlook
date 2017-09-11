@@ -26,7 +26,6 @@ using Everlook.Database;
 using Everlook.Explorer;
 using Everlook.Package;
 using Warcraft.Core;
-using Warcraft.MPQ;
 using Warcraft.WMO.RootFile.Chunks;
 
 namespace Everlook.Utility

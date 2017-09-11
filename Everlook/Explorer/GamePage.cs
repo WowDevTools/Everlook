@@ -26,7 +26,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Everlook.Configuration;
-using Everlook.Database;
 using Everlook.Package;
 using Everlook.Utility;
 using Gdk;

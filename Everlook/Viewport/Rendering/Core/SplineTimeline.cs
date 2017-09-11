@@ -22,7 +22,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Everlook.Viewport.Rendering.Interfaces;
 using Warcraft.Core.Interpolation;
 using Warcraft.Core.Structures;
