@@ -35,6 +35,7 @@ void main()
 		mvp = ProjectionMatrix * ViewMatrix * InstanceModelMatrix;
 		modelMatrix = InstanceModelMatrix;
 	}
+
 	gl_Position = mvp * vec4(vertexPosition.xyz, 1);
 
 	switch (VertexShaderPath)

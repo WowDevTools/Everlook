@@ -1,5 +1,5 @@
 ﻿//
-//  RenderableActorInstance.cs
+//  RenderableActorReference.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -28,11 +28,11 @@ using OpenTK;
 namespace Everlook.Viewport.Rendering.Core
 {
 	/// <summary>
-	/// Represents an instanced renderable. This class acts as a proxied instance of a given actor with its own
-	/// transform.
+	/// Represents a reference to a renderable. This class acts as a proxied instance of a given actor with its own
+	/// transform, but does not utilize any OpenGL instancing functions.
 	/// </summary>
 	/// <typeparam name="T">The renderable type that is encapsulated.</typeparam>
-	public class RenderableActorInstance<T> : IRenderable, IActor where T : class, IRenderable, IActor
+	public class RenderableActorReference<T> : IRenderable, IActor where T : class, IRenderable, IActor
 	{
 		/// <inheritdoc />
 		public bool IsStatic => this.Target.IsStatic;
@@ -50,20 +50,20 @@ namespace Everlook.Viewport.Rendering.Core
 		private readonly Transform DefaultTransform;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="RenderableActorInstance{T}"/> class.
+		/// Initializes a new instance of the <see cref="RenderableActorReference{T}"/> class.
 		/// </summary>
 		/// <param name="target">The target actor to act as an instance of.</param>
-		public RenderableActorInstance(T target)
+		public RenderableActorReference(T target)
 			: this(target, target.ActorTransform)
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="RenderableActorInstance{T}"/> class.
+		/// Initializes a new instance of the <see cref="RenderableActorReference{T}"/> class.
 		/// </summary>
 		/// <param name="target">The target actor to act as an instance of.</param>
 		/// <param name="transform">The transform of the instance.</param>
-		public RenderableActorInstance(T target, Transform transform)
+		public RenderableActorReference(T target, Transform transform)
 		{
 			if (target == null)
 			{

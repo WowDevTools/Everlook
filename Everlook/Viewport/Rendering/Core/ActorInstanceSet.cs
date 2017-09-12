@@ -123,7 +123,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// </summary>
 		public void Dispose()
 		{
-			throw new NotSupportedException("A renderable instance should not be disposed. Dispose the source actor instead.");
+			throw new NotSupportedException("A renderable instance set should not be disposed. Dispose the source actor instead.");
 		}
 	}
 }

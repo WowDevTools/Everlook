@@ -104,6 +104,8 @@ namespace Everlook.Viewport.Rendering
 				Data = this.BoundingBoxData.GetCorners().ToArray()
 			};
 
+			this.VertexBuffer.AttachAttributePointer(new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0));
+
 			byte[] boundingBoxIndexValues =
 			{
 				0, 1, 1, 2,
@@ -118,8 +120,6 @@ namespace Everlook.Viewport.Rendering
 			{
 				Data = boundingBoxIndexValues
 			};
-
-			this.VertexIndexesBuffer.AttachAttributePointer(new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0));
 
 			this.IsInitialized = true;
 		}
@@ -141,8 +141,11 @@ namespace Everlook.Viewport.Rendering
 			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
 			this.BoxShader.Enable();
+			this.BoxShader.SetIsInstance(true);
 			this.BoxShader.SetMVPMatrix(modelViewProjection);
 			this.BoxShader.SetLineColour(this.LineColour);
+			this.BoxShader.SetViewMatrix(viewMatrix);
+			this.BoxShader.SetProjectionMatrix(projectionMatrix);
 
 			// Now draw the box
 			GL.DrawElementsInstanced
