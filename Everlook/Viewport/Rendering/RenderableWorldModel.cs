@@ -143,7 +143,7 @@ namespace Everlook.Viewport.Rendering
 
 		// Doodad sets
 		private readonly Dictionary<string, RenderableGameModel> DoodadCache = new Dictionary<string, RenderableGameModel>();
-		private readonly Dictionary<string, List<RenderableActorInstance<RenderableGameModel>>> DoodadSets = new Dictionary<string, List<RenderableActorInstance<RenderableGameModel>>>();
+		private readonly Dictionary<string, List<ActorInstanceSet<RenderableGameModel>>> DoodadSets = new Dictionary<string, List<ActorInstanceSet<RenderableGameModel>>>();
 
 		/// <summary>
 		/// Gets or sets a value indicating whether or not the current renderable has been initialized.
@@ -255,6 +255,14 @@ namespace Everlook.Viewport.Rendering
 			{
 				doodad.Initialize();
 			}
+
+			foreach (var doodadSet in this.DoodadSets)
+			{
+				foreach (var instanceSet in doodadSet.Value)
+				{
+					instanceSet.Initialize();
+				}
+			}
 		}
 
 		/// <summary>
@@ -266,84 +274,61 @@ namespace Everlook.Viewport.Rendering
 			{
 				var doodadInstances = this.Model.RootInformation.DoodadInstances.DoodadInstances
 					.Skip((int)doodadSet.FirstDoodadInstanceIndex)
-					.Take((int)doodadSet.DoodadInstanceCount);
+					.Take((int)doodadSet.DoodadInstanceCount).ToList();
 
-				var renderingDoodads = new List<RenderableActorInstance<RenderableGameModel>>();
+				var doodadInstanceGroups = doodadInstances.GroupBy(d => d.Name);
 
-				foreach (var doodadInstance in doodadInstances)
+				var doodadSetInstanceGroups = new List<ActorInstanceSet<RenderableGameModel>>();
+				foreach (var doodadInstanceGroup in doodadInstanceGroups)
 				{
-					if (string.IsNullOrEmpty(doodadInstance.Name))
+					var firstInstance = doodadInstanceGroup.First();
+
+					// Check and cache the doodad
+					if (string.IsNullOrEmpty(firstInstance.Name))
 					{
 						Log.Warn("Failed to load doodad. The instance name was null or empty.");
 						continue;
 					}
 
-					// Check if we've cached the doodad first
-					if (this.DoodadCache.ContainsKey(doodadInstance.Name))
+					if (!this.DoodadCache.ContainsKey(firstInstance.Name))
 					{
-						renderingDoodads.Add
-						(
-							new RenderableActorInstance<RenderableGameModel>
-							(
-								this.DoodadCache[doodadInstance.Name],
-								new Transform
-								(
-									doodadInstance.Position.AsOpenTKVector(),
-									doodadInstance.Orientation.AsOpenTKQuaternion(),
-									new Vector3(doodadInstance.Scale)
-								)
-							)
-						);
+						var doodadReference = this.GameContext.GetReferenceForDoodad(firstInstance);
+						var doodadModel = DataLoadingRoutines.LoadGameModel(doodadReference, this.GameContext);
 
-						continue;
+						if (doodadModel == null)
+						{
+							Log.Warn($"Failed to load doodad \"{firstInstance.Name}\"");
+							continue;
+						}
+
+						// Then create a new renderable game model
+						var renderableDoodad = new RenderableGameModel(doodadModel, this.GameContext, firstInstance.Name);
+
+						// And cache it
+						this.DoodadCache.Add(firstInstance.Name, renderableDoodad);
 					}
 
-					// If not, extract the doodad data
-					var doodadReference = this.GameContext.GetReferenceForDoodad(doodadInstance);
-					var doodadModel = DataLoadingRoutines.LoadGameModel(doodadReference, this.GameContext);
-
-					if (doodadModel == null)
+					var instanceTransforms = new List<Transform>();
+					foreach (var doodadInstance in doodadInstanceGroup)
 					{
-						Log.Warn($"Failed to load doodad \"{doodadInstance.Name}\"");
-						continue;
-					}
-
-					// Then create a new renderable game model
-					var renderableDoodad = new RenderableGameModel
-					(
-						doodadModel,
-						this.GameContext,
-						doodadInstance.Name
-					)
-					{
-						ActorTransform = new Transform
+						instanceTransforms.Add
 						(
-							doodadInstance.Position.AsOpenTKVector(),
-							doodadInstance.Orientation.AsOpenTKQuaternion(),
-							new Vector3(doodadInstance.Scale)
-						)
-					};
-
-					// And cache it
-					this.DoodadCache.Add(doodadInstance.Name, renderableDoodad);
-
-					// Then add it as an instance to the set
-					renderingDoodads.Add
-					(
-						new RenderableActorInstance<RenderableGameModel>
-						(
-							renderableDoodad,
 							new Transform
 							(
 								doodadInstance.Position.AsOpenTKVector(),
 								doodadInstance.Orientation.AsOpenTKQuaternion(),
 								new Vector3(doodadInstance.Scale)
 							)
-						)
-					);
+						);
+					}
+
+					var instanceSet = new ActorInstanceSet<RenderableGameModel>(this.DoodadCache[firstInstance.Name]);
+					instanceSet.SetInstances(instanceTransforms);
+
+					doodadSetInstanceGroups.Add(instanceSet);
 				}
 
-				this.DoodadSets.Add(doodadSet.Name, renderingDoodads);
+				this.DoodadSets.Add(doodadSet.Name, doodadSetInstanceGroups);
 			}
 		}
 
@@ -440,9 +425,9 @@ namespace Everlook.Viewport.Rendering
 
 			if (this.ShouldRenderDoodads)
 			{
-				foreach (var doodad in this.DoodadSets[this.DoodadSet])
+				foreach (var doodadInstanceSet in this.DoodadSets[this.DoodadSet])
 				{
-					doodad.Render(viewMatrix, projectionMatrix, camera);
+					doodadInstanceSet.Render(viewMatrix, projectionMatrix, camera);
 				}
 			}
 

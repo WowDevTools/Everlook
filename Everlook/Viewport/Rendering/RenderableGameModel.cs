@@ -49,7 +49,7 @@ namespace Everlook.Viewport.Rendering
 	/// <summary>
 	/// Represents a renderable Game Object Model.
 	/// </summary>
-	public sealed class RenderableGameModel : IRenderable, ITickingActor, IDefaultCameraPositionProvider
+	public sealed class RenderableGameModel : IInstancedRenderable, ITickingActor, IDefaultCameraPositionProvider
 	{
 		/// <summary>
 		/// Logger instance for this class.
@@ -280,7 +280,7 @@ namespace Everlook.Viewport.Rendering
 		}
 
 		/// <inheritdoc />
-		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+		public void RenderInstances(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera, int count)
 		{
 			ThrowIfDisposed();
 
@@ -289,16 +289,20 @@ namespace Everlook.Viewport.Rendering
 				return;
 			}
 
+			this.VertexBuffer.Bind();
+			this.VertexBuffer.EnableAttributes();
+
+			GL.Enable(EnableCap.DepthTest);
+
 			Matrix4 modelViewMatrix = this.ActorTransform.GetModelMatrix() * viewMatrix;
 			Matrix4 modelViewProjection = modelViewMatrix * projectionMatrix;
 
 			this.Shader.Enable();
-			this.Shader.SetModelViewMatrix(modelViewMatrix);
+			this.Shader.SetIsInstance(true);
+			this.Shader.SetModelMatrix(this.ActorTransform.GetModelMatrix());
+			this.Shader.SetViewMatrix(viewMatrix);
 			this.Shader.SetProjectionMatrix(projectionMatrix);
 			this.Shader.SetMVPMatrix(modelViewProjection);
-
-			this.VertexBuffer.Bind();
-			this.VertexBuffer.EnableAttributes();
 
 			this.Shader.Wireframe.Enabled = this.ShouldRenderWireframe;
 			if (this.ShouldRenderWireframe)
@@ -310,33 +314,91 @@ namespace Everlook.Viewport.Rendering
 				GL.Enable(EnableCap.Blend);
 			}
 
-			GL.Enable(EnableCap.DepthTest);
-
 			foreach (var skin in this.Model.Skins)
 			{
 				this.SkinIndexArrayBuffers[skin].Bind();
-				this.Shader.Enable();
-
 				if (this.ShouldRenderWireframe)
 				{
 					// Override blend setting
 					GL.Enable(EnableCap.Blend);
 				}
 
-				var batchesBackToFront = skin.RenderBatches.OrderByDescending
-				(
-					renderBatch => VectorMath.Distance(
-						camera.Position,
-						skin.Sections[renderBatch.SkinSectionIndex].SortCenterPosition.AsOpenTKVector()
-					)
-				);
-
-				foreach (var renderBatch in batchesBackToFront)
+				foreach (var renderBatch in skin.RenderBatches)
 				{
 					PrepareBatchForRender(renderBatch);
 
 					var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
-					GL.DrawElements // TODO: Can probably be DrawElements[Instanced] instead
+					GL.DrawElementsInstanced
+					(
+						PrimitiveType.Triangles,
+						skinSection.TriangleCount,
+						DrawElementsType.UnsignedShort,
+						new IntPtr(skinSection.StartTriangleIndex * 2),
+						count
+					);
+				}
+			}
+
+			// Render bounding boxes
+			if (this.ShouldRenderBounds)
+			{
+				this.BoundingBox.RenderInstances(viewMatrix, projectionMatrix, camera, count);
+			}
+
+			// Release the attribute arrays
+			this.VertexBuffer.DisableAttributes();
+		}
+
+		/// <inheritdoc />
+		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+		{
+			ThrowIfDisposed();
+
+			if (!this.IsInitialized)
+			{
+				return;
+			}
+
+			this.VertexBuffer.Bind();
+			this.VertexBuffer.EnableAttributes();
+
+			GL.Enable(EnableCap.DepthTest);
+
+			Matrix4 modelViewMatrix = this.ActorTransform.GetModelMatrix() * viewMatrix;
+			Matrix4 modelViewProjection = modelViewMatrix * projectionMatrix;
+
+			this.Shader.Enable();
+			this.Shader.SetIsInstance(false);
+			this.Shader.SetModelMatrix(this.ActorTransform.GetModelMatrix());
+			this.Shader.SetViewMatrix(viewMatrix);
+			this.Shader.SetProjectionMatrix(projectionMatrix);
+			this.Shader.SetMVPMatrix(modelViewProjection);
+
+			this.Shader.Wireframe.Enabled = this.ShouldRenderWireframe;
+			if (this.ShouldRenderWireframe)
+			{
+				this.Shader.Wireframe.SetWireframeColour(EverlookConfiguration.Instance.WireframeColour);
+				this.Shader.Wireframe.SetViewportMatrix(camera.GetViewportMatrix());
+
+				// Override blend setting
+				GL.Enable(EnableCap.Blend);
+			}
+
+			foreach (var skin in this.Model.Skins)
+			{
+				this.SkinIndexArrayBuffers[skin].Bind();
+				if (this.ShouldRenderWireframe)
+				{
+					// Override blend setting
+					GL.Enable(EnableCap.Blend);
+				}
+
+				foreach (var renderBatch in skin.RenderBatches)
+				{
+					PrepareBatchForRender(renderBatch);
+
+					var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
+					GL.DrawElements
 					(
 						PrimitiveType.Triangles,
 						skinSection.TriangleCount,
@@ -356,6 +418,11 @@ namespace Everlook.Viewport.Rendering
 			this.VertexBuffer.DisableAttributes();
 		}
 
+		/// <summary>
+		/// Prepares the OpenGL state for rendering the specified batch.
+		/// </summary>
+		/// <param name="renderBatch">The batch to prepare for rendering.</param>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if the batch has more than four textures.</exception>
 		private void PrepareBatchForRender(MDXRenderBatch renderBatch)
 		{
 			var fragmentShader = MDXShaderHelper.GetFragmentShaderType(renderBatch.TextureCount, renderBatch.ShaderID);

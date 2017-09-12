@@ -83,6 +83,19 @@ namespace Everlook.Viewport.Rendering.Core
 		}
 
 		/// <summary>
+		/// Sets the uniform named by <paramref name="uniformName"/> to <paramref name="value"/>.
+		/// </summary>
+		/// <param name="value">The boolean.</param>
+		/// <param name="uniformName">The name of the uniform variable.</param>
+		protected void SetBoolean(bool value, string uniformName)
+		{
+			Enable();
+
+			int variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+			GL.Uniform1(variableHandle, value ? 1 : 0);
+		}
+
+		/// <summary>
 		/// Sets the uniform named by <paramref name="uniformName"/> to <paramref name="matrix"/>.
 		/// </summary>
 		/// <param name="matrix">The matrix.</param>

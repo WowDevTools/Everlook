@@ -37,7 +37,7 @@ namespace Everlook.Viewport.Rendering
 	/// <summary>
 	/// Wraps a <see cref="BoundingBox"/> as a renderable in-world actor.
 	/// </summary>
-	public sealed class RenderableBoundingBox : IRenderable, IActor
+	public sealed class RenderableBoundingBox : IInstancedRenderable, IActor
 	{
 		private readonly BoundingBoxShader BoxShader;
 
@@ -119,13 +119,24 @@ namespace Everlook.Viewport.Rendering
 				Data = boundingBoxIndexValues
 			};
 
+			this.VertexIndexesBuffer.AttachAttributePointer(new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0));
+
 			this.IsInitialized = true;
 		}
 
 		/// <inheritdoc />
-		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+		public void RenderInstances(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera, int count)
 		{
 			ThrowIfDisposed();
+
+			GL.Disable(EnableCap.CullFace);
+			GL.Disable(EnableCap.DepthTest);
+
+			// Send the vertices to the shader
+			this.VertexBuffer.Bind();
+			this.VertexBuffer.EnableAttributes();
+
+			this.VertexIndexesBuffer.Bind();
 
 			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
@@ -133,37 +144,49 @@ namespace Everlook.Viewport.Rendering
 			this.BoxShader.SetMVPMatrix(modelViewProjection);
 			this.BoxShader.SetLineColour(this.LineColour);
 
+			// Now draw the box
+			GL.DrawElementsInstanced
+			(
+				PrimitiveType.LineLoop,
+				24,
+				DrawElementsType.UnsignedByte,
+				new IntPtr(0),
+				count
+			);
+
+			this.VertexBuffer.DisableAttributes();
+		}
+
+		/// <inheritdoc />
+		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+		{
+			ThrowIfDisposed();
+
 			GL.Disable(EnableCap.CullFace);
 			GL.Disable(EnableCap.DepthTest);
 
-			// Render the object
 			// Send the vertices to the shader
-			GL.EnableVertexAttribArray(0);
 			this.VertexBuffer.Bind();
-			GL.VertexAttribPointer
-			(
-				0,
-				3,
-				VertexAttribPointerType.Float,
-				false,
-				0,
-				0
-			);
+			this.VertexBuffer.EnableAttributes();
 
 			this.VertexIndexesBuffer.Bind();
 
+			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
+
+			this.BoxShader.Enable();
+			this.BoxShader.SetMVPMatrix(modelViewProjection);
+			this.BoxShader.SetLineColour(this.LineColour);
+
 			// Now draw the box
-			GL.DrawRangeElements
+			GL.DrawElements
 			(
 				PrimitiveType.LineLoop,
-				0,
-				23,
 				24,
 				DrawElementsType.UnsignedByte,
 				new IntPtr(0)
 			);
 
-			GL.DisableVertexAttribArray(0);
+			this.VertexBuffer.DisableAttributes();
 		}
 
 		/// <summary>

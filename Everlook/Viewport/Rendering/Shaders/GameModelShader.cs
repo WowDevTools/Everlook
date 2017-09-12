@@ -43,8 +43,10 @@ namespace Everlook.Viewport.Rendering.Shaders
 		private const string VertexShaderPath = nameof(VertexShaderPath);
 		private const string FragmentShaderPath = nameof(FragmentShaderPath);
 		private const string BaseColour = nameof(BaseColour);
+		private const string IsInstance = nameof(IsInstance);
 
-		private const string ModelViewMatrix = nameof(ModelViewMatrix);
+		private const string ModelMatrix = nameof(ModelMatrix);
+		private const string ViewMatrix = nameof(ViewMatrix);
 		private const string ProjectionMatrix = nameof(ProjectionMatrix);
 
 		/// <inheritdoc />
@@ -73,12 +75,30 @@ namespace Everlook.Viewport.Rendering.Shaders
 		}
 
 		/// <summary>
-		/// Sets the current model-view matrix of the shader.
+		/// Sets the instancing flag.
 		/// </summary>
-		/// <param name="modelViewMatrix">The model-view matrix.</param>
-		public void SetModelViewMatrix(Matrix4 modelViewMatrix)
+		/// <param name="isInstanced">Whether or not the shader should render instances.</param>
+		public void SetIsInstance(bool isInstanced)
 		{
-			SetMatrix(modelViewMatrix, ModelViewMatrix);
+			SetBoolean(isInstanced, IsInstance);
+		}
+
+		/// <summary>
+		/// Sets the current model matrix of the shader.
+		/// </summary>
+		/// <param name="modelMatrix">The model matrix.</param>
+		public void SetModelMatrix(Matrix4 modelMatrix)
+		{
+			SetMatrix(modelMatrix, ModelMatrix);
+		}
+
+		/// <summary>
+		/// Sets the current view matrix of the shader.
+		/// </summary>
+		/// <param name="viewMatrix">The model-view matrix.</param>
+		public void SetViewMatrix(Matrix4 viewMatrix)
+		{
+			SetMatrix(viewMatrix, ViewMatrix);
 		}
 
 		/// <summary>
