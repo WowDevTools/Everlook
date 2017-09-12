@@ -210,6 +210,24 @@ namespace Everlook.Viewport.Rendering
 				Data = this.Model.Vertices.Select(v => v.PackForOpenGL()).SelectMany(b => b).ToArray()
 			};
 
+			var attributePointers = new[]
+			{
+				// Position
+				new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, MDXVertex.GetSize(), 0),
+				// Bone weights
+				new VertexAttributePointer(1, 4, VertexAttribPointerType.UnsignedByte, MDXVertex.GetSize(), 12),
+				// Bone indexes
+				new VertexAttributePointer(2, 4, VertexAttribPointerType.UnsignedByte, MDXVertex.GetSize(), 16),
+				// Normal
+				new VertexAttributePointer(3, 3, VertexAttribPointerType.Float, MDXVertex.GetSize(), 20),
+				// UV1
+				new VertexAttributePointer(4, 2, VertexAttribPointerType.Float, MDXVertex.GetSize(), 32),
+				// UV2
+				new VertexAttributePointer(5, 2, VertexAttribPointerType.Float, MDXVertex.GetSize(), 40)
+			};
+
+			this.VertexBuffer.AttachAttributePointers(attributePointers);
+
 			this.BoundingBox = new RenderableBoundingBox(this.Model.BoundingBox.ToOpenGLBoundingBox(), this.ActorTransform);
 			this.BoundingBox.Initialize();
 
@@ -274,84 +292,13 @@ namespace Everlook.Viewport.Rendering
 			Matrix4 modelViewMatrix = this.ActorTransform.GetModelMatrix() * viewMatrix;
 			Matrix4 modelViewProjection = modelViewMatrix * projectionMatrix;
 
-			this.VertexBuffer.Bind();
-
 			this.Shader.Enable();
 			this.Shader.SetModelViewMatrix(modelViewMatrix);
 			this.Shader.SetProjectionMatrix(projectionMatrix);
 			this.Shader.SetMVPMatrix(modelViewProjection);
 
-			// Position pointer
-			GL.EnableVertexAttribArray(0);
-			GL.VertexAttribPointer
-			(
-				0,
-				3,
-				VertexAttribPointerType.Float,
-				false,
-				MDXVertex.GetSize(),
-				0
-			);
-
-			// Bone weight pointer
-			GL.EnableVertexAttribArray(1);
-			GL.VertexAttribPointer
-			(
-				1,
-				4,
-				VertexAttribPointerType.UnsignedByte,
-				false,
-				MDXVertex.GetSize(),
-				12
-			);
-
-			// Bone index pointer
-			GL.EnableVertexAttribArray(2);
-			GL.VertexAttribPointer
-			(
-				2,
-				4,
-				VertexAttribPointerType.UnsignedByte,
-				false,
-				MDXVertex.GetSize(),
-				16
-			);
-
-			// Normal pointer
-			GL.EnableVertexAttribArray(3);
-			GL.VertexAttribPointer
-			(
-				3,
-				3,
-				VertexAttribPointerType.Float,
-				false,
-				MDXVertex.GetSize(),
-				20
-			);
-
-			// UV1 pointer
-			GL.EnableVertexAttribArray(4);
-			GL.VertexAttribPointer
-			(
-				4,
-				2,
-				VertexAttribPointerType.Float,
-				false,
-				MDXVertex.GetSize(),
-				32
-			);
-
-			// UV2 pointer
-			GL.EnableVertexAttribArray(5);
-			GL.VertexAttribPointer
-			(
-				5,
-				2,
-				VertexAttribPointerType.Float,
-				false,
-				MDXVertex.GetSize(),
-				40
-			);
+			this.VertexBuffer.Bind();
+			this.VertexBuffer.EnableAttributes();
 
 			this.Shader.Wireframe.Enabled = this.ShouldRenderWireframe;
 			if (this.ShouldRenderWireframe)
@@ -386,61 +333,12 @@ namespace Everlook.Viewport.Rendering
 
 				foreach (var renderBatch in batchesBackToFront)
 				{
-					var fragmentShader = MDXShaderHelper.GetFragmentShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
-					var vertexShader = MDXShaderHelper.GetVertexShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
-					var batchMaterial = this.Model.Materials[renderBatch.MaterialIndex];
-
-					this.Shader.SetVertexShaderType(vertexShader);
-					this.Shader.SetFragmentShaderType(fragmentShader);
-					this.Shader.SetMaterial(batchMaterial);
+					PrepareBatchForRender(renderBatch);
 
 					var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
-
-					var textureIndexes = this.Model.TextureLookupTable.Skip(renderBatch.TextureLookupTableIndex).Take(renderBatch.TextureCount);
-					var textures = this.Model.Textures.Where((t, i) => textureIndexes.Contains((short)i));
-
-					foreach (var texture in textures)
-					{
-						string textureName;
-						switch (texture.TextureType)
-						{
-							case EMDXTextureType.Regular:
-							{
-								textureName = texture.Filename;
-								break;
-							}
-							case EMDXTextureType.MonsterSkin1:
-							{
-								textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[0].Value);
-								break;
-							}
-							case EMDXTextureType.MonsterSkin2:
-							{
-								textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[1].Value);
-								break;
-							}
-							case EMDXTextureType.MonsterSkin3:
-							{
-								textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[2].Value);
-								break;
-							}
-							default:
-							{
-								// Use the fallback texture if we don't know how to load the texture type
-								textureName = string.Empty;
-								break;
-							}
-						}
-
-						var textureObject = this.TextureLookup[textureName];
-						this.Shader.BindTexture0(textureObject);
-					}
-
-					GL.DrawRangeElements
+					GL.DrawElements // TODO: Can probably be DrawElements[Instanced] instead
 					(
 						PrimitiveType.Triangles,
-						skinSection.StartTriangleIndex,
-						skinSection.StartTriangleIndex + skinSection.TriangleCount - 1,
 						skinSection.TriangleCount,
 						DrawElementsType.UnsignedShort,
 						new IntPtr(skinSection.StartTriangleIndex * 2)
@@ -455,12 +353,86 @@ namespace Everlook.Viewport.Rendering
 			}
 
 			// Release the attribute arrays
-			GL.DisableVertexAttribArray(0);
-			GL.DisableVertexAttribArray(1);
-			GL.DisableVertexAttribArray(2);
-			GL.DisableVertexAttribArray(3);
-			GL.DisableVertexAttribArray(4);
-			GL.DisableVertexAttribArray(5);
+			this.VertexBuffer.DisableAttributes();
+		}
+
+		private void PrepareBatchForRender(MDXRenderBatch renderBatch)
+		{
+			var fragmentShader = MDXShaderHelper.GetFragmentShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
+			var vertexShader = MDXShaderHelper.GetVertexShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
+			var batchMaterial = this.Model.Materials[renderBatch.MaterialIndex];
+
+			this.Shader.SetVertexShaderType(vertexShader);
+			this.Shader.SetFragmentShaderType(fragmentShader);
+			this.Shader.SetMaterial(batchMaterial);
+
+			var textureIndexes = this.Model.TextureLookupTable.Skip(renderBatch.TextureLookupTableIndex)
+				.Take(renderBatch.TextureCount);
+			var textures = this.Model.Textures.Where((t, i) => textureIndexes.Contains((short)i)).ToList();
+
+			for (int i = 0; i < textures.Count; ++i)
+			{
+				var texture = textures[i];
+				string textureName;
+				switch (texture.TextureType)
+				{
+					case EMDXTextureType.Regular:
+					{
+						textureName = texture.Filename;
+						break;
+					}
+					case EMDXTextureType.MonsterSkin1:
+					{
+						textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[0].Value);
+						break;
+					}
+					case EMDXTextureType.MonsterSkin2:
+					{
+						textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[1].Value);
+						break;
+					}
+					case EMDXTextureType.MonsterSkin3:
+					{
+						textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[2].Value);
+						break;
+					}
+					default:
+					{
+						// Use the fallback texture if we don't know how to load the texture type
+						textureName = string.Empty;
+						break;
+					}
+				}
+
+				var textureObject = this.TextureLookup[textureName];
+				switch (i)
+				{
+					case 0:
+					{
+						this.Shader.BindTexture0(textureObject);
+						break;
+					}
+					case 1:
+					{
+						this.Shader.BindTexture1(textureObject);
+						break;
+					}
+					case 2:
+					{
+						this.Shader.BindTexture2(textureObject);
+						break;
+					}
+					case 3:
+					{
+						this.Shader.BindTexture3(textureObject);
+						break;
+					}
+					default:
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+				}
+			}
 		}
 
 		/// <summary>

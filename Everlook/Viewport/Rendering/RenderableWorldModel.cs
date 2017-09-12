@@ -366,13 +366,19 @@ namespace Everlook.Viewport.Rendering
 			vertexBuffer.Data = modelGroup.GetVertices().Select(v => v.AsOpenTKVector()).ToArray();
 			this.VertexBufferLookup.Add(modelGroup, vertexBuffer);
 
+			vertexBuffer.AttachAttributePointer(new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0));
+
 			// Upload all of the normals in this group
 			normalBuffer.Data = modelGroup.GetNormals().Select(v => v.AsOpenTKVector()).ToArray();
 			this.NormalBufferLookup.Add(modelGroup, normalBuffer);
 
+			normalBuffer.AttachAttributePointer(new VertexAttributePointer(1, 3, VertexAttribPointerType.Float, 0, 0));
+
 			// Upload all of the UVs in this group
 			coordinateBuffer.Data = modelGroup.GetTextureCoordinates().Select(v => v.AsOpenTKVector()).ToArray();
 			this.TextureCoordinateBufferLookup.Add(modelGroup, coordinateBuffer);
+
+			coordinateBuffer.AttachAttributePointer(new VertexAttributePointer(2, 2, VertexAttribPointerType.Float, 0, 0));
 
 			// Upload vertex indices for this group
 			vertexIndexes.Data = modelGroup.GetVertexIndices().ToArray();
@@ -471,37 +477,14 @@ namespace Everlook.Viewport.Rendering
 
 			// Render the object
 			// Send the vertices to the shader
-			GL.EnableVertexAttribArray(0);
 			this.VertexBufferLookup[modelGroup].Bind();
-			GL.VertexAttribPointer(
-				0,
-				3,
-				VertexAttribPointerType.Float,
-				false,
-				0,
-				0);
+			this.VertexBufferLookup[modelGroup].EnableAttributes();
 
-			// Send the normals to the shader
-			GL.EnableVertexAttribArray(1);
 			this.NormalBufferLookup[modelGroup].Bind();
-			GL.VertexAttribPointer(
-				1,
-				3,
-				VertexAttribPointerType.Float,
-				false,
-				0,
-				0);
+			this.NormalBufferLookup[modelGroup].EnableAttributes();
 
-			// Send the texture coordinates to the shader
-			GL.EnableVertexAttribArray(2);
 			this.TextureCoordinateBufferLookup[modelGroup].Bind();
-			GL.VertexAttribPointer(
-				2,
-				2,
-				VertexAttribPointerType.Float,
-				false,
-				0,
-				0);
+			this.TextureCoordinateBufferLookup[modelGroup].EnableAttributes();
 
 			// Bind the index buffer
 			this.VertexIndexBufferLookup[modelGroup].Bind();
@@ -537,7 +520,7 @@ namespace Everlook.Viewport.Rendering
 					texture.WrappingMode = TextureWrapMode.Repeat;
 				}
 
-				this.Shader.BindTexture2D(TextureUnit.Texture0, TextureUniform.Diffuse0, texture);
+				this.Shader.BindTexture2D(TextureUnit.Texture0, TextureUniform.Texture0, texture);
 
 				// Finally, draw the model
 				GL.DrawRangeElements
@@ -552,9 +535,9 @@ namespace Everlook.Viewport.Rendering
 			}
 
 			// Release the attribute arrays
-			GL.DisableVertexAttribArray(0);
-			GL.DisableVertexAttribArray(1);
-			GL.DisableVertexAttribArray(2);
+			this.VertexBufferLookup[modelGroup].DisableAttributes();
+			this.NormalBufferLookup[modelGroup].DisableAttributes();
+			this.TextureCoordinateBufferLookup[modelGroup].DisableAttributes();
 		}
 
 		/// <summary>

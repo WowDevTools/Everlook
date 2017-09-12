@@ -23,14 +23,16 @@ uniform int FragmentShaderPath;
 uniform float alphaThreshold;
 
 uniform vec4 BaseColour;
-uniform sampler2D Diffuse0;
-uniform sampler2D Diffuse1;
+uniform sampler2D Texture0;
+uniform sampler2D Texture1;
+uniform sampler2D Texture2;
+uniform sampler2D Texture3;
 
 void main()
 {
 	vec4 fragOutput = vec4(0);
-	vec4 tex0 = texture(Diffuse0, gvIn.UV1);
-	vec4 tex1 = texture(Diffuse1, gvIn.UV2);
+	vec4 tex0 = texture(Texture0, gvIn.UV1);
+	vec4 tex1 = texture(Texture1, gvIn.UV2);
 	switch (FragmentShaderPath)
 	{
 		case Opaque: fragOutput = CombinersOpaque(BaseColour, tex0); break;

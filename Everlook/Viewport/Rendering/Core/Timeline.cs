@@ -73,7 +73,14 @@ namespace Everlook.Viewport.Rendering.Core
 			}
 		}
 
+		/// <summary>
+		/// Gets the timestamps in the timeline.
+		/// </summary>
 		protected IReadOnlyList<uint> Timestamps { get; }
+
+		/// <summary>
+		/// Gets the values in the timeline.
+		/// </summary>
 		protected IReadOnlyList<T> Values { get; }
 
 		/// <summary>

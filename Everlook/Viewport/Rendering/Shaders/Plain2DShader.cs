@@ -61,7 +61,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <param name="texture">The texture.</param>
 		public void SetTexture(Texture2D texture)
 		{
-			BindTexture2D(TextureUnit.Texture0, TextureUniform.Diffuse0, texture);
+			BindTexture2D(TextureUnit.Texture0, TextureUniform.Texture0, texture);
 		}
 	}
 }

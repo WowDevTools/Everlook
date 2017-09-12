@@ -30,28 +30,23 @@ namespace Everlook.Viewport.Rendering.Core
 	public enum TextureUniform
 	{
 		/// <summary>
-		/// The first diffuse texture.
+		/// The first texture.
 		/// </summary>
-		Diffuse0  = 0,
+		Texture0 = 0,
 
 		/// <summary>
-		/// The first specular texture.
+		/// The second texture.
 		/// </summary>
-		Specular0 = 1,
+		Texture1 = 1,
 
 		/// <summary>
-		/// The second diffuse texture.
+		/// The third texture.
 		/// </summary>
-		Diffuse1  = 2,
+		Texture2 = 2,
 
 		/// <summary>
-		/// The second specular texture.
+		/// The fourth texture.
 		/// </summary>
-		Specular1 = 3,
-
-		/// <summary>
-		/// An environment map.
-		/// </summary>
-		EnvMap    = 4
+		Texture3 = 3,
 	}
 }

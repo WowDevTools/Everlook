@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using OpenTK.Graphics.OpenGL;
 
@@ -44,6 +45,11 @@ namespace Everlook.Viewport.Rendering.Core
 		/// Gets a hinting value as to how the buffer's data might be read or written.
 		/// </summary>
 		public BufferUsageHint UsageHint { get; }
+
+		/// <summary>
+		/// Gets the attribute pointers of the buffer.
+		/// </summary>
+		private ICollection<VertexAttributePointer> Attributes { get; }
 
 		/// <summary>
 		/// Gets or sets the data contained in the buffer. This is an expensive operation.
@@ -78,8 +84,68 @@ namespace Everlook.Viewport.Rendering.Core
 		{
 			this.Target = target;
 			this.UsageHint = usageHint;
+			this.Attributes = new List<VertexAttributePointer>();
 
 			this.NativeBufferID = GL.GenBuffer();
+		}
+
+		/// <summary>
+		/// Attaches the specified attribute pointer to the buffer.
+		/// </summary>
+		/// <param name="attributePointer">An attribute pointer.</param>
+		/// <exception cref="ArgumentNullException">Thrown if <paramref name="attributePointer"/> is null.</exception>
+		public void AttachAttributePointer(VertexAttributePointer attributePointer)
+		{
+			if (attributePointer == null)
+			{
+				throw new ArgumentNullException(nameof(attributePointer));
+			}
+
+			Bind();
+			this.Attributes.Add(attributePointer);
+		}
+
+		/// <summary>
+		/// Attaches the specified set of attribute pointers to the buffer.
+		/// </summary>
+		/// <param name="attributePointers">A set of attribute pointers.</param>
+		/// <exception cref="ArgumentNullException">Thrown if <paramref name="attributePointers"/> is null.</exception>
+		public void AttachAttributePointers(IEnumerable<VertexAttributePointer> attributePointers)
+		{
+			if (attributePointers == null)
+			{
+				throw new ArgumentNullException(nameof(attributePointers));
+			}
+
+			Bind();
+			foreach (var attributePointer in attributePointers)
+			{
+				this.Attributes.Add(attributePointer);
+			}
+		}
+
+		/// <summary>
+		/// Enables the attribute arrays that are relevant for this buffer, as specified by its attached attribute
+		/// pointers.
+		/// </summary>
+		public void EnableAttributes()
+		{
+			foreach (var attribute in this.Attributes)
+			{
+				attribute.Enable();
+			}
+		}
+
+		/// <summary>
+		/// Disables the attribute arrays that are relevant for this buffer, as specified by its attached attribute
+		/// pointers.
+		/// </summary>
+		public void DisableAttributes()
+		{
+			foreach (var attribute in this.Attributes)
+			{
+				attribute.Disable();
+			}
 		}
 
 		/// <summary>

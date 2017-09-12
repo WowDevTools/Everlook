@@ -27,7 +27,7 @@ namespace Everlook.Viewport.Rendering.Interfaces
 	/// <summary>
 	/// Representation of a timeline with interpolated values.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="T">The output value type of the timeline.</typeparam>
 	public interface ITimeline<out T>
 	{
 		/// <summary>

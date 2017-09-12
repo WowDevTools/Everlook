@@ -123,7 +123,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <param name="texture">The texture to bind.</param>
 		public void BindTexture0(Texture2D texture)
 		{
-			BindTexture2D(TextureUnit.Texture0, TextureUniform.Diffuse0, texture);
+			BindTexture2D(TextureUnit.Texture0, TextureUniform.Texture0, texture);
 		}
 
 		/// <summary>
@@ -132,7 +132,25 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <param name="texture">The texture to bind.</param>
 		public void BindTexture1(Texture2D texture)
 		{
-			BindTexture2D(TextureUnit.Texture1, TextureUniform.Diffuse1, texture);
+			BindTexture2D(TextureUnit.Texture1, TextureUniform.Texture1, texture);
+		}
+
+		/// <summary>
+		/// Binds a texture to the second texture in the shader.
+		/// </summary>
+		/// <param name="texture">The texture to bind.</param>
+		public void BindTexture2(Texture2D texture)
+		{
+			BindTexture2D(TextureUnit.Texture2, TextureUniform.Texture2, texture);
+		}
+
+		/// <summary>
+		/// Binds a texture to the second texture in the shader.
+		/// </summary>
+		/// <param name="texture">The texture to bind.</param>
+		public void BindTexture3(Texture2D texture)
+		{
+			BindTexture2D(TextureUnit.Texture3, TextureUniform.Texture3, texture);
 		}
 
 		/// <summary>
