@@ -64,15 +64,10 @@ namespace Everlook.Viewport.Rendering
 		/// <c>false</c>
 		public bool IsStatic => false;
 
-		/// <summary>
-		/// Gets the projection method to use for this renderable object. Typically, this is Orthographic
-		/// or Perspective.
-		/// </summary>
+		/// <inheritdoc />
 		public ProjectionType Projection => ProjectionType.Perspective;
 
-		/// <summary>
-		/// Gets the default camera position for this renderable.
-		/// </summary>
+		/// <inheritdoc />
 		public Vector3 DefaultCameraPosition
 		{
 			get
@@ -105,9 +100,7 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		private bool IsDisposed { get; set; }
 
-		/// <summary>
-		/// Gets or sets the transform of the actor.
-		/// </summary>
+		/// <inheritdoc />
 		public Transform ActorTransform { get; set; }
 
 		private readonly string ModelPath;
@@ -127,9 +120,7 @@ namespace Everlook.Viewport.Rendering
 
 		private RenderableBoundingBox BoundingBox;
 
-		/// <summary>
-		/// Gets or sets a value indicating whether the current renderable has been initialized.
-		/// </summary>
+		/// <inheritdoc />
 		public bool IsInitialized { get; set; }
 
 		/// <summary>
@@ -186,9 +177,7 @@ namespace Everlook.Viewport.Rendering
 			this.IsInitialized = false;
 		}
 
-		/// <summary>
-		/// Initializes the required data for rendering.
-		/// </summary>
+		/// <inheritdoc />
 		public void Initialize()
 		{
 			ThrowIfDisposed();
@@ -624,25 +613,6 @@ namespace Everlook.Viewport.Rendering
 					texturePath,
 					this.Cache.GetTexture(texture, this.GameContext, texturePath)
 				);
-			}
-		}
-
-		/// <summary>
-		/// Translates the stored model texture unit to an OpenGL texture unit.
-		/// </summary>
-		/// <param name="textureUnit">The model texture unit.</param>
-		/// <returns>An OpenGL texture unit.</returns>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// Thrown if <paramref name="textureUnit"/> is not -1, 0, or 1.
-		/// </exception>
-		private TextureUnit TranslateModelTextureUnit(short textureUnit)
-		{
-			switch (textureUnit)
-			{
-				case 0: return TextureUnit.Texture0;
-				case 1: return TextureUnit.Texture1;
-				case -1: return TextureUnit.Texture2;
-				default: throw new ArgumentOutOfRangeException(nameof(textureUnit));
 			}
 		}
 
