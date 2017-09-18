@@ -798,6 +798,8 @@ namespace Everlook.UI
 				{
 					ct.ThrowIfCancellationRequested();
 
+					this.ViewportWidget.MakeCurrent();
+					this.ViewportWidget.AttachBuffers();
 					renderable.Initialize();
 
 					// Replace the renderable on the UI thread

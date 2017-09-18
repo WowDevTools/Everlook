@@ -328,7 +328,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// </summary>
 		public void Enable()
 		{
-			GL.UseProgram(this.NativeShaderProgramID); // BUG: This is the one that screws M2 rendering (if used in a constructor)
+			GL.UseProgram(this.NativeShaderProgramID);
 		}
 
 		/// <summary>

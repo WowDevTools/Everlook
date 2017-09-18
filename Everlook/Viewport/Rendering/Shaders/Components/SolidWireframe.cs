@@ -76,16 +76,16 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 		public SolidWireframe(int parentShaderID)
 		{
 			this.ParentShaderNativeID = parentShaderID;
-			//this.Enabled = false;
+			this.Enabled = false;
 
-			//SetWireframeLineWidth(2);
-			//SetWireframeFadeWidth(2);
-			//SetWireframeColour(StandardColour);
+			SetWireframeLineWidth(2);
+			SetWireframeFadeWidth(2);
+			SetWireframeColour(StandardColour);
 		}
 
 		private void EnableParent()
 		{
-			//GL.UseProgram(this.ParentShaderNativeID); // BUG: This is the line that screws rendering for WMOs
+			GL.UseProgram(this.ParentShaderNativeID);
 		}
 
 		private void SetWireframeState(bool isEnabled)
