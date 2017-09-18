@@ -30,6 +30,7 @@ using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
+using Everlook.Viewport.Rendering.Shaders.Components;
 using log4net;
 using OpenTK;
 using SlimTK;
@@ -203,6 +204,8 @@ namespace Everlook.Viewport.Rendering
 			{
 				return;
 			}
+
+			this.IsInitialized = true;
 
 			this.Shader = this.Cache.GetShader(EverlookShader.WorldModel) as WorldModelShader;
 
@@ -407,9 +410,12 @@ namespace Everlook.Viewport.Rendering
 				return;
 			}
 
+			this.Shader.Enable();
 			this.Shader.Wireframe.Enabled = this.ShouldRenderWireframe;
 			if (this.Shader.Wireframe.Enabled)
 			{
+				this.Shader.Wireframe.SetWireframeLineWidth(2);
+				this.Shader.Wireframe.SetWireframeFadeWidth(2);
 				this.Shader.Wireframe.SetViewportMatrix(camera.GetViewportMatrix());
 			}
 

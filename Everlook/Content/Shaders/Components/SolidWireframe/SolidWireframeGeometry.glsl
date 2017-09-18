@@ -43,6 +43,19 @@ out GeometryOut
 uniform mat4 ViewportMatrix;
 uniform bool IsWireframeEnabled;
 
+void InitializeOutput()
+{
+	gOut.IsSimpleWireframeCase = false;
+	gOut.IsSingleVertexVisible = false;
+	gOut.EdgeDistances = vec3(0);
+
+	gOut.A = vec2(0);
+	gOut.ADir = vec2(0);
+	gOut.B = vec2(0);
+	gOut.BDir = vec2(0);
+	gOut.ABDir = vec2(0);
+}
+
 const TriangleProjectionIndexes ProjectionLookup[8] = TriangleProjectionIndexes[]
 (
 	// These indices follow a truth table of the visible vertices. F means not visible, T means visible
@@ -148,6 +161,8 @@ void SetComplexCasePoints(int complexCase, vec2 P[3])
 
 void ComputeEdgeDistanceData()
 {
+	InitializeOutput();
+
     if (IsWireframeEnabled)
     {
         // Step 1: Project to screen space

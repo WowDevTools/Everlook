@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System.Threading;
 using Gdk;
 using OpenTK;
 using OpenTK.Graphics;
@@ -32,15 +33,24 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 	/// </summary>
 	public class SolidWireframe
 	{
-		private const string WireframeFadeWidth = nameof(WireframeFadeWidth);
 		private const string ViewportMatrix = nameof(ViewportMatrix);
 
 		private const string IsWireframeEnabled = nameof(IsWireframeEnabled);
-		private const string WireframeColour = nameof(WireframeColour);
-		private const string WireframeLineWidth = nameof(WireframeLineWidth);
 
-		private static readonly Color4 StandardColour = new Color4(234, 161, 0, 255);
-		private static readonly Color4 HighlightColour = new Color4(217, 129, 3, 255);
+		private const string WireframeColour = nameof(WireframeColour);
+
+		private const string WireframeLineWidth = nameof(WireframeLineWidth);
+		private const string WireframeFadeWidth = nameof(WireframeFadeWidth);
+
+		/// <summary>
+		/// The standard colour of the wireframe.
+		/// </summary>
+		public static readonly Color4 StandardColour = new Color4(234, 161, 0, 255);
+
+		/// <summary>
+		/// The standard highlight colour of the wireframe.
+		/// </summary>
+		public static readonly Color4 HighlightColour = new Color4(217, 129, 3, 255);
 
 		private readonly int ParentShaderNativeID;
 
@@ -66,16 +76,16 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 		public SolidWireframe(int parentShaderID)
 		{
 			this.ParentShaderNativeID = parentShaderID;
-			this.Enabled = false;
+			//this.Enabled = false;
 
-			SetWireframeLineWidth(2);
-			SetWireframeFadeWidth(2);
-			SetWireframeColour(StandardColour);
+			//SetWireframeLineWidth(2);
+			//SetWireframeFadeWidth(2);
+			//SetWireframeColour(StandardColour);
 		}
 
 		private void EnableParent()
 		{
-			GL.UseProgram(this.ParentShaderNativeID);
+			//GL.UseProgram(this.ParentShaderNativeID); // BUG: This is the line that screws rendering for WMOs
 		}
 
 		private void SetWireframeState(bool isEnabled)

@@ -22,6 +22,7 @@
 
 using System.Collections.Generic;
 using Everlook.Explorer;
+using Everlook.UI.Widgets;
 using Gtk;
 using OpenTK;
 using UIElement = Gtk.Builder.ObjectAttribute;
@@ -48,8 +49,7 @@ namespace Everlook.UI
 		[UIElement] private readonly Alignment LowerBoxAlignment;
 
 		[UIElement] private readonly Alignment ViewportAlignment;
-		private readonly GLWidget ViewportWidget;
-		private bool ViewportHasPendingRedraw;
+		private readonly ViewportArea ViewportWidget;
 
 		[UIElement] private readonly ComboBox FileFilterComboBox;
 

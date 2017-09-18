@@ -28,6 +28,7 @@ using Everlook.Configuration;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Interfaces;
 using Gdk;
+using Gtk;
 using log4net;
 using OpenTK;
 using OpenTK.Graphics;
@@ -51,7 +52,7 @@ namespace Everlook.Viewport
 		/// The viewport widget displayed to the user in the main interface.
 		/// Used to get proper dimensions for the OpenGL viewport.
 		/// </summary>
-		private readonly GLWidget ViewportWidget;
+		private readonly Widget ViewportWidget;
 
 		/*
 			RenderTarget and related control flow data.
@@ -146,7 +147,7 @@ namespace Everlook.Viewport
 		/// Initializes a new instance of the <see cref="Everlook.Viewport.ViewportRenderer"/> class.
 		/// </summary>
 		/// <param name="viewportWidget">The widget which the viewport should be rendered to.</param>
-		public ViewportRenderer(GLWidget viewportWidget)
+		public ViewportRenderer(Widget viewportWidget)
 		{
 			this.ViewportWidget = viewportWidget;
 			this.Camera = new ViewportCamera();
@@ -289,12 +290,10 @@ namespace Everlook.Viewport
 					Matrix4 view = this.Camera.GetViewMatrix();
 					Matrix4 projection = this.Camera.GetProjectionMatrix();
 					this.RenderTarget.Render(view, projection, this.Camera);
-
-					GraphicsContext.CurrentContext.SwapBuffers();
 				}
 
 				this.FrameWatch.Stop();
-				this.DeltaTime = (float)this.FrameWatch.Elapsed.TotalMilliseconds / 1000;
+				this.DeltaTime = ((float)this.FrameWatch.ElapsedTicks * 10) / Stopwatch.Frequency;
 			}
 		}
 

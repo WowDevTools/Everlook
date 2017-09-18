@@ -21,6 +21,7 @@
 //
 
 using Everlook.Viewport.Rendering.Core;
+using Everlook.Viewport.Rendering.Shaders.Components;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 

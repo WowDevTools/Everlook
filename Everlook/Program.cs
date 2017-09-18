@@ -65,7 +65,8 @@ namespace Everlook
 			// OpenGL
 			var openTKToolkit = Toolkit.Init(new ToolkitOptions
 			{
-				Backend = PlatformBackend.PreferNative
+				Backend = PlatformBackend.PreferNative,
+				EnableHighResolution = true
 			});
 
 			Log.Info($"OpenTK initialized using the {GetOpenTKBackend()} backend.");

@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Threading;
 using Everlook.Exceptions.Shader;
 using Everlook.Utility;
 using Everlook.Viewport.Rendering.Shaders.GLSLExtended;
@@ -327,7 +328,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// </summary>
 		public void Enable()
 		{
-			GL.UseProgram(this.NativeShaderProgramID);
+			GL.UseProgram(this.NativeShaderProgramID); // BUG: This is the one that screws M2 rendering (if used in a constructor)
 		}
 
 		/// <summary>

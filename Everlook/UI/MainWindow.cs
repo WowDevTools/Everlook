@@ -26,11 +26,13 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Cairo;
 using Everlook.Audio;
 using Everlook.Configuration;
 using Everlook.Explorer;
 using Everlook.Package;
 using Everlook.UI.Helpers;
+using Everlook.UI.Widgets;
 using Everlook.Utility;
 using Everlook.Viewport;
 using Everlook.Viewport.Rendering;
@@ -122,17 +124,21 @@ namespace Everlook.UI
 			this.UiThreadScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 			this.FileLoadingCancellationSource = new CancellationTokenSource();
 
-			this.ViewportWidget = new GLWidget
+			var graphicsMode = new GraphicsMode
+			(
+				new ColorFormat(24),
+				24,
+				0,
+				4,
+				0,
+				2,
+				false
+			);
+
+			this.ViewportWidget = new ViewportArea(graphicsMode, 3, 3)
 			{
-				CanFocus = true,
-				SingleBuffer = false,
-				ColorBPP = 24,
-				DepthBPP = 24,
-				AccumulatorBPP = 24,
-				Samples = 4,
-				GlVersionMajor = 3,
-				GlVersionMinor = 3,
-				GraphicsContextFlags = GraphicsContextFlags.Default,
+				AutoRender = true,
+				CanFocus = true
 			};
 
 			this.ViewportWidget.Events |=
@@ -147,14 +153,29 @@ namespace Everlook.UI
 			{
 				// Initialize all OpenGL rendering parameters
 				this.RenderingEngine.Initialize();
-				Idle.Add(OnIdleRenderFrame);
+			};
+
+			this.ViewportWidget.Render += (sender, args) =>
+			{
+				if (this.IsShuttingDown)
+				{
+					return;
+				}
+
+				if (!this.RenderingEngine.IsInitialized)
+				{
+					return;
+				}
+
+				this.RenderingEngine.RenderFrame();
+
+				this.ViewportWidget.QueueRender();
 			};
 
 			this.ViewportWidget.ButtonPressEvent += OnViewportButtonPressed;
 			this.ViewportWidget.ButtonReleaseEvent += OnViewportButtonReleased;
 			this.ViewportWidget.EnterNotifyEvent += OnViewportMouseEnter;
 			this.ViewportWidget.LeaveNotifyEvent += OnViewportMouseLeave;
-			this.ViewportWidget.ConfigureEvent += OnViewportConfigured;
 
 			this.RenderingEngine = new ViewportRenderer(this.ViewportWidget);
 			this.ViewportAlignment.Add(this.ViewportWidget);
@@ -381,8 +402,6 @@ namespace Everlook.UI
 					(int)this.ViewportAlignment.BottomPadding +
 					(int)this.LowerBoxAlignment.TopPadding;
 			}
-
-			this.ViewportHasPendingRedraw = true;
 		}
 
 		/// <summary>
@@ -720,7 +739,7 @@ namespace Everlook.UI
 		private void ReloadViewportBackground()
 		{
 			this.RenderingEngine.SetClearColour(this.Config.ViewportBackgroundColour);
-			this.ViewportHasPendingRedraw = true;
+			this.ViewportWidget.QueueRender();
 		}
 
 		/// <summary>
@@ -897,47 +916,6 @@ namespace Everlook.UI
 
 			GrabFocus();
 			this.RenderingEngine.WantsToMove = false;
-		}
-
-		/// <summary>
-		/// This function lazily renders frames of the currently focused object.
-		/// All rendering functionality is either in the viewport renderer, or in a
-		/// renderable object currently hosted by it.
-		/// </summary>
-		private bool OnIdleRenderFrame()
-		{
-			const bool keepCalling = true;
-			const bool stopCalling = false;
-
-			if (this.IsShuttingDown)
-			{
-				return stopCalling;
-			}
-
-			if (!this.RenderingEngine.IsInitialized)
-			{
-				return stopCalling;
-			}
-
-			if (!this.RenderingEngine.HasRenderTarget && !this.ViewportHasPendingRedraw)
-			{
-				return keepCalling;
-			}
-
-			this.RenderingEngine.RenderFrame();
-			this.ViewportHasPendingRedraw = false;
-
-			return keepCalling;
-		}
-
-		/// <summary>
-		/// Sets the viewport to redraw whenever the widget gets a configure event.
-		/// </summary>
-		/// <param name="o">The sending object.</param>
-		/// <param name="args">The configuration arguments.</param>
-		private void OnViewportConfigured(object o, ConfigureEventArgs args)
-		{
-			this.ViewportHasPendingRedraw = true;
 		}
 
 		/// <summary>
@@ -1282,8 +1260,6 @@ namespace Everlook.UI
 		private void OnDeleteEvent(object sender, DeleteEventArgs a)
 		{
 			this.IsShuttingDown = true;
-
-			Idle.Remove(OnIdleRenderFrame);
 
 			this.FileLoadingCancellationSource?.Cancel();
 

@@ -22,7 +22,6 @@ uniform vec4 colour0;
 uniform vec4 colour1;
 uniform vec4 baseDiffuseColour;
 
-
 void main()
 {
 	vec4 texCol = texture(Texture0, gvIn.UV);
@@ -34,7 +33,15 @@ void main()
 
 	if (IsWireframeEnabled)
 	{
-		FragColour = OverlayWireframe(texCol, alphaThreshold);
+		//FragColour = OverlayWireframe(texCol, alphaThreshold);
+		if (gIn.EdgeDistances[0] > 0)
+		{
+			FragColour = vec4(1);
+		}
+		else
+		{
+			FragColour = vec4(0);
+		}
         return;
 	}
 

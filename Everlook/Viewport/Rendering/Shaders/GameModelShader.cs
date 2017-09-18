@@ -69,9 +69,6 @@ namespace Everlook.Viewport.Rendering.Shaders
 		public GameModelShader()
 		{
 			this.Wireframe = new SolidWireframe(this.NativeShaderProgramID);
-
-			SetBaseInputColour(Color4.White);
-			SetFragmentShaderType(MDXFragmentShaderType.Combiners_Opaque);
 		}
 
 		/// <summary>

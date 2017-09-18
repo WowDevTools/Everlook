@@ -32,6 +32,7 @@ using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
 using log4net;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using SlimTK;
 using Warcraft.Core;
@@ -357,6 +358,7 @@ namespace Everlook.Viewport.Rendering
 			Matrix4 modelViewProjection = modelViewMatrix * projectionMatrix;
 
 			this.Shader.Enable();
+			this.Shader.SetBaseInputColour(Color4.White);
 			this.Shader.SetIsInstance(false);
 			this.Shader.SetModelMatrix(this.ActorTransform.GetModelMatrix());
 			this.Shader.SetViewMatrix(viewMatrix);

@@ -24,7 +24,9 @@
         },
         "namingRules" : {
             "allowCommonHungarianPrefixes" : true,
-            "allowedHungarianPrefixes" : []
+            "allowedHungarianPrefixes" : [
+                "gl"
+            ]
         },
         "maintainabilityRules" : {
             "topLevelTypes" : [
