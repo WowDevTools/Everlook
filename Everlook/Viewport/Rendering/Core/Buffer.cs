@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK.Graphics.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Core
@@ -31,20 +32,18 @@ namespace Everlook.Viewport.Rendering.Core
 	/// Represents a native OpenGL data buffer.
 	/// </summary>
 	/// <typeparam name="T">Any structure.</typeparam>
-	public sealed class Buffer<T> : IDisposable where T : struct
+	public sealed class Buffer<T> : IDisposable, IBuffer where T : struct
 	{
 		private readonly int NativeBufferID;
-		private int DataSize;
 
-		/// <summary>
-		/// Gets the intended use of the buffer.
-		/// </summary>
+		/// <inheritdoc />
 		public BufferTarget Target { get; }
 
-		/// <summary>
-		/// Gets a hinting value as to how the buffer's data might be read or written.
-		/// </summary>
-		public BufferUsageHint UsageHint { get; }
+		/// <inheritdoc />
+		public BufferUsageHint Usage { get; }
+
+		/// <inheritdoc />
+		public int Length { get; private set; }
 
 		/// <summary>
 		/// Gets the attribute pointers of the buffer.
@@ -60,8 +59,8 @@ namespace Everlook.Viewport.Rendering.Core
 			{
 				Bind();
 
-				T[] bufferData = new T[this.DataSize / Marshal.SizeOf<T>()];
-				GL.GetBufferSubData(this.Target, IntPtr.Zero, this.DataSize, bufferData);
+				T[] bufferData = new T[this.Length / Marshal.SizeOf<T>()];
+				GL.GetBufferSubData(this.Target, IntPtr.Zero, this.Length, bufferData);
 
 				return bufferData;
 			}
@@ -70,8 +69,8 @@ namespace Everlook.Viewport.Rendering.Core
 			{
 				Bind();
 
-				this.DataSize = value.Length * Marshal.SizeOf<T>();
-				GL.BufferData(this.Target, this.DataSize, value, this.UsageHint);
+				this.Length = value.Length * Marshal.SizeOf<T>();
+				GL.BufferData(this.Target, this.Length, value, this.Usage);
 			}
 		}
 
@@ -79,21 +78,17 @@ namespace Everlook.Viewport.Rendering.Core
 		/// Initializes a new instance of the <see cref="Buffer{T}"/> class.
 		/// </summary>
 		/// <param name="target">The intended use of the buffer.</param>
-		/// <param name="usageHint">A hint as to how the buffer's data might be read or written.</param>
-		public Buffer(BufferTarget target, BufferUsageHint usageHint)
+		/// <param name="usage">A hint as to how the buffer's data might be read or written.</param>
+		public Buffer(BufferTarget target, BufferUsageHint usage)
 		{
 			this.Target = target;
-			this.UsageHint = usageHint;
+			this.Usage = usage;
 			this.Attributes = new List<VertexAttributePointer>();
 
 			this.NativeBufferID = GL.GenBuffer();
 		}
 
-		/// <summary>
-		/// Attaches the specified attribute pointer to the buffer.
-		/// </summary>
-		/// <param name="attributePointer">An attribute pointer.</param>
-		/// <exception cref="ArgumentNullException">Thrown if <paramref name="attributePointer"/> is null.</exception>
+		/// <inheritdoc />
 		public void AttachAttributePointer(VertexAttributePointer attributePointer)
 		{
 			if (attributePointer == null)
@@ -105,11 +100,7 @@ namespace Everlook.Viewport.Rendering.Core
 			this.Attributes.Add(attributePointer);
 		}
 
-		/// <summary>
-		/// Attaches the specified set of attribute pointers to the buffer.
-		/// </summary>
-		/// <param name="attributePointers">A set of attribute pointers.</param>
-		/// <exception cref="ArgumentNullException">Thrown if <paramref name="attributePointers"/> is null.</exception>
+		/// <inheritdoc />
 		public void AttachAttributePointers(IEnumerable<VertexAttributePointer> attributePointers)
 		{
 			if (attributePointers == null)
@@ -124,10 +115,7 @@ namespace Everlook.Viewport.Rendering.Core
 			}
 		}
 
-		/// <summary>
-		/// Enables the attribute arrays that are relevant for this buffer, as specified by its attached attribute
-		/// pointers.
-		/// </summary>
+		/// <inheritdoc />
 		public void EnableAttributes()
 		{
 			foreach (var attribute in this.Attributes)
@@ -136,10 +124,7 @@ namespace Everlook.Viewport.Rendering.Core
 			}
 		}
 
-		/// <summary>
-		/// Disables the attribute arrays that are relevant for this buffer, as specified by its attached attribute
-		/// pointers.
-		/// </summary>
+		/// <inheritdoc />
 		public void DisableAttributes()
 		{
 			foreach (var attribute in this.Attributes)
@@ -148,9 +133,7 @@ namespace Everlook.Viewport.Rendering.Core
 			}
 		}
 
-		/// <summary>
-		/// Binds the buffer as the current OpenGL object, making it available for use.
-		/// </summary>
+		/// <inheritdoc />
 		public void Bind()
 		{
 			GL.BindBuffer(this.Target, this.NativeBufferID);

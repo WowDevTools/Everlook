@@ -33,15 +33,7 @@ void main()
 
 	if (IsWireframeEnabled)
 	{
-		//FragColour = OverlayWireframe(texCol, alphaThreshold);
-		if (gIn.EdgeDistances[0] > 0)
-		{
-			FragColour = vec4(1);
-		}
-		else
-		{
-			FragColour = vec4(0);
-		}
+		FragColour = OverlayWireframe(texCol, alphaThreshold);
         return;
 	}
 
