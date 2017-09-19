@@ -293,7 +293,7 @@ namespace Everlook.Viewport
 				}
 
 				this.FrameWatch.Stop();
-				this.DeltaTime = ((float)this.FrameWatch.ElapsedTicks * 10) / Stopwatch.Frequency;
+				this.DeltaTime = (float)this.FrameWatch.Elapsed.TotalSeconds;
 			}
 		}
 
