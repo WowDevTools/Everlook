@@ -34,6 +34,7 @@ Currently, Everlook is in early development and may not be usable in your day-to
 * Model rendering is not fully fleshed out.
 * Animations are not yet supported.
 * The audio controls do nothing.
+* Wireframe rendering does not work on NVIDIA's proprietary drivers.
 
 ### Useful Information
 * Everlook will mark files that have been deleted in the archives with red colour and an exclamation mark icon in the file explorer. However, it will still allow you to access the underlying file.
@@ -78,11 +79,13 @@ If you're running Mono, you'll also need to .NET Core 2.0 SDK, and you should su
 
 	$ dotnet restore
 
-If you're running Windows, you also need the GTK# 3 libraries, which are available here:
-* [GTK# 3 for Windows](https://download.gnome.org/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi)
+All required GTK+ binaries are bundled for Windows.
 
 For Debian-based Linux distributions, the following package should suffice:
 * mono-complete (>= 4.4.2.11-0xamarin1)
+* libgtk-3-0 (>= 3.16)
+
+If you find that other dependencies are required, please open an issue here on Github.
 
 If you are not using an IDE, Everlook can be built by invoking
 

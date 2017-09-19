@@ -174,6 +174,7 @@ namespace Everlook.Viewport
 
 			if (extensions.Contains("GL_KHR_debug"))
 			{
+				//GL.Enable(EnableCap.DebugOutput);
 				GL.Enable(EnableCap.DebugOutputSynchronous);
 				GL.DebugMessageCallback(OnGLDebugMessage, IntPtr.Zero);
 			}
