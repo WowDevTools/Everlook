@@ -99,7 +99,16 @@ namespace Everlook.Utility
 				{
 					vectorStream.CopyTo(ms);
 
-					return new Pixbuf(ms.ToArray(), width, height);
+					try
+					{
+						return new Pixbuf(ms.ToArray(), width, height);
+					}
+					catch (GException gex)
+					{
+						Log.Error($"Failed to load resource \"{resourceName}\" due to a GException: {gex}" +
+								  $"A fallback icon will be used instead.");
+						return LoadIconPixbuf("empty");
+					}
 				}
 			}
 		}
