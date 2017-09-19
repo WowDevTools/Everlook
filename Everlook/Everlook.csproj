@@ -65,9 +65,9 @@
   </ItemGroup>
   <Target Name="CopyGTK" AfterTargets="Build">
     <ItemGroup>
-      <GTKbin Include="$(SolutionDir)\lib\gtk+-3.6-bundle-win32\bin\*.*" />
-      <GTKlib Include="$(SolutionDir)\lib\gtk+-3.6-bundle-win32\lib\**\*.*" />
-      <GTKshare Include="$(SolutionDir)\lib\gtk+-3.6-bundle-win32\share\**\*.*" />
+      <GTKbin Include="$(SolutionDir)\lib\gtk+-3.16-bundle-win32\bin\*.*" />
+      <GTKlib Include="$(SolutionDir)\lib\gtk+-3.16-bundle-win32\lib\**\*.*" />
+      <GTKshare Include="$(SolutionDir)\lib\gtk+-3.16-bundle-win32\share\**\*.*" />
     </ItemGroup>
     <Message Text="Copying GTK+ libraries..." />
     <Copy SourceFiles="@(GTKbin)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
