@@ -124,11 +124,7 @@ vec2 ComputeLineDirection(int Q, int QPrim, vec2 P[3])
 	return normalize
 	(
 		P[Q] -
-		ProjectToScreen
-		(
-			ViewportMatrix,
-			gl_in[Q].gl_Position + (gl_in[QPrim].gl_Position - gl_in[Q].gl_Position)
-		).xy
+		P[QPrim]
 	);
 }
 
