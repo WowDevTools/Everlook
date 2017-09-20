@@ -205,7 +205,10 @@ namespace Everlook.UI.Widgets
 			MakeCurrent();
 
 			// Create a dummy context that will grab the GdkGLContext that is current on the thread
-			this.TKGraphicsContext = new GraphicsContext(ContextHandle.Zero, null);
+			this.TKGraphicsContext = new GraphicsContext(ContextHandle.Zero, null)
+			{
+				ErrorChecking = true
+			};
 
 			if (GraphicsContext.ShareContexts)
 			{
