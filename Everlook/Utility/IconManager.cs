@@ -67,6 +67,7 @@ namespace Everlook.Utility
 			if (!Pixbuf.Formats.Select(f => f.Name).Any(n => n.ToLowerInvariant().Contains("svg")))
 			{
 				// No SVG support, use PNG fallbacks
+				Log.Warn("No SVG support detected. Using PNG fallbacks for bundled icons.");
 				manifestIcons = manifestIcons.Where(path => path.EndsWith(".png"));
 			}
 
