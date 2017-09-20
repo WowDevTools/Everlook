@@ -32,7 +32,9 @@
     <EmbeddedResource Include="interfaces\*.glade" />
     <EmbeddedResource Include="Content\Icons\Blender\*.svg" />
     <EmbeddedResource Include="Content\Icons\Mint-X\*.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-X\*.svg" />
     <EmbeddedResource Include="Content\Icons\Mint-Y\*.png" />
+    <EmbeddedResource Include="Content\Icons\Mint-Y\*.svg" />
     <EmbeddedResource Include="Content\Textures\*.png" />
     <EmbeddedResource Include="Content\jokes.txt" />
   </ItemGroup>
@@ -66,11 +68,13 @@
   <Target Name="CopyGTK" AfterTargets="Build">
     <ItemGroup>
       <GTKbin Include="$(SolutionDir)\lib\gtk+-3.16-bundle-win32\bin\*.*" />
+      <GTKetc Include="$(SolutionDir)\lib\gtk+-3.16-bundle-win32\etc\**\*.*" />
       <GTKlib Include="$(SolutionDir)\lib\gtk+-3.16-bundle-win32\lib\**\*.*" />
       <GTKshare Include="$(SolutionDir)\lib\gtk+-3.16-bundle-win32\share\**\*.*" />
     </ItemGroup>
     <Message Text="Copying GTK+ libraries..." />
     <Copy SourceFiles="@(GTKbin)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(GTKetc)" DestinationFolder="$(OutputPath)\etc\%(RecursiveDir)" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(GTKlib)" DestinationFolder="$(OutputPath)\lib\%(RecursiveDir)" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(GTKshare)" DestinationFolder="$(OutputPath)\share\%(RecursiveDir)" SkipUnchangedFiles="true" />
   </Target>
