@@ -152,6 +152,7 @@ namespace Everlook.UI
 			this.ViewportWidget.Initialized += (sender, args) =>
 			{
 				// Initialize all OpenGL rendering parameters
+				this.ViewportWidget.MakeCurrent();
 				this.RenderingEngine.Initialize();
 			};
 
@@ -534,6 +535,7 @@ namespace Everlook.UI
 				catch (OperationCanceledException)
 				{
 					Log.Info("Cancelled game loading operation.");
+					break;
 				}
 			}
 
