@@ -53,15 +53,22 @@ namespace Everlook.Utility
 			Assembly executingAssembly = Assembly.GetExecutingAssembly();
 			string[] manifestResourceNames = executingAssembly
 				.GetManifestResourceNames();
+
 			IEnumerable<string> manifestIcons = manifestResourceNames.Where
 			(
 				path =>
-				path.Contains(".Icons.") &&
-				(
-					path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-					path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase)
-				)
+					path.Contains(".Icons.") &&
+					(
+						path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+						path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase)
+					)
 			);
+
+			if (!Pixbuf.Formats.Select(f => f.Name).Any(n => n.ToLowerInvariant().Contains("svg")))
+			{
+				// No SVG support, use PNG fallbacks
+				manifestIcons = manifestIcons.Where(path => path.EndsWith(".png"));
+			}
 
 			foreach (string manifestIconName in manifestIcons)
 			{
@@ -105,9 +112,8 @@ namespace Everlook.Utility
 					}
 					catch (GException gex)
 					{
-						Log.Error($"Failed to load resource \"{resourceName}\" due to a GException: {gex}" +
-								  $"A fallback icon will be used instead.");
-						return LoadIconPixbuf("empty");
+						Log.Error($"Failed to load resource \"{resourceName}\" due to a GException: {gex}");
+						return null;
 					}
 				}
 			}
