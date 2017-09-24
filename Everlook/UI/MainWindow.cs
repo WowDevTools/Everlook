@@ -657,10 +657,10 @@ namespace Everlook.UI
 						this.ModelVariationListStore.Clear();
 						foreach (var variation in skinVariations)
 						{
-							var firstTextureName = variation.TextureVariations.First().Value;
+							var firstTextureName = variation.TextureVariation1.Value;
 							if (!string.IsNullOrEmpty(firstTextureName))
 							{
-								this.ModelVariationListStore.AppendValues(variation.TextureVariations.First().Value, variation.ID);
+								this.ModelVariationListStore.AppendValues(variation.TextureVariation1.Value, variation.ID);
 							}
 						}
 

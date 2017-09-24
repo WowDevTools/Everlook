@@ -29,7 +29,7 @@ namespace Everlook.Utility
 	/// <summary>
 	/// Utility class for determining equality between lists of string references.
 	/// </summary>
-	public class StringReferenceListComparer : IEqualityComparer<List<StringReference>>
+	public class StringReferenceListComparer : IEqualityComparer<IReadOnlyList<StringReference>>
 	{
 		/// <summary>
 		/// Determines if one <see cref="StringReference"/> is equal to another. Equality is considered on the basis of
@@ -38,7 +38,7 @@ namespace Everlook.Utility
 		/// <param name="x">The first object.</param>
 		/// <param name="y">The second object.</param>
 		/// <returns>true if the objects are equal; false otherwise.</returns>
-		public bool Equals(List<StringReference> x, List<StringReference> y)
+		public bool Equals(IReadOnlyList<StringReference> x, IReadOnlyList<StringReference> y)
 		{
 			if (x.Count != y.Count)
 			{
@@ -66,7 +66,7 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <param name="obj">A string reference.</param>
 		/// <returns>The hash code.</returns>
-		public int GetHashCode(List<StringReference> obj)
+		public int GetHashCode(IReadOnlyList<StringReference> obj)
 		{
 			unchecked
 			{

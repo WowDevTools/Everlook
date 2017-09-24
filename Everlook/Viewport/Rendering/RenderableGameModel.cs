@@ -441,17 +441,17 @@ namespace Everlook.Viewport.Rendering
 					}
 					case EMDXTextureType.MonsterSkin1:
 					{
-						textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[0].Value);
+						textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariation1.Value);
 						break;
 					}
 					case EMDXTextureType.MonsterSkin2:
 					{
-						textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[1].Value);
+						textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariation2.Value);
 						break;
 					}
 					case EMDXTextureType.MonsterSkin3:
 					{
-						textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariations[2].Value);
+						textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariation3.Value);
 						break;
 					}
 					default:
@@ -512,6 +512,11 @@ namespace Everlook.Viewport.Rendering
 				)
 			).ToList();
 
+			if (!modelDataRecords.Any())
+			{
+				yield break;
+			}
+
 			// Then flatten out their IDs
 			var modelDataRecordIDs = modelDataRecords.Select(r => r.ID).ToList();
 
@@ -522,7 +527,12 @@ namespace Everlook.Viewport.Rendering
 				r => modelDataRecordIDs.Contains(r.Model.Key)
 			).ToList();
 
-			var textureListMapping = new Dictionary<List<StringReference>, CreatureDisplayInfoRecord>(new StringReferenceListComparer());
+			if (!modelDisplayRecords.Any())
+			{
+				yield break;
+			}
+
+			var textureListMapping = new Dictionary<IReadOnlyList<StringReference>, CreatureDisplayInfoRecord>(new StringReferenceListComparer());
 
 			// Finally, return any record with a unique set of textures
 			foreach (var displayRecord in modelDisplayRecords)
