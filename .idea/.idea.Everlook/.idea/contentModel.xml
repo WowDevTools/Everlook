@@ -1,5 +1,362 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ContentModelStore">
+    <e p="$USER_HOME$/.Rider2017.2/system/resharper-host/local/Transient/ReSharperHost/v10/SolutionCaches/_Everlook.-848944586.00" t="ExcludeRecursive" />
+    <e p="$USER_HOME$/.nuget/packages/liblistfile/2.0.1/contentFiles/any/netstandard2.0/Dictionary/dictionary.dic" t="Include" />
+    <e p="$PROJECT_DIR$" t="IncludeFlat">
+      <e p="Everlook" t="IncludeRecursive">
+        <e p="Audio" t="Include">
+          <e p="AudioGroup.cs" t="Include" />
+          <e p="AudioManager.cs" t="Include" />
+          <e p="AudioSource.cs" t="Include" />
+          <e p="IAudioAsset.cs" t="Include" />
+          <e p="MP3" t="Include">
+            <e p="MP3AudioAsset.cs" t="Include" />
+          </e>
+          <e p="Wave" t="Include">
+            <e p="WaveAudioAsset.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Configuration" t="Include">
+          <e p="EverlookConfiguration.cs" t="Include" />
+          <e p="GamePathStorage.cs" t="Include" />
+        </e>
+        <e p="Content" t="Include">
+          <e p="Icons" t="Include">
+            <e p="Blender" t="Include">
+              <e p="Blender-Armature-Icon.png" t="Include" />
+              <e p="Blender-Armature-Icon.svg" t="Include" />
+              <e p="Blender-Camera-Icon.png" t="Include" />
+              <e p="Blender-Camera-Icon.svg" t="Include" />
+              <e p="Blender-Deform-Icon.png" t="Include" />
+              <e p="Blender-Deform-Icon.svg" t="Include" />
+              <e p="Blender-Down-Arrow-Icon.png" t="Include" />
+              <e p="Blender-Down-Arrow-Icon.svg" t="Include" />
+              <e p="Blender-JumpingToon-Icon.png" t="Include" />
+              <e p="Blender-JumpingToon-Icon.svg" t="Include" />
+              <e p="Blender-Object-Icon.png" t="Include" />
+              <e p="Blender-Object-Icon.svg" t="Include" />
+              <e p="Blender-Planet-Icon.png" t="Include" />
+              <e p="Blender-Planet-Icon.svg" t="Include" />
+              <e p="Blender-Shader-Icon.png" t="Include" />
+              <e p="Blender-Shader-Icon.svg" t="Include" />
+              <e p="Blender-Skeleton-Icon.png" t="Include" />
+              <e p="Blender-Skeleton-Icon.svg" t="Include" />
+              <e p="Blender-Sun-Icon.png" t="Include" />
+              <e p="Blender-Sun-Icon.svg" t="Include" />
+              <e p="Blender-Wave-Icon.png" t="Include" />
+              <e p="Blender-Wave-Icon.svg" t="Include" />
+            </e>
+            <e p="Mint-X" t="Include">
+              <e p="application-pdf.png" t="Include" />
+              <e p="application-pdf.svg" t="Include" />
+              <e p="application-x-executable.png" t="Include" />
+              <e p="application-x-executable.svg" t="Include" />
+              <e p="audio-x-generic.png" t="Include" />
+              <e p="audio-x-generic.svg" t="Include" />
+              <e p="document-open-symbolic.png" t="Include" />
+              <e p="document-open-symbolic.svg" t="Include" />
+              <e p="document-save-as-symbolic.png" t="Include" />
+              <e p="document-save-as-symbolic.svg" t="Include" />
+              <e p="document-save-symbolic.png" t="Include" />
+              <e p="document-save-symbolic.svg" t="Include" />
+              <e p="empty.png" t="Include" />
+              <e p="empty.svg" t="Include" />
+              <e p="font-x-generic.png" t="Include" />
+              <e p="font-x-generic.svg" t="Include" />
+              <e p="gnome-subtitles.png" t="Include" />
+              <e p="gnome-subtitles.svg" t="Include" />
+              <e p="gtk-directory.png" t="Include" />
+              <e p="gtk-directory.svg" t="Include" />
+              <e p="gtk-file.png" t="Include" />
+              <e p="gtk-file.svg" t="Include" />
+              <e p="image-bmp.png" t="Include" />
+              <e p="image-bmp.svg" t="Include" />
+              <e p="image-gif.png" t="Include" />
+              <e p="image-gif.svg" t="Include" />
+              <e p="image-jpeg.png" t="Include" />
+              <e p="image-jpeg.svg" t="Include" />
+              <e p="image-missing.png" t="Include" />
+              <e p="image-png.png" t="Include" />
+              <e p="image-png.svg" t="Include" />
+              <e p="image-x-generic.png" t="Include" />
+              <e p="image-x-generic.svg" t="Include" />
+              <e p="image-x-ico.png" t="Include" />
+              <e p="image-x-ico.svg" t="Include" />
+              <e p="media-playback-pause.png" t="Include" />
+              <e p="media-playback-start.png" t="Include" />
+              <e p="media-playback-stop.png" t="Include" />
+              <e p="media-playlist-repeat.png" t="Include" />
+              <e p="media-playlist-shuffle.png" t="Include" />
+              <e p="media-skip-backward.png" t="Include" />
+              <e p="media-skip-forward.png" t="Include" />
+              <e p="package-broken.png" t="Include" />
+              <e p="package-downgrade.png" t="Include" />
+              <e p="package-reinstall.png" t="Include" />
+              <e p="package-x-generic.png" t="Include" />
+              <e p="package-x-generic.svg" t="Include" />
+              <e p="text-html.png" t="Include" />
+              <e p="text-html.svg" t="Include" />
+              <e p="text-x-generic-template.png" t="Include" />
+              <e p="text-x-generic-template.svg" t="Include" />
+              <e p="text-x-generic.png" t="Include" />
+              <e p="text-x-generic.svg" t="Include" />
+              <e p="text-x-sql.png" t="Include" />
+              <e p="text-x-sql.svg" t="Include" />
+              <e p="text-xml.png" t="Include" />
+              <e p="text-xml.svg" t="Include" />
+              <e p="x-office-spreadsheet.png" t="Include" />
+              <e p="x-office-spreadsheet.svg" t="Include" />
+            </e>
+            <e p="Mint-Y" t="Include">
+              <e p="applications-other.png" t="Include" />
+              <e p="gtk-about.png" t="Include" />
+              <e p="gtk-preferences.png" t="Include" />
+              <e p="help-about.png" t="Include" />
+              <e p="utilities-terminal.png" t="Include" />
+            </e>
+          </e>
+          <e p="Shaders" t="Include">
+            <e p="BaseGrid" t="Include">
+              <e p="BaseGridFragment.glsl" t="Include" />
+              <e p="BaseGridVertex.glsl" t="Include" />
+            </e>
+            <e p="BoundingBox" t="Include">
+              <e p="BoundingBoxFragment.glsl" t="Include" />
+              <e p="BoundingBoxVertex.glsl" t="Include" />
+            </e>
+            <e p="Components" t="Include">
+              <e p="Combiners" t="Include">
+                <e p="Combiners.glsl" t="Include" />
+              </e>
+              <e p="Instancing" t="Include">
+                <e p="ObjectInstancing.glsl" t="Include" />
+              </e>
+              <e p="SolidWireframe" t="Include">
+                <e p="SolidWireframeFragment.glsl" t="Include" />
+                <e p="SolidWireframeGeometry.glsl" t="Include" />
+                <e p="TriangleProjectionIndexes.glsl" t="Include" />
+              </e>
+            </e>
+            <e p="GameModel" t="Include">
+              <e p="GameModelFragment.glsl" t="Include" />
+              <e p="GameModelFragmentShaderPaths.glsl" t="Include" />
+              <e p="GameModelGeometry.glsl" t="Include" />
+              <e p="GameModelVertex.glsl" t="Include" />
+              <e p="GameModelVertexShaderPaths.glsl" t="Include" />
+            </e>
+            <e p="Mathemathics" t="Include">
+              <e p="EnvironmentMapping.glsl" t="Include" />
+              <e p="LineMath.glsl" t="Include" />
+              <e p="SpaceProjection.glsl" t="Include" />
+            </e>
+            <e p="Plain2D" t="Include">
+              <e p="Plain2DFragment.glsl" t="Include" />
+              <e p="Plain2DVertex.glsl" t="Include" />
+            </e>
+            <e p="WorldModel" t="Include">
+              <e p="WorldModelFragment.glsl" t="Include" />
+              <e p="WorldModelGeometry.glsl" t="Include" />
+              <e p="WorldModelVertex.glsl" t="Include" />
+            </e>
+          </e>
+          <e p="Textures" t="Include">
+            <e p="FallbackTexture.png" t="Include" />
+          </e>
+          <e p="jokes.txt" t="Include" />
+        </e>
+        <e p="Database" t="Include">
+          <e p="Access" t="Include">
+            <e p="WMOAreaTableAccess.cs" t="Include" />
+          </e>
+          <e p="ClientDatabaseProvider.cs" t="Include" />
+          <e p="TypeTranslatorHelpers.cs" t="Include" />
+        </e>
+        <e p="Dictionary" t="Include" />
+        <e p="Everlook.csproj" t="IncludeRecursive" />
+        <e p="Exceptions" t="Include">
+          <e p="Shader" t="Include">
+            <e p="ShaderCompilationException.cs" t="Include" />
+            <e p="ShaderLinkingException.cs" t="Include" />
+            <e p="ShaderNullException.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Explorer" t="Include">
+          <e p="FileReference.cs" t="Include" />
+          <e p="FileTreeModel.cs" t="Include" />
+          <e p="FilterType.cs" t="Include" />
+          <e p="FilterTypeExtensions.cs" t="Include" />
+          <e p="GameLoader.cs" t="Include" />
+          <e p="GameLoadingProgress.cs" t="Include" />
+          <e p="GameLoadingState.cs" t="Include" />
+          <e p="GamePage.cs" t="Include" />
+          <e p="OverallLoadingProgress.cs" t="Include" />
+        </e>
+        <e p="Export" t="Include">
+          <e p="Audio" t="Include">
+            <e p="AudioFormat.cs" t="Include" />
+          </e>
+          <e p="Image" t="Include">
+            <e p="ImageFormat.cs" t="Include" />
+          </e>
+          <e p="Model" t="Include">
+            <e p="ModelFormat.cs" t="Include" />
+          </e>
+        </e>
+        <e p="OpenTK.dll.config" t="Include" />
+        <e p="Package" t="Include">
+          <e p="PackageGroup.cs" t="Include" />
+          <e p="PackageInteractionHandler.cs" t="Include" />
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="UI" t="Include">
+          <e p="ControlPage.cs" t="Include" />
+          <e p="EverlookDirectoryExportDialog.cs" t="Include" />
+          <e p="EverlookDirectoryExportDialogElements.cs" t="Include" />
+          <e p="EverlookGameLoadingDialog.cs" t="Include" />
+          <e p="EverlookGameLoadingDialogElements.cs" t="Include" />
+          <e p="EverlookImageExportDialog.cs" t="Include" />
+          <e p="EverlookImageExportDialogElements.cs" t="Include" />
+          <e p="EverlookPreferences.cs" t="Include" />
+          <e p="EverlookPreferencesElements.cs" t="Include" />
+          <e p="Helpers" t="Include">
+            <e p="CellRenderers.cs" t="Include" />
+          </e>
+          <e p="MainWindow.cs" t="Include" />
+          <e p="MainWindowElements.cs" t="Include" />
+          <e p="Widgets" t="Include">
+            <e p="ViewportArea.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Utility" t="Include">
+          <e p="DataLoadingDelegates.cs" t="Include" />
+          <e p="DataLoadingRoutines.cs" t="Include" />
+          <e p="DirectoryHelpers.cs" t="Include" />
+          <e p="ExtensionMethods.cs" t="Include" />
+          <e p="IGameContext.cs" t="Include" />
+          <e p="IconManager.cs" t="Include" />
+          <e p="ResourceManager.cs" t="Include" />
+          <e p="StringReferenceListComparer.cs" t="Include" />
+          <e p="WarcraftGameContext.cs" t="Include" />
+        </e>
+        <e p="Viewport" t="Include">
+          <e p="Camera" t="Include">
+            <e p="CameraMovement.cs" t="Include" />
+            <e p="ViewportCamera.cs" t="Include" />
+          </e>
+          <e p="Rendering" t="Include">
+            <e p="Core" t="Include">
+              <e p="ActorInstanceSet.cs" t="Include" />
+              <e p="AnimationTrack.cs" t="Include" />
+              <e p="BaseGrid.cs" t="Include" />
+              <e p="Buffer.cs" t="Include" />
+              <e p="DynamicInterpolator.cs" t="Include" />
+              <e p="EverlookShader.cs" t="Include" />
+              <e p="Lights" t="Include">
+                <e p="AmbientLight.cs" t="Include" />
+                <e p="DirectionalLight.cs" t="Include" />
+              </e>
+              <e p="Plane.cs" t="Include" />
+              <e p="RenderableActorReference.cs" t="Include" />
+              <e p="ShaderProgram.cs" t="Include" />
+              <e p="SplineTimeline.cs" t="Include" />
+              <e p="Texture2D.cs" t="Include" />
+              <e p="TextureUniform.cs" t="Include" />
+              <e p="Timeline.cs" t="Include" />
+              <e p="Transform.cs" t="Include" />
+              <e p="VertexAttributePointer.cs" t="Include" />
+            </e>
+            <e p="Interfaces" t="Include">
+              <e p="IActor.cs" t="Include" />
+              <e p="IBuffer.cs" t="Include" />
+              <e p="IDefaultCameraPositionProvider.cs" t="Include" />
+              <e p="IInstancedRenderable.cs" t="Include" />
+              <e p="IRenderable.cs" t="Include" />
+              <e p="ITickingActor.cs" t="Include" />
+              <e p="ITimeline.cs" t="Include" />
+              <e p="ProjectionType.cs" t="Include" />
+            </e>
+            <e p="RenderCache.cs" t="Include" />
+            <e p="RenderableBLP.cs" t="Include" />
+            <e p="RenderableBitmap.cs" t="Include" />
+            <e p="RenderableBoundingBox.cs" t="Include" />
+            <e p="RenderableGameModel.cs" t="Include" />
+            <e p="RenderableImage.cs" t="Include" />
+            <e p="RenderableWorldModel.cs" t="Include" />
+            <e p="Shaders" t="Include">
+              <e p="BaseGridShader.cs" t="Include" />
+              <e p="BoundingBoxShader.cs" t="Include" />
+              <e p="Components" t="Include">
+                <e p="AmbientLighting.cs" t="Include" />
+                <e p="GlobalLighting.cs" t="Include" />
+                <e p="SolidWireframe.cs" t="Include" />
+              </e>
+              <e p="GLSLExtended" t="Include">
+                <e p="GLSLPreprocessor.cs" t="Include" />
+              </e>
+              <e p="GameModelShader.cs" t="Include" />
+              <e p="Plain2DShader.cs" t="Include" />
+              <e p="WorldModelShader.cs" t="Include" />
+            </e>
+          </e>
+          <e p="ViewportRenderer.cs" t="Include" />
+        </e>
+        <e p="app.config" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="interfaces" t="Include">
+          <e p="Everlook.glade" t="Include" />
+          <e p="Everlook.glade~" t="Include" />
+          <e p="EverlookDirectoryExport.glade" t="Include" />
+          <e p="EverlookGameLoadingDialog.glade" t="Include" />
+          <e p="EverlookGameLoadingDialog.glade~" t="Include" />
+          <e p="EverlookImageExport.glade" t="Include" />
+          <e p="EverlookPreferences.glade" t="Include" />
+          <e p="EverlookPreferences.glade~" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="x86" t="Include">
+            <e p="Debug" t="Include">
+              <e p="net461" t="Include">
+                <e p="Everlook.AssemblyInfo.cs" t="Include" />
+              </e>
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="Everlook.sln" t="IncludeFlat" />
+      <e p="lib/SlimTK/SlimTK" t="IncludeRecursive">
+        <e p="BoundingBox.cs" t="Include" />
+        <e p="BoundingFrustrum.cs" t="Include" />
+        <e p="BoundingSphere.cs" t="Include" />
+        <e p="Collision.cs" t="Include" />
+        <e p="Enums.cs" t="Include" />
+        <e p="FrustrumCameraParams.cs" t="Include" />
+        <e p="MathUtil.cs" t="Include" />
+        <e p="Plane.cs" t="Include" />
+        <e p="Ray.cs" t="Include" />
+        <e p="Rectangle.cs" t="Include" />
+        <e p="RectangleF.cs" t="Include" />
+        <e p="SlimTK.csproj" t="IncludeRecursive" />
+        <e p="VectorExtensions.cs" t="Include" />
+        <e p="VectorMath.cs" t="Include" />
+        <e p="Viewport.cs" t="Include" />
+        <e p="ViewportF.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="x86" t="Include">
+            <e p="Debug" t="Include">
+              <e p="net461" t="Include">
+                <e p="SlimTK.AssemblyInfo.cs" t="Include" />
+              </e>
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="stylecop.json" t="Include" />
+      <e p="stylecop.ruleset" t="Include" />
+    </e>
+  </component>
   <component name="RiderRiderContentModelStore">
     <excludedPaths />
   </component>

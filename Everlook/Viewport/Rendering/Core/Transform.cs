@@ -61,12 +61,22 @@ namespace Everlook.Viewport.Rendering.Core
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Transform"/> class. This contstructor creates the instance from
-		/// a single translation vector. The rotation and scale are assumed to be 0,0,0 and 1,1,1, respectively.
+		/// Initializes a new instance of the <see cref="Transform"/> class. The translation, rotation and scale are
+		/// assumed to be {0,0,0], [0,0,0] and [1,1,1], respectively.
+		/// </summary>
+		public Transform()
+			: this(Vector3.UnitZ, Quaternion.Identity, Vector3.One)
+		{
+
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Transform"/> class. This constructor creates the instance from
+		/// a single translation vector. The rotation and scale are assumed to be [0,0,0] and [1,1,1], respectively.
 		/// </summary>
 		/// <param name="translation">The translation in world space.</param>
 		public Transform(Vector3 translation)
-			: this(translation, Quaternion.FromAxisAngle(Vector3.UnitX, 0.0f), Vector3.One)
+			: this(translation, Quaternion.Identity, Vector3.One)
 		{
 		}
 

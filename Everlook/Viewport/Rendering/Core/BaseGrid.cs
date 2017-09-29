@@ -76,13 +76,7 @@ namespace Everlook.Viewport.Rendering.Core
 		public BaseGrid()
 		{
 			this.Shader = RenderCache.Instance.GetShader(EverlookShader.BaseGrid) as BaseGridShader;
-
-			this.ActorTransform = new Transform
-			(
-				new Vector3(0),
-				Quaternion.Identity,
-				new Vector3(1)
-			);
+			this.ActorTransform = new Transform();
 
 			this.IsInitialized = false;
 		}

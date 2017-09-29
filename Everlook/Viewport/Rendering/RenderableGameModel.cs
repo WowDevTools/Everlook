@@ -161,12 +161,7 @@ namespace Everlook.Viewport.Rendering
 			this.Model = inModel;
 			this.GameContext = gameContext;
 
-			this.ActorTransform = new Transform
-			(
-				new Vector3(0.0f, 0.0f, 0.0f),
-				Quaternion.Identity,
-				new Vector3(1.0f, 1.0f, 1.0f)
-			);
+			this.ActorTransform = new Transform();
 
 			// Set a default display info for this model
 			var displayInfo = GetSkinVariations().FirstOrDefault();

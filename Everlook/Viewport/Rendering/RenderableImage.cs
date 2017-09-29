@@ -190,10 +190,7 @@ namespace Everlook.Viewport.Rendering
 			// Use cached shaders whenever possible
 			this.Shader = Cache.GetShader(EverlookShader.Plain2D) as Plain2DShader;
 
-			this.ActorTransform = new Transform(
-				new Vector3(0.0f, 0.0f, 0.0f),
-				Quaternion.FromAxisAngle(Vector3.UnitX, 0.0f),
-				new Vector3(1.0f, 1.0f, 1.0f));
+			this.ActorTransform = new Transform();
 
 			GL.Enable(EnableCap.Blend);
 			GL.BlendEquation(BlendEquationMode.FuncAdd);
