@@ -332,6 +332,11 @@ namespace Everlook.Viewport.Rendering
 					shaderProgram = new GameModelShader();
 					break;
 				}
+				case EverlookShader.BaseGrid:
+				{
+					shaderProgram = new BaseGridShader();
+					break;
+				}
 				case EverlookShader.Model:
 				case EverlookShader.ParticleSystem:
 				default:

@@ -36,14 +36,14 @@ namespace Everlook.Viewport.Camera
 	public class CameraMovement
 	{
 		/// <summary>
-		/// The default movement speed of the observer within the viewport.
+		/// The default movement speed of the observer within the viewport, in world units per second.
 		/// </summary>
 		private const float DefaultMovementSpeed = 50.0f;
 
 		/// <summary>
-		/// The default turning speed of the observer within the viewport.
+		/// The default turning speed of the observer within the viewport, in degrees per second.
 		/// </summary>
-		private const float DefaultTurningSpeed = 10.0f;
+		private const float DefaultTurningSpeed = 5.0f;
 
 		/// <summary>
 		/// Logger instance for this class.
@@ -165,35 +165,37 @@ namespace Everlook.Viewport.Camera
 				speedMultiplier *= (float)EverlookConfiguration.Instance.SprintMultiplier;
 			}
 
+			float moveDistance = deltaTime * speedMultiplier;
+
 			// Perform axial movement
 			if (Keyboard.GetState().IsKeyDown(Key.W))
 			{
-				MoveForward(deltaTime * speedMultiplier);
+				MoveForward(moveDistance);
 			}
 
 			if (Keyboard.GetState().IsKeyDown(Key.S))
 			{
-				MoveBackward(deltaTime * speedMultiplier);
+				MoveBackward(moveDistance);
 			}
 
 			if (Keyboard.GetState().IsKeyDown(Key.A))
 			{
-				MoveLeft(deltaTime * speedMultiplier);
+				MoveLeft(moveDistance);
 			}
 
 			if (Keyboard.GetState().IsKeyDown(Key.D))
 			{
-				MoveRight(deltaTime * speedMultiplier);
+				MoveRight(moveDistance);
 			}
 
 			if (Keyboard.GetState().IsKeyDown(Key.Q))
 			{
-				MoveUp(deltaTime * speedMultiplier);
+				MoveUp(moveDistance);
 			}
 
 			if (Keyboard.GetState().IsKeyDown(Key.E))
 			{
-				MoveDown(deltaTime * speedMultiplier);
+				MoveDown(moveDistance);
 			}
 		}
 

@@ -55,8 +55,13 @@ namespace Everlook.Viewport.Rendering.Core
 		ParticleSystem,
 
 		/// <summary>
-		/// A shader capable of rendering a bounding box
+		/// A shader capable of rendering a bounding box.
 		/// </summary>
-		BoundingBox
+		BoundingBox,
+
+		/// <summary>
+		/// A shader capable of rendering the base grid.
+		/// </summary>
+		BaseGrid
 	}
 }

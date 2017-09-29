@@ -32,12 +32,12 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <summary>
 		/// Gets the attribute array index that the pointer modifies.
 		/// </summary>
-		public int Index { get; }
+		public int LayoutIndex { get; }
 
 		/// <summary>
 		/// Gets the number of components per attribute.
 		/// </summary>
-		public int Size { get; }
+		public int ComponentCount { get; }
 
 		/// <summary>
 		/// Gets the data type of each component in the array.
@@ -52,30 +52,30 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <summary>
 		/// Gets the byte offset between consecutive vertex attributes.
 		/// </summary>
-		public int Stride { get; }
+		public int ByteStride { get; }
 
 		/// <summary>
 		/// Gets the offset to the first component of the first attribute in the array.
 		/// </summary>
-		public int Offset { get; }
+		public int FirstAttributeByteOffset { get; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="VertexAttributePointer"/> class.
 		/// </summary>
-		/// <param name="index">The attribute array layout index.</param>
-		/// <param name="size">The number of components in the attribute.</param>
+		/// <param name="layoutIndex">The attribute array layout index.</param>
+		/// <param name="componentCount">The number of components in the attribute.</param>
 		/// <param name="type">The data type of each component in the attribute.</param>
-		/// <param name="stride">The byte offset between consecutive attributes.</param>
-		/// <param name="offset">The offset to the first component of the first attribute.</param>
+		/// <param name="byteStride">The byte offset between consecutive attributes.</param>
+		/// <param name="firstAttributeByteOffset">The offset to the first component of the first attribute.</param>
 		/// <param name="isNormalized">Whether or not the data should be normalized.</param>
-		public VertexAttributePointer(int index, int size, VertexAttribPointerType type, int stride, int offset, bool isNormalized = false)
+		public VertexAttributePointer(int layoutIndex, int componentCount, VertexAttribPointerType type, int byteStride, int firstAttributeByteOffset, bool isNormalized = false)
 		{
-			this.Index = index;
-			this.Size = size;
+			this.LayoutIndex = layoutIndex;
+			this.ComponentCount = componentCount;
 			this.Type = type;
 
-			this.Stride = stride;
-			this.Offset = offset;
+			this.ByteStride = byteStride;
+			this.FirstAttributeByteOffset = firstAttributeByteOffset;
 
 			this.IsNormalized = isNormalized;
 		}
@@ -85,15 +85,15 @@ namespace Everlook.Viewport.Rendering.Core
 		/// </summary>
 		public void Enable()
 		{
-			GL.EnableVertexAttribArray(this.Index);
+			GL.EnableVertexAttribArray(this.LayoutIndex);
 			GL.VertexAttribPointer
 			(
-				this.Index,
-				this.Size,
+				this.LayoutIndex,
+				this.ComponentCount,
 				this.Type,
 				this.IsNormalized,
-				this.Stride,
-				this.Offset
+				this.ByteStride,
+				this.FirstAttributeByteOffset
 			);
 		}
 
@@ -102,7 +102,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// </summary>
 		public void Disable()
 		{
-			GL.DisableVertexAttribArray(this.Index);
+			GL.DisableVertexAttribArray(this.LayoutIndex);
 		}
 	}
 }

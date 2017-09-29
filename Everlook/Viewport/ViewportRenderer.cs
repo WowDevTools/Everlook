@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Everlook.Configuration;
 using Everlook.Viewport.Camera;
+using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Gdk;
 using Gtk;
@@ -91,7 +92,7 @@ namespace Everlook.Viewport
 		private readonly CameraMovement Movement;
 
 		/// <summary>
-		/// The time taken to render the previous frame.
+		/// The time taken to render the previous frame in seconds.
 		/// </summary>
 		private float DeltaTime;
 
@@ -142,6 +143,11 @@ namespace Everlook.Viewport
 		/// Static reference to the configuration handler.
 		/// </summary>
 		private readonly EverlookConfiguration Configuration = EverlookConfiguration.Instance;
+
+		/// <summary>
+		/// The base grid, rendered underneath models.
+		/// </summary>
+		private BaseGrid Grid;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Viewport.ViewportRenderer"/> class.
@@ -212,6 +218,9 @@ namespace Everlook.Viewport
 
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+			this.Grid = new BaseGrid();
+			this.Grid.Initialize();
+
 			this.IsInitialized = true;
 		}
 
@@ -258,26 +267,26 @@ namespace Everlook.Viewport
 				GL.Viewport(0, 0, widgetWidth, widgetHeight);
 				GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-				if (this.RenderTarget != null)
+				// Calculate the current relative movement of the camera
+				if (this.WantsToMove)
 				{
-					// Calculate the current relative movement of the camera
-					if (this.WantsToMove)
+					switch (this.RenderTarget.Projection)
 					{
-						switch (this.RenderTarget.Projection)
+						case ProjectionType.Orthographic:
 						{
-							case ProjectionType.Orthographic:
-							{
-								Calculate2DMovement();
-								break;
-							}
-							case ProjectionType.Perspective:
-							{
-								Calculate3DMovement();
-								break;
-							}
+							Calculate2DMovement();
+							break;
+						}
+						case ProjectionType.Perspective:
+						{
+							Calculate3DMovement();
+							break;
 						}
 					}
+				}
 
+				if (this.RenderTarget != null)
+				{
 					// Render the current object
 					// Tick the actor, advancing any time-dependent behaviour
 					ITickingActor tickingRenderable = this.RenderTarget as ITickingActor;
@@ -287,9 +296,15 @@ namespace Everlook.Viewport
 					this.Camera.ViewportHeight = widgetHeight;
 					this.Camera.ViewportWidth = widgetWidth;
 
-					// Then render the visual component
 					Matrix4 view = this.Camera.GetViewMatrix();
 					Matrix4 projection = this.Camera.GetProjectionMatrix();
+
+					if (this.RenderTarget.Projection == ProjectionType.Perspective)
+					{
+						this.Grid.Render(view, projection, this.Camera);
+					}
+
+					// Then render the visual component
 					this.RenderTarget.Render(view, projection, this.Camera);
 				}
 
