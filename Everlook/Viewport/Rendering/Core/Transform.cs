@@ -67,7 +67,6 @@ namespace Everlook.Viewport.Rendering.Core
 		public Transform()
 			: this(Vector3.UnitZ, Quaternion.Identity, Vector3.One)
 		{
-
 		}
 
 		/// <summary>

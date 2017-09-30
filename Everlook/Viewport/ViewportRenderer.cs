@@ -135,11 +135,6 @@ namespace Everlook.Viewport
 		*/
 
 		/// <summary>
-		/// Frame timing stopwatch, used to calculate deltaTime.
-		/// </summary>
-		private readonly Stopwatch FrameWatch = new Stopwatch();
-
-		/// <summary>
 		/// Static reference to the configuration handler.
 		/// </summary>
 		private readonly EverlookConfiguration Configuration = EverlookConfiguration.Instance;
@@ -148,6 +143,11 @@ namespace Everlook.Viewport
 		/// The base grid, rendered underneath models.
 		/// </summary>
 		private BaseGrid Grid;
+
+		/// <summary>
+		/// The previous frame time reported by GTK.
+		/// </summary>
+		private double PreviousFrameTime;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Viewport.ViewportRenderer"/> class.
@@ -159,7 +159,28 @@ namespace Everlook.Viewport
 			this.Camera = new ViewportCamera();
 			this.Movement = new CameraMovement(this.Camera);
 
+			this.ViewportWidget.AddTickCallback(UpdateFrameTime);
+
 			this.IsInitialized = false;
+		}
+
+		private bool UpdateFrameTime(Widget widget, FrameClock frameClock)
+		{
+			var frameTimeµSeconds = frameClock.FrameTime;
+
+			if (this.PreviousFrameTime == 0)
+			{
+				this.PreviousFrameTime = frameTimeµSeconds;
+
+				return true;
+			}
+
+			var frameTimeSeconds = (frameTimeµSeconds - this.PreviousFrameTime) / 10e6;
+
+			this.DeltaTime = (float)frameTimeSeconds;
+			this.PreviousFrameTime = frameTimeµSeconds;
+
+			return true;
 		}
 
 		/// <summary>
@@ -258,9 +279,6 @@ namespace Everlook.Viewport
 
 			lock (this.RenderTargetLock)
 			{
-				this.FrameWatch.Reset();
-				this.FrameWatch.Start();
-
 				// Make sure the viewport is accurate for the current widget size on screen
 				int widgetWidth = this.ViewportWidget.AllocatedWidth;
 				int widgetHeight = this.ViewportWidget.AllocatedHeight;
@@ -307,9 +325,6 @@ namespace Everlook.Viewport
 					// Then render the visual component
 					this.RenderTarget.Render(view, projection, this.Camera);
 				}
-
-				this.FrameWatch.Stop();
-				this.DeltaTime = (float)this.FrameWatch.Elapsed.TotalSeconds;
 			}
 		}
 
