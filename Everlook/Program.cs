@@ -63,34 +63,35 @@ namespace Everlook
 			Log.Info("Initializing OpenTK...");
 
 			// OpenGL
-			var openTKToolkit = Toolkit.Init(new ToolkitOptions
+			var toolkitOptions = new ToolkitOptions
 			{
 				Backend = PlatformBackend.PreferNative,
 				EnableHighResolution = true
-			});
+			};
 
-			Log.Info($"OpenTK initialized using the {GetOpenTKBackend()} backend.");
+			using (Toolkit.Init(toolkitOptions))
+			{
+				Log.Info($"OpenTK initialized using the {GetOpenTKBackend()} backend.");
 
-			Log.Info("Initializing GTK...");
+				Log.Info("Initializing GTK...");
 
-			// Bind any unhandled exceptions in the GTK UI so that they are logged.
-			ExceptionManager.UnhandledException += OnGLibUnhandledException;
+				// Bind any unhandled exceptions in the GTK UI so that they are logged.
+				ExceptionManager.UnhandledException += OnGLibUnhandledException;
 
-			Log.Info("Registering treeview types with the native backend...");
-			GType nodeType = (GType)typeof(FileNode);
-			GType.Register(nodeType, typeof(FileNode));
+				Log.Info("Registering treeview types with the native backend...");
+				GType nodeType = (GType)typeof(FileNode);
+				GType.Register(nodeType, typeof(FileNode));
 
-			GType referenceType = (GType)typeof(FileReference);
-			GType.Register(referenceType, typeof(FileReference));
+				GType referenceType = (GType)typeof(FileReference);
+				GType.Register(referenceType, typeof(FileReference));
 
-			// GTK
-			IconManager.LoadEmbeddedIcons();
-			Application.Init();
-			MainWindow win = MainWindow.Create();
-			win.Show();
-			Application.Run();
-
-			openTKToolkit.Dispose();
+				// GTK
+				IconManager.LoadEmbeddedIcons();
+				Application.Init();
+				MainWindow win = MainWindow.Create();
+				win.Show();
+				Application.Run();
+			}
 		}
 
 		/// <summary>
@@ -141,22 +142,25 @@ namespace Everlook
 			Log.Fatal("Please report this to <jarl.gullberg@gmail.com> or via GitHub. Include the full log and a " +
 					  "description of what you were doing when it happened.");
 
-			Exception unhandledException = unhandledExceptionEventArgs.ExceptionObject as Exception;
-			if (unhandledException != null)
+			var unhandledException = unhandledExceptionEventArgs.ExceptionObject as Exception;
+			switch (unhandledException)
 			{
-				if (unhandledException is DllNotFoundException)
+				case null:
+				{
+					return;
+				}
+				case DllNotFoundException _:
 				{
 					Log.Fatal
 					(
-						"This exception is typical of instances where the GTK# runtime has not been installed.\n" +
-						"If you haven't installed it and you're on Windows, download it at \'https://download.gnome.org/binaries/win32/gtk-sharp/2.99/gtk-sharp-2.99.3.msi\'.\n" +
-						"If you have installed it, reboot your computer and try again.\n" +
-						"If you're on macOS, try installing it through Homebrew." +
+						"This exception is typical of instances where the GTK runtime has not been properly copied to the working directory or is not available on your system.\n" +
+						"If you're on Windows, make sure that the bundled GTK libraries are present.\n" +
+						"If you're on macOS, try installing GTK through Homebrew.\n" +
 						"If you're on Linux, check with your package maintainer that all dependencies are properly listed."
 					);
+					break;
 				}
-
-				if (unhandledException is GraphicsException)
+				case GraphicsException _:
 				{
 					Log.Fatal
 					(
@@ -164,21 +168,22 @@ namespace Everlook
 						"which doesn't meet Everlook's requirements. Please note that Everlook requires at least OpenGL 3.3.\n" +
 						"If you're running via XQuartz, please note that XQuartz does not provide contexts above OpenGL 2.1."
 					);
+					break;
 				}
-
-				Log.Fatal($"Exception type: {unhandledException.GetType().FullName}");
-				Log.Fatal($"Exception Message: {unhandledException.Message}");
-				Log.Fatal($"Exception Stacktrace: {unhandledException.StackTrace}");
-
-				if (unhandledException.InnerException == null)
-				{
-					return;
-				}
-
-				Log.Fatal($"Inner exception type: {unhandledException.InnerException.GetType().FullName}");
-				Log.Fatal($"Inner exception Message: {unhandledException.InnerException.Message}");
-				Log.Fatal($"Inner exception Stacktrace: {unhandledException.InnerException.StackTrace}");
 			}
+
+			Log.Fatal($"Exception type: {unhandledException.GetType().FullName}");
+			Log.Fatal($"Exception Message: {unhandledException.Message}");
+			Log.Fatal($"Exception Stacktrace: {unhandledException.StackTrace}");
+
+			if (unhandledException.InnerException == null)
+			{
+				return;
+			}
+
+			Log.Fatal($"Inner exception type: {unhandledException.InnerException.GetType().FullName}");
+			Log.Fatal($"Inner exception Message: {unhandledException.InnerException.Message}");
+			Log.Fatal($"Inner exception Stacktrace: {unhandledException.InnerException.StackTrace}");
 		}
 	}
 }
