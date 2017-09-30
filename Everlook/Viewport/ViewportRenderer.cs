@@ -303,28 +303,30 @@ namespace Everlook.Viewport
 					}
 				}
 
-				if (this.RenderTarget != null)
+				if (this.RenderTarget == null)
 				{
-					// Render the current object
-					// Tick the actor, advancing any time-dependent behaviour
-					ITickingActor tickingRenderable = this.RenderTarget as ITickingActor;
-					tickingRenderable?.Tick(this.DeltaTime);
-
-					// Update the camera with new parameters
-					this.Camera.ViewportHeight = widgetHeight;
-					this.Camera.ViewportWidth = widgetWidth;
-
-					Matrix4 view = this.Camera.GetViewMatrix();
-					Matrix4 projection = this.Camera.GetProjectionMatrix();
-
-					if (this.RenderTarget.Projection == ProjectionType.Perspective)
-					{
-						this.Grid.Render(view, projection, this.Camera);
-					}
-
-					// Then render the visual component
-					this.RenderTarget.Render(view, projection, this.Camera);
+					return;
 				}
+
+				// Render the current object
+				// Tick the actor, advancing any time-dependent behaviour
+				ITickingActor tickingRenderable = this.RenderTarget as ITickingActor;
+				tickingRenderable?.Tick(this.DeltaTime);
+
+				// Update the camera with new parameters
+				this.Camera.ViewportHeight = widgetHeight;
+				this.Camera.ViewportWidth = widgetWidth;
+
+				Matrix4 view = this.Camera.GetViewMatrix();
+				Matrix4 projection = this.Camera.GetProjectionMatrix();
+
+				if (this.RenderTarget.Projection == ProjectionType.Perspective)
+				{
+					this.Grid.Render(view, projection, this.Camera);
+				}
+
+				// Then render the visual component
+				this.RenderTarget.Render(view, projection, this.Camera);
 			}
 		}
 
