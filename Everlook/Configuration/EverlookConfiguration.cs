@@ -78,6 +78,24 @@ namespace Everlook.Configuration
 		}
 
 		/// <summary>
+		/// Gets or sets the rotation speed multiplier of the camera in the viewport.
+		/// </summary>
+		public double RotationSpeed
+		{
+			get => GetDoubleOption(Viewport, nameof(this.RotationSpeed), 1.0);
+			set => SetOption(Viewport, nameof(this.RotationSpeed), value);
+		}
+
+		/// <summary>
+		/// Gets or sets the rotation speed multiplier of the camera in the viewport.
+		/// </summary>
+		public double CameraFOV
+		{
+			get => GetDoubleOption(Viewport, nameof(this.CameraFOV), 45.0);
+			set => SetOption(Viewport, nameof(this.CameraFOV), value);
+		}
+
+		/// <summary>
 		/// Gets or sets a value indicating whether unknown file types should be shown in the file explorer.
 		/// </summary>
 		public bool ShowUnknownFilesWhenFiltering
@@ -255,6 +273,9 @@ namespace Everlook.Configuration
 						Place any changes after this comment.
 					*/
 
+					AddNewConfigurationOption(this.ConfigurationData, Viewport, nameof(this.RotationSpeed), "1.0");
+					AddNewConfigurationOption(this.ConfigurationData, Viewport, nameof(this.CameraFOV), "45.0");
+
 					Commit();
 					Reload();
 				}
@@ -359,6 +380,8 @@ namespace Everlook.Configuration
 			this.ConfigurationData[Viewport].AddKey(nameof(this.WireframeColour), "rgb(234, 161, 0)");
 			this.ConfigurationData[Viewport].AddKey(nameof(this.OccludeBoundingBoxes), "false");
 			this.ConfigurationData[Viewport].AddKey(nameof(this.CameraSpeed), "1.0");
+			this.ConfigurationData[Viewport].AddKey(nameof(this.RotationSpeed), "1.0");
+			this.ConfigurationData[Viewport].AddKey(nameof(this.CameraFOV), "45.0");
 			this.ConfigurationData[Viewport].AddKey(nameof(this.SprintMultiplier), "2.0");
 
 			this.ConfigurationData[Explorer].AddKey(nameof(this.ShowUnknownFilesWhenFiltering), "true");

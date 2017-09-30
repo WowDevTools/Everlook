@@ -288,6 +288,8 @@ namespace Everlook.UI
 			this.WireframeColourButton.Rgba = this.Config.WireframeColour;
 			this.OccludeBoundingBoxesCheckButton.Active = this.Config.OccludeBoundingBoxes;
 			this.CameraSpeedAdjustment.Value = this.Config.CameraSpeed;
+			this.RotationSpeedAdjustment.Value = this.Config.RotationSpeed;
+			this.CameraFOVAdjustment.Value = this.Config.CameraFOV;
 			this.SprintMultiplierAdjustment.Value = this.Config.SprintMultiplier;
 
 			this.ShowUnknownFilesCheckButton.Active = this.Config.ShowUnknownFilesWhenFiltering;
@@ -344,6 +346,8 @@ namespace Everlook.UI
 			this.Config.WireframeColour = this.WireframeColourButton.Rgba;
 			this.Config.OccludeBoundingBoxes = this.OccludeBoundingBoxesCheckButton.Active;
 			this.Config.CameraSpeed = this.CameraSpeedAdjustment.Value;
+			this.Config.RotationSpeed = this.RotationSpeedAdjustment.Value;
+			this.Config.CameraFOV = this.CameraFOVAdjustment.Value;
 			this.Config.SprintMultiplier = this.SprintMultiplierAdjustment.Value;
 
 			this.Config.ShowUnknownFilesWhenFiltering = this.ShowUnknownFilesCheckButton.Active;

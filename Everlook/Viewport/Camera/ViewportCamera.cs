@@ -22,6 +22,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Everlook.Configuration;
 using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
 using SlimTK;
@@ -36,11 +37,6 @@ namespace Everlook.Viewport.Camera
 		/*
 			Default camera and movement speeds.
 		*/
-
-		/// <summary>
-		/// The default field of view for perspective projections.
-		/// </summary>
-		private const float DefaultFieldOfView = 45.0f;
 
 		/// <summary>
 		/// The default near clipping distance.
@@ -232,7 +228,7 @@ namespace Everlook.Viewport.Camera
 				float aspectRatio = (float)this.ViewportWidth / (float)this.ViewportHeight;
 				projectionMatrix = Matrix4.CreatePerspectiveFieldOfView
 				(
-					MathHelper.DegreesToRadians(DefaultFieldOfView),
+					MathHelper.DegreesToRadians((float)EverlookConfiguration.Instance.CameraFOV),
 					aspectRatio,
 					DefaultNearClippingDistance,
 					DefaultFarClippingDistance
