@@ -65,7 +65,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// assumed to be {0,0,0], [0,0,0] and [1,1,1], respectively.
 		/// </summary>
 		public Transform()
-			: this(Vector3.UnitZ, Quaternion.Identity, Vector3.One)
+			: this(Vector3.Zero, Quaternion.Identity, Vector3.One)
 		{
 		}
 
