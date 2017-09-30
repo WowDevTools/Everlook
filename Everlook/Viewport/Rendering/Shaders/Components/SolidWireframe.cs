@@ -20,7 +20,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using System.Threading;
 using Gdk;
 using OpenTK;
 using OpenTK.Graphics;

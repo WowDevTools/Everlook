@@ -38,8 +38,6 @@ namespace Everlook.Viewport.Rendering.Shaders
 	public class GameModelShader : ShaderProgram
 	{
 		private const string AlphaThresholdIdentifier = "alphaThreshold";
-		private const string Texture0Identifier = nameof(Texture0Identifier);
-		private const string Texture1Identifier = nameof(Texture1Identifier);
 		private const string VertexShaderPath = nameof(VertexShaderPath);
 		private const string FragmentShaderPath = nameof(FragmentShaderPath);
 		private const string BaseColour = nameof(BaseColour);

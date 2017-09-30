@@ -68,8 +68,6 @@ namespace Everlook.UI.Widgets
 		/// <param name="glVersionMinor">The minor OpenGL version to attempt to initialize.</param>
 		public ViewportArea(GraphicsMode graphicsMode, int glVersionMajor, int glVersionMinor)
 		{
-			this.DoubleBuffered = false;
-
 			SetRequiredVersion(glVersionMajor, glVersionMinor);
 
 			if (graphicsMode.Depth > 0)

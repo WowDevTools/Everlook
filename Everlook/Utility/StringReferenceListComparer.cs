@@ -40,6 +40,16 @@ namespace Everlook.Utility
 		/// <returns>true if the objects are equal; false otherwise.</returns>
 		public bool Equals(IReadOnlyList<StringReference> x, IReadOnlyList<StringReference> y)
 		{
+			if (x == null && y == null)
+			{
+				return true;
+			}
+
+			if (x == null || y == null)
+			{
+				return false;
+			}
+
 			if (x.Count != y.Count)
 			{
 				return false;

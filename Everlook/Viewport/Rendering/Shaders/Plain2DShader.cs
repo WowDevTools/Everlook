@@ -21,7 +21,6 @@
 //
 
 using Everlook.Viewport.Rendering.Core;
-using Everlook.Viewport.Rendering.Shaders.Components;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -33,7 +32,6 @@ namespace Everlook.Viewport.Rendering.Shaders
 	public class Plain2DShader : ShaderProgram
 	{
 		private const string ChannelMaskIdentifier = "channelMask";
-		private const string TextureIdentifier = "imageTextureSampler";
 
 		/// <inheritdoc />
 		protected override string VertexShaderResourceName => "Plain2D.Plain2DVertex";

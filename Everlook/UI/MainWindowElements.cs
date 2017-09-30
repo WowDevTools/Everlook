@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using Everlook.Explorer;
 using Everlook.UI.Widgets;
 using Gtk;
-using OpenTK;
 using UIElement = Gtk.Builder.ObjectAttribute;
 
 // ReSharper disable UnassignedReadonlyField

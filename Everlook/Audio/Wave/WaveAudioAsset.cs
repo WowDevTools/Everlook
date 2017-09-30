@@ -139,7 +139,8 @@ namespace Everlook.Audio.Wave
 						throw new NotSupportedException("The file data is not a wave file.");
 					}
 
-					int riffChunkSize = br.ReadInt32();
+					// Skip chunk size
+					br.BaseStream.Position += 4;
 
 					string format = new string(br.ReadChars(4));
 					if (format != "WAVE")
@@ -152,13 +153,22 @@ namespace Everlook.Audio.Wave
 					{
 						throw new NotSupportedException("The file data is not a wave file.");
 					}
-					int formatChunkSize = br.ReadInt32();
 
-					int audioFormat = br.ReadInt16();
+					// Skip format chunk size
+					br.BaseStream.Position += 4;
+
+					// Skip audio format
+					br.BaseStream.Position += 2;
+
 					this.Channels = br.ReadInt16();
 					this.SampleRate = br.ReadInt32();
-					int byteRate = br.ReadInt32();
-					int blockAlign = br.ReadInt16();
+
+					// Skip byte rate
+					br.BaseStream.Position += 4;
+
+					// Skip block alignment
+					br.BaseStream.Position += 2;
+
 					this.BitsPerSample = br.ReadInt16();
 
 					string dataSignature = new string(br.ReadChars(4));

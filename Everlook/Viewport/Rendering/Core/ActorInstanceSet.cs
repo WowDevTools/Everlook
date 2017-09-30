@@ -38,13 +38,13 @@ namespace Everlook.Viewport.Rendering.Core
 	public class ActorInstanceSet<T> : IRenderable where T : class, IInstancedRenderable, IActor
 	{
 		/// <inheritdoc />
-		public bool IsStatic { get; }
+		public bool IsStatic => this.Target.IsStatic;
 
 		/// <inheritdoc />
 		public bool IsInitialized { get; set; }
 
 		/// <inheritdoc />
-		public ProjectionType Projection { get; }
+		public ProjectionType Projection => this.Target.Projection;
 
 		/// <summary>
 		/// Gets the target renderable of the instance set.

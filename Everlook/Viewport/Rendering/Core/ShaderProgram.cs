@@ -21,7 +21,6 @@
 //
 
 using System;
-using System.Threading;
 using Everlook.Exceptions.Shader;
 using Everlook.Utility;
 using Everlook.Viewport.Rendering.Shaders.GLSLExtended;

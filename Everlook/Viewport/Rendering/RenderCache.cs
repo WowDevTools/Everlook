@@ -72,6 +72,8 @@ namespace Everlook.Viewport.Rendering
 		{
 			get
 			{
+				ThrowIfDisposed();
+
 				if (this.FallbackTextureInternal == null)
 				{
 					this.FallbackTextureInternal = new Texture2D(ResourceManager.GetFallbackImage());
@@ -130,8 +132,6 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		private bool HasCachedShader(EverlookShader shader)
 		{
-			ThrowIfDisposed();
-
 			if (!Enum.IsDefined(typeof(EverlookShader), shader))
 			{
 				throw new ArgumentException("An unknown shader was passed to the rendering cache.", nameof(shader));
@@ -173,6 +173,8 @@ namespace Everlook.Viewport.Rendering
 		/// <returns>A <see cref="Texture2D"/> object.</returns>
 		public Texture2D GetTexture(MDXTexture texture, IGameContext gameContext, string texturePathOverride = null)
 		{
+			ThrowIfDisposed();
+
 			string filename = texture.Filename;
 			if (string.IsNullOrEmpty(texture.Filename))
 			{
@@ -208,6 +210,8 @@ namespace Everlook.Viewport.Rendering
 		/// <returns>A <see cref="Texture2D"/> object.</returns>
 		public Texture2D GetTexture(string texturePath, IPackage package, TextureWrapMode wrappingModeS = TextureWrapMode.Repeat, TextureWrapMode wrappingModeT = TextureWrapMode.Repeat)
 		{
+			ThrowIfDisposed();
+
 			if (HasCachedTextureForPath(texturePath))
 			{
 				return GetCachedTexture(texturePath);
@@ -337,8 +341,6 @@ namespace Everlook.Viewport.Rendering
 					shaderProgram = new BaseGridShader();
 					break;
 				}
-				case EverlookShader.Model:
-				case EverlookShader.ParticleSystem:
 				default:
 				{
 					throw new ArgumentOutOfRangeException(nameof(shader), "No implemented shader class for this shader.");
@@ -366,6 +368,8 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Dispose()
 		{
+			this.IsDisposed = true;
+
 			foreach (KeyValuePair<string, Texture2D> cachedTexture in this.TextureCache)
 			{
 				cachedTexture.Value?.Dispose();

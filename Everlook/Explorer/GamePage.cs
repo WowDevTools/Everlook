@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Everlook.Configuration;
 using Everlook.Package;
 using Everlook.Utility;
 using Gdk;
@@ -97,11 +96,6 @@ namespace Everlook.Explorer
 		/// Gets the game context associated with this page.
 		/// </summary>
 		public WarcraftGameContext GameContext { get; }
-
-		/// <summary>
-		/// Static reference to the configuration handler.
-		/// </summary>
-		private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
 
 		/// <summary>
 		/// The currently filtered file types.

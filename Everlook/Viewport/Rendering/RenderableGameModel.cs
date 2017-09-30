@@ -30,7 +30,6 @@ using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
-using log4net;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -52,11 +51,6 @@ namespace Everlook.Viewport.Rendering
 	/// </summary>
 	public sealed class RenderableGameModel : IInstancedRenderable, ITickingActor, IDefaultCameraPositionProvider
 	{
-		/// <summary>
-		/// Logger instance for this class.
-		/// </summary>
-		private static readonly ILog Log = LogManager.GetLogger(typeof(RenderableGameModel));
-
 		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is,
 		/// a single frame is rendered and then reused. Useful as an optimization for images.

@@ -22,7 +22,6 @@
 
 using System;
 using Everlook.Configuration;
-using log4net;
 using OpenTK;
 using OpenTK.Input;
 
@@ -44,11 +43,6 @@ namespace Everlook.Viewport.Camera
 		/// The default turning speed of the observer within the viewport, in degrees per second.
 		/// </summary>
 		private const float DefaultTurningSpeed = 5.0f;
-
-		/// <summary>
-		/// Logger instance for this class.
-		/// </summary>
-		private static readonly ILog Log = LogManager.GetLogger(typeof(CameraMovement));
 
 		private readonly ViewportCamera Camera;
 

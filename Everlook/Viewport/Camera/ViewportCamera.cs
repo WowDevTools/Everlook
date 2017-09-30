@@ -225,7 +225,7 @@ namespace Everlook.Viewport.Camera
 			}
 			else
 			{
-				float aspectRatio = (float)this.ViewportWidth / (float)this.ViewportHeight;
+				float aspectRatio = (float)this.ViewportWidth / this.ViewportHeight;
 				projectionMatrix = Matrix4.CreatePerspectiveFieldOfView
 				(
 					MathHelper.DegreesToRadians((float)EverlookConfiguration.Instance.CameraFOV),

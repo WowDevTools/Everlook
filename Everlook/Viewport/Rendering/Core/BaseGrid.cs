@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
-using Gtk;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -52,7 +51,7 @@ namespace Everlook.Viewport.Rendering.Core
 		public Transform ActorTransform { get; set; }
 
 		/// <inheritdoc />
-		public bool IsStatic { get; }
+		public bool IsStatic => false;
 
 		/// <inheritdoc />
 		public bool IsInitialized { get; set; }

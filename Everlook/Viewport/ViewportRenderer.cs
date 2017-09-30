@@ -22,7 +22,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Everlook.Configuration;
 using Everlook.Viewport.Camera;
@@ -32,7 +31,6 @@ using Gdk;
 using Gtk;
 using log4net;
 using OpenTK;
-using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
@@ -404,9 +402,9 @@ namespace Everlook.Viewport
 
 					this.Camera.Projection = this.RenderTarget.Projection;
 				}
-			}
 
-			this.Camera.ResetRotation();
+				this.Camera.ResetRotation();
+			}
 		}
 
 		/// <summary>

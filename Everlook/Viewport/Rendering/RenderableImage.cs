@@ -48,22 +48,13 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		private bool IsDisposed { get; set; }
 
-		/// <summary>
-		/// Gets a value indicating whether this instance uses static rendering; that is,
-		/// a single frame is rendered and then reused. Useful as an optimization for images.
-		/// </summary>
-		/// <value>true</value>
-		/// <c>false</c>
+		/// <inheritdoc />
 		public bool IsStatic => true;
 
-		/// <summary>
-		/// Gets or sets the model transformation of the image. Used for moving and zooming.
-		/// </summary>
+		/// <inheritdoc />
 		public Transform ActorTransform { get; set; }
 
-		/// <summary>
-		/// Gets or sets a value indicating whether or not the current renderable has been initialized.
-		/// </summary>
+		/// <inheritdoc />
 		public bool IsInitialized { get; set; }
 
 		/// <summary>
@@ -96,15 +87,10 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		protected string TexturePath { get; set; }
 
-		/// <summary>
-		/// Gets the projection method to use for this renderable object. Typically, this is Orthographic
-		/// or Perspective.
-		/// </summary>
+		/// <inheritdoc />
 		public ProjectionType Projection => ProjectionType.Orthographic;
 
-		/// <summary>
-		/// Gets the default camera position for this renderable.
-		/// </summary>
+		/// <inheritdoc />
 		public Vector3 DefaultCameraPosition => new Vector3(0.0f, 0.0f, 1.0f);
 
 		/// <summary>
@@ -168,9 +154,7 @@ namespace Everlook.Viewport.Rendering
 			return mipLevels.Clamp<uint>(0, 15);
 		}
 
-		/// <summary>
-		/// Initializes the required data for rendering.
-		/// </summary>
+		/// <inheritdoc />
 		public void Initialize()
 		{
 			ThrowIfDisposed();
@@ -342,14 +326,7 @@ namespace Everlook.Viewport.Rendering
 			}
 		}
 
-		/// <summary>
-		/// Releases all resources used by the <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> object.
-		/// </summary>
-		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/>. The
-		/// <see cref="Dispose"/> method leaves the <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> in an unusable state.
-		/// After calling <see cref="Dispose"/>, you must release all references to the
-		/// <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> so the garbage collector can reclaim the memory that the
-		/// <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> was occupying.</remarks>
+		/// <inheritdoc />
 		public virtual void Dispose()
 		{
 			this.IsDisposed = true;
