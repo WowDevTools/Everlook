@@ -54,6 +54,11 @@ namespace Everlook.UI.Widgets
 		public double DeltaTime { get; private set; }
 
 		/// <summary>
+		/// Gets the context flags used in the creation of this widget.
+		/// </summary>
+		public GraphicsContextFlags ContextFlags { get; }
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="ViewportArea"/> class.
 		/// </summary>
 		public ViewportArea()
@@ -67,7 +72,7 @@ namespace Everlook.UI.Widgets
 		/// </summary>
 		/// <param name="graphicsMode">The <see cref="GraphicsMode"/> which the widget should be constructed with.</param>
 		public ViewportArea(GraphicsMode graphicsMode)
-			: this(graphicsMode, 1, 0)
+			: this(graphicsMode, 1, 0, GraphicsContextFlags.Default)
 		{
 		}
 
@@ -77,8 +82,13 @@ namespace Everlook.UI.Widgets
 		/// <param name="graphicsMode">The <see cref="GraphicsMode"/> which the widget should be constructed with.</param>
 		/// <param name="glVersionMajor">The major OpenGL version to attempt to initialize.</param>
 		/// <param name="glVersionMinor">The minor OpenGL version to attempt to initialize.</param>
-		public ViewportArea(GraphicsMode graphicsMode, int glVersionMajor, int glVersionMinor)
+		/// <param name="contextFlags">
+		/// Any flags which should be used during initialization of the <see cref="GraphicsContext"/>.
+		/// </param>
+		public ViewportArea(GraphicsMode graphicsMode, int glVersionMajor, int glVersionMinor, GraphicsContextFlags contextFlags)
 		{
+			this.ContextFlags = contextFlags;
+
 			AddTickCallback(UpdateFrameTime);
 
 			SetRequiredVersion(glVersionMajor, glVersionMinor);
@@ -122,6 +132,21 @@ namespace Everlook.UI.Widgets
 			this.PreviousFrameTime = frameTimeµSeconds;
 
 			return true;
+		}
+
+		/// <inheritdoc />
+		protected override GLContext OnCreateContext()
+		{
+			var gdkGLContext = Window.CreateGlContext();
+
+			GetRequiredVersion(out var major, out var minor);
+			gdkGLContext.SetRequiredVersion(major, minor);
+
+			gdkGLContext.DebugEnabled = this.ContextFlags.HasFlag(GraphicsContextFlags.Debug);
+			gdkGLContext.ForwardCompatible = this.ContextFlags.HasFlag(GraphicsContextFlags.ForwardCompatible);
+
+			gdkGLContext.Realize();
+			return gdkGLContext;
 		}
 
 		/// <summary>
@@ -241,10 +266,12 @@ namespace Everlook.UI.Widgets
 			MakeCurrent();
 
 			// Create a dummy context that will grab the GdkGLContext that is current on the thread
-			this.TKGraphicsContext = new GraphicsContext(ContextHandle.Zero, null)
+			this.TKGraphicsContext = new GraphicsContext(ContextHandle.Zero, null);
+
+			if (this.ContextFlags.HasFlag(GraphicsContextFlags.Debug))
 			{
-				ErrorChecking = true
-			};
+				this.TKGraphicsContext.ErrorChecking = true;
+			}
 
 			if (GraphicsContext.ShareContexts)
 			{

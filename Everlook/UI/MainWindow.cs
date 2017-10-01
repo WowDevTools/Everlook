@@ -133,7 +133,7 @@ namespace Everlook.UI
 				false
 			);
 
-			this.ViewportWidget = new ViewportArea(graphicsMode, 3, 3)
+			this.ViewportWidget = new ViewportArea(graphicsMode, 3, 3, GraphicsContextFlags.Default)
 			{
 				AutoRender = true,
 				CanFocus = true
