@@ -298,8 +298,8 @@ namespace Everlook.Explorer
 				return true;
 			}
 
-			FileNode node = (FileNode)model.GetValue(iter, 0);
-			WarcraftFileType nodeTypes = node.FileType;
+			var node = (FileNode)model.GetValue(iter, 0);
+			var nodeTypes = node.FileType;
 
 			if (!this.ShouldDisplayUnknownFiles)
 			{
@@ -329,8 +329,8 @@ namespace Everlook.Explorer
 		/// <param name="iter">The <see cref="TreeIter"/> pointing to the row the icon is in.</param>
 		private void RenderNodeIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
-			CellRendererPixbuf cellIcon = cell as CellRendererPixbuf;
-			FileNode node = (FileNode)model.GetValue(iter, 0);
+			var cellIcon = cell as CellRendererPixbuf;
+			var node = (FileNode)model.GetValue(iter, 0);
 
 			if (node == null || cellIcon == null)
 			{
@@ -373,8 +373,8 @@ namespace Everlook.Explorer
 		/// <param name="iter">The <see cref="TreeIter"/> pointing to the row the name is in.</param>
 		private void RenderNodeName(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
-			CellRendererText cellText = cell as CellRendererText;
-			FileNode node = (FileNode)model.GetValue(iter, 0);
+			var cellText = cell as CellRendererText;
+			var node = (FileNode)model.GetValue(iter, 0);
 
 			if (node == null || cellText == null)
 			{
@@ -402,7 +402,7 @@ namespace Everlook.Explorer
 		/// <param name="eventArgs">Arguments describing the row that was activated.</param>
 		private void OnQueueForExportRequested(object sender, EventArgs eventArgs)
 		{
-			FileReference fileReference = GetSelectedReference();
+			var fileReference = GetSelectedReference();
 			if (fileReference == null)
 			{
 				return;
@@ -418,7 +418,7 @@ namespace Everlook.Explorer
 		/// <param name="eventArgs">Arguments describing the row that was activated.</param>
 		private void OnExportItemRequested(object sender, EventArgs eventArgs)
 		{
-			FileReference fileReference = GetSelectedReference();
+			var fileReference = GetSelectedReference();
 			if (fileReference == null)
 			{
 				return;
@@ -436,7 +436,7 @@ namespace Everlook.Explorer
 		/// <param name="eventArgs">Arguments describing the row that was activated.</param>
 		private void OnOpenItem(object sender, EventArgs eventArgs)
 		{
-			FileReference fileReference = GetSelectedReference();
+			var fileReference = GetSelectedReference();
 			if (fileReference == null)
 			{
 				return;
@@ -448,8 +448,7 @@ namespace Everlook.Explorer
 			}
 			else
 			{
-				TreeIter selectedIter;
-				this.Tree.Selection.GetSelected(out selectedIter);
+				this.Tree.Selection.GetSelected(out var selectedIter);
 
 				this.Tree.ExpandRow(this.TreeModel.GetPath(selectedIter), false);
 			}
@@ -463,13 +462,13 @@ namespace Everlook.Explorer
 		/// <param name="eventArgs">Arguments describing the row that was activated.</param>
 		private void OnCopyPath(object sender, EventArgs eventArgs)
 		{
-			FileReference fileReference = GetSelectedReference();
+			var fileReference = GetSelectedReference();
 			if (fileReference == null)
 			{
 				return;
 			}
 
-			Clipboard clipboard = Clipboard.Get(Atom.Intern("CLIPBOARD", false));
+			var clipboard = Clipboard.Get(Atom.Intern("CLIPBOARD", false));
 			clipboard.Text = fileReference.FilePath;
 		}
 
@@ -481,7 +480,7 @@ namespace Everlook.Explorer
 		/// <param name="eventArgs">Arguments describing the row that was activated.</param>
 		private void OnSaveItem(object sender, EventArgs eventArgs)
 		{
-			FileReference fileReference = GetSelectedReference();
+			var fileReference = GetSelectedReference();
 			if (fileReference == null)
 			{
 				return;
@@ -490,7 +489,7 @@ namespace Everlook.Explorer
 			List<FileReference> exportTargets = new List<FileReference>();
 			if (fileReference.IsDirectory)
 			{
-				foreach (FileReference subfile in this.TreeModel.EnumerateFilesOfReference(fileReference))
+				foreach (var subfile in this.TreeModel.EnumerateFilesOfReference(fileReference))
 				{
 					exportTargets.Add(subfile);
 				}
@@ -517,10 +516,9 @@ namespace Everlook.Explorer
 				return;
 			}
 
-			TreePath sorterPath;
-			this.Tree.GetPathAtPos((int)args.Event.X, (int)args.Event.Y, out sorterPath);
-			TreePath filterPath = this.TreeSorter.ConvertPathToChildPath(sorterPath);
-			TreePath modelPath = this.TreeFilter.ConvertPathToChildPath(filterPath);
+			this.Tree.GetPathAtPos((int)args.Event.X, (int)args.Event.Y, out var sorterPath);
+			var filterPath = this.TreeSorter.ConvertPathToChildPath(sorterPath);
+			var modelPath = this.TreeFilter.ConvertPathToChildPath(filterPath);
 
 			if (modelPath == null)
 			{
@@ -532,7 +530,7 @@ namespace Everlook.Explorer
 				return;
 			}
 
-			FileReference currentFileReference = this.TreeModel.GetReferenceByPath(this.GameContext.Assets, modelPath);
+			var currentFileReference = this.TreeModel.GetReferenceByPath(this.GameContext.Assets, modelPath);
 			if (currentFileReference.IsFile || currentFileReference.IsDirectory)
 			{
 				this.SaveItem.Sensitive = true;
@@ -562,7 +560,7 @@ namespace Everlook.Explorer
 		/// <param name="eventArgs">Arguments describing the row that was activated.</param>
 		private void OnSelectionChanged(object sender, EventArgs eventArgs)
 		{
-			FileReference fileReference = GetSelectedReference();
+			var fileReference = GetSelectedReference();
 			if (fileReference == null)
 			{
 				return;
@@ -581,7 +579,7 @@ namespace Everlook.Explorer
 		/// <param name="args">Arguments describing the row that was activated.</param>
 		private void OnRowActivated(object o, RowActivatedArgs args)
 		{
-			FileReference fileReference = GetSelectedReference();
+			var fileReference = GetSelectedReference();
 			if (fileReference == null)
 			{
 				return;
@@ -610,11 +608,10 @@ namespace Everlook.Explorer
 		/// <returns>The currently selected reference.</returns>
 		private FileReference GetSelectedReference()
 		{
-			TreeIter selectedIter;
-			this.Tree.Selection.GetSelected(out selectedIter);
+			this.Tree.Selection.GetSelected(out var selectedIter);
 
-			TreeIter filterIter = this.TreeSorter.ConvertIterToChildIter(selectedIter);
-			TreeIter modeliter = this.TreeFilter.ConvertIterToChildIter(filterIter);
+			var filterIter = this.TreeSorter.ConvertIterToChildIter(selectedIter);
+			var modeliter = this.TreeFilter.ConvertIterToChildIter(filterIter);
 
 			return this.TreeModel.GetReferenceByIter(this.GameContext.Assets, modeliter);
 		}
@@ -690,8 +687,8 @@ namespace Everlook.Explorer
 			const int sortAWithB = 0;
 			const int sortAAfterB = 1;
 
-			FileNode nodeA = (FileNode)model.GetValue(a, 0);
-			FileNode nodeB = (FileNode)model.GetValue(b, 0);
+			var nodeA = (FileNode)model.GetValue(a, 0);
+			var nodeB = (FileNode)model.GetValue(b, 0);
 
 			NodeType typeofA = nodeA.Type;
 			NodeType typeofB = nodeB.Type;

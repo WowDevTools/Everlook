@@ -100,7 +100,7 @@ namespace Everlook.UI
 		/// <returns>An initialized instance of the MainWindow class.</returns>
 		public static MainWindow Create()
 		{
-			using (Builder builder = new Builder(null, "Everlook.interfaces.Everlook.glade", null))
+			using (var builder = new Builder(null, "Everlook.interfaces.Everlook.glade", null))
 			{
 				return new MainWindow(builder, builder.GetObject("MainWindow").Handle);
 			}
@@ -236,40 +236,47 @@ namespace Everlook.UI
 		{
 			this.RenderBoundsCheckButton.Toggled += (sender, args) =>
 			{
-				RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
-				if (wmo != null)
+				switch (this.RenderingEngine.RenderTarget)
 				{
-					wmo.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
-				}
-
-				RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
-				if (mdx != null)
-				{
-					mdx.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
+					case RenderableWorldModel wmo:
+					{
+						wmo.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
+						break;
+					}
+					case RenderableGameModel mdx:
+					{
+						mdx.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
+						break;
+					}
 				}
 			};
 
 			this.RenderWireframeCheckButton.Toggled += (sender, args) =>
 			{
-				RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
-				if (wmo != null)
+				switch (this.RenderingEngine.RenderTarget)
 				{
-					wmo.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
-				}
-
-				RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
-				if (mdx != null)
-				{
-					mdx.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
+					case RenderableWorldModel wmo:
+					{
+						wmo.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
+						break;
+					}
+					case RenderableGameModel mdx:
+					{
+						mdx.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
+						break;
+					}
 				}
 			};
 
 			this.RenderDoodadsCheckButton.Toggled += (sender, args) =>
 			{
-				RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
-				if (wmo != null)
+				switch (this.RenderingEngine.RenderTarget)
 				{
-					wmo.ShouldRenderDoodads = this.RenderDoodadsCheckButton.Active;
+					case RenderableWorldModel wmo:
+					{
+						wmo.ShouldRenderDoodads = this.RenderDoodadsCheckButton.Active;
+						break;
+					}
 				}
 
 				this.ModelVariationComboBox.Sensitive = this.RenderDoodadsCheckButton.Active;
@@ -277,26 +284,28 @@ namespace Everlook.UI
 
 			this.ModelVariationComboBox.Changed += (sender, args) =>
 			{
-				RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
-				if (wmo != null)
+				switch (this.RenderingEngine.RenderTarget)
 				{
-					this.ModelVariationComboBox.GetActiveIter(out TreeIter activeIter);
-					var doodadSetName = (string)this.ModelVariationListStore.GetValue(activeIter, 0);
-
-					wmo.DoodadSet = doodadSetName;
-				}
-
-				RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
-				if (mdx != null)
-				{
-					this.ModelVariationComboBox.GetActiveIter(out TreeIter activeIter);
-
-					var variationObject = this.ModelVariationListStore.GetValue(activeIter, 1);
-					if (variationObject != null)
+					case RenderableWorldModel wmo:
 					{
-						int variationID = (int)variationObject;
+						this.ModelVariationComboBox.GetActiveIter(out var activeIter);
+						var doodadSetName = (string)this.ModelVariationListStore.GetValue(activeIter, 0);
 
-						mdx.SetDisplayInfoByID(variationID);
+						wmo.DoodadSet = doodadSetName;
+						break;
+					}
+					case RenderableGameModel mdx:
+					{
+						this.ModelVariationComboBox.GetActiveIter(out var activeIter);
+
+						var variationObject = this.ModelVariationListStore.GetValue(activeIter, 1);
+						if (variationObject != null)
+						{
+							int variationID = (int)variationObject;
+
+							mdx.SetDisplayInfoByID(variationID);
+						}
+						break;
 					}
 				}
 			};
@@ -461,7 +470,7 @@ namespace Everlook.UI
 			}
 
 			FilterType filterType = (FilterType)box.Active;
-			foreach (GamePage page in this.GamePages)
+			foreach (var page in this.GamePages)
 			{
 				page.ShouldDisplayUnknownFiles = this.Config.ShowUnknownFilesWhenFiltering;
 
@@ -946,7 +955,7 @@ namespace Everlook.UI
 				}
 				case WarcraftFileType.BinaryImage:
 				{
-					using (EverlookImageExportDialog exportDialog = EverlookImageExportDialog.Create(fileReference))
+					using (var exportDialog = EverlookImageExportDialog.Create(fileReference))
 					{
 						if (exportDialog.Run() == (int)ResponseType.Ok)
 						{
@@ -988,7 +997,7 @@ namespace Everlook.UI
 		/// <param name="e">E.</param>
 		private async void OnPreferencesButtonClicked(object sender, EventArgs e)
 		{
-			using (EverlookPreferences preferencesDialog = EverlookPreferences.Create())
+			using (var preferencesDialog = EverlookPreferences.Create())
 			{
 				preferencesDialog.TransientFor = this;
 				if (preferencesDialog.Run() == (int)ResponseType.Ok)
@@ -1215,16 +1224,14 @@ namespace Everlook.UI
 				return;
 			}
 
-			TreePath path;
-			this.ExportQueueTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out path);
+			this.ExportQueueTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out var path);
 
 			if (path == null)
 			{
 				return;
 			}
 
-			TreeIter iter;
-			this.ExportQueueListStore.GetIter(out iter, path);
+			this.ExportQueueListStore.GetIter(out var iter, path);
 
 			FileReference queuedReference = (FileReference)this.ExportQueueListStore.GetValue(iter, 0);
 
@@ -1248,8 +1255,7 @@ namespace Everlook.UI
 		/// <param name="e">E.</param>
 		private void OnQueueRemoveContextItemActivated(object sender, EventArgs e)
 		{
-			TreeIter selectedIter;
-			this.ExportQueueTreeView.Selection.GetSelected(out selectedIter);
+			this.ExportQueueTreeView.Selection.GetSelected(out var selectedIter);
 			this.ExportQueueListStore.Remove(ref selectedIter);
 		}
 
