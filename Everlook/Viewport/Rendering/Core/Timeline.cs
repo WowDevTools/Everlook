@@ -146,7 +146,7 @@ namespace Everlook.Viewport.Rendering.Core
 			var normalizedTime = NormalizeTime(time);
 
 			var allTimestamps = new List<uint>(this.Timestamps);
-			if (this.Duration != this.Timestamps.Last())
+			if (this.Duration > this.Timestamps.Last())
 			{
 				allTimestamps.Add((uint)this.Duration);
 			}

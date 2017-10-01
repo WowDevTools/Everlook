@@ -24,11 +24,11 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Everlook.Configuration;
+using Everlook.UI.Widgets;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Gdk;
-using Gtk;
 using log4net;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -51,7 +51,7 @@ namespace Everlook.Viewport
 		/// The viewport widget displayed to the user in the main interface.
 		/// Used to get proper dimensions for the OpenGL viewport.
 		/// </summary>
-		private readonly Widget ViewportWidget;
+		private readonly ViewportArea ViewportWidget;
 
 		/*
 			RenderTarget and related control flow data.
@@ -90,9 +90,9 @@ namespace Everlook.Viewport
 		private readonly CameraMovement Movement;
 
 		/// <summary>
-		/// The time taken to render the previous frame in seconds.
+		/// Gets the time taken to render the last frame (in seconds).
 		/// </summary>
-		private float DeltaTime;
+		private float DeltaTime => (float)this.ViewportWidget.DeltaTime;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether or not the viewer wants to move in the world.
@@ -143,42 +143,16 @@ namespace Everlook.Viewport
 		private BaseGrid Grid;
 
 		/// <summary>
-		/// The previous frame time reported by GTK.
-		/// </summary>
-		private double PreviousFrameTime;
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="Everlook.Viewport.ViewportRenderer"/> class.
 		/// </summary>
 		/// <param name="viewportWidget">The widget which the viewport should be rendered to.</param>
-		public ViewportRenderer(Widget viewportWidget)
+		public ViewportRenderer(ViewportArea viewportWidget)
 		{
 			this.ViewportWidget = viewportWidget;
 			this.Camera = new ViewportCamera();
 			this.Movement = new CameraMovement(this.Camera);
 
-			this.ViewportWidget.AddTickCallback(UpdateFrameTime);
-
 			this.IsInitialized = false;
-		}
-
-		private bool UpdateFrameTime(Widget widget, FrameClock frameClock)
-		{
-			var frameTimeµSeconds = frameClock.FrameTime;
-
-			if (this.PreviousFrameTime == 0)
-			{
-				this.PreviousFrameTime = frameTimeµSeconds;
-
-				return true;
-			}
-
-			var frameTimeSeconds = (frameTimeµSeconds - this.PreviousFrameTime) / 10e6;
-
-			this.DeltaTime = (float)frameTimeSeconds;
-			this.PreviousFrameTime = frameTimeµSeconds;
-
-			return true;
 		}
 
 		/// <summary>
@@ -301,7 +275,7 @@ namespace Everlook.Viewport
 					}
 				}
 
-				if (this.RenderTarget == null)
+				if (!this.HasRenderTarget)
 				{
 					return;
 				}
@@ -389,13 +363,12 @@ namespace Everlook.Viewport
 				this.RenderTarget = inRenderable;
 
 				// Set the default camera values
-				if (this.RenderTarget != null)
+				if (this.HasRenderTarget)
 				{
 					this.Camera.ViewportWidth = this.ViewportWidget.AllocatedWidth;
 					this.Camera.ViewportHeight = this.ViewportWidget.AllocatedHeight;
 
-					var cameraPositionProvider = this.RenderTarget as IDefaultCameraPositionProvider;
-					if (cameraPositionProvider != null)
+					if (this.RenderTarget is IDefaultCameraPositionProvider cameraPositionProvider)
 					{
 						this.Camera.Position = cameraPositionProvider.DefaultCameraPosition;
 					}

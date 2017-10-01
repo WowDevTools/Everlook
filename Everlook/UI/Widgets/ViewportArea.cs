@@ -23,6 +23,7 @@
 using System;
 using System.ComponentModel;
 using System.Threading;
+using Gdk;
 using Gtk;
 using OpenTK;
 using OpenTK.Graphics;
@@ -41,6 +42,16 @@ namespace Everlook.UI.Widgets
 
 		private IGraphicsContext TKGraphicsContext;
 		private bool IsInitialized;
+
+		/// <summary>
+		/// The previous frame time reported by GTK.
+		/// </summary>
+		private double? PreviousFrameTime;
+
+		/// <summary>
+		/// Gets the time taken to render the last frame (in seconds).
+		/// </summary>
+		public double DeltaTime { get; private set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ViewportArea"/> class.
@@ -68,6 +79,8 @@ namespace Everlook.UI.Widgets
 		/// <param name="glVersionMinor">The minor OpenGL version to attempt to initialize.</param>
 		public ViewportArea(GraphicsMode graphicsMode, int glVersionMajor, int glVersionMinor)
 		{
+			AddTickCallback(UpdateFrameTime);
+
 			SetRequiredVersion(glVersionMajor, glVersionMinor);
 
 			if (graphicsMode.Depth > 0)
@@ -84,6 +97,31 @@ namespace Everlook.UI.Widgets
 			{
 				this.HasAlpha = true;
 			}
+		}
+
+		/// <summary>
+		/// Updates the time delta with a new value from the last frame.
+		/// </summary>
+		/// <param name="widget">The sending widget.</param>
+		/// <param name="frameClock">The relevant frame clock.</param>
+		/// <returns>true if the callback should be called again; otherwise, false.</returns>
+		private bool UpdateFrameTime(Widget widget, FrameClock frameClock)
+		{
+			var frameTimeµSeconds = frameClock.FrameTime;
+
+			if (!this.PreviousFrameTime.HasValue)
+			{
+				this.PreviousFrameTime = frameTimeµSeconds;
+
+				return true;
+			}
+
+			var frameTimeSeconds = (frameTimeµSeconds - this.PreviousFrameTime) / 10e6;
+
+			this.DeltaTime = (float)frameTimeSeconds;
+			this.PreviousFrameTime = frameTimeµSeconds;
+
+			return true;
 		}
 
 		/// <summary>
