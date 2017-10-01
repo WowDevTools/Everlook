@@ -115,7 +115,7 @@ namespace Everlook.Utility
 				return null;
 			}
 
-			return this.FileTree.GetReferenceByPath(this.Assets, treePath);
+			return this.FileTree.GetReferenceByPath(this, treePath);
 		}
 	}
 }

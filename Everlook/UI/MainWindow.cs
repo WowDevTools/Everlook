@@ -44,6 +44,9 @@ using log4net;
 using OpenTK.Graphics;
 using OpenTK.Input;
 using Warcraft.Core;
+
+using static Everlook.Utility.DataLoadingDelegates;
+
 using Application = Gtk.Application;
 using EventArgs = System.EventArgs;
 using FileNode = liblistfile.NodeTree.Node;
@@ -755,20 +758,13 @@ namespace Everlook.UI
 		/// and another delegate which will create a correct <see cref="IRenderable"/> object from the resulting
 		/// object.
 		/// </summary>
-		/// <param name="gamePage">The game page that the renderable originated from.</param>
 		/// <param name="fileReference">A <see cref="FileReference"/> which points to the desired file.</param>
 		/// <param name="referenceLoadingRoutine">A delegate which correctly loads the desired file, returning a generic type T.</param>
 		/// <param name="createRenderable">A delegate which accepts a generic type T and returns a renderable object.</param>
 		/// <param name="associatedControlPage">The control page which the file is associated with, that is, the one with relevant controls.</param>
 		/// <param name="ct">A cancellation token for this operation.</param>
 		/// <typeparam name="T">The type of object to load.</typeparam>
-		private async Task DisplayRenderableFile<T>(
-			GamePage gamePage,
-			FileReference fileReference,
-			DataLoadingDelegates.LoadReference<T> referenceLoadingRoutine,
-			DataLoadingDelegates.CreateRenderable<T> createRenderable,
-			ControlPage associatedControlPage,
-			CancellationToken ct)
+		private async Task DisplayRenderableFile<T>(FileReference fileReference, LoadReference<T> referenceLoadingRoutine, CreateRenderable<T> createRenderable, ControlPage associatedControlPage, CancellationToken ct)
 		{
 			if (fileReference == null)
 			{
@@ -791,13 +787,13 @@ namespace Everlook.UI
 			{
 				T item = await Task.Run
 				(
-					() => referenceLoadingRoutine(fileReference, gamePage.GameContext),
+					() => referenceLoadingRoutine(fileReference),
 					ct
 				);
 
 				IRenderable renderable = await Task.Factory.StartNew
 				(
-					() => createRenderable(item, fileReference, gamePage.GameContext),
+					() => createRenderable(item, fileReference),
 					ct
 				);
 
@@ -1098,6 +1094,7 @@ namespace Everlook.UI
 		private async void OnFileLoadRequested(GamePage page, FileReference fileReference)
 		{
 			WarcraftFileType referencedType = fileReference.GetReferencedFileType();
+			var gameContext = page.GameContext;
 
 			switch (referencedType)
 			{
@@ -1108,7 +1105,6 @@ namespace Everlook.UI
 
 					await DisplayRenderableFile
 					(
-						page,
 						fileReference,
 						DataLoadingRoutines.LoadBinaryImage,
 						DataLoadingRoutines.CreateRenderableBinaryImage,
@@ -1125,7 +1121,6 @@ namespace Everlook.UI
 
 					await DisplayRenderableFile
 					(
-						page,
 						fileReference,
 						DataLoadingRoutines.LoadWorldModel,
 						DataLoadingRoutines.CreateRenderableWorldModel,
@@ -1142,7 +1137,6 @@ namespace Everlook.UI
 
 					await DisplayRenderableFile
 					(
-						page,
 						fileReference,
 						DataLoadingRoutines.LoadWorldModelGroup,
 						DataLoadingRoutines.CreateRenderableWorldModel,
@@ -1161,7 +1155,6 @@ namespace Everlook.UI
 
 					await DisplayRenderableFile
 					(
-						page,
 						fileReference,
 						DataLoadingRoutines.LoadBitmapImage,
 						DataLoadingRoutines.CreateRenderableBitmapImage,
@@ -1195,7 +1188,6 @@ namespace Everlook.UI
 
 					await DisplayRenderableFile
 					(
-						page,
 						fileReference,
 						DataLoadingRoutines.LoadGameModel,
 						DataLoadingRoutines.CreateRenderableGameModel,

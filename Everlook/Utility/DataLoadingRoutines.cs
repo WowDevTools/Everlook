@@ -54,9 +54,8 @@ namespace Everlook.Utility
 		/// Loads the specified WMO file from the archives and deserialize it.
 		/// </summary>
 		/// <param name="fileReference">The archive reference to the WMO root object.</param>
-		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>A WMO object.</returns>
-		public static WMO LoadWorldModel(FileReference fileReference, IGameContext gameContext)
+		public static WMO LoadWorldModel(FileReference fileReference)
 		{
 			if (fileReference == null)
 			{
@@ -78,7 +77,7 @@ namespace Everlook.Utility
 
 						try
 						{
-							byte[] modelGroupData = fileReference.PackageGroup.ExtractFile(modelGroupPath);
+							byte[] modelGroupData = fileReference.Context.Assets.ExtractFile(modelGroupPath);
 
 							if (modelGroupData != null)
 							{
@@ -112,9 +111,8 @@ namespace Everlook.Utility
 		/// Loads the specified WMO group file from the archives and deserialize it.
 		/// </summary>
 		/// <param name="fileReference">The archive reference to the model group.</param>
-		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>A WMO object, containing just the specified model group.</returns>
-		public static WMO LoadWorldModelGroup(FileReference fileReference, IGameContext gameContext)
+		public static WMO LoadWorldModelGroup(FileReference fileReference)
 		{
 			if (fileReference == null)
 			{
@@ -127,7 +125,7 @@ namespace Everlook.Utility
 			// Extract it and load just this model group
 			try
 			{
-				byte[] fileData = fileReference.PackageGroup.ExtractFile(modelRootPath);
+				byte[] fileData = fileReference.Context.Assets.ExtractFile(modelRootPath);
 				if (fileData != null)
 				{
 					WMO worldModel = new WMO(fileData);
@@ -160,20 +158,19 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <param name="worldModel">The model object.</param>
 		/// <param name="fileReference">The reference it was constructed from.</param>
-		/// <param name="gameContext">The game context of the object. This must be a <see cref="WarcraftGameContext"/>.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
-		public static IRenderable CreateRenderableWorldModel(WMO worldModel, FileReference fileReference, IGameContext gameContext)
+		public static IRenderable CreateRenderableWorldModel(WMO worldModel, FileReference fileReference)
 		{
 			if (worldModel == null)
 			{
 				return null;
 			}
 
-			var warcraftContext = gameContext as WarcraftGameContext;
+			var warcraftContext = fileReference.Context as WarcraftGameContext;
 			if (warcraftContext == null)
 			{
 				// TODO: This is bad practice. Refactor
-				throw new ArgumentException("The given context must be a warcraft-typed context.", nameof(gameContext));
+				throw new ArgumentException("The given context must be a warcraft-typed context.", nameof(fileReference.Context));
 			}
 
 			RenderableWorldModel renderableWorldModel = new RenderableWorldModel(worldModel, warcraftContext);
@@ -186,9 +183,8 @@ namespace Everlook.Utility
 		/// Loads the specified BLP image from the archives and deserialize it.
 		/// </summary>
 		/// <param name="fileReference">A reference to a BLP image.</param>
-		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>A BLP object containing the image data pointed to by the reference.</returns>
-		public static BLP LoadBinaryImage(FileReference fileReference, IGameContext gameContext)
+		public static BLP LoadBinaryImage(FileReference fileReference)
 		{
 			if (fileReference == null)
 			{
@@ -222,9 +218,8 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <param name="binaryImage">The image object.</param>
 		/// <param name="fileReference">The reference it was constructed from.</param>
-		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
-		public static IRenderable CreateRenderableBinaryImage(BLP binaryImage, FileReference fileReference, IGameContext gameContext)
+		public static IRenderable CreateRenderableBinaryImage(BLP binaryImage, FileReference fileReference)
 		{
 			if (binaryImage == null)
 			{
@@ -240,9 +235,8 @@ namespace Everlook.Utility
 		/// Loads the specified image from the archives and deserializes it into a bitmap.
 		/// </summary>
 		/// <param name="fileReference">A reference to an image.</param>
-		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>A bitmap containing the image data pointed to by the reference.</returns>
-		public static Bitmap LoadBitmapImage(FileReference fileReference, IGameContext gameContext)
+		public static Bitmap LoadBitmapImage(FileReference fileReference)
 		{
 			if (fileReference == null)
 			{
@@ -279,9 +273,8 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <param name="bitmapImage">The image object.</param>
 		/// <param name="fileReference">The reference it was constructed from.</param>
-		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
-		public static IRenderable CreateRenderableBitmapImage(Bitmap bitmapImage, FileReference fileReference, IGameContext gameContext)
+		public static IRenderable CreateRenderableBitmapImage(Bitmap bitmapImage, FileReference fileReference)
 		{
 			if (bitmapImage == null)
 			{
@@ -297,9 +290,8 @@ namespace Everlook.Utility
 		/// Loads the specified game model from the archives and deserializes it into an <see cref="MDX"/> model.
 		/// </summary>
 		/// <param name="fileReference">A reference to a model.</param>
-		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>An object containing the model data pointed to by the reference.</returns>
-		public static MDX LoadGameModel(FileReference fileReference, IGameContext gameContext)
+		public static MDX LoadGameModel(FileReference fileReference)
 		{
 			if (fileReference == null)
 			{
@@ -323,7 +315,7 @@ namespace Everlook.Utility
 						for (int i = 0; i < model.SkinCount; ++i)
 						{
 							var modelSkinPath = $"{modelDirectory}\\{modelFilename}{i:D2}.skin";
-							var skinData = fileReference.PackageGroup.ExtractFile(modelSkinPath);
+							var skinData = fileReference.Context.Assets.ExtractFile(modelSkinPath);
 
 							if (skinData == null)
 							{
@@ -370,20 +362,19 @@ namespace Everlook.Utility
 		/// </summary>
 		/// <param name="gameModel">The model object.</param>
 		/// <param name="fileReference">The reference it was constructed from.</param>
-		/// <param name="gameContext">The game context of the object.</param>
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
-		public static IRenderable CreateRenderableGameModel(MDX gameModel, FileReference fileReference, IGameContext gameContext)
+		public static IRenderable CreateRenderableGameModel(MDX gameModel, FileReference fileReference)
 		{
 			if (gameModel == null)
 			{
 				return null;
 			}
 
-			var warcraftContext = gameContext as WarcraftGameContext;
+			var warcraftContext = fileReference.Context as WarcraftGameContext;
 			if (warcraftContext == null)
 			{
 				// TODO: This is bad practice. Refactor
-				throw new ArgumentException("The given context must be a warcraft-typed context.", nameof(gameContext));
+				throw new ArgumentException("The given context must be a warcraft-typed context.", nameof(fileReference.Context));
 			}
 
 			RenderableGameModel renderableModel = new RenderableGameModel(gameModel, warcraftContext, fileReference.FilePath);

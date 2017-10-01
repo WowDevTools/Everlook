@@ -530,7 +530,7 @@ namespace Everlook.Explorer
 				return;
 			}
 
-			var currentFileReference = this.TreeModel.GetReferenceByPath(this.GameContext.Assets, modelPath);
+			var currentFileReference = this.TreeModel.GetReferenceByPath(this.GameContext, modelPath);
 			if (currentFileReference.IsFile || currentFileReference.IsDirectory)
 			{
 				this.SaveItem.Sensitive = true;
@@ -613,7 +613,7 @@ namespace Everlook.Explorer
 			var filterIter = this.TreeSorter.ConvertIterToChildIter(selectedIter);
 			var modeliter = this.TreeFilter.ConvertIterToChildIter(filterIter);
 
-			return this.TreeModel.GetReferenceByIter(this.GameContext.Assets, modeliter);
+			return this.TreeModel.GetReferenceByIter(this.GameContext, modeliter);
 		}
 
 		/// <summary>

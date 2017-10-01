@@ -24,6 +24,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Everlook.Package;
+using Everlook.Utility;
 using liblistfile.NodeTree;
 using Warcraft.Core;
 using Warcraft.MPQ.FileInfo;
@@ -41,7 +42,7 @@ namespace Everlook.Explorer
 		/// Gets the package this reference belongs to.
 		/// </summary>
 		/// <value>The group.</value>
-		public PackageGroup PackageGroup { get; }
+		public IGameContext Context { get; }
 
 		/// <summary>
 		/// Gets the node this reference maps to.
@@ -76,7 +77,7 @@ namespace Everlook.Explorer
 			{
 				if (this.IsFile)
 				{
-					return this.PackageGroup.GetReferenceInfo(this);
+					return this.Context.Assets.GetReferenceInfo(this);
 				}
 
 				return null;
@@ -122,12 +123,12 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileReference"/> class.
 		/// </summary>
-		/// <param name="packageGroup">The package group this reference belongs to.</param>
+		/// <param name="gameContext">The game context for the reference.</param>
 		/// <param name="node">The node object in the tree that this reference points to.</param>
 		/// <param name="packageName">The name of the package this reference belongs to.</param>
 		/// <param name="filePath">The complete file path this reference points to.</param>
-		public FileReference(PackageGroup packageGroup, Node node, string packageName, string filePath)
-			: this(packageGroup)
+		public FileReference(IGameContext gameContext, Node node, string packageName, string filePath)
+			: this(gameContext)
 		{
 			this.PackageName = packageName;
 			this.FilePath = filePath.Replace('/', '\\');
@@ -137,10 +138,10 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileReference"/> class.
 		/// </summary>
-		/// <param name="packageGroup">PackageGroup.</param>
-		public FileReference(PackageGroup packageGroup)
+		/// <param name="gameContext">The game context for the reference.</param>
+		public FileReference(IGameContext gameContext)
 		{
-			this.PackageGroup = packageGroup;
+			this.Context = gameContext;
 		}
 
 		/// <summary>
@@ -158,7 +159,7 @@ namespace Everlook.Explorer
 		/// <returns>The raw data of the file pointed to by the reference.</returns>
 		public byte[] Extract()
 		{
-			return this.PackageGroup.ExtractVersionedReference(this);
+			return this.Context.Assets.ExtractVersionedReference(this);
 		}
 
 		/// <summary>
@@ -193,7 +194,7 @@ namespace Everlook.Explorer
 			if (other != null)
 			{
 				return
-					this.PackageGroup.Equals(other.PackageGroup) &&
+					this.Context.Equals(other.Context) &&
 					this.PackageName == other.PackageName &&
 					this.FilePath == other.FilePath;
 			}
@@ -219,7 +220,7 @@ namespace Everlook.Explorer
 			(
 				this.PackageName.GetHashCode() +
 				this.FilePath.GetHashCode() +
-				this.PackageGroup.GroupName.GetHashCode()
+				this.Context.Assets.GroupName.GetHashCode()
 			)
 			.GetHashCode();
 		}

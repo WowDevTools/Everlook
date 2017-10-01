@@ -289,7 +289,7 @@ namespace Everlook.Viewport.Rendering
 					if (!this.DoodadCache.ContainsKey(firstInstance.Name))
 					{
 						var doodadReference = this.GameContext.GetReferenceForDoodad(firstInstance);
-						var doodadModel = DataLoadingRoutines.LoadGameModel(doodadReference, this.GameContext);
+						var doodadModel = DataLoadingRoutines.LoadGameModel(doodadReference);
 
 						if (doodadModel == null)
 						{

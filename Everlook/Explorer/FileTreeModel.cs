@@ -26,6 +26,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Everlook.Package;
+using Everlook.Utility;
 using GLib;
 using Gtk;
 using liblistfile;
@@ -153,7 +154,7 @@ namespace Everlook.Explorer
 					{
 						yield return new FileReference
 						(
-							fileReference.PackageGroup,
+							fileReference.Context,
 							childNode,
 							fileReference.PackageName,
 							GetNodeFilePath(childNode)
@@ -173,11 +174,11 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Gets a <see cref="FileReference"/> from a given iter in the tree.
 		/// </summary>
-		/// <param name="packageGroup">The package group to create a reference for.</param>
+		/// <param name="gameContext">The game context for the reference.</param>
 		/// <param name="iter">The iter in the tree.</param>
 		/// <returns>The FileReference pointed to by the given iter.</returns>
 		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
-		public FileReference GetReferenceByIter(PackageGroup packageGroup, TreeIter iter)
+		public FileReference GetReferenceByIter(IGameContext gameContext, TreeIter iter)
 		{
 			if (iter.Stamp != this.Stamp)
 			{
@@ -190,19 +191,19 @@ namespace Everlook.Explorer
 				throw new InvalidDataException("The iter did not contain a valid node offset.");
 			}
 
-			return new FileReference(packageGroup, node, GetNodePackage(node), GetNodeFilePath(node));
+			return new FileReference(gameContext, node, GetNodePackage(node), GetNodeFilePath(node));
 		}
 
 		/// <summary>
 		/// Gets a <see cref="FileReference"/> from a given path in the tree.
 		/// </summary>
-		/// <param name="packageGroup">The package group to create a reference for.</param>
+		/// <param name="gameContext">The game context for the reference.</param>
 		/// <param name="path">The path in the tree.</param>
 		/// <returns>The FileReference pointed to by the given TreePath.</returns>
-		public FileReference GetReferenceByPath(PackageGroup packageGroup, TreePath path)
+		public FileReference GetReferenceByPath(IGameContext gameContext, TreePath path)
 		{
 			GetIter(out var iter, path);
-			return GetReferenceByIter(packageGroup, iter);
+			return GetReferenceByIter(gameContext, iter);
 		}
 
 		/// <summary>
