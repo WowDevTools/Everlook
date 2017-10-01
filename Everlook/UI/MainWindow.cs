@@ -149,8 +149,6 @@ namespace Everlook.UI
 
 			this.ViewportWidget.Initialized += (sender, args) =>
 			{
-				// Initialize all OpenGL rendering parameters
-				this.ViewportWidget.MakeCurrent();
 				this.RenderingEngine.Initialize();
 			};
 
