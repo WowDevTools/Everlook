@@ -253,8 +253,6 @@ namespace Everlook.UI
 		/// </summary>
 		private void LoadConfigurationValues()
 		{
-			this.ViewportColourButton.Rgba = this.Config.ViewportBackgroundColour;
-
 			if (!string.IsNullOrEmpty(this.Config.DefaultExportDirectory))
 			{
 				if (!Directory.Exists(this.Config.DefaultExportDirectory))
@@ -276,7 +274,7 @@ namespace Everlook.UI
 			this.DefaultModelExportFormatComboBox.Active = (int)this.Config.DefaultModelExportFormat;
 			this.DefaultImageExportFormatComboBox.Active = (int)this.Config.DefaultImageExportFormat;
 			this.DefaultAudioExportFormatComboBox.Active = (int)this.Config.DefaultAudioExportFormat;
-			this.KeepDirectoryStructureCheckButton.Active = this.Config.KeepFileDirectoryStructure;
+			this.KeepDirectoryStructureSwitch.Active = this.Config.KeepFileDirectoryStructure;
 
 			this.AllowStatsCheckButton.Active = this.Config.AllowSendingStatistics;
 			this.SendMachineIDCheckButton.Active = this.Config.SendMachineID;
@@ -285,8 +283,9 @@ namespace Everlook.UI
 			this.SendAppVersionCheckButton.Active = this.Config.SendAppVersion;
 			this.SendRuntimeInfoCheckButton.Active = this.Config.SendRuntimeInformation;
 
+			this.ViewportColourButton.Rgba = this.Config.ViewportBackgroundColour;
 			this.WireframeColourButton.Rgba = this.Config.WireframeColour;
-			this.OccludeBoundingBoxesCheckButton.Active = this.Config.OccludeBoundingBoxes;
+			this.OccludeBoundingBoxesSwitch.Active = this.Config.OccludeBoundingBoxes;
 			this.CameraSpeedAdjustment.Value = this.Config.CameraSpeed;
 			this.RotationSpeedAdjustment.Value = this.Config.RotationSpeed;
 			this.CameraFOVAdjustment.Value = this.Config.CameraFOV;
@@ -314,8 +313,6 @@ namespace Everlook.UI
 				}
 			);
 
-			this.Config.ViewportBackgroundColour = this.ViewportColourButton.Rgba;
-
 			if (!Directory.Exists(this.DefaultExportDirectoryFileChooserButton.Filename))
 			{
 				try
@@ -334,7 +331,7 @@ namespace Everlook.UI
 			this.Config.DefaultModelExportFormat = (ModelFormat)this.DefaultModelExportFormatComboBox.Active;
 			this.Config.DefaultImageExportFormat = (ImageFormat)this.DefaultImageExportFormatComboBox.Active;
 			this.Config.DefaultAudioExportFormat = (AudioFormat)this.DefaultAudioExportFormatComboBox.Active;
-			this.Config.KeepFileDirectoryStructure = this.KeepDirectoryStructureCheckButton.Active;
+			this.Config.KeepFileDirectoryStructure = this.KeepDirectoryStructureSwitch.Active;
 
 			this.Config.AllowSendingStatistics = this.AllowStatsCheckButton.Active;
 			this.Config.SendMachineID = this.SendMachineIDCheckButton.Active;
@@ -343,8 +340,9 @@ namespace Everlook.UI
 			this.Config.SendAppVersion = this.SendAppVersionCheckButton.Active;
 			this.Config.SendRuntimeInformation = this.SendRuntimeInfoCheckButton.Active;
 
+			this.Config.ViewportBackgroundColour = this.ViewportColourButton.Rgba;
 			this.Config.WireframeColour = this.WireframeColourButton.Rgba;
-			this.Config.OccludeBoundingBoxes = this.OccludeBoundingBoxesCheckButton.Active;
+			this.Config.OccludeBoundingBoxes = this.OccludeBoundingBoxesSwitch.Active;
 			this.Config.CameraSpeed = this.CameraSpeedAdjustment.Value;
 			this.Config.RotationSpeed = this.RotationSpeedAdjustment.Value;
 			this.Config.CameraFOV = this.CameraFOVAdjustment.Value;

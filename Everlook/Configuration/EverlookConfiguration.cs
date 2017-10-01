@@ -175,8 +175,8 @@ namespace Everlook.Configuration
 		/// </summary>
 		public RGBA ViewportBackgroundColour
 		{
-			get => GetColourOption(General, nameof(this.ViewportBackgroundColour));
-			set => SetOption(General, nameof(this.ViewportBackgroundColour), value);
+			get => GetColourOption(Viewport, nameof(this.ViewportBackgroundColour));
+			set => SetOption(Viewport, nameof(this.ViewportBackgroundColour), value);
 		}
 
 		/// <summary>
@@ -275,6 +275,8 @@ namespace Everlook.Configuration
 
 					AddNewConfigurationOption(this.ConfigurationData, Viewport, nameof(this.RotationSpeed), "1.0");
 					AddNewConfigurationOption(this.ConfigurationData, Viewport, nameof(this.CameraFOV), "45.0");
+
+					MoveConfigurationOption(this.ConfigurationData, General, Viewport, nameof(this.ViewportBackgroundColour));
 
 					Commit();
 					Reload();

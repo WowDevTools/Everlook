@@ -748,6 +748,8 @@ namespace Everlook.UI
 		/// </summary>
 		private void ReloadViewportBackground()
 		{
+			this.ViewportWidget.MakeCurrent();
+
 			this.RenderingEngine.SetClearColour(this.Config.ViewportBackgroundColour);
 			this.ViewportWidget.QueueRender();
 		}

@@ -50,8 +50,6 @@ namespace Everlook.UI
 		[UIElement] private readonly Button AddPathButton;
 		[UIElement] private readonly Button RemovePathButton;
 
-		[UIElement] private readonly ColorButton ViewportColourButton;
-
 		/*
 			Export settings
 		*/
@@ -60,7 +58,7 @@ namespace Everlook.UI
 		[UIElement] private readonly ComboBox DefaultModelExportFormatComboBox;
 		[UIElement] private readonly ComboBox DefaultImageExportFormatComboBox;
 		[UIElement] private readonly ComboBox DefaultAudioExportFormatComboBox;
-		[UIElement] private readonly CheckButton KeepDirectoryStructureCheckButton;
+		[UIElement] private readonly Switch KeepDirectoryStructureSwitch;
 
 		/*
 			Privacy settings
@@ -78,8 +76,9 @@ namespace Everlook.UI
 			Viewport settings
 		*/
 
+		[UIElement] private readonly ColorButton ViewportColourButton;
 		[UIElement] private readonly ColorButton WireframeColourButton;
-		[UIElement] private readonly CheckButton OccludeBoundingBoxesCheckButton;
+		[UIElement] private readonly Switch OccludeBoundingBoxesSwitch;
 		[UIElement] private readonly Adjustment CameraSpeedAdjustment;
 		[UIElement] private readonly Adjustment RotationSpeedAdjustment;
 		[UIElement] private readonly Adjustment CameraFOVAdjustment;

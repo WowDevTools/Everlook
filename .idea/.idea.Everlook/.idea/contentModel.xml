@@ -307,9 +307,11 @@
           <e p="Everlook.glade" t="Include" />
           <e p="Everlook.glade~" t="Include" />
           <e p="EverlookDirectoryExport.glade" t="Include" />
+          <e p="EverlookDirectoryExport.glade~" t="Include" />
           <e p="EverlookGameLoadingDialog.glade" t="Include" />
           <e p="EverlookGameLoadingDialog.glade~" t="Include" />
           <e p="EverlookImageExport.glade" t="Include" />
+          <e p="EverlookImageExport.glade~" t="Include" />
           <e p="EverlookPreferences.glade" t="Include" />
           <e p="EverlookPreferences.glade~" t="Include" />
         </e>
