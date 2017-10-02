@@ -33,7 +33,7 @@ namespace Everlook.Utility
 	/// <summary>
 	/// Represnts a context for a World of Warcraft version.
 	/// </summary>
-	public class WarcraftGameContext : IGameContext
+	public sealed class WarcraftGameContext : IGameContext
 	{
 		/// <inheritdoc />
 		public WarcraftVersion Version { get; }
