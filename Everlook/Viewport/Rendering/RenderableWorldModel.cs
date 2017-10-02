@@ -52,7 +52,7 @@ namespace Everlook.Viewport.Rendering
 	/// <summary>
 	/// Represents a renderable World Model Object
 	/// </summary>
-	public sealed class RenderableWorldModel : IRenderable, ITickingActor, IDefaultCameraPositionProvider
+	public sealed class RenderableWorldModel : IRenderable, ITickingActor, IDefaultCameraPositionProvider, IModelInfoProvider
 	{
 		/// <summary>
 		/// Logger instance for this class.
@@ -143,6 +143,12 @@ namespace Everlook.Viewport.Rendering
 		// Doodad sets
 		private readonly Dictionary<string, RenderableGameModel> DoodadCache = new Dictionary<string, RenderableGameModel>();
 		private readonly Dictionary<string, List<ActorInstanceSet<RenderableGameModel>>> DoodadSets = new Dictionary<string, List<ActorInstanceSet<RenderableGameModel>>>();
+
+		/// <inheritdoc />
+		public int PolygonCount => this.Model.Groups.Sum(g => g.GroupData.VertexIndices.VertexIndices.Count / 3);
+
+		/// <inheritdoc />
+		public int VertexCount => this.Model.Groups.Sum(g => g.GroupData.Vertices.Vertices.Count);
 
 		/// <summary>
 		/// Gets or sets a value indicating whether or not the current renderable has been initialized.
@@ -424,6 +430,11 @@ namespace Everlook.Viewport.Rendering
 
 			if (this.ShouldRenderDoodads)
 			{
+				foreach (var doodadInstanceSet in this.DoodadSets[this.DoodadSet])
+				{
+					//doodadInstanceSet.ShouldRenderBounds = this.ShouldRenderBounds;
+				}
+
 				foreach (var doodadInstanceSet in this.DoodadSets[this.DoodadSet])
 				{
 					doodadInstanceSet.Render(viewMatrix, projectionMatrix, camera);

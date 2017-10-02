@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -49,7 +50,7 @@ namespace Everlook.Viewport.Rendering
 	/// <summary>
 	/// Represents a renderable Game Object Model.
 	/// </summary>
-	public sealed class RenderableGameModel : IInstancedRenderable, ITickingActor, IDefaultCameraPositionProvider
+	public sealed class RenderableGameModel : IInstancedRenderable, ITickingActor, IDefaultCameraPositionProvider, IModelInfoProvider, IBoundedModel
 	{
 		/// <summary>
 		/// Gets a value indicating whether this instance uses static rendering; that is,
@@ -98,6 +99,12 @@ namespace Everlook.Viewport.Rendering
 		/// <inheritdoc />
 		public Transform ActorTransform { get; set; }
 
+		/// <inheritdoc />
+		public int PolygonCount => (int)this.Model.Skins.Sum(s => s.Triangles.Count / 3);
+
+		/// <inheritdoc />
+		public int VertexCount => (int)this.Model.Vertices.Count;
+
 		private readonly string ModelPath;
 		private readonly RenderCache Cache = RenderCache.Instance;
 		private readonly WarcraftGameContext GameContext;
@@ -118,9 +125,7 @@ namespace Everlook.Viewport.Rendering
 		/// <inheritdoc />
 		public bool IsInitialized { get; set; }
 
-		/// <summary>
-		/// Gets or sets a value indicating whether or not the bounding box of the model should be rendered.
-		/// </summary>
+		/// <inheritdoc />
 		public bool ShouldRenderBounds { get; set; }
 
 		/// <summary>

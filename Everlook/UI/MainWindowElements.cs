@@ -113,5 +113,13 @@ namespace Everlook.UI
 		/*
 			Audio control elements
 		*/
+
+		/*
+			Object info elements
+		*/
+
+		[UIElement] private readonly Label PolyCountLabel;
+		[UIElement] private readonly Label VertexCountLabel;
+		[UIElement] private readonly Label SkinCountLabel;
 	}
 }

@@ -268,9 +268,11 @@
             </e>
             <e p="Interfaces" t="Include">
               <e p="IActor.cs" t="Include" />
+              <e p="IBoundedModel.cs" t="Include" />
               <e p="IBuffer.cs" t="Include" />
               <e p="IDefaultCameraPositionProvider.cs" t="Include" />
               <e p="IInstancedRenderable.cs" t="Include" />
+              <e p="IModelInfoProvider.cs" t="Include" />
               <e p="IRenderable.cs" t="Include" />
               <e p="ITickingActor.cs" t="Include" />
               <e p="ITimeline.cs" t="Include" />

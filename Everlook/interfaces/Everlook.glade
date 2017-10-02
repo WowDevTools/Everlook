@@ -280,6 +280,11 @@
                                                 <property name="tab_fill">False</property>
                                               </packing>
                                             </child>
+                                            <child internal-child="accessible">
+                                              <object class="AtkObject" id="GameTabNotebook-atkobject">
+                                                <property name="AtkObject::accessible-name" translatable="yes">Game Explorer</property>
+                                              </object>
+                                            </child>
                                           </object>
                                         </child>
                                       </object>
@@ -389,6 +394,8 @@
                                           <object class="GtkNotebook" id="ItemControlNotebook">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
+                                            <property name="scrollable">True</property>
+                                            <property name="enable_popup">True</property>
                                             <child>
                                               <object class="GtkAlignment" id="ImageControlAlignment">
                                                 <property name="visible">True</property>
@@ -599,7 +606,7 @@
                                                             <property name="bottom_padding">6</property>
                                                             <child>
                                                             <object class="GtkCheckButton" id="RenderBoundsCheckButton">
-                                                            <property name="label" translatable="yes">Render model group bounds</property>
+                                                            <property name="label" translatable="yes">Render model bounds</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="receives_default">False</property>
@@ -994,6 +1001,169 @@
                                                 <property name="tab_fill">False</property>
                                               </packing>
                                             </child>
+                                            <child>
+                                              <object class="GtkAlignment" id="alignment22">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="top_padding">6</property>
+                                                <property name="bottom_padding">6</property>
+                                                <property name="left_padding">6</property>
+                                                <property name="right_padding">6</property>
+                                                <child>
+                                                  <object class="GtkBox" id="box13">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="spacing">12</property>
+                                                    <child>
+                                                      <object class="GtkAlignment" id="alignment24">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <child>
+                                                          <object class="GtkBox" id="box14">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="orientation">vertical</property>
+                                                            <property name="spacing">6</property>
+                                                            <child>
+                                                            <object class="GtkAlignment" id="alignment26">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <child>
+                                                            <object class="GtkLabel" id="label10">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Polygons</property>
+                                                            <property name="xalign">0</property>
+                                                            </object>
+                                                            </child>
+                                                            </object>
+                                                            <packing>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">0</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <object class="GtkAlignment" id="alignment28">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <child>
+                                                            <object class="GtkLabel" id="label12">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Vertices</property>
+                                                            <property name="xalign">0</property>
+                                                            </object>
+                                                            </child>
+                                                            </object>
+                                                            <packing>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">1</property>
+                                                            </packing>
+                                                            </child>
+                                                          </object>
+                                                        </child>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">False</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">0</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkAlignment" id="alignment23">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <child>
+                                                          <object class="GtkSeparator" id="separator8">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="orientation">vertical</property>
+                                                          </object>
+                                                        </child>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">False</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">1</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkAlignment" id="alignment25">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <child>
+                                                          <object class="GtkBox" id="box15">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="orientation">vertical</property>
+                                                            <property name="spacing">6</property>
+                                                            <child>
+                                                            <object class="GtkAlignment" id="alignment27">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <child>
+                                                            <object class="GtkLabel" id="PolyCountLabel">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">0</property>
+                                                            <property name="xalign">0</property>
+                                                            </object>
+                                                            </child>
+                                                            </object>
+                                                            <packing>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">0</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <object class="GtkAlignment" id="alignment30">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <child>
+                                                            <object class="GtkLabel" id="VertexCountLabel">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">0</property>
+                                                            <property name="xalign">0</property>
+                                                            </object>
+                                                            </child>
+                                                            </object>
+                                                            <packing>
+                                                            <property name="expand">False</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">1</property>
+                                                            </packing>
+                                                            </child>
+                                                          </object>
+                                                        </child>
+                                                      </object>
+                                                      <packing>
+                                                        <property name="expand">True</property>
+                                                        <property name="fill">True</property>
+                                                        <property name="position">2</property>
+                                                      </packing>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="position">4</property>
+                                              </packing>
+                                            </child>
+                                            <child type="tab">
+                                              <object class="GtkLabel" id="label9">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">Info</property>
+                                              </object>
+                                              <packing>
+                                                <property name="position">4</property>
+                                                <property name="tab_fill">False</property>
+                                              </packing>
+                                            </child>
                                           </object>
                                         </child>
                                       </object>
@@ -1346,6 +1516,15 @@ Any bugs in the software or underlying libraries should be reported to the distr
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkSizeGroup" id="ObjectInfoSizeGroup">
+    <property name="mode">both</property>
+    <widgets>
+      <widget name="alignment27"/>
+      <widget name="alignment30"/>
+      <widget name="alignment26"/>
+      <widget name="alignment28"/>
+    </widgets>
   </object>
   <object class="GtkMenu" id="QueueContextMenu">
     <property name="visible">True</property>

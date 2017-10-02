@@ -817,6 +817,12 @@ namespace Everlook.UI
 					);
 
 					EnableControlPage(associatedControlPage);
+
+					if (renderable is IModelInfoProvider infoProvider)
+					{
+						this.PolyCountLabel.Text = infoProvider.PolygonCount.ToString();
+						this.VertexCountLabel.Text = infoProvider.VertexCount.ToString();
+					}
 				}
 			}
 			catch (OperationCanceledException)
@@ -1096,7 +1102,6 @@ namespace Everlook.UI
 		private async void OnFileLoadRequested(GamePage page, FileReference fileReference)
 		{
 			WarcraftFileType referencedType = fileReference.GetReferencedFileType();
-			var gameContext = page.GameContext;
 
 			switch (referencedType)
 			{

@@ -35,8 +35,15 @@ namespace Everlook.Viewport.Rendering.Core
 	/// Represets a set of actor instances, differing by their transforms.
 	/// </summary>
 	/// <typeparam name="T">A renderable supporting instanced rendering.</typeparam>
-	public class ActorInstanceSet<T> : IRenderable where T : class, IInstancedRenderable, IActor
+	public class ActorInstanceSet<T> : IRenderable, IBoundedModel where T : class, IInstancedRenderable, IActor, IBoundedModel
 	{
+		/// <inheritdoc />
+		public bool ShouldRenderBounds
+		{
+			get => this.Target.ShouldRenderBounds;
+			set => this.Target.ShouldRenderBounds = value;
+		}
+
 		/// <inheritdoc />
 		public bool IsStatic => this.Target.IsStatic;
 
