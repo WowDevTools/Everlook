@@ -35,6 +35,7 @@ using Everlook.UI.Widgets;
 using Everlook.Utility;
 using Everlook.Viewport;
 using Everlook.Viewport.Rendering;
+using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Gdk;
 using GLib;

@@ -22,6 +22,7 @@
 
 using System;
 using Everlook.Viewport.Camera;
+using Everlook.Viewport.Rendering.Core;
 using OpenTK;
 
 namespace Everlook.Viewport.Rendering.Interfaces

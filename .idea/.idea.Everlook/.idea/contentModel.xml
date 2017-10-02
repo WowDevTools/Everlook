@@ -257,6 +257,7 @@
                 <e p="DirectionalLight.cs" t="Include" />
               </e>
               <e p="Plane.cs" t="Include" />
+              <e p="ProjectionType.cs" t="Include" />
               <e p="RenderableActorReference.cs" t="Include" />
               <e p="ShaderProgram.cs" t="Include" />
               <e p="SplineTimeline.cs" t="Include" />
@@ -276,7 +277,6 @@
               <e p="IRenderable.cs" t="Include" />
               <e p="ITickingActor.cs" t="Include" />
               <e p="ITimeline.cs" t="Include" />
-              <e p="ProjectionType.cs" t="Include" />
             </e>
             <e p="RenderCache.cs" t="Include" />
             <e p="RenderableBLP.cs" t="Include" />

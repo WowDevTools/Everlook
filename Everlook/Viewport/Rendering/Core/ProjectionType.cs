@@ -20,7 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Everlook.Viewport.Rendering.Interfaces
+namespace Everlook.Viewport.Rendering.Core
 {
 	/// <summary>
 	/// The type of projection used in OpenGL rendering.
