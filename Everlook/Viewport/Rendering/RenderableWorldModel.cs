@@ -428,6 +428,16 @@ namespace Everlook.Viewport.Rendering
 				RenderGroup(modelGroup, modelViewProjection);
 			}
 
+			// Render bounding boxes
+			if (this.ShouldRenderBounds)
+			{
+				foreach (ModelGroup modelGroup in this.Model.Groups
+					.OrderByDescending(modelGroup => VectorMath.Distance(camera.Position, modelGroup.GetPosition().AsOpenTKVector())))
+				{
+					this.BoundingBoxLookup[modelGroup].Render(viewMatrix, projectionMatrix, camera);
+				}
+			}
+
 			if (this.ShouldRenderDoodads)
 			{
 				foreach (var doodadInstanceSet in this.DoodadSets[this.DoodadSet])
@@ -438,16 +448,6 @@ namespace Everlook.Viewport.Rendering
 				foreach (var doodadInstanceSet in this.DoodadSets[this.DoodadSet])
 				{
 					doodadInstanceSet.Render(viewMatrix, projectionMatrix, camera);
-				}
-			}
-
-			// Render bounding boxes
-			if (this.ShouldRenderBounds)
-			{
-				foreach (ModelGroup modelGroup in this.Model.Groups
-					.OrderByDescending(modelGroup => VectorMath.Distance(camera.Position, modelGroup.GetPosition().AsOpenTKVector())))
-				{
-					this.BoundingBoxLookup[modelGroup].Render(viewMatrix, projectionMatrix, camera);
 				}
 			}
 
