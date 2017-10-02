@@ -1237,7 +1237,8 @@ namespace Everlook.UI
 			}
 
 			this.QueueContextMenu.ShowAll();
-			this.QueueContextMenu.Popup();
+			this.QueueContextMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
+			//this.QueueContextMenu.Popup();
 		}
 
 		/// <summary>

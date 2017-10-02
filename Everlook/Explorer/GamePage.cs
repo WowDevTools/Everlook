@@ -549,7 +549,9 @@ namespace Everlook.Explorer
 			}
 
 			this.TreeContextMenu.ShowAll();
-			this.TreeContextMenu.Popup();
+
+			//this.TreeContextMenu.Popup(); // only available in GTK >= 3.22
+			this.TreeContextMenu.PopupForDevice(args.Event.Device, null, null, null, null, args.Event.Button, args.Event.Time);
 		}
 
 		/// <summary>

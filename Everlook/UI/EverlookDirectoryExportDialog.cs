@@ -160,7 +160,9 @@ namespace Everlook.UI
 			if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
 			{
 				this.ExportPopupMenu.ShowAll();
-				this.ExportPopupMenu.Popup();
+
+				this.ExportPopupMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
+				//this.ExportPopupMenu.Popup();
 			}
 		}
 
