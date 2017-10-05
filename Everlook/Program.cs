@@ -23,6 +23,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using Everlook.Explorer;
 using Everlook.UI;
 using Everlook.Utility;
@@ -54,6 +55,11 @@ namespace Everlook
 
 			// Set correct working directory for compatibility with double-clicking
 			Directory.SetCurrentDirectory(DirectoryHelpers.GetLocalDir());
+
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				Environment.SetEnvironmentVariable("GSETTINGS_SCHEMA_DIR", "share\\glib-2.0\\schemas\\");
+			}
 
 			log4net.Config.XmlConfigurator.Configure();
 
