@@ -42,6 +42,9 @@
     <Content Include="OpenTK.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include ="Dictionary\dictionary.dic">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="$(SolutionDir)\stylecop.json">
@@ -61,7 +64,7 @@
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="MP3Sharp" Version="1.0.3" />
     <PackageReference Include="NETStandard.Library.NETFramework" Version="2.0.0-preview2-25405-01" />
-    <PackageReference Include="liblistfile" Version="2.0.1" />
+    <PackageReference Include="liblistfile" Version="2.0.1" IncludeAssets="All" />
     <PackageReference Include="OpenTK" Version="3.0.0-git00011" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" />
   </ItemGroup>

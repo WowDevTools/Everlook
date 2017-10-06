@@ -172,7 +172,9 @@
           <e p="ClientDatabaseProvider.cs" t="Include" />
           <e p="TypeTranslatorHelpers.cs" t="Include" />
         </e>
-        <e p="Dictionary" t="Include" />
+        <e p="Dictionary" t="Include">
+          <e p="dictionary.dic" t="Include" />
+        </e>
         <e p="Everlook.csproj" t="IncludeRecursive" />
         <e p="Exceptions" t="Include">
           <e p="Shader" t="Include">
