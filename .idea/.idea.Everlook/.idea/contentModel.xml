@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ContentModelStore">
     <e p="$USER_HOME$/.Rider2017.2/system/resharper-host/local/Transient/ReSharperHost/v10/SolutionCaches/_Everlook.-848944586.00" t="ExcludeRecursive" />
-    <e p="$USER_HOME$/.nuget/packages/liblistfile/2.0.1/contentFiles/any/netstandard2.0/Dictionary/dictionary.dic" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/liblistfile/2.0.2/contentFiles/any/netstandard2.0/Dictionary/dictionary.dic" t="Include" />
     <e p="$PROJECT_DIR$" t="IncludeFlat">
       <e p="Everlook" t="IncludeRecursive">
         <e p="Audio" t="Include">
@@ -309,10 +309,15 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="interfaces" t="Include">
           <e p="Everlook.glade" t="Include" />
+          <e p="Everlook.glade~" t="Include" />
           <e p="EverlookDirectoryExport.glade" t="Include" />
+          <e p="EverlookDirectoryExport.glade~" t="Include" />
           <e p="EverlookGameLoadingDialog.glade" t="Include" />
+          <e p="EverlookGameLoadingDialog.glade~" t="Include" />
           <e p="EverlookImageExport.glade" t="Include" />
+          <e p="EverlookImageExport.glade~" t="Include" />
           <e p="EverlookPreferences.glade" t="Include" />
+          <e p="EverlookPreferences.glade~" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="x86" t="Include">
