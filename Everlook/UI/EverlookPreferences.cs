@@ -314,11 +314,12 @@ namespace Everlook.UI
 				}
 			);
 
-			if (!Directory.Exists(this.DefaultExportDirectoryFileChooserButton.Filename))
+			string selectedExportDirectory = new Uri(this.DefaultExportDirectoryFileChooserButton.Uri).LocalPath;
+			if (!Directory.Exists(selectedExportDirectory))
 			{
 				try
 				{
-					Directory.CreateDirectory(this.DefaultExportDirectoryFileChooserButton.Filename);
+					Directory.CreateDirectory(selectedExportDirectory);
 				}
 				catch (UnauthorizedAccessException uax)
 				{
@@ -327,7 +328,7 @@ namespace Everlook.UI
 				}
 			}
 
-			this.Config.DefaultExportDirectory = new Uri(this.DefaultExportDirectoryFileChooserButton.Uri).LocalPath;
+			this.Config.DefaultExportDirectory = selectedExportDirectory;
 
 			this.Config.DefaultModelExportFormat = (ModelFormat)this.DefaultModelExportFormatComboBox.Active;
 			this.Config.DefaultImageExportFormat = (ImageFormat)this.DefaultImageExportFormatComboBox.Active;
