@@ -5,7 +5,7 @@
     <TargetFramework>net461</TargetFramework>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Platform>x86</Platform>
+    <Platforms>x86</Platforms>
     <DefineConstants>$(DefineConstants);GTK3;</DefineConstants>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\stylecop.ruleset</CodeAnalysisRuleSet>
