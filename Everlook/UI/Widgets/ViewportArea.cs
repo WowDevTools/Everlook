@@ -137,7 +137,7 @@ namespace Everlook.UI.Widgets
 		/// <inheritdoc />
 		protected override GLContext OnCreateContext()
 		{
-			var gdkGLContext = Window.CreateGlContext();
+			var gdkGLContext = this.Window.CreateGlContext();
 
 			GetRequiredVersion(out var major, out var minor);
 			gdkGLContext.SetRequiredVersion(major, minor);
