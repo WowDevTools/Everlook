@@ -83,6 +83,10 @@ namespace Everlook.Utility
 							{
 								worldModel.AddModelGroup(new ModelGroup(modelGroupData));
 							}
+							else
+							{
+								Log.Warn($"Failed to load model group \"{modelGroupPath}\".");
+							}
 						}
 						catch (InvalidFileSectorTableException fex)
 						{
