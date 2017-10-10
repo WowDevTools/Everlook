@@ -91,6 +91,14 @@ namespace Everlook.Viewport.Rendering
 		public static readonly RenderCache Instance = new RenderCache();
 
 		/// <summary>
+		/// Finalizes an instance of the <see cref="RenderCache"/> class.
+		/// </summary>
+		~RenderCache()
+		{
+			Dispose();
+		}
+
+		/// <summary>
 		/// Gets a <see cref="ShaderProgram"/> for the specified shader type. If one is not already in the cache, it
 		/// will be created.
 		/// </summary>
