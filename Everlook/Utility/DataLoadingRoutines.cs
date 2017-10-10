@@ -69,7 +69,7 @@ namespace Everlook.Utility
 				{
 					WMO worldModel = new WMO(fileData);
 
-					string modelPathWithoutExtension = Path.GetFileNameWithoutExtension(fileReference.FilePath);
+					string modelPathWithoutExtension = $"{fileReference.FileDirectory.Replace('/', '\\')}\\{Path.GetFileNameWithoutExtension(fileReference.Filename)}";
 					for (int i = 0; i < worldModel.GroupCount; ++i)
 					{
 						// Extract the groups as well
