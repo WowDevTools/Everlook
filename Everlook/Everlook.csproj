@@ -30,6 +30,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Content\Shaders\**\*.glsl" />
     <EmbeddedResource Include="interfaces\*.glade" />
+    <EmbeddedResource Include="Content\Icons\Blender\*.png" />
     <EmbeddedResource Include="Content\Icons\Blender\*.svg" />
     <EmbeddedResource Include="Content\Icons\Mint-X\*.png" />
     <EmbeddedResource Include="Content\Icons\Mint-X\*.svg" />
