@@ -316,8 +316,6 @@ namespace Everlook.Configuration
 			this.ConfigurationData.Sections.AddSection(Viewport);
 			this.ConfigurationData.Sections.AddSection(Explorer);
 
-			this.ConfigurationData[General].AddKey(nameof(this.ViewportBackgroundColour), "rgb(133, 146, 173)");
-
 			this.ConfigurationData[Export].AddKey(nameof(this.DefaultExportDirectory), Export);
 
 			KeyData modelExportKeyData = new KeyData(nameof(this.DefaultModelExportFormat))
@@ -379,6 +377,7 @@ namespace Everlook.Configuration
 			this.ConfigurationData[Privacy].AddKey(nameof(this.SendAppVersion), "true");
 			this.ConfigurationData[Privacy].AddKey(nameof(this.SendRuntimeInformation), "true");
 
+			this.ConfigurationData[Viewport].AddKey(nameof(this.ViewportBackgroundColour), "rgb(133, 146, 173)");
 			this.ConfigurationData[Viewport].AddKey(nameof(this.WireframeColour), "rgb(234, 161, 0)");
 			this.ConfigurationData[Viewport].AddKey(nameof(this.OccludeBoundingBoxes), "false");
 			this.ConfigurationData[Viewport].AddKey(nameof(this.CameraSpeed), "1.0");
