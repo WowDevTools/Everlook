@@ -368,17 +368,24 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		public void Dispose()
 		{
+			if (this.IsDisposed)
+			{
+				return;
+			}
+
 			this.IsDisposed = true;
 
 			foreach (KeyValuePair<string, Texture2D> cachedTexture in this.TextureCache)
 			{
 				cachedTexture.Value?.Dispose();
 			}
+			this.TextureCache.Clear();
 
 			foreach (KeyValuePair<EverlookShader, ShaderProgram> cachedShader in this.ShaderCache)
 			{
 				cachedShader.Value?.Dispose();
 			}
+			this.ShaderCache.Clear();
 		}
 	}
 }
