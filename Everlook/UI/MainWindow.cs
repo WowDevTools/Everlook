@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -508,6 +509,7 @@ namespace Everlook.UI
 		private async void OnMainWindowShown(object sender, EventArgs eventArgs)
 		{
 			await LoadGames();
+			//OnDeleteEvent(sender, null); // DEBUG
 		}
 
 		/// <summary>
@@ -515,6 +517,9 @@ namespace Everlook.UI
 		/// </summary>
 		private async Task LoadGames()
 		{
+			Stopwatch sw = new Stopwatch();
+			sw.Start();
+
 			GameLoader loader = new GameLoader();
 			EverlookGameLoadingDialog dialog = EverlookGameLoadingDialog.Create(this);
 			dialog.ShowAll();
@@ -549,6 +554,9 @@ namespace Everlook.UI
 			}
 
 			dialog.Destroy();
+
+			sw.Stop();
+			Log.Debug($"Game loading took {sw.Elapsed.TotalMilliseconds}ms ({sw.Elapsed.TotalSeconds}s)");
 		}
 
 		private void AddGamePage(string alias, WarcraftVersion version, PackageGroup group, OptimizedNodeTree nodeTree)
@@ -1270,8 +1278,12 @@ namespace Everlook.UI
 
 			this.FileLoadingCancellationSource?.Cancel();
 
+			this.ViewportWidget.MakeCurrent();
+
 			this.RenderingEngine.SetRenderTarget(null);
 			this.RenderingEngine.Dispose();
+
+			RenderCache.Instance?.Dispose();
 
 			this.ViewportWidget.Dispose();
 
