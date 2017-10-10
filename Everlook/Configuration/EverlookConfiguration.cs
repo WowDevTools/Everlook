@@ -42,7 +42,6 @@ namespace Everlook.Configuration
 			Section names
 		*/
 
-		private const string General = nameof(General);
 		private const string Export = nameof(Export);
 		private const string Privacy = nameof(Privacy);
 		private const string Viewport = nameof(Viewport);
@@ -276,7 +275,9 @@ namespace Everlook.Configuration
 					AddNewConfigurationOption(this.ConfigurationData, Viewport, nameof(this.RotationSpeed), "1.0");
 					AddNewConfigurationOption(this.ConfigurationData, Viewport, nameof(this.CameraFOV), "45.0");
 
-					MoveConfigurationOption(this.ConfigurationData, General, Viewport, nameof(this.ViewportBackgroundColour));
+					MoveConfigurationOption(this.ConfigurationData, "General", Viewport, nameof(this.ViewportBackgroundColour));
+
+					DeleteConfigurationSection(this.ConfigurationData, "General");
 
 					Commit();
 					Reload();
@@ -310,7 +311,6 @@ namespace Everlook.Configuration
 		{
 			this.ConfigurationData.Sections.Clear();
 
-			this.ConfigurationData.Sections.AddSection(General);
 			this.ConfigurationData.Sections.AddSection(Export);
 			this.ConfigurationData.Sections.AddSection(Privacy);
 			this.ConfigurationData.Sections.AddSection(Viewport);
@@ -426,6 +426,14 @@ namespace Everlook.Configuration
 				configData.Sections.RemoveSection(oldSectionName);
 				configData.Sections.AddSection(newSectionName);
 				configData.Sections.SetSectionData(newSectionName, oldSectionData);
+			}
+		}
+
+		private void DeleteConfigurationSection(IniData configData, string sectionName)
+		{
+			if (configData.Sections.ContainsSection(sectionName))
+			{
+				configData.Sections.RemoveSection(sectionName);
 			}
 		}
 
