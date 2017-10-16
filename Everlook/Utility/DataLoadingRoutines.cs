@@ -62,41 +62,34 @@ namespace Everlook.Utility
 				throw new ArgumentNullException(nameof(fileReference));
 			}
 
+			WMO worldModel;
 			try
 			{
 				byte[] fileData = fileReference.Extract();
-				if (fileData != null)
+				worldModel = new WMO(fileData);
+
+				string modelPathWithoutExtension = $"{fileReference.FileDirectory.Replace('/', '\\')}\\{Path.GetFileNameWithoutExtension(fileReference.Filename)}";
+				for (int i = 0; i < worldModel.GroupCount; ++i)
 				{
-					WMO worldModel = new WMO(fileData);
+					// Extract the groups as well
+					string modelGroupPath = $"{modelPathWithoutExtension}_{i:D3}.wmo";
 
-					string modelPathWithoutExtension = $"{fileReference.FileDirectory.Replace('/', '\\')}\\{Path.GetFileNameWithoutExtension(fileReference.Filename)}";
-					for (int i = 0; i < worldModel.GroupCount; ++i)
+					try
 					{
-						// Extract the groups as well
-						string modelGroupPath = $"{modelPathWithoutExtension}_{i:D3}.wmo";
-
-						try
-						{
-							byte[] modelGroupData = fileReference.Context.Assets.ExtractFile(modelGroupPath);
-
-							if (modelGroupData != null)
-							{
-								worldModel.AddModelGroup(new ModelGroup(modelGroupData));
-							}
-							else
-							{
-								Log.Warn($"Failed to load model group \"{modelGroupPath}\".");
-							}
-						}
-						catch (InvalidFileSectorTableException fex)
-						{
-							Log.Warn(
-								$"Failed to load the model group \"{modelGroupPath}\" due to an invalid sector table (\"{fex.Message}\").");
-							return null;
-						}
+						byte[] modelGroupData = fileReference.Context.Assets.ExtractFile(modelGroupPath);
+						worldModel.AddModelGroup(new ModelGroup(modelGroupData));
 					}
-
-					return worldModel;
+					catch (FileNotFoundException fex)
+					{
+						Log.Warn($"Failed to load model group \"{modelGroupPath}\": {fex}.");
+						return null;
+					}
+					catch (InvalidFileSectorTableException fex)
+					{
+						Log.Warn(
+							$"Failed to load the model group \"{modelGroupPath}\" due to an invalid sector table (\"{fex}\").");
+						return null;
+					}
 				}
 			}
 			catch (InvalidFileSectorTableException fex)
@@ -106,9 +99,7 @@ namespace Everlook.Utility
 				return null;
 			}
 
-			Log.Warn(
-				$"Failed to load the model \"{fileReference.FilePath}\". The file data could not be extracted.");
-			return null;
+			return worldModel;
 		}
 
 		/// <summary>
@@ -126,33 +117,29 @@ namespace Everlook.Utility
 			// Get the file name of the root object
 			string modelRootPath = fileReference.FilePath.Remove(fileReference.FilePath.Length - 8, 4);
 
+			WMO worldModel;
 			// Extract it and load just this model group
 			try
 			{
-				byte[] fileData = fileReference.Context.Assets.ExtractFile(modelRootPath);
-				if (fileData != null)
-				{
-					WMO worldModel = new WMO(fileData);
-					byte[] modelGroupData = fileReference.Extract();
+				byte[] rootData = fileReference.Context.Assets.ExtractFile(modelRootPath);
+				worldModel = new WMO(rootData);
 
-					if (modelGroupData != null)
-					{
-						worldModel.AddModelGroup(new ModelGroup(modelGroupData));
-					}
-
-					return worldModel;
-				}
+				byte[] modelGroupData = fileReference.Extract();
+				worldModel.AddModelGroup(new ModelGroup(modelGroupData));
+			}
+			catch (FileNotFoundException fex)
+			{
+				Log.Warn($"Failed to load the model group \"{fileReference.FilePath}\": {fex}");
+				return null;
 			}
 			catch (InvalidFileSectorTableException fex)
 			{
 				Log.Warn(
-					$"Failed to load the model group \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
+					$"Failed to load the model group \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex}\")");
 				return null;
 			}
 
-			Log.Warn(
-				$"Failed to load the model group \"{fileReference.FilePath}\". The file data could not be extracted.");
-			return null;
+			return worldModel;
 		}
 
 		/// <summary>
@@ -320,12 +307,6 @@ namespace Everlook.Utility
 						{
 							var modelSkinPath = $"{modelDirectory}\\{modelFilename}{i:D2}.skin";
 							var skinData = fileReference.Context.Assets.ExtractFile(modelSkinPath);
-
-							if (skinData == null)
-							{
-								Log.Warn($"Failed to load model skin \"{modelSkinPath}\".");
-								break;
-							}
 
 							using (MemoryStream ms = new MemoryStream(skinData))
 							{

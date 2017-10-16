@@ -143,10 +143,6 @@ namespace Everlook.Database
 
 			string databasePath = GetDatabasePackagePath(databaseName);
 			byte[] databaseData = this.ContentSource.ExtractFile(databasePath);
-			if (databaseData == null)
-			{
-				throw new FileLoadException($"Failed to load the database data for {databaseName}.", databasePath);
-			}
 
 			IDBC database = (IDBC)Activator.CreateInstance(specificDBCType, this.Version, databaseData);
 			this.Databases.Add(databaseName, database);
