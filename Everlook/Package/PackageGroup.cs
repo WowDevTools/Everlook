@@ -312,11 +312,7 @@ namespace Everlook.Package
 			throw new ArgumentException($"No package with the given name could be found: {packageName}", nameof(packageName));
 		}
 
-		/// <summary>
-		/// Extracts the file.
-		/// </summary>
-		/// <returns>The file.</returns>
-		/// <param name="filePath">Reference path.</param>
+		/// <inheritdoc />
 		public byte[] ExtractFile(string filePath)
 		{
 			for (int i = this.Packages.Count - 1; i >= 0; --i)
@@ -330,32 +326,19 @@ namespace Everlook.Package
 			throw new FileNotFoundException("The specified file was not found in this package group.", filePath);
 		}
 
-		/// <summary>
-		/// Determines whether this archive has a listfile.
-		/// </summary>
-		/// <returns>true</returns>
-		/// <c>false</c>
+		/// <inheritdoc />
 		public bool HasFileList()
 		{
 			return false;
 		}
 
-		/// <summary>
-		/// Gets the best available listfile from the archive. If an external listfile has been provided,
-		/// that one is prioritized over the one stored in the archive.
-		/// </summary>
-		/// <returns>The listfile.</returns>
+		/// <inheritdoc />
 		public IEnumerable<string> GetFileList()
 		{
 			return null;
 		}
 
-		/// <summary>
-		/// Checks if the specified file path exists in the archive.
-		/// </summary>
-		/// <returns>true</returns>
-		/// <c>false</c>
-		/// <param name="filePath">Reference path.</param>
+		/// <inheritdoc />
 		public bool ContainsFile(string filePath)
 		{
 			for (int i = this.Packages.Count - 1; i >= 0; --i)
@@ -369,11 +352,7 @@ namespace Everlook.Package
 			return false;
 		}
 
-		/// <summary>
-		/// Gets the file info of the provided path.
-		/// </summary>
-		/// <returns>The file info, or null if the file doesn't exist in the archive.</returns>
-		/// <param name="filePath">Reference path.</param>
+		/// <inheritdoc />
 		public MPQFileInfo GetFileInfo(string filePath)
 		{
 			for (int i = this.Packages.Count - 1; i >= 0; --i)
@@ -387,12 +366,7 @@ namespace Everlook.Package
 			throw new FileNotFoundException("The specified file was not found in this package group.", filePath);
 		}
 
-		/// <summary>
-		/// Determines whether the specified <see cref="object"/> is equal to the current <see cref="Everlook.Package.PackageGroup"/>.
-		/// </summary>
-		/// <param name="obj">The <see cref="object"/> to compare with the current <see cref="Everlook.Package.PackageGroup"/>.</param>
-		/// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
-		/// <see cref="Everlook.Package.PackageGroup"/>; otherwise, <c>false</c>.</returns>
+		/// <inheritdoc />
 		public override bool Equals(object obj)
 		{
 			PackageGroup other = obj as PackageGroup;
@@ -405,34 +379,22 @@ namespace Everlook.Package
 			return false;
 		}
 
-		/// <summary>
-		/// Returns a formatted string describing the current object.
-		/// </summary>
-		/// <returns>The name of the group.</returns>
+		/// <inheritdoc />
 		public override string ToString()
 		{
 			return this.GroupName;
 		}
 
-		/// <summary>
-		/// Serves as a hash function for a <see cref="Everlook.Package.PackageGroup"/> object.
-		/// </summary>
-		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
+		/// <inheritdoc />
 		public override int GetHashCode()
 		{
 			return (this.GroupName.GetHashCode() + this.Packages.GetHashCode()).GetHashCode();
 		}
 
-		/// <summary>
-		/// Releases all resource used by the <see cref="Everlook.Package.PackageGroup"/> object.
-		/// </summary>
-		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="Everlook.Package.PackageGroup"/>. The
-		/// <see cref="Dispose"/> method leaves the <see cref="Everlook.Package.PackageGroup"/> in an unusable state. After
-		/// calling <see cref="Dispose"/>, you must release all references to the <see cref="Everlook.Package.PackageGroup"/>
-		/// so the garbage collector can reclaim the memory that the <see cref="Everlook.Package.PackageGroup"/> was occupying.</remarks>
+		/// <inheritdoc />
 		public void Dispose()
 		{
-			foreach (PackageInteractionHandler package in this.Packages)
+			foreach (var package in this.Packages)
 			{
 				package.Dispose();
 			}

@@ -190,9 +190,7 @@ namespace Everlook.UI
 			this.GameLoadingDialogLabel.Text = $"({this.CurrentLoadingProgress.FinishedOperations}/{this.CurrentLoadingProgress.OperationCount}) {statusMessage}";
 		}
 
-		/// <summary>
-		/// Destroys the dialog.
-		/// </summary>
+		/// <inheritdoc />
 		public override void Destroy()
 		{
 			base.Destroy();

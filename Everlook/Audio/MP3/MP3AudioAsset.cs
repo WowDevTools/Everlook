@@ -40,10 +40,7 @@ namespace Everlook.Audio.MP3
 		/// </summary>
 		private bool IsDisposed;
 
-		/// <summary>
-		/// Gets the <see cref="ALFormat"/> that the PCM data is in.
-		/// </summary>
-		/// <exception cref="NotSupportedException">Thrown if the asset has an unsupported format.</exception>
+		/// <inheritdoc />
 		public ALFormat Format
 		{
 			get
@@ -73,7 +70,7 @@ namespace Everlook.Audio.MP3
 		{
 			get
 			{
-				EnsureUndisposed();
+				ThrowIfDisposed();
 
 				if (this.PCMDataInternal != null)
 				{
@@ -148,7 +145,7 @@ namespace Everlook.Audio.MP3
 		}
 
 		/// <inheritdoc />
-		public void EnsureUndisposed()
+		public void ThrowIfDisposed()
 		{
 			if (this.IsDisposed)
 			{
@@ -156,9 +153,7 @@ namespace Everlook.Audio.MP3
 			}
 		}
 
-		/// <summary>
-		/// Disposes this <see cref="MP3AudioAsset"/>.
-		/// </summary>
+		/// <inheritdoc />
 		public void Dispose()
 		{
 			this.IsDisposed = true;

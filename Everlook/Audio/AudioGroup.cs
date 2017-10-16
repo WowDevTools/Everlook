@@ -110,9 +110,7 @@ namespace Everlook.Audio
 			}
 		}
 
-		/// <summary>
-		/// Disposes this <see cref="AudioGroup"/> and all its associated audio sources.
-		/// </summary>
+		/// <inheritdoc />
 		public void Dispose()
 		{
 			foreach (var audioSource in this.AudioSources)

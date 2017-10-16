@@ -402,19 +402,14 @@ namespace Everlook.Audio
 			this.AudioAsset = null;
 		}
 
-		/// <summary>
-		/// Disposes the audio player, deleting underlying buffers and streams.
-		/// </summary>
+		/// <inheritdoc />
 		public void Dispose()
 		{
 			Stop();
 			ClearAudio();
 		}
 
-		/// <summary>
-		/// Gets the hash code for this object.
-		/// </summary>
-		/// <returns>The hash of the object.</returns>
+		/// <inheritdoc />
 		public override int GetHashCode()
 		{
 			unchecked
@@ -427,21 +422,13 @@ namespace Everlook.Audio
 			}
 		}
 
-		/// <summary>
-		/// Determines whether or not this object is equal to another.
-		/// </summary>
-		/// <param name="other">The object to inspect.</param>
-		/// <returns>true if the objects are the same; false otherwise.</returns>
+		/// <inheritdoc />
 		public bool Equals(AudioSource other)
 		{
 			return Equals((object)other);
 		}
 
-		/// <summary>
-		/// Determines whether or not this object is equal to another.
-		/// </summary>
-		/// <param name="obj">The object to inspect.</param>
-		/// <returns>true if the objects are the same; false otherwise.</returns>
+		/// <inheritdoc />
 		public override bool Equals(object obj)
 		{
 			if (!(obj is AudioSource))

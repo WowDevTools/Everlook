@@ -330,9 +330,7 @@ namespace Everlook.Viewport.Rendering.Core
 			GL.UseProgram(this.NativeShaderProgramID);
 		}
 
-		/// <summary>
-		/// Disposes the <see cref="ShaderProgram"/>, deleting it and all its native resources.
-		/// </summary>
+		/// <inheritdoc />
 		public void Dispose()
 		{
 			GL.DeleteProgram(this.NativeShaderProgramID);

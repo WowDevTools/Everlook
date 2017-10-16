@@ -149,9 +149,7 @@ namespace Everlook.UI.Widgets
 			return gdkGLContext;
 		}
 
-		/// <summary>
-		/// Destroys this <see cref="Widget"/>, disposing it and destroying it in the context of GTK.
-		/// </summary>
+		/// <inheritdoc />
 		public override void Destroy()
 		{
 			GC.SuppressFinalize(this);
@@ -160,10 +158,7 @@ namespace Everlook.UI.Widgets
 			base.Destroy();
 		}
 
-		/// <summary>
-		/// Disposes the current object, releasing any native resources it was using.
-		/// </summary>
-		/// <param name="disposing">Whether or not the object is being manually disposed.</param>
+		/// <inheritdoc />
 		protected override void Dispose(bool disposing)
 		{
 			base.Dispose(disposing);
@@ -239,11 +234,7 @@ namespace Everlook.UI.Widgets
 			this.ShuttingDown?.Invoke(this, EventArgs.Empty);
 		}
 
-		/// <summary>
-		/// Called when the widget needs to be (fully or partially) redrawn.
-		/// </summary>
-		/// <param name="cr">A cairo drawing context.</param>
-		/// <returns>Unknown.</returns>
+		/// <inheritdoc />
 		protected override bool OnDrawn(Cairo.Context cr)
 		{
 			if (!this.IsInitialized)

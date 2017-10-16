@@ -171,24 +171,14 @@ namespace Everlook.Explorer
 			return FileInfoUtilities.GetFileType(this.FilePath);
 		}
 
-		/// <summary>
-		/// Determines whether the specified <see cref="object"/> is equal to the current <see cref="FileReference"/>.
-		/// </summary>
-		/// <param name="obj">The <see cref="object"/> to compare with the current <see cref="FileReference"/>.</param>
-		/// <returns><c>true</c> if the specified <see cref="FileReference"/> is equal to the current
-		/// <see cref="FileReference"/>; otherwise, <c>false</c>.</returns>
+		/// <inheritdoc />
 		public override bool Equals(object obj)
 		{
 			FileReference other = obj as FileReference;
 			return other != null && Equals(other);
 		}
 
-		/// <summary>
-		/// Determines whether the specified <see cref="FileReference"/> is equal to the current <see cref="FileReference"/>.
-		/// </summary>
-		/// <param name="other">The <see cref="FileReference"/> to compare with the current <see cref="FileReference"/>.</param>
-		/// <returns><c>true</c> if the specified <see cref="FileReference"/> is equal to the current
-		/// <see cref="FileReference"/>; otherwise, <c>false</c>.</returns>
+		/// <inheritdoc />
 		public bool Equals(FileReference other)
 		{
 			if (other != null)
@@ -201,19 +191,13 @@ namespace Everlook.Explorer
 			return false;
 		}
 
-		/// <summary>
-		/// Returns a <see cref="string"/> that represents the current <see cref="FileReference"/>.
-		/// </summary>
-		/// <returns>A <see cref="string"/> that represents the current <see cref="FileReference"/>.</returns>
+		/// <inheritdoc />
 		public override string ToString()
 		{
 			return $"{this.PackageName}:{this.FilePath}";
 		}
 
-		/// <summary>
-		/// Serves as a hash function for a <see cref="FileReference"/> object.
-		/// </summary>
-		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
+		/// <inheritdoc />
 		public override int GetHashCode()
 		{
 			return

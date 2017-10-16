@@ -173,65 +173,37 @@ namespace Everlook.Package
 			return GetFileInfo(fileReference.FilePath);
 		}
 
-		/// <summary>
-		/// Extracts the file.
-		/// </summary>
-		/// <returns>The file.</returns>
-		/// <param name="filePath">Reference path.</param>
+		/// <inheritdoc />
 		public byte[] ExtractFile(string filePath)
 		{
 			return this.Package.ExtractFile(filePath);
 		}
 
-		/// <summary>
-		/// Determines whether this archive has a listfile.
-		/// </summary>
-		/// <returns>true</returns>
-		/// <c>false</c>
+		/// <inheritdoc />
 		public bool HasFileList()
 		{
 			return this.Package.HasFileList();
 		}
 
-		/// <summary>
-		/// Gets the best available listfile from the archive. If an external listfile has been provided,
-		/// that one is prioritized over the one stored in the archive.
-		/// </summary>
-		/// <returns>The listfile.</returns>
+		/// <inheritdoc />
 		public IEnumerable<string> GetFileList()
 		{
 			return this.Package.GetFileList();
 		}
 
-		/// <summary>
-		/// Checks if the specified file path exists in the archive.
-		/// </summary>
-		/// <returns>true</returns>
-		/// <c>false</c>
-		/// <param name="filePath">Reference path.</param>
+		/// <inheritdoc />
 		public bool ContainsFile(string filePath)
 		{
 			return this.Package.ContainsFile(filePath);
 		}
 
-		/// <summary>
-		/// Gets the file info of the provided path.
-		/// </summary>
-		/// <returns>The file info, or null if the file doesn't exist in the archive.</returns>
-		/// <param name="filePath">Reference path.</param>
+		/// <inheritdoc />
 		public MPQFileInfo GetFileInfo(string filePath)
 		{
 			return this.Package.GetFileInfo(filePath);
 		}
 
-		/// <summary>
-		/// Releases all resource used by the <see cref="Everlook.Package.PackageInteractionHandler"/> object.
-		/// </summary>
-		/// <remarks>Call <see cref="Dispose"/> when you are finished using the
-		/// <see cref="Everlook.Package.PackageInteractionHandler"/>. The <see cref="Dispose"/> method leaves the
-		/// <see cref="Everlook.Package.PackageInteractionHandler"/> in an unusable state. After calling <see cref="Dispose"/>,
-		/// you must release all references to the <see cref="Everlook.Package.PackageInteractionHandler"/> so the garbage
-		/// collector can reclaim the memory that the <see cref="Everlook.Package.PackageInteractionHandler"/> was occupying.</remarks>
+		/// <inheritdoc />
 		public void Dispose()
 		{
 			this.Package.Dispose();

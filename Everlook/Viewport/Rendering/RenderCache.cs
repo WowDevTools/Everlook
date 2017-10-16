@@ -371,9 +371,7 @@ namespace Everlook.Viewport.Rendering
 			}
 		}
 
-		/// <summary>
-		/// Disposes of the rendering cache, deleting any cached textures or shaders.
-		/// </summary>
+		/// <inheritdoc />
 		public void Dispose()
 		{
 			if (this.IsDisposed)

@@ -206,9 +206,7 @@ namespace Everlook.Viewport.Rendering
 			}
 		}
 
-		/// <summary>
-		/// Releases the underlying data buffers for this bounding box.
-		/// </summary>
+		/// <inheritdoc />
 		public void Dispose()
 		{
 			this.IsDisposed = true;

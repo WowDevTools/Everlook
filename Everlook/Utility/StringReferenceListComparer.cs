@@ -31,13 +31,7 @@ namespace Everlook.Utility
 	/// </summary>
 	public class StringReferenceListComparer : IEqualityComparer<IReadOnlyList<StringReference>>
 	{
-		/// <summary>
-		/// Determines if one <see cref="StringReference"/> is equal to another. Equality is considered on the basis of
-		/// the offset and a case-insensitive value comparision.
-		/// </summary>
-		/// <param name="x">The first object.</param>
-		/// <param name="y">The second object.</param>
-		/// <returns>true if the objects are equal; false otherwise.</returns>
+		/// <inheritdoc />
 		public bool Equals(IReadOnlyList<StringReference> x, IReadOnlyList<StringReference> y)
 		{
 			if (x == null && y == null)
@@ -71,11 +65,7 @@ namespace Everlook.Utility
 			return true;
 		}
 
-		/// <summary>
-		/// Calculates the hash code of the given <see cref="StringReference"/>.
-		/// </summary>
-		/// <param name="obj">A string reference.</param>
-		/// <returns>The hash code.</returns>
+		/// <inheritdoc />
 		public int GetHashCode(IReadOnlyList<StringReference> obj)
 		{
 			unchecked

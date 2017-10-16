@@ -139,9 +139,7 @@ namespace Everlook.Viewport.Rendering.Core
 			GL.BindBuffer(this.Target, this.NativeBufferID);
 		}
 
-		/// <summary>
-		/// Disposes the buffer, deleting the underlying OpenGL object.
-		/// </summary>
+		/// <inheritdoc />
 		public void Dispose()
 		{
 			GL.DeleteBuffer(this.NativeBufferID);

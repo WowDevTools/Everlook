@@ -39,9 +39,7 @@ namespace Everlook.Audio.Wave
 		/// </summary>
 		private bool IsDisposed;
 
-		/// <summary>
-		/// Gets the <see cref="ALFormat"/> that the PCM data is in.
-		/// </summary>
+		/// <inheritdoc />
 		public ALFormat Format
 		{
 			get
@@ -71,7 +69,7 @@ namespace Everlook.Audio.Wave
 		{
 			get
 			{
-				EnsureUndisposed();
+				ThrowIfDisposed();
 
 				if (this.PCMDataInternal != null)
 				{
@@ -195,7 +193,7 @@ namespace Everlook.Audio.Wave
 		}
 
 		/// <inheritdoc />
-		public void EnsureUndisposed()
+		public void ThrowIfDisposed()
 		{
 			if (this.IsDisposed)
 			{
@@ -203,9 +201,7 @@ namespace Everlook.Audio.Wave
 			}
 		}
 
-		/// <summary>
-		/// Disposes this <see cref="WaveAudioAsset"/>.
-		/// </summary>
+		/// <inheritdoc />
 		public void Dispose()
 		{
 			this.IsDisposed = true;

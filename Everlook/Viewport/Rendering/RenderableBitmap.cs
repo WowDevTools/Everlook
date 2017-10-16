@@ -77,11 +77,7 @@ namespace Everlook.Viewport.Rendering
 			this.Image.Dispose();
 		}
 
-		/// <summary>
-		/// Determines whether or not this object is equal to another object.
-		/// </summary>
-		/// <param name="obj">The other object</param>
-		/// <returns>true if the objects are equal; false otherwise.</returns>
+		/// <inheritdoc />
 		public override bool Equals(object obj)
 		{
 			var otherImage = obj as RenderableBitmap;
@@ -93,10 +89,7 @@ namespace Everlook.Viewport.Rendering
 			return otherImage.Image == this.Image && otherImage.IsStatic == this.IsStatic;
 		}
 
-		/// <summary>
-		/// Serves as a hash function for a <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> object.
-		/// </summary>
-		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
+		/// <inheritdoc />
 		public override int GetHashCode()
 		{
 			return (this.IsStatic.GetHashCode() + this.Image.GetHashCode()).GetHashCode();

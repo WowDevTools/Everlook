@@ -392,10 +392,7 @@ namespace Everlook.Viewport
 			}
 		}
 
-		/// <summary>
-		/// Disposes the viewport renderer, releasing the current rendering target and current
-		/// OpenGL arrays and buffers.
-		/// </summary>
+		/// <inheritdoc />
 		public void Dispose()
 		{
 			this.IsDisposed = true;

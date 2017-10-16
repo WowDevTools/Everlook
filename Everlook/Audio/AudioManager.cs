@@ -102,12 +102,10 @@ namespace Everlook.Audio
 			return Instance.Sources.Contains(audioSource);
 		}
 
-		/// <summary>
-		/// Disposes the audio manager.
-		/// </summary>
+		/// <inheritdoc />
 		public void Dispose()
 		{
-			foreach (AudioSource source in this.Sources)
+			foreach (var source in this.Sources)
 			{
 				source.Dispose();
 			}

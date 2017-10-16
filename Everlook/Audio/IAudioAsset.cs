@@ -64,6 +64,6 @@ namespace Everlook.Audio
 		/// <summary>
 		/// Throws an <see cref="ObjectDisposedException"/> if the object has been disposed.
 		/// </summary>
-		void EnsureUndisposed();
+		void ThrowIfDisposed();
 	}
 }

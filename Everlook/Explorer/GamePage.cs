@@ -772,9 +772,7 @@ namespace Everlook.Explorer
 			this.EnqueueFileExportRequested?.Invoke(this, fileReference);
 		}
 
-		/// <summary>
-		/// Disposes the game page, and all related items.
-		/// </summary>
+		/// <inheritdoc />
 		public void Dispose()
 		{
 			this.TreeAlignment?.Dispose();

@@ -52,12 +52,7 @@ namespace Everlook.Viewport.Rendering
 	/// </summary>
 	public sealed class RenderableGameModel : IInstancedRenderable, ITickingActor, IDefaultCameraPositionProvider, IModelInfoProvider, IBoundedModel
 	{
-		/// <summary>
-		/// Gets a value indicating whether this instance uses static rendering; that is,
-		/// a single frame is rendered and then reused. Useful as an optimization for images.
-		/// </summary>
-		/// <value>true</value>
-		/// <c>false</c>
+		/// <inheritdoc />
 		public bool IsStatic => false;
 
 		/// <inheritdoc />
@@ -634,14 +629,7 @@ namespace Everlook.Viewport.Rendering
 			}
 		}
 
-		/// <summary>
-		/// Releases all resource used by the <see cref="RenderableGameModel"/> object.
-		/// </summary>
-		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="RenderableGameModel"/>. The
-		/// <see cref="Dispose"/> method leaves the <see cref="RenderableGameModel"/> in an unusable state.
-		/// After calling <see cref="Dispose"/>, you must release all references to the
-		/// <see cref="RenderableGameModel"/> so the garbage collector can reclaim the memory that the
-		/// <see cref="RenderableGameModel"/> was occupying.</remarks>
+		/// <inheritdoc />
 		public void Dispose()
 		{
 			this.IsDisposed = true;
@@ -654,11 +642,7 @@ namespace Everlook.Viewport.Rendering
 			}
 		}
 
-		/// <summary>
-		/// Determines whether or not this object is equal to another object.
-		/// </summary>
-		/// <param name="obj">The other object</param>
-		/// <returns>true if the objects are equal; false otherwise.</returns>
+		/// <inheritdoc />
 		public override bool Equals(object obj)
 		{
 			var otherModel = obj as RenderableGameModel;
@@ -672,10 +656,7 @@ namespace Everlook.Viewport.Rendering
 					(otherModel.IsStatic == this.IsStatic);
 		}
 
-		/// <summary>
-		/// Serves as a hash function for a <see cref="RenderableGameModel"/> object.
-		/// </summary>
-		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
+		/// <inheritdoc />
 		public override int GetHashCode()
 		{
 			return (this.IsStatic.GetHashCode() + this.Model.GetHashCode() + this.GameContext.GetHashCode()).GetHashCode();

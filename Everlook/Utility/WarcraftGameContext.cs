@@ -96,12 +96,7 @@ namespace Everlook.Utility
 			return doodadReference;
 		}
 
-		/// <summary>
-		/// Gets the file reference pointing to a given path.
-		/// </summary>
-		/// <param name="path">The path to the file.</param>
-		/// <returns>A file reference pointing to the path.</returns>
-		/// <exception cref="ArgumentNullException">Thrown if the path is null or empty.</exception>
+		/// <inheritdoc />
 		public FileReference GetReferenceForPath(string path)
 		{
 			if (string.IsNullOrEmpty(path))

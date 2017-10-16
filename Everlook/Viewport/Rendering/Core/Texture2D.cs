@@ -470,9 +470,7 @@ namespace Everlook.Viewport.Rendering.Core
 			}
 		}
 
-		/// <summary>
-		/// Disposes this <see cref="Texture2D"/>, deleting the underlying data.
-		/// </summary>
+		/// <inheritdoc />
 		public void Dispose()
 		{
 			lock (this.TextureLock)
