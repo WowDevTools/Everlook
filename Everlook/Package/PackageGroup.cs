@@ -326,7 +326,8 @@ namespace Everlook.Package
 					return this.Packages[i].ExtractFile(filePath);
 				}
 			}
-			return null;
+
+			throw new FileNotFoundException("The specified file was not found in this package group.", filePath);
 		}
 
 		/// <summary>
@@ -382,7 +383,8 @@ namespace Everlook.Package
 					return this.Packages[i].GetFileInfo(filePath);
 				}
 			}
-			return null;
+
+			throw new FileNotFoundException("The specified file was not found in this package group.", filePath);
 		}
 
 		/// <summary>

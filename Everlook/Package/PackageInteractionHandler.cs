@@ -142,7 +142,7 @@ namespace Everlook.Package
 		{
 			if (!fileReference.IsFile)
 			{
-				return null;
+				throw new ArgumentException("The specified reference can't be extracted.", nameof(fileReference));
 			}
 
 			try
@@ -153,7 +153,7 @@ namespace Everlook.Package
 			{
 				Log.Warn(
 					$"Failed to extract the file \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
-				return null;
+				throw;
 			}
 		}
 
@@ -167,7 +167,7 @@ namespace Everlook.Package
 		{
 			if (!fileReference.IsFile)
 			{
-				return null;
+				throw new ArgumentException("The specified reference is not a file.", nameof(fileReference));
 			}
 
 			return GetFileInfo(fileReference.FilePath);

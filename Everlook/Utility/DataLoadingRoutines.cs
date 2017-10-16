@@ -82,13 +82,7 @@ namespace Everlook.Utility
 					catch (FileNotFoundException fex)
 					{
 						Log.Warn($"Failed to load model group \"{modelGroupPath}\": {fex}.");
-						return null;
-					}
-					catch (InvalidFileSectorTableException fex)
-					{
-						Log.Warn(
-							$"Failed to load the model group \"{modelGroupPath}\" due to an invalid sector table (\"{fex}\").");
-						return null;
+						throw;
 					}
 				}
 			}
@@ -96,7 +90,7 @@ namespace Everlook.Utility
 			{
 				Log.Warn(
 					$"Failed to load the model \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
-				return null;
+				throw;
 			}
 
 			return worldModel;
@@ -130,13 +124,12 @@ namespace Everlook.Utility
 			catch (FileNotFoundException fex)
 			{
 				Log.Warn($"Failed to load the model group \"{fileReference.FilePath}\": {fex}");
-				return null;
+				throw;
 			}
 			catch (InvalidFileSectorTableException fex)
 			{
-				Log.Warn(
-					$"Failed to load the model group \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex}\")");
-				return null;
+				Log.Warn($"Failed to load the model group \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex}\")");
+				throw;
 			}
 
 			return worldModel;
@@ -152,11 +145,6 @@ namespace Everlook.Utility
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
 		public static IRenderable CreateRenderableWorldModel(WMO worldModel, FileReference fileReference)
 		{
-			if (worldModel == null)
-			{
-				return null;
-			}
-
 			var warcraftContext = fileReference.Context as WarcraftGameContext;
 			if (warcraftContext == null)
 			{
@@ -182,23 +170,30 @@ namespace Everlook.Utility
 				throw new ArgumentNullException(nameof(fileReference));
 			}
 
-			byte[] fileData = fileReference.Extract();
-			if (fileData != null)
+			BLP image;
+			try
 			{
+				byte[] fileData = fileReference.Extract();
+
 				try
 				{
-					return new BLP(fileData);
+					image = new BLP(fileData);
 				}
 				catch (FileLoadException fex)
 				{
-					Log.Warn($"FileLoadException when loading BLP image: {fex.Message}\n" +
-							 $"Please report this on GitHub or via email.");
+					Log.Warn(
+						$"FileLoadException when loading BLP image: {fex.Message}\n" +
+						$"Please report this on GitHub or via email.");
+					throw;
 				}
 			}
+			catch (FileNotFoundException fex)
+			{
+				Log.Warn($"Failed to extract image: {fex}");
+				throw;
+			}
 
-			Log.Warn(
-				$"Failed to load the image \"{fileReference.FilePath}\". The file data could not be extracted.");
-			return null;
+			return image;
 		}
 
 		/// <summary>
@@ -212,11 +207,6 @@ namespace Everlook.Utility
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
 		public static IRenderable CreateRenderableBinaryImage(BLP binaryImage, FileReference fileReference)
 		{
-			if (binaryImage == null)
-			{
-				return null;
-			}
-
 			RenderableBLP renderableImage = new RenderableBLP(binaryImage, fileReference.FilePath);
 
 			return renderableImage;
@@ -234,26 +224,23 @@ namespace Everlook.Utility
 				throw new ArgumentNullException(nameof(fileReference));
 			}
 
-			byte[] fileData = fileReference.Extract();
-			if (fileData != null)
+			Bitmap image;
+			try
 			{
-				try
+				byte[] fileData = fileReference.Extract();
+				using (MemoryStream ms = new MemoryStream(fileData))
 				{
-					using (MemoryStream ms = new MemoryStream(fileData))
-					{
-						return new Bitmap(ms);
-					}
-				}
-				catch (FileLoadException fex)
-				{
-					Log.Warn($"FileLoadException when loading bitmap image: {fex.Message}\n" +
-							 $"Please report this on GitHub or via email.");
+					image = new Bitmap(ms);
 				}
 			}
+			catch (FileNotFoundException fex)
+			{
+				Log.Warn(
+					$"Failed to load the image \"{fileReference.FilePath}\": {fex}");
+				throw;
+			}
 
-			Log.Warn(
-				$"Failed to load the image \"{fileReference.FilePath}\". The file data could not be extracted.");
-			return null;
+			return image;
 		}
 
 		/// <summary>
@@ -267,11 +254,6 @@ namespace Everlook.Utility
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
 		public static IRenderable CreateRenderableBitmapImage(Bitmap bitmapImage, FileReference fileReference)
 		{
-			if (bitmapImage == null)
-			{
-				return null;
-			}
-
 			RenderableBitmap renderableImage = new RenderableBitmap(bitmapImage, fileReference.FilePath);
 
 			return renderableImage;
@@ -289,54 +271,54 @@ namespace Everlook.Utility
 				throw new ArgumentNullException(nameof(fileReference));
 			}
 
+			MDX model;
 			try
 			{
 				byte[] fileData = fileReference.Extract();
-				if (fileData != null)
+				model = new MDX(fileData);
+
+				if (model.Version >= WarcraftVersion.Wrath)
 				{
-					var model = new MDX(fileData);
+					// Load external skins
+					var modelFilename = Path.GetFileNameWithoutExtension(fileReference.Filename);
+					var modelDirectory = fileReference.FileDirectory.Replace(Path.DirectorySeparatorChar, '\\');
 
-					if (model.Version >= WarcraftVersion.Wrath)
+					List<MDXSkin> skins = new List<MDXSkin>();
+					for (int i = 0; i < model.SkinCount; ++i)
 					{
-						// Load external skins
-						var modelFilename = Path.GetFileNameWithoutExtension(fileReference.Filename);
-						var modelDirectory = fileReference.FileDirectory.Replace(Path.DirectorySeparatorChar, '\\');
+						var modelSkinPath = $"{modelDirectory}\\{modelFilename}{i:D2}.skin";
+						var skinData = fileReference.Context.Assets.ExtractFile(modelSkinPath);
 
-						List<MDXSkin> skins = new List<MDXSkin>();
-						for (int i = 0; i < model.SkinCount; ++i)
+						using (var ms = new MemoryStream(skinData))
 						{
-							var modelSkinPath = $"{modelDirectory}\\{modelFilename}{i:D2}.skin";
-							var skinData = fileReference.Context.Assets.ExtractFile(modelSkinPath);
-
-							using (MemoryStream ms = new MemoryStream(skinData))
+							using (var br = new BinaryReader(ms))
 							{
-								using (BinaryReader br = new BinaryReader(ms))
+								var skinIdentifier = new string(br.ReadChars(4));
+								if (skinIdentifier != "SKIN")
 								{
-									var skinIdentifier = new string(br.ReadChars(4));
-									if (skinIdentifier != "SKIN")
-									{
-										break;
-									}
-
-									skins.Add(br.ReadMDXSkin(model.Version));
+									break;
 								}
+
+								skins.Add(br.ReadMDXSkin(model.Version));
 							}
 						}
-
-						model.SetSkins(skins);
 					}
 
-					return model;
+					model.SetSkins(skins);
 				}
+			}
+			catch (FileNotFoundException fex)
+			{
+				Log.Warn($"Failed to load the model \"{fileReference.FilePath}\": {fex}");
+				throw;
 			}
 			catch (InvalidFileSectorTableException fex)
 			{
 				Log.Warn($"Failed to load the model \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
-				return null;
+				throw;
 			}
 
-			Log.Warn($"Failed to load the model \"{fileReference.FilePath}\". The file data could not be extracted.");
-			return null;
+			return model;
 		}
 
 		/// <summary>
@@ -350,11 +332,6 @@ namespace Everlook.Utility
 		/// <returns>An encapsulated renderable OpenGL object.</returns>
 		public static IRenderable CreateRenderableGameModel(MDX gameModel, FileReference fileReference)
 		{
-			if (gameModel == null)
-			{
-				return null;
-			}
-
 			var warcraftContext = fileReference.Context as WarcraftGameContext;
 			if (warcraftContext == null)
 			{
