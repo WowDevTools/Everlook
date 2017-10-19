@@ -595,11 +595,6 @@ namespace Everlook.UI
 				return;
 			}
 
-			if (!Enum.IsDefined(typeof(ControlPage), pageToEnable))
-			{
-				return;
-			}
-
 			// Set the page
 			this.ItemControlNotebook.Page = (int)pageToEnable;
 
@@ -696,6 +691,10 @@ namespace Everlook.UI
 				{
 					break;
 				}
+				default:
+				{
+					throw new ArgumentOutOfRangeException(nameof(pageToEnable));
+				}
 			}
 		}
 
@@ -705,11 +704,6 @@ namespace Everlook.UI
 		/// <param name="pageToDisable">pageToEnable.</param>
 		private void DisableControlPage(ControlPage pageToDisable)
 		{
-			if (!Enum.IsDefined(typeof(ControlPage), pageToDisable))
-			{
-				return;
-			}
-
 			switch (pageToDisable)
 			{
 				case ControlPage.Image:
@@ -737,6 +731,10 @@ namespace Everlook.UI
 				case ControlPage.Audio:
 				{
 					break;
+				}
+				default:
+				{
+					throw new ArgumentOutOfRangeException(nameof(pageToDisable));
 				}
 			}
 		}
