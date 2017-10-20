@@ -691,6 +691,10 @@ namespace Everlook.UI
 				{
 					break;
 				}
+				case ControlPage.None:
+				{
+					break;
+				}
 				default:
 				{
 					throw new ArgumentOutOfRangeException(nameof(pageToEnable));
@@ -729,6 +733,10 @@ namespace Everlook.UI
 					break;
 				}
 				case ControlPage.Audio:
+				{
+					break;
+				}
+				case ControlPage.None:
 				{
 					break;
 				}
