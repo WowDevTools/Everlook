@@ -108,3 +108,8 @@ World of Warcraft modding and development in general relies on a number of diffe
 libwarcraft (and, by extension, Everlook) is intended to solve at least a few of these problems, providing a common library for all Warcraft file formats upon which more specialized applications can be built - such as Everlook. 
 
 Everlook itself stems from my frustration with WMV and its utter inability to compile on any of my systems, as well as its broken model export functions which were more harm than help. I have naught but respect for the creator of WMV, but it does not meet my requirements for a model viewer and exporter. Thus, Everlook.
+
+### Contributing
+If you want to contribute, please open an issue on Github and/or contact the authors.
+
+<a href='https://ko-fi.com/H2H176VD' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi2.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
