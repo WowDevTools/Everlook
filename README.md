@@ -1,6 +1,7 @@
 # Everlook
 [![Latest Download](https://img.shields.io/badge/Latest-Download-blue.svg)](https://ci.appveyor.com/api/projects/majorcyto/everlook/artifacts/) [![DoxygenDoc](https://img.shields.io/badge/Docs-Doxygen-red.svg)](http://everlookdocs.wowdev.info/)
-[![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=34637447)](https://www.bountysource.com/trackers/34637447-wowdevtools-everlook?utm_source=44433103&utm_medium=shield&utm_campaign=TRACKER_BADGE) [WoWDev on Discord](https://discord.gg/9aVwPpb)
+[![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=34637447)](https://www.bountysource.com/trackers/34637447-wowdevtools-everlook?utm_source=44433103&utm_medium=shield&utm_campaign=TRACKER_BADGE)
+[![WoWDevDiscord](https://img.shields.io/badge/Discord-WoWDev-blue.svg)](https://discord.gg/EzKJjtv)
 
 <a href='https://ko-fi.com/H2H176VD' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi2.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
