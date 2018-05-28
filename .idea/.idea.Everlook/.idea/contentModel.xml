@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="$USER_HOME$/.Rider2017.2/system/resharper-host/local/Transient/ReSharperHost/v10/SolutionCaches/_Everlook.-848944586.00" t="ExcludeRecursive" />
+    <e p="$USER_HOME$/.Rider2018.1/system/resharper-host/local/Transient/ReSharperHost/v12/SolutionCaches/_Everlook.-848944586.00" t="ExcludeRecursive" />
     <e p="$USER_HOME$/.nuget/packages/liblistfile/2.0.2/contentFiles/any/netstandard2.0/Dictionary/dictionary.dic" t="Include" />
     <e p="$PROJECT_DIR$" t="IncludeFlat">
       <e p="Everlook" t="IncludeRecursive">
@@ -117,6 +117,9 @@
             </e>
           </e>
           <e p="Shaders" t="Include">
+            <e p="Animation" t="Include">
+              <e p="Animation.glsl" t="Include" />
+            </e>
             <e p="BaseGrid" t="Include">
               <e p="BaseGridFragment.glsl" t="Include" />
               <e p="BaseGridVertex.glsl" t="Include" />

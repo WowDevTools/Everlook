@@ -1,5 +1,6 @@
 ﻿#version 330 core
 
+#include "Animation/Animation.glsl"
 #include "GameModel/GameModelVertexShaderPaths.glsl"
 #include "Mathemathics/EnvironmentMapping.glsl"
 #include "Components/Instancing/ObjectInstancing.glsl"
