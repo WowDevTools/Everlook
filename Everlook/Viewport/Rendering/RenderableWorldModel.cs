@@ -398,6 +398,15 @@ namespace Everlook.Viewport.Rendering
 				this.Shader.Wireframe.SetViewportMatrix(camera.GetViewportMatrix());
 			}
 
+			Matrix4 modelView = this.ActorTransform.GetModelMatrix() * viewMatrix;
+			Matrix4 modelViewProjection = modelView * projectionMatrix;
+
+			// TODO: Fix frustum culling
+			foreach (ModelGroup modelGroup in this.Model.Groups)
+			{
+				RenderGroup(modelGroup, modelViewProjection);
+			}
+
 			// Render bounding boxes
 			if (this.ShouldRenderBounds)
 			{
@@ -412,7 +421,7 @@ namespace Everlook.Viewport.Rendering
 			{
 				foreach (var doodadInstanceSet in this.DoodadSets[this.DoodadSet])
 				{
-					doodadInstanceSet.ShouldRenderBounds = this.ShouldRenderBounds;
+					//doodadInstanceSet.ShouldRenderBounds = this.ShouldRenderBounds;
 				}
 
 				foreach (var doodadInstanceSet in this.DoodadSets[this.DoodadSet])

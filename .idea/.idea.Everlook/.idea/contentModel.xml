@@ -335,9 +335,6 @@
         </e>
       </e>
       <e p="Everlook.sln" t="IncludeFlat" />
-      <e p="lib/SlimTK/SlimTK" t="IncludeRecursive">
-        <e p="SlimTK.csproj" t="IncludeRecursive" />
-      </e>
       <e p="packages" t="ExcludeRecursive" />
       <e p="stylecop.json" t="Include" />
       <e p="stylecop.ruleset" t="Include" />
