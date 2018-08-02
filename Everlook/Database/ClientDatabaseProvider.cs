@@ -72,7 +72,7 @@ namespace Everlook.Database
 		/// Gets the database which maps to the provided record type from the provider.
 		/// </summary>
 		/// <typeparam name="T">The type of database to retrieve.</typeparam>
-		/// <returns>A database of type <typeparamref name="T"/></returns>
+		/// <returns>A database of type <typeparamref name="T"/>.</returns>
 		public DBC<T> GetDatabase<T>() where T : DBCRecord, new()
 		{
 			DatabaseName databaseName = GetDatabaseNameFromRecordType(typeof(T));
@@ -94,7 +94,7 @@ namespace Everlook.Database
 		/// </summary>
 		/// <param name="id">The primary key ID.</param>
 		/// <typeparam name="T">The type of record to retrieve.</typeparam>
-		/// <returns>A record of type <typeparamref name="T"/></returns>
+		/// <returns>A record of type <typeparamref name="T"/>.</returns>
 		public T GetRecordByID<T>(int id) where T : DBCRecord, new()
 		{
 			DBC<T> database = GetDatabase<T>();
@@ -107,7 +107,7 @@ namespace Everlook.Database
 		/// </summary>
 		/// <param name="index">The index of the row in the database.</param>
 		/// <typeparam name="T">The type of record to retrieve.</typeparam>
-		/// <returns>A record of type <typeparamref name="T"/></returns>
+		/// <returns>A record of type <typeparamref name="T"/>.</returns>
 		public T GetRecordByIndex<T>(int index) where T : DBCRecord, new()
 		{
 			DBC<T> database = GetDatabase<T>();

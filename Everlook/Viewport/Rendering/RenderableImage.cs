@@ -117,7 +117,7 @@ namespace Everlook.Viewport.Rendering
 		/// Gets a vector based on <see cref="RenderRedChannel"/>, <see cref="RenderGreenChannel"/>,
 		/// <see cref="RenderBlueChannel"/> and <see cref="RenderAlphaChannel"/> that is multiplied with the final
 		/// texture sampling to mask out channels.
-		/// TODO: Investigate whether or not this is a problem memory-wise, new vector created every frame
+		/// TODO: Investigate whether or not this is a problem memory-wise, new vector created every frame.
 		/// </summary>
 		public Vector4 ChannelMask => new Vector4
 		(
@@ -133,7 +133,7 @@ namespace Everlook.Viewport.Rendering
 		public uint MipCount => GetNumReasonableMipLevels();
 
 		/// <summary>
-		/// TODO: Put this in Warcraft.Core instead
+		/// TODO: Put this in Warcraft.Core instead.
 		/// </summary>
 		/// <returns>The number of reasonable mipmap levels.</returns>
 		private uint GetNumReasonableMipLevels()
@@ -178,7 +178,7 @@ namespace Everlook.Viewport.Rendering
 
 			GL.Enable(EnableCap.Blend);
 			GL.BlendEquation(BlendEquationMode.FuncAdd);
-			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
 			this.IsInitialized = true;
 		}

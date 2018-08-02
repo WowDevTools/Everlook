@@ -121,7 +121,7 @@ namespace Everlook.Viewport.Rendering
 		/// for the specified texture file path.
 		/// </summary>
 		/// <param name="texturePath">The path of the texture in its package group. Used as a lookup key.</param>
-		/// <returns>true if a cached textures exists with the given path as a lookup key; false otherwise</returns>
+		/// <returns>true if a cached textures exists with the given path as a lookup key; false otherwise.</returns>
 		public bool HasCachedTextureForPath(string texturePath)
 		{
 			ThrowIfDisposed();

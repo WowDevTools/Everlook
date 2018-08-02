@@ -38,7 +38,7 @@ namespace Everlook.Viewport
 {
 	/// <summary>
 	/// Viewport renderer for the main Everlook UI. This class manages an OpenGL rendering thread, which
-	/// uses rendering built into the different renderable objects
+	/// uses rendering built into the different renderable objects.
 	/// </summary>
 	public sealed class ViewportRenderer : IDisposable
 	{
@@ -156,7 +156,7 @@ namespace Everlook.Viewport
 		}
 
 		/// <summary>
-		/// Initializes
+		/// Initializes the viewport renderer.
 		/// </summary>
 		public void Initialize()
 		{
@@ -195,7 +195,7 @@ namespace Everlook.Viewport
 			// Set a simple default blending function
 			GL.Enable(EnableCap.Blend);
 			GL.BlendEquation(BlendEquationMode.FuncAdd);
-			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
 			// Initialize the viewport
 			int widgetWidth = this.ViewportWidget.AllocatedWidth;

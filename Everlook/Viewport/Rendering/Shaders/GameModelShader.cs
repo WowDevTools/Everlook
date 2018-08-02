@@ -111,7 +111,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 		/// <summary>
 		/// Sets the base input colour for the shader.
 		/// </summary>
-		/// <param name="colour">The base colour</param>
+		/// <param name="colour">The base colour.</param>
 		public void SetBaseInputColour(Color4 colour)
 		{
 			SetColor4(colour, BaseColour);

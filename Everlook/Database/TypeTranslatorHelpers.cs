@@ -33,7 +33,7 @@ namespace Everlook.Database
 		/// <summary>
 		/// Converts a database name into a qualified type.
 		/// </summary>
-		/// <param name="databaseName">The enumerated name of the database,</param>
+		/// <param name="databaseName">The enumerated name of the database.</param>
 		/// <returns>The type mapping to the database name.</returns>
 		public static Type GetRecordTypeFromDatabaseName(DatabaseName databaseName)
 		{

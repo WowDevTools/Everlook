@@ -310,7 +310,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <summary>
 		/// Gets the texture's wrapping mode on the S axis.
 		/// </summary>
-		/// <returns>The wrapping mode on the S axis</returns>
+		/// <returns>The wrapping mode on the S axis.</returns>
 		private TextureWrapMode GetWrappingModeS()
 		{
 			lock (this.TextureLock)
@@ -324,7 +324,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// <summary>
 		/// Gets the texture's wrapping mode on the T axis.
 		/// </summary>
-		/// <returns>The wrapping mode on the T axis</returns>
+		/// <returns>The wrapping mode on the T axis.</returns>
 		private TextureWrapMode GetWrappingModeT()
 		{
 			lock (this.TextureLock)
@@ -351,22 +351,22 @@ namespace Everlook.Viewport.Rendering.Core
 					byte[] compressedMipMap = inTextureData.GetRawMipMap(i);
 					Resolution mipResolution = inTextureData.GetMipLevelResolution(i);
 
-					PixelInternalFormat compressionFormat;
+					InternalFormat compressionFormat;
 					switch (inTextureData.GetPixelFormat())
 					{
 						case BLPPixelFormat.DXT1:
 						{
-							compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt1Ext;
+							compressionFormat = InternalFormat.CompressedRgbaS3tcDxt1Ext;
 							break;
 						}
 						case BLPPixelFormat.DXT3:
 						{
-							compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt3Ext;
+							compressionFormat = InternalFormat.CompressedRgbaS3tcDxt3Ext;
 							break;
 						}
 						case BLPPixelFormat.DXT5:
 						{
-							compressionFormat = PixelInternalFormat.CompressedRgbaS3tcDxt5Ext;
+							compressionFormat = InternalFormat.CompressedRgbaS3tcDxt5Ext;
 							break;
 						}
 						default:

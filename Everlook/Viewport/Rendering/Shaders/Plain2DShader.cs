@@ -27,7 +27,7 @@ using OpenTK.Graphics.OpenGL;
 namespace Everlook.Viewport.Rendering.Shaders
 {
 	/// <summary>
-	/// A 2D object shader (billboards, textures, etc)
+	/// A 2D object shader (billboards, textures, etc).
 	/// </summary>
 	public class Plain2DShader : ShaderProgram
 	{

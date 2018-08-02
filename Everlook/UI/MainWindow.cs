@@ -427,7 +427,7 @@ namespace Everlook.UI
 		}
 
 		/// <summary>
-		/// Handles changing the cursor when hovering over the viewport
+		/// Handles changing the cursor when hovering over the viewport.
 		/// </summary>
 		/// <param name="o">The sending object.</param>
 		/// <param name="args">The event arguments.</param>

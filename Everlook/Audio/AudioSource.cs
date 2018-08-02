@@ -136,7 +136,7 @@ namespace Everlook.Audio
 
 		/// <summary>
 		/// Gets or sets the attenuation distance, that is, the distance beyond which the source will be silent,
-		/// of the audio source. Range: [0.0f - float.PositiveInfinity] (default: float.PositiveInfinity)
+		/// of the audio source. Range: [0.0f - float.PositiveInfinity] (default: float.PositiveInfinity).
 		/// </summary>
 		public float Attenuation
 		{
@@ -149,7 +149,7 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Gets or sets the minimum gain for this source. Range: [0.0f - 1.0f] (default: 0.0f)
+		/// Gets or sets the minimum gain for this source. Range: [0.0f - 1.0f] (default: 0.0f).
 		/// </summary>
 		public float MinGain
 		{
@@ -162,7 +162,7 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Gets or sets the maximum gain for this source. Range: [0.0f - 1.0f] (default: 0.0f)
+		/// Gets or sets the maximum gain for this source. Range: [0.0f - 1.0f] (default: 0.0f).
 		/// </summary>
 		public float MaxGain
 		{
@@ -175,7 +175,7 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Gets or sets the gain outside the oriented audio cone. Range: [0.0f - 1.0f] (default: 0.0f)
+		/// Gets or sets the gain outside the oriented audio cone. Range: [0.0f - 1.0f] (default: 0.0f).
 		/// </summary>
 		public float ConeOuterGain
 		{
@@ -188,7 +188,7 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Gets or sets the inner angle of the oriented audio cone. Range: [0.0f - 360.0f] (default: 360.0f)
+		/// Gets or sets the inner angle of the oriented audio cone. Range: [0.0f - 360.0f] (default: 360.0f).
 		/// </summary>
 		public float ConeInnerAngle
 		{
@@ -201,7 +201,7 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Gets or sets the inner angle of the oriented audio cone. Range: [0.0f - 360.0f] (default: 360.0f)
+		/// Gets or sets the inner angle of the oriented audio cone. Range: [0.0f - 360.0f] (default: 360.0f).
 		/// </summary>
 		public float ConeOuterAngle
 		{
@@ -214,7 +214,7 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Gets or sets the pitch of the audio source. Range: [0.5f - 2.0f] (default 1.0f)
+		/// Gets or sets the pitch of the audio source. Range: [0.5f - 2.0f] (default 1.0f).
 		/// </summary>
 		public float Pitch
 		{
@@ -241,7 +241,7 @@ namespace Everlook.Audio
 		}
 
 		/// <summary>
-		/// Gets or sets the rolloff factor. Range: [0.0f - float.PositiveInfinity]
+		/// Gets or sets the rolloff factor. Range: [0.0f - float.PositiveInfinity].
 		/// </summary>
 		public float RolloffFactor
 		{

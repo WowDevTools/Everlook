@@ -336,7 +336,7 @@ namespace Everlook.Explorer
 		/// Gets the value stored in the model at a given iter.
 		/// </summary>
 		/// <param name="iter">The iter where the value is stored.</param>
-		/// <param name="column">The column to get the value from</param>
+		/// <param name="column">The column to get the value from.</param>
 		/// <param name="value">Will contain the value.</param>
 		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
 		public void GetValue(TreeIter iter, int column, ref Value value)
@@ -360,7 +360,7 @@ namespace Everlook.Explorer
 		/// Moves the given iter to the next one at the same level.
 		/// </summary>
 		/// <param name="iter">The iter to move.</param>
-		/// <returns>true if the iter is now set to the next iter at the same level; false otherwise</returns>
+		/// <returns>true if the iter is now set to the next iter at the same level; false otherwise.</returns>
 		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
 		public bool IterNext(ref TreeIter iter)
 		{
@@ -420,7 +420,7 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <param name="iter">Will contain the first child.</param>
 		/// <param name="parent">The iter to get the first child from.</param>
-		/// <returns>true if the iter is now set to the first child of the parent; false otherwise</returns>
+		/// <returns>true if the iter is now set to the first child of the parent; false otherwise.</returns>
 		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
 		/// <exception cref="ArgumentException">Thrown if the iter is not valid.</exception>
 		public bool IterChildren(out TreeIter iter, TreeIter parent)
@@ -452,7 +452,7 @@ namespace Everlook.Explorer
 		/// Determines whether or not the given iter has any children.
 		/// </summary>
 		/// <param name="iter">The iter to check.</param>
-		/// <returns>true if the iter has any children; false otherwise</returns>
+		/// <returns>true if the iter has any children; false otherwise.</returns>
 		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
 		/// <exception cref="ArgumentException">Thrown if the iter is not valid.</exception>
 		public bool IterHasChild(TreeIter iter)
@@ -505,7 +505,7 @@ namespace Everlook.Explorer
 		/// <param name="iter">Will contain the nth child.</param>
 		/// <param name="parent">The iter to get the child of.</param>
 		/// <param name="n">The value of n.</param>
-		/// <returns>true if the iter is now set to the nth child of the parent; false otherwise</returns>
+		/// <returns>true if the iter is now set to the nth child of the parent; false otherwise.</returns>
 		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
 		/// <exception cref="ArgumentException">Thrown if the iter is not valid.</exception>
 		public bool IterNthChild(out TreeIter iter, TreeIter parent, int n)
@@ -544,7 +544,7 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <param name="iter">Will contain the parent iter.</param>
 		/// <param name="child">The iter to get the parent of.</param>
-		/// <returns>true if the iter is now set to the parent iter of the child; false otherwise</returns>
+		/// <returns>true if the iter is now set to the parent iter of the child; false otherwise.</returns>
 		/// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
 		/// <exception cref="ArgumentException">Thrown if the iter is not valid.</exception>
 		public bool IterParent(out TreeIter iter, TreeIter child)

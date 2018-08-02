@@ -165,7 +165,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// Binds a texture to a sampler in the shader. The name of the sampler must match one of the values in
 		/// <see cref="TextureUniform"/>.
 		/// </summary>
-		/// <param name="textureUnit">The texture unit to bind the texture to</param>
+		/// <param name="textureUnit">The texture unit to bind the texture to.</param>
 		/// <param name="uniform">The uniform where the texture should be bound.</param>
 		/// <param name="texture">The texture to bind.</param>
 		public void BindTexture2D(TextureUnit textureUnit, TextureUniform uniform, Texture2D texture)
@@ -189,7 +189,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// Do not include any extensions. Folder prefixes are optional.
 		///
 		/// Valid: WorldModelVertex, Plain2D.Plain2DVertex
-		/// Invalid: Resources.Content.Shaders.WorldModelVertex.glsl
+		/// Invalid: Resources.Content.Shaders.WorldModelVertex.glsl.
 		/// </summary>
 		protected abstract string VertexShaderResourceName { get; }
 
@@ -198,7 +198,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// Do not include any extensions. Folder prefixes are optional.
 		///
 		/// Valid: WorldModelFragment, Plain2D.Plain2DFragment
-		/// Invalid: Resources.Content.Shaders.WorldModelFragment.glsl
+		/// Invalid: Resources.Content.Shaders.WorldModelFragment.glsl.
 		/// </summary>
 		protected abstract string FragmentShaderResourceName { get; }
 
@@ -207,7 +207,7 @@ namespace Everlook.Viewport.Rendering.Core
 		/// resource path to load the source. Do not include any extensions. Folder prefixes are optional.
 		///
 		/// Valid: WorldModelGeometry, Plain2D.Plain2DGeometry
-		/// Invalid: Resources.Content.Shaders.WorldModelGeometry.glsl
+		/// Invalid: Resources.Content.Shaders.WorldModelGeometry.glsl.
 		/// </summary>
 		protected abstract string GeometryShaderResourceName { get; }
 

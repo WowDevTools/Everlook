@@ -226,7 +226,7 @@ namespace Everlook.Viewport.Camera
 		}
 
 		/// <summary>
-		/// Gets the view matrix of this camera (i.e, where it is looking)
+		/// Gets the view matrix of this camera (i.e, where it is looking).
 		/// </summary>
 		/// <returns>A <see cref="Matrix4"/> view matrix.</returns>
 		public Matrix4 GetViewMatrix()

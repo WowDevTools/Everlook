@@ -49,7 +49,7 @@ using VertexAttribPointerType = OpenTK.Graphics.OpenGL.VertexAttribPointerType;
 namespace Everlook.Viewport.Rendering
 {
 	/// <summary>
-	/// Represents a renderable World Model Object
+	/// Represents a renderable World Model Object.
 	/// </summary>
 	public sealed class RenderableWorldModel : IRenderable, ITickingActor, IDefaultCameraPositionProvider, IModelInfoProvider
 	{
