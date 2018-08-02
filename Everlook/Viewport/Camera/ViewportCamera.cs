@@ -24,9 +24,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Everlook.Configuration;
 using Everlook.Viewport.Rendering.Core;
-using Everlook.Viewport.Rendering.Interfaces;
 using OpenTK;
-using SlimTK;
 
 namespace Everlook.Viewport.Camera
 {
@@ -150,11 +148,6 @@ namespace Everlook.Viewport.Camera
 		}
 
 		/// <summary>
-		/// The bounding frustum of the camera.
-		/// </summary>
-		private BoundingFrustum Frustum;
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="ViewportCamera"/> class, and sets its position
 		/// to the default values.
 		/// </summary>
@@ -198,13 +191,6 @@ namespace Everlook.Viewport.Camera
 			);
 
 			this.UpVector = Vector3.Cross(this.RightVector, this.LookDirectionVector);
-
-			// Recalculates the bounding frustum
-			Matrix4 modelMatrix = Matrix4.CreateTranslation(this.Position);
-			Matrix4 viewMatrix = GetViewMatrix();
-			Matrix4 projectionMatrix = GetProjectionMatrix();
-
-			this.Frustum.Matrix = modelMatrix * viewMatrix * projectionMatrix;
 		}
 
 		/// <summary>
@@ -272,17 +258,6 @@ namespace Everlook.Viewport.Camera
 				0,          0,           farSubNearOver2, farPlusNearOver2,
 				0,          0,           0,               1
 			);
-		}
-
-		/// <summary>
-		/// Determines whether or not the camera can see the provided bounding box (that is, it is within or intersects
-		/// the view frustum).
-		/// </summary>
-		/// <param name="groupBoundingBox">The box to check.</param>
-		/// <returns><value>true</value> if the camera can see the box; Otherwise, <value>false</value>.</returns>
-		public bool CanSee(BoundingBox groupBoundingBox)
-		{
-			return this.Frustum.Contains(groupBoundingBox) != ContainmentType.Disjoint;
 		}
 	}
 }

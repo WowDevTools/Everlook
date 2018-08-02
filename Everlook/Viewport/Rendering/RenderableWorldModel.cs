@@ -32,7 +32,6 @@ using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
 using log4net;
 using OpenTK;
-using SlimTK;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
 using Warcraft.WMO.GroupFile.Chunks;
@@ -94,7 +93,7 @@ namespace Everlook.Viewport.Rendering
 						.First()
 						.GetBoundingBox()
 						.GetCenterCoordinates()
-						.AsOpenTKVector(),
+						.ToOpenGLVector(),
 						1.0f
 					)
 				)
@@ -301,8 +300,8 @@ namespace Everlook.Viewport.Rendering
 						(
 							new Transform
 							(
-								doodadInstance.Position.AsOpenTKVector(),
-								doodadInstance.Orientation.AsOpenTKQuaternion(),
+								doodadInstance.Position.ToOpenGLVector(),
+								doodadInstance.Orientation.ToOpenGLQuaternion(),
 								new Vector3(doodadInstance.Scale)
 							)
 						);
@@ -334,19 +333,19 @@ namespace Everlook.Viewport.Rendering
 			Buffer<ushort> vertexIndexes = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw);
 
 			// Upload all of the vertices in this group
-			vertexBuffer.Data = modelGroup.GetVertices().Select(v => v.AsOpenTKVector()).ToArray();
+			vertexBuffer.Data = modelGroup.GetVertices().Select(v => v.ToOpenGLVector()).ToArray();
 			this.VertexBufferLookup.Add(modelGroup, vertexBuffer);
 
 			vertexBuffer.AttachAttributePointer(new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0));
 
 			// Upload all of the normals in this group
-			normalBuffer.Data = modelGroup.GetNormals().Select(v => v.AsOpenTKVector()).ToArray();
+			normalBuffer.Data = modelGroup.GetNormals().Select(v => v.ToOpenGLVector()).ToArray();
 			this.NormalBufferLookup.Add(modelGroup, normalBuffer);
 
 			normalBuffer.AttachAttributePointer(new VertexAttributePointer(1, 3, VertexAttribPointerType.Float, 0, 0));
 
 			// Upload all of the UVs in this group
-			coordinateBuffer.Data = modelGroup.GetTextureCoordinates().Select(v => v.AsOpenTKVector()).ToArray();
+			coordinateBuffer.Data = modelGroup.GetTextureCoordinates().Select(v => v.ToOpenGLVector()).ToArray();
 			this.TextureCoordinateBufferLookup.Add(modelGroup, coordinateBuffer);
 
 			coordinateBuffer.AttachAttributePointer(new VertexAttributePointer(2, 2, VertexAttribPointerType.Float, 0, 0));
@@ -357,7 +356,7 @@ namespace Everlook.Viewport.Rendering
 
 			RenderableBoundingBox boundingBox = new RenderableBoundingBox
 			(
-				modelGroup.GetBoundingBox().ToOpenGLBoundingBox(),
+				modelGroup.GetBoundingBox(),
 				this.ActorTransform
 			);
 
@@ -399,21 +398,11 @@ namespace Everlook.Viewport.Rendering
 				this.Shader.Wireframe.SetViewportMatrix(camera.GetViewportMatrix());
 			}
 
-			Matrix4 modelView = this.ActorTransform.GetModelMatrix() * viewMatrix;
-			Matrix4 modelViewProjection = modelView * projectionMatrix;
-
-			// TODO: Fix frustum culling
-			foreach (ModelGroup modelGroup in this.Model.Groups
-				.OrderByDescending(modelGroup => VectorMath.Distance(camera.Position, modelGroup.GetPosition().AsOpenTKVector())))
-			{
-				RenderGroup(modelGroup, modelViewProjection);
-			}
-
 			// Render bounding boxes
 			if (this.ShouldRenderBounds)
 			{
-				foreach (ModelGroup modelGroup in this.Model.Groups
-					.OrderByDescending(modelGroup => VectorMath.Distance(camera.Position, modelGroup.GetPosition().AsOpenTKVector())))
+				// TODO: Ordering
+				foreach (ModelGroup modelGroup in this.Model.Groups)
 				{
 					this.BoundingBoxLookup[modelGroup].Render(viewMatrix, projectionMatrix, camera);
 				}
@@ -423,7 +412,7 @@ namespace Everlook.Viewport.Rendering
 			{
 				foreach (var doodadInstanceSet in this.DoodadSets[this.DoodadSet])
 				{
-					//doodadInstanceSet.ShouldRenderBounds = this.ShouldRenderBounds;
+					doodadInstanceSet.ShouldRenderBounds = this.ShouldRenderBounds;
 				}
 
 				foreach (var doodadInstanceSet in this.DoodadSets[this.DoodadSet])

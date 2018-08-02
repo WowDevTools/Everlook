@@ -23,6 +23,7 @@
 using System;
 using System.Linq;
 using Everlook.Exceptions.Shader;
+using Everlook.Utility;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
@@ -30,12 +31,12 @@ using Everlook.Viewport.Rendering.Shaders;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using SlimTK;
+using Warcraft.Core.Structures;
 
 namespace Everlook.Viewport.Rendering
 {
 	/// <summary>
-	/// Wraps a <see cref="BoundingBox"/> as a renderable in-world actor.
+	/// Wraps a <see cref="Box"/> as a renderable in-world actor.
 	/// </summary>
 	public sealed class RenderableBoundingBox : IInstancedRenderable, IActor
 	{
@@ -63,17 +64,17 @@ namespace Everlook.Viewport.Rendering
 		/// </summary>
 		private bool IsDisposed { get; set; }
 
-		private BoundingBox BoundingBoxData;
+		private Box BoundingBoxData;
 		private Buffer<Vector3> VertexBuffer;
 		private Buffer<byte> VertexIndexesBuffer;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderableBoundingBox"/> class. The bounds data is taken from
-		/// the given <see cref="BoundingBox"/>, and the world translation is set to <paramref name="transform"/>.
+		/// the given <see cref="Box"/>, and the world translation is set to <paramref name="transform"/>.
 		/// </summary>
 		/// <param name="boundingBox">The BoundingBox to get data from.</param>
 		/// <param name="transform">The world transform of the box.</param>
-		public RenderableBoundingBox(BoundingBox boundingBox, Transform transform)
+		public RenderableBoundingBox(Box boundingBox, Transform transform)
 		{
 			this.BoundingBoxData = boundingBox;
 			this.LineColour = Color4.LimeGreen;

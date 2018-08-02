@@ -56,9 +56,6 @@
     </AdditionalFiles>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)\lib\SlimTK\SlimTK\SlimTK.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="gtk-sharp-3" Version="3.22.6.4" />
     <PackageReference Include="ini-parser" Version="2.5.2" />
     <PackageReference Include="liblistfile" Version="2.0.2" />

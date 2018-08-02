@@ -34,7 +34,6 @@ using Everlook.Viewport.Rendering.Shaders;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using SlimTK;
 using Warcraft.Core;
 using Warcraft.Core.Extensions;
 using Warcraft.Core.Shading.MDX;
@@ -73,7 +72,7 @@ namespace Everlook.Viewport.Rendering
 					this.ActorTransform.GetModelMatrix() *
 					new Vector4
 					(
-						this.Model.BoundingBox.GetCenterCoordinates().AsOpenTKVector(),
+						this.Model.BoundingBox.GetCenterCoordinates().ToOpenGLVector(),
 						1.0f
 					)
 				)
@@ -207,7 +206,7 @@ namespace Everlook.Viewport.Rendering
 
 			this.VertexBuffer.AttachAttributePointers(attributePointers);
 
-			this.BoundingBox = new RenderableBoundingBox(this.Model.BoundingBox.ToOpenGLBoundingBox(), this.ActorTransform);
+			this.BoundingBox = new RenderableBoundingBox(this.Model.BoundingBox, this.ActorTransform);
 			this.BoundingBox.Initialize();
 
 			foreach (MDXTexture texture in this.Model.Textures)

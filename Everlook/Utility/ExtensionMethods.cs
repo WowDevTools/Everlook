@@ -21,10 +21,10 @@
 //
 
 using System;
+using System.Collections.Generic;
 using Everlook.Explorer;
 using Gdk;
 using OpenTK;
-using SlimTK;
 using Warcraft.Core.Structures;
 
 namespace Everlook.Utility
@@ -118,13 +118,47 @@ namespace Everlook.Utility
 		}
 
 		/// <summary>
-		/// Converts the current Warcraft box structure to an OpenGL box structure.
+		/// Converts the current Warcraft vector to an OpenGL vector structure.
 		/// </summary>
-		/// <param name="box">The box to convert.</param>
-		/// <returns>A SlimTK bounding box.</returns>
-		public static BoundingBox ToOpenGLBoundingBox(this Box box)
+		/// <param name="vector2">A <see cref="System.Numerics.Vector2"/>-type vector.</param>
+		/// <returns>An OpenTK vector.</returns>
+		public static Vector2 ToOpenGLVector(this System.Numerics.Vector2 vector2)
 		{
-			return new BoundingBox(box.BottomCorner.ToOpenGLVector(), box.TopCorner.ToOpenGLVector());
+			return new Vector2(vector2.X, vector2.Y);
+		}
+
+		/// <summary>
+		/// Converts the current Warcraft quaternion to an OpenGL quaternion structure.
+		/// </summary>
+		/// <param name="quaternion">A <see cref="System.Numerics.Quaternion"/>-type vector.</param>
+		/// <returns>An OpenTK vector.</returns>
+		public static Quaternion ToOpenGLQuaternion(this System.Numerics.Quaternion quaternion)
+		{
+			return new Quaternion(quaternion.X, quaternion.Y, quaternion.Z);
+		}
+
+		/// <summary>
+		/// Gets the coordinates of all corners in the box.
+		/// </summary>
+		/// <param name="box">The bounding box.</param>
+		/// <returns>The corners.</returns>
+		public static IEnumerable<Vector3> GetCorners(this Box box)
+		{
+			var top = box.TopCorner;
+			var bottom = box.BottomCorner;
+
+			var xDiff = top.X - bottom.X;
+			var yDiff = top.Y - bottom.Y;
+
+			yield return top.ToOpenGLVector();
+			yield return top.ToOpenGLVector() - new Vector3(xDiff, 0, 0);
+			yield return top.ToOpenGLVector() - new Vector3(xDiff, yDiff, 0);
+			yield return top.ToOpenGLVector() - new Vector3(xDiff, yDiff, 0);
+
+			yield return bottom.ToOpenGLVector();
+			yield return bottom.ToOpenGLVector() - new Vector3(xDiff, 0, 0);
+			yield return bottom.ToOpenGLVector() - new Vector3(xDiff, yDiff, 0);
+			yield return bottom.ToOpenGLVector() - new Vector3(xDiff, yDiff, 0);
 		}
 	}
 }
