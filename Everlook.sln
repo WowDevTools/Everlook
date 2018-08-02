@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Everlook", "Everlook\Everlook.csproj", "{64BD763C-024D-477A-B05C-57152FD612DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlimTK", "lib\SlimTK\SlimTK\SlimTK.csproj", "{06C99D4B-9FD6-4AAA-83FD-CEB5CB308121}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -15,9 +13,5 @@ Global
 		{64BD763C-024D-477A-B05C-57152FD612DF}.Debug|x86.Build.0 = Debug|x86
 		{64BD763C-024D-477A-B05C-57152FD612DF}.Release|x86.ActiveCfg = Release|x86
 		{64BD763C-024D-477A-B05C-57152FD612DF}.Release|x86.Build.0 = Release|x86
-		{06C99D4B-9FD6-4AAA-83FD-CEB5CB308121}.Debug|x86.ActiveCfg = Debug|x86
-		{06C99D4B-9FD6-4AAA-83FD-CEB5CB308121}.Debug|x86.Build.0 = Debug|x86
-		{06C99D4B-9FD6-4AAA-83FD-CEB5CB308121}.Release|x86.ActiveCfg = Release|x86
-		{06C99D4B-9FD6-4AAA-83FD-CEB5CB308121}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 EndGlobal

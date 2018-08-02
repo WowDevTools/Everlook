@@ -9,7 +9,6 @@
     <e p="$USER_HOME$/.nuget/packages/liblistfile/2.0.2/contentFiles/any/netstandard2.0/Dictionary/dictionary.dic" t="Include" />
     <e p="$PROJECT_DIR$" t="IncludeFlat">
       <e p=".git/info/exclude" t="IncludeRecursive" />
-      <e p=".git/modules/lib/SlimTK/info/exclude" t="IncludeRecursive" />
       <e p="Everlook" t="IncludeRecursive">
         <e p="Audio" t="Include">
           <e p="AudioGroup.cs" t="Include" />
@@ -337,32 +336,7 @@
       </e>
       <e p="Everlook.sln" t="IncludeFlat" />
       <e p="lib/SlimTK/SlimTK" t="IncludeRecursive">
-        <e p="BoundingBox.cs" t="Include" />
-        <e p="BoundingFrustrum.cs" t="Include" />
-        <e p="BoundingSphere.cs" t="Include" />
-        <e p="Collision.cs" t="Include" />
-        <e p="Enums.cs" t="Include" />
-        <e p="FrustrumCameraParams.cs" t="Include" />
-        <e p="MathUtil.cs" t="Include" />
-        <e p="Plane.cs" t="Include" />
-        <e p="Ray.cs" t="Include" />
-        <e p="Rectangle.cs" t="Include" />
-        <e p="RectangleF.cs" t="Include" />
         <e p="SlimTK.csproj" t="IncludeRecursive" />
-        <e p="VectorExtensions.cs" t="Include" />
-        <e p="VectorMath.cs" t="Include" />
-        <e p="Viewport.cs" t="Include" />
-        <e p="ViewportF.cs" t="Include" />
-        <e p="bin" t="ExcludeRecursive" />
-        <e p="obj" t="ExcludeRecursive">
-          <e p="x86" t="Include">
-            <e p="Debug" t="Include">
-              <e p="net461" t="Include">
-                <e p="SlimTK.AssemblyInfo.cs" t="Include" />
-              </e>
-            </e>
-          </e>
-        </e>
       </e>
       <e p="packages" t="ExcludeRecursive" />
       <e p="stylecop.json" t="Include" />
