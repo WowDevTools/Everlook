@@ -24,9 +24,9 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Everlook.Explorer;
 using Everlook.Utility;
+using FileTree.Tree.Nodes;
 using Gtk;
-using liblistfile;
-using liblistfile.NodeTree;
+using ListFile;
 using Warcraft.Core;
 
 namespace Everlook.UI.Helpers
@@ -60,7 +60,7 @@ namespace Everlook.UI.Helpers
 				return;
 			}
 
-			string transientText = storedText.ReplaceCaseInsensitive("set_", string.Empty);
+			string transientText = storedText.FastReplaceCaseInsensitive("set_", string.Empty);
 
 			// Insert spaces between words and abbreviations
 			transientText = Regex.Replace(transientText, @"(\B[A-Z0-9]+?(?=[A-Z][^A-Z])|\B[A-Z0-9]+?(?=[^A-Z]))", " $1");

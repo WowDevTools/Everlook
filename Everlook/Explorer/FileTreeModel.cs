@@ -25,14 +25,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Everlook.Package;
 using Everlook.Utility;
+using FileTree.Tree.Nodes;
+using FileTree.Tree.Serialized;
 using GLib;
 using Gtk;
-using liblistfile;
-using liblistfile.NodeTree;
 
-using FileNode = liblistfile.NodeTree.Node;
 using Object = GLib.Object;
 
 namespace Everlook.Explorer
@@ -42,7 +40,7 @@ namespace Everlook.Explorer
 	/// </summary>
 	public class FileTreeModel : Object, ITreeModelImplementor
 	{
-		private readonly OptimizedNodeTree Tree;
+		private readonly SerializedTree Tree;
 
 		/// <summary>
 		/// Gets the flags of the model.
@@ -63,7 +61,7 @@ namespace Everlook.Explorer
 		/// Initializes a new instance of the <see cref="FileTreeModel"/> class.
 		/// </summary>
 		/// <param name="nodeTree">The precomputed node tree to wrap around.</param>
-		public FileTreeModel(OptimizedNodeTree nodeTree)
+		public FileTreeModel(SerializedTree nodeTree)
 		{
 			this.Tree = nodeTree;
 			this.Stamp = new Random().Next();
@@ -74,7 +72,7 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <param name="node">The node to get the name of.</param>
 		/// <returns>The name of the node.</returns>
-		public string GetNodeName(FileNode node)
+		public string GetNodeName(SerializedNode node)
 		{
 			return this.Tree.GetNodeName(node);
 		}
@@ -84,7 +82,7 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <param name="node">The node to get the package of.</param>
 		/// <returns>The name of the package.</returns>
-		public string GetNodePackage(FileNode node)
+		public string GetNodePackage(SerializedNode node)
 		{
 			var currentNode = node;
 			while (!(currentNode.Type.HasFlag(NodeType.Package) || currentNode.Type.HasFlag(NodeType.Meta)))
@@ -100,7 +98,7 @@ namespace Everlook.Explorer
 		/// </summary>
 		/// <param name="node">The node to get the path of.</param>
 		/// <returns>The file path of the node in the package.</returns>
-		public string GetNodeFilePath(FileNode node)
+		public string GetNodeFilePath(SerializedNode node)
 		{
 			StringBuilder sb = new StringBuilder();
 
@@ -140,7 +138,7 @@ namespace Everlook.Explorer
 				yield break;
 			}
 
-			List<FileNode> folderNodes = new List<FileNode> { fileReference.Node };
+			List<SerializedNode> folderNodes = new List<SerializedNode> { fileReference.Node };
 
 			while (folderNodes.Count > 0)
 			{
@@ -268,7 +266,7 @@ namespace Everlook.Explorer
 				return GType.Invalid;
 			}
 
-			return LookupGType(typeof(FileNode));
+			return LookupGType(typeof(SerializedNode));
 		}
 
 		/// <summary>
@@ -352,7 +350,7 @@ namespace Everlook.Explorer
 				return;
 			}
 
-			value.Init(LookupGType(typeof(FileNode)));
+			value.Init(LookupGType(typeof(SerializedNode)));
 			value.Val = node;
 		}
 

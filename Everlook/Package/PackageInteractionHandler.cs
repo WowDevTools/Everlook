@@ -200,7 +200,15 @@ namespace Everlook.Package
 		/// <inheritdoc />
 		public MPQFileInfo GetFileInfo(string filePath)
 		{
-			return this.Package.GetFileInfo(filePath);
+			try
+			{
+				return this.Package.GetFileInfo(filePath);
+			}
+			catch
+			{
+				// HACK: This is so bad. Don't keep it.
+				return null;
+			}
 		}
 
 		/// <inheritdoc />

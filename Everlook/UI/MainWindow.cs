@@ -38,10 +38,10 @@ using Everlook.Viewport;
 using Everlook.Viewport.Rendering;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
+using FileTree.Tree.Serialized;
 using Gdk;
 using GLib;
 using Gtk;
-using liblistfile;
 using log4net;
 using OpenTK.Graphics;
 using OpenTK.Input;
@@ -51,7 +51,6 @@ using static Everlook.Utility.DataLoadingDelegates;
 
 using Application = Gtk.Application;
 using EventArgs = System.EventArgs;
-using FileNode = liblistfile.NodeTree.Node;
 using IOPath = System.IO.Path;
 using Task = System.Threading.Tasks.Task;
 using WindowState = Gdk.WindowState;
@@ -536,7 +535,7 @@ namespace Everlook.UI
 
 				try
 				{
-					(PackageGroup group, OptimizedNodeTree nodeTree) = await loader.LoadGameAsync
+					(PackageGroup group, SerializedTree nodeTree) = await loader.LoadGameAsync
 					(
 						gameTarget.Alias,
 						gameTarget.Path,
@@ -559,7 +558,7 @@ namespace Everlook.UI
 			Log.Debug($"Game loading took {sw.Elapsed.TotalMilliseconds}ms ({sw.Elapsed.TotalSeconds}s)");
 		}
 
-		private void AddGamePage(string alias, WarcraftVersion version, PackageGroup group, OptimizedNodeTree nodeTree)
+		private void AddGamePage(string alias, WarcraftVersion version, PackageGroup group, SerializedTree nodeTree)
 		{
 			GamePage page = new GamePage(group, nodeTree, version)
 			{

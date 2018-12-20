@@ -23,12 +23,11 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Everlook.Package;
 using Everlook.Utility;
-using liblistfile.NodeTree;
+using FileTree.Tree.Nodes;
+using FileTree.Tree.Serialized;
 using Warcraft.Core;
 using Warcraft.MPQ.FileInfo;
-using FileNode = liblistfile.NodeTree.Node;
 
 namespace Everlook.Explorer
 {
@@ -47,7 +46,7 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Gets the node this reference maps to.
 		/// </summary>
-		public FileNode Node { get; }
+		public SerializedNode Node { get; }
 
 		/// <summary>
 		/// Gets the name of the package where the file is stored.
@@ -127,7 +126,7 @@ namespace Everlook.Explorer
 		/// <param name="node">The node object in the tree that this reference points to.</param>
 		/// <param name="packageName">The name of the package this reference belongs to.</param>
 		/// <param name="filePath">The complete file path this reference points to.</param>
-		public FileReference(IGameContext gameContext, Node node, string packageName, string filePath)
+		public FileReference(IGameContext gameContext, SerializedNode node, string packageName, string filePath)
 			: this(gameContext)
 		{
 			this.PackageName = packageName;

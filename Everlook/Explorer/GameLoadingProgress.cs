@@ -20,6 +20,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using FileTree.ProgressReporters;
+
 namespace Everlook.Explorer
 {
 	/// <summary>
@@ -41,5 +43,20 @@ namespace Everlook.Explorer
 		/// Gets or sets the alias of the game which is being loaded.
 		/// </summary>
 		public string Alias { get; set; }
+
+		/// <summary>
+		/// Gets or sets the name of the package that's currently being loaded.
+		/// </summary>
+		public string CurrentPackage { get; set; }
+
+		/// <summary>
+		/// Gets or sets the progress reporter for node creation.
+		/// </summary>
+		public PackageNodesCreationProgress NodesCreationProgress { get; set; }
+
+		/// <summary>
+		/// Gets or sets the progress reporter for tree optimization.
+		/// </summary>
+		public TreeOptimizationProgress OptimizationProgress { get; set; }
 	}
 }

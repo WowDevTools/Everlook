@@ -27,14 +27,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Everlook.Package;
 using Everlook.Utility;
+using FileTree.Tree.Nodes;
+using FileTree.Tree.Serialized;
 using Gdk;
 using GLib;
 using Gtk;
-using liblistfile;
-using liblistfile.NodeTree;
 using Warcraft.Core;
 using EventArgs = System.EventArgs;
-using FileNode = liblistfile.NodeTree.Node;
 using Menu = Gtk.Menu;
 using Style = Pango.Style;
 using Task = System.Threading.Tasks.Task;
@@ -119,7 +118,7 @@ namespace Everlook.Explorer
 		/// <param name="packageGroup">The package group which the node tree maps to.</param>
 		/// <param name="nodeTree">The prebuilt node tree to display.</param>
 		/// <param name="version">The Warcraft version that the game page is contextually relevant for.</param>
-		public GamePage(PackageGroup packageGroup, OptimizedNodeTree nodeTree, WarcraftVersion version)
+		public GamePage(PackageGroup packageGroup, SerializedTree nodeTree, WarcraftVersion version)
 		{
 			this.TreeModel = new FileTreeModel(nodeTree);
 			this.GameContext = new WarcraftGameContext(version, packageGroup, this.TreeModel);
@@ -298,7 +297,7 @@ namespace Everlook.Explorer
 				return true;
 			}
 
-			var node = (FileNode)model.GetValue(iter, 0);
+			var node = (SerializedNode)model.GetValue(iter, 0);
 			var nodeTypes = node.FileType;
 
 			if (!this.ShouldDisplayUnknownFiles)
@@ -330,7 +329,7 @@ namespace Everlook.Explorer
 		private void RenderNodeIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			var cellIcon = cell as CellRendererPixbuf;
-			var node = (FileNode)model.GetValue(iter, 0);
+			var node = (SerializedNode)model.GetValue(iter, 0);
 
 			if (node == null || cellIcon == null)
 			{
@@ -374,7 +373,7 @@ namespace Everlook.Explorer
 		private void RenderNodeName(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
 		{
 			var cellText = cell as CellRendererText;
-			var node = (FileNode)model.GetValue(iter, 0);
+			var node = (SerializedNode)model.GetValue(iter, 0);
 
 			if (node == null || cellText == null)
 			{
@@ -689,8 +688,8 @@ namespace Everlook.Explorer
 			const int sortAWithB = 0;
 			const int sortAAfterB = 1;
 
-			var nodeA = (FileNode)model.GetValue(a, 0);
-			var nodeB = (FileNode)model.GetValue(b, 0);
+			var nodeA = (SerializedNode)model.GetValue(a, 0);
+			var nodeB = (SerializedNode)model.GetValue(b, 0);
 
 			NodeType typeofA = nodeA.Type;
 			NodeType typeofB = nodeB.Type;

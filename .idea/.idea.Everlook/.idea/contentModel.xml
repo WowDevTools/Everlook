@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="/6fd3d9d0" t="IncludeRecursive" />
-    <e p="/app" t="IncludeRecursive" />
+    <e p="$APPLICATION_CONFIG_DIR$/consoles/db" t="IncludeRecursive" />
+    <e p="$APPLICATION_CONFIG_DIR$/extensions" t="IncludeRecursive" />
     <e p="$APPLICATION_CONFIG_DIR$/scratches" t="IncludeRecursive" />
     <e p="$USER_HOME$/.Rider2018.2/system/extResources" t="IncludeRecursive" />
     <e p="$USER_HOME$/.Rider2018.2/system/resharper-host/local/Transient/ReSharperHost/v182/SolutionCaches/_Everlook.-848944586.00" t="ExcludeRecursive" />
-    <e p="$USER_HOME$/.nuget/packages/liblistfile/2.0.2/contentFiles/any/netstandard2.0/Dictionary/dictionary.dic" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/libfiletree/1.0.0-rc7/contentFiles/any/netstandard2.0/dictionary.dic" t="Include" />
     <e p="$PROJECT_DIR$" t="IncludeFlat">
       <e p=".git/info/exclude" t="IncludeRecursive" />
+      <e p=".git/modules/lib/SlimTK/info/exclude" t="IncludeRecursive" />
+      <e p=".git/modules/lib/liblistfile/info/exclude" t="IncludeRecursive" />
+      <e p=".git/modules/lib/liblistfile/modules/lib/libwarcraft/info/exclude" t="IncludeRecursive" />
       <e p="Everlook" t="IncludeRecursive">
         <e p="Audio" t="Include">
           <e p="AudioGroup.cs" t="Include" />
@@ -319,8 +322,11 @@
           <e p="Everlook.glade" t="Include" />
           <e p="Everlook.glade~" t="Include" />
           <e p="EverlookDirectoryExport.glade" t="Include" />
+          <e p="EverlookDirectoryExport.glade~" t="Include" />
           <e p="EverlookGameLoadingDialog.glade" t="Include" />
+          <e p="EverlookGameLoadingDialog.glade~" t="Include" />
           <e p="EverlookImageExport.glade" t="Include" />
+          <e p="EverlookImageExport.glade~" t="Include" />
           <e p="EverlookPreferences.glade" t="Include" />
           <e p="EverlookPreferences.glade~" t="Include" />
         </e>

@@ -27,11 +27,11 @@ using System.Runtime.InteropServices;
 using Everlook.Explorer;
 using Everlook.UI;
 using Everlook.Utility;
+using FileTree.Tree.Serialized;
 using GLib;
 using log4net;
 using OpenTK;
 using Application = Gtk.Application;
-using FileNode = liblistfile.NodeTree.Node;
 
 namespace Everlook
 {
@@ -85,8 +85,8 @@ namespace Everlook
 				ExceptionManager.UnhandledException += OnGLibUnhandledException;
 
 				Log.Info("Registering treeview types with the native backend...");
-				GType nodeType = (GType)typeof(FileNode);
-				GType.Register(nodeType, typeof(FileNode));
+				GType nodeType = (GType)typeof(SerializedNode);
+				GType.Register(nodeType, typeof(SerializedNode));
 
 				GType referenceType = (GType)typeof(FileReference);
 				GType.Register(referenceType, typeof(FileReference));

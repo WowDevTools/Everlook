@@ -36,5 +36,6 @@ namespace Everlook.UI
 		[UIElement] private readonly Label AdditionalInfoLabel;
 		[UIElement] private readonly Button CancelGameLoadingButton;
 		[UIElement] private readonly ProgressBar GameLoadingProgressBar;
+		[UIElement] private readonly ProgressBar TreeBuildingProgressBar;
 	}
 }

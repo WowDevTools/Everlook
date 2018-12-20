@@ -31,8 +31,6 @@ using log4net;
 using Warcraft.MPQ;
 using Warcraft.MPQ.FileInfo;
 
-using FileNode = liblistfile.NodeTree.Node;
-
 namespace Everlook.Package
 {
 	/// <summary>
@@ -319,6 +317,17 @@ namespace Everlook.Package
 			{
 				if (this.Packages[i].ContainsFile(filePath))
 				{
+					var fileInfo = this.Packages[i].GetFileInfo(filePath);
+					if (fileInfo is null)
+					{
+						continue;
+					}
+
+					if (fileInfo.IsDeleted)
+					{
+						continue;
+					}
+
 					return this.Packages[i].ExtractFile(filePath);
 				}
 			}

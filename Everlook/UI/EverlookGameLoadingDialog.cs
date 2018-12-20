@@ -26,6 +26,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using Everlook.Explorer;
+using FileTree.ProgressReporters;
 using Gtk;
 
 namespace Everlook.UI
@@ -44,6 +45,9 @@ namespace Everlook.UI
 		private readonly List<string> Jokes = new List<string>();
 
 		private readonly uint JokeTimeoutID;
+
+		private readonly uint SecondaryProgressPulserTimeoutID;
+		private bool IsPulserDisabled;
 
 		/// <summary>
 		/// Gets the notifier object which can be used to update the loading dialog with new information about the
@@ -135,6 +139,23 @@ namespace Everlook.UI
 				}
 
 				SetStatusMessage($"{loadingProgress.Alias} - {statusText}");
+
+				if (!(loadingProgress.NodesCreationProgress is null))
+				{
+					DisplayNodeCreationProgress(loadingProgress.CurrentPackage, loadingProgress.NodesCreationProgress);
+
+					this.IsPulserDisabled = true;
+				}
+				else if (!(loadingProgress.OptimizationProgress is null))
+				{
+					DisplayTreeOptimizationProgress(loadingProgress.OptimizationProgress);
+
+					this.IsPulserDisabled = true;
+				}
+				else
+				{
+					this.IsPulserDisabled = false;
+				}
 			});
 
 			using (Stream shaderStream =
@@ -162,12 +183,61 @@ namespace Everlook.UI
 				RefreshJoke();
 				return true;
 			});
+
+			this.SecondaryProgressPulserTimeoutID = GLib.Timeout.Add(300, () =>
+			{
+				if (!this.IsPulserDisabled)
+				{
+					this.TreeBuildingProgressBar.Pulse();
+				}
+
+				return true;
+			});
+		}
+
+		/// <summary>
+		/// Displays the current progress of tree optimization for the current tree.
+		/// </summary>
+		/// <param name="optimizationProgress">The progress information.</param>
+		private void DisplayTreeOptimizationProgress(TreeOptimizationProgress optimizationProgress)
+		{
+			if (optimizationProgress.OptimizedNodes < optimizationProgress.NodeCount)
+			{
+				this.TreeBuildingProgressBar.Fraction =
+					(float)optimizationProgress.OptimizedNodes / optimizationProgress.NodeCount;
+
+				this.TreeBuildingProgressBar.Text = "Optimizing node names...";
+			}
+			else
+			{
+				this.TreeBuildingProgressBar.Fraction =
+					(float)optimizationProgress.TracedNodes / optimizationProgress.NodeCount;
+
+				this.TreeBuildingProgressBar.Text = "Applying file type traces...";
+			}
+		}
+
+		/// <summary>
+		/// Displays the current progress of node creation for the current package.
+		/// </summary>
+		/// <param name="currentPackage">The package.</param>
+		/// <param name="nodesCreationProgress">The progress information.</param>
+		private void DisplayNodeCreationProgress
+		(
+			string currentPackage,
+			PackageNodesCreationProgress nodesCreationProgress
+		)
+		{
+			this.TreeBuildingProgressBar.Fraction =
+				(float)nodesCreationProgress.CompletedPaths / nodesCreationProgress.PathCount;
+
+			this.TreeBuildingProgressBar.Text = $"Building nodes from paths in {currentPackage}...";
 		}
 
 		/// <summary>
 		/// Picks a new random joke to display, and replaces the current one.
 		/// </summary>
-		public void RefreshJoke()
+		private void RefreshJoke()
 		{
 			this.AdditionalInfoLabel.Markup = this.Jokes[new Random().Next(this.Jokes.Count)];
 		}
@@ -176,7 +246,7 @@ namespace Everlook.UI
 		/// Sets the fraction of the dialog's loading bar.
 		/// </summary>
 		/// <param name="fraction">The fraction of the loading bar which is filled.</param>
-		public void SetFraction(double fraction)
+		private void SetFraction(double fraction)
 		{
 			this.GameLoadingProgressBar.Fraction = fraction;
 		}
@@ -185,7 +255,7 @@ namespace Everlook.UI
 		/// Sets the status message of the dialog.
 		/// </summary>
 		/// <param name="statusMessage">The status message to set.</param>
-		public void SetStatusMessage(string statusMessage)
+		private void SetStatusMessage(string statusMessage)
 		{
 			this.GameLoadingDialogLabel.Text = $"({this.CurrentLoadingProgress.FinishedOperations}/{this.CurrentLoadingProgress.OperationCount}) {statusMessage}";
 		}
@@ -196,6 +266,7 @@ namespace Everlook.UI
 			base.Destroy();
 
 			GLib.Timeout.Remove(this.JokeTimeoutID);
+			GLib.Timeout.Remove(this.SecondaryProgressPulserTimeoutID);
 		}
 	}
 }

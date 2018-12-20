@@ -28,7 +28,10 @@ using Everlook.Export.Image;
 using Everlook.Utility;
 using Gdk;
 using Gtk;
-using ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Bmp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
 using Warcraft.BLP;
 
 using IOPath = System.IO.Path;
@@ -156,11 +159,14 @@ namespace Everlook.UI
 
 						string fullExportPath = $"{exportPath}_{i}.{formatExtension}";
 
-						this.Image.GetMipMap((uint)i).Save
-						(
-							fullExportPath,
-							GetImageEncoderFromFormat((ImageFormat)this.ExportFormatComboBox.Active)
-						);
+						using (var fs = File.OpenWrite(fullExportPath))
+						{
+							this.Image.GetMipMap((uint)i).Save
+							(
+								fs,
+								GetImageEncoderFromFormat((ImageFormat)this.ExportFormatComboBox.Active)
+							);
+						}
 					}
 
 					++i;

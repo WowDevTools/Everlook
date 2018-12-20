@@ -29,9 +29,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Everlook.Package;
-using liblistfile;
-using liblistfile.Exceptions;
-using liblistfile.NodeTree;
+using FileTree.ProgressReporters;
+using FileTree.Tree;
+using FileTree.Tree.Serialized;
+using ListFile;
 using log4net;
 using Warcraft.MPQ;
 
@@ -75,7 +76,7 @@ namespace Everlook.Explorer
 
 		/// <summary>
 		/// Attempts to load a game in a specified path, returning a <see cref="PackageGroup"/> object with the
-		/// packages in the path and an <see cref="OptimizedNodeTree"/> with a fully qualified node tree of the
+		/// packages in the path and an <see cref="SerializedTree"/> with a fully qualified node tree of the
 		/// package group.
 		/// If no packages are found, then this method will return null in both fields.
 		/// </summary>
@@ -84,11 +85,13 @@ namespace Everlook.Explorer
 		/// <param name="ct">A cancellation token.</param>
 		/// <param name="progress">An <see cref="IProgress{GameLoadingProgress}"/> object for progress reporting.</param>
 		/// <returns>A tuple with a package group and a node tree for the requested game.</returns>
-		public async Task<(PackageGroup packageGroup, OptimizedNodeTree nodeTree)> LoadGameAsync(
+		public async Task<(PackageGroup packageGroup, SerializedTree nodeTree)> LoadGameAsync
+		(
 			string gameAlias,
 			string gamePath,
 			CancellationToken ct,
-			IProgress<GameLoadingProgress> progress = null)
+			IProgress<GameLoadingProgress> progress = null
+		)
 		{
 			progress?.Report(new GameLoadingProgress
 			{
@@ -117,7 +120,7 @@ namespace Everlook.Explorer
 			string packageTreeFilePath = Path.Combine(gamePath, packageTreeFilename);
 
 			PackageGroup packageGroup = new PackageGroup(packageSetHash);
-			OptimizedNodeTree nodeTree = null;
+			SerializedTree nodeTree = null;
 
 			bool generateTree = true;
 			if (File.Exists(packageTreeFilePath))
@@ -132,14 +135,14 @@ namespace Everlook.Explorer
 				try
 				{
 					// Load tree
-					nodeTree = new OptimizedNodeTree(packageTreeFilePath);
+					nodeTree = new SerializedTree(File.OpenRead(packageTreeFilePath));
 					generateTree = false;
 				}
-				catch (NodeTreeNotFoundException)
+				catch (FileNotFoundException)
 				{
 					Log.Error("No file for the node tree found at the given location.");
 				}
-				catch (UnsupportedNodeTreeVersionException)
+				catch (NotSupportedException)
 				{
 					Log.Info("Unsupported node tree version present. Deleting and regenerating.");
 					File.Delete(packageTreeFilePath);
@@ -192,7 +195,7 @@ namespace Everlook.Explorer
 				}
 
 				// Generate node tree
-				MultiPackageNodeTreeBuilder multiBuilder = new MultiPackageNodeTreeBuilder(this.Dictionary);
+				TreeBuilder builder = new TreeBuilder();
 				foreach (var packageInfo in packages)
 				{
 					ct.ThrowIfCancellationRequested();
@@ -204,19 +207,65 @@ namespace Everlook.Explorer
 						Alias = gameAlias
 					});
 
-					await multiBuilder.ConsumePackageAsync(packageInfo.packageName, packageInfo.package, ct);
+					double steps = completedSteps;
+					var createNodesProgress = new Progress<PackageNodesCreationProgress>
+					(
+						p =>
+						{
+							progress?.Report
+							(
+								new GameLoadingProgress
+								{
+									CompletionPercentage = steps / totalSteps,
+									State = GameLoadingState.BuildingNodeTree,
+									Alias = gameAlias,
+									CurrentPackage = packageInfo.packageName,
+									NodesCreationProgress = p
+								}
+							);
+						}
+					);
+
+					await Task.Run(() => builder.AddPackage(packageInfo.packageName, packageInfo.package, createNodesProgress, ct), ct);
 					packageGroup.AddPackage((PackageInteractionHandler)packageInfo.package);
 
 					++completedSteps;
 				}
 
 				// Build node tree
-				multiBuilder.Build();
+				var tree = builder.GetTree();
 
-				// Save it to disk
-				File.WriteAllBytes(packageTreeFilePath, multiBuilder.CreateTree());
+				var optimizeTreeProgress = new Progress<TreeOptimizationProgress>
+				(
+					p =>
+					{
+						progress?.Report
+						(
+							new GameLoadingProgress
+							{
+								CompletionPercentage = completedSteps / totalSteps,
+								State = GameLoadingState.BuildingNodeTree,
+								Alias = gameAlias,
+								OptimizationProgress = p
+							}
+						);
+					}
+				);
 
-				nodeTree = new OptimizedNodeTree(packageTreeFilePath);
+				var optimizer = new TreeOptimizer(this.Dictionary);
+
+				var treeClosureCopy = tree;
+				tree = await Task.Run(() => optimizer.OptimizeTree(treeClosureCopy, optimizeTreeProgress, ct), ct);
+
+				using (var fs = File.OpenWrite(packageTreeFilePath))
+				{
+					using (var serializer = new TreeSerializer(fs))
+					{
+						await serializer.SerializeAsync(tree, ct);
+					}
+				}
+
+				nodeTree = new SerializedTree(File.OpenRead(packageTreeFilePath));
 			}
 			else
 			{

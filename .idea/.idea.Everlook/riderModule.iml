@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="RIDER_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file:///6fd3d9d0" />
-    <content url="file:///app" />
-    <content url="file://$APPLICATION_CONFIG_DIR$/scratches" />
-    <content url="file://$USER_HOME$/.Rider2018.2/system/extResources" />
-    <content url="file://$USER_HOME$/.nuget/packages/liblistfile/2.0.2/contentFiles/any/netstandard2.0/Dictionary/dictionary.dic" />
+    <content url="file://$USER_HOME$/.nuget/packages/libfiletree/1.0.0-rc7/contentFiles/any/netstandard2.0/dictionary.dic" />
     <content url="file://$MODULE_DIR$/../.." />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
