@@ -484,8 +484,8 @@ namespace Everlook.Viewport.Rendering
 				this.Shader.SetMVPMatrix(modelViewProjection);
 
 				// Set the texture as the first diffuse texture in unit 0
-				Texture2D texture = this.Cache.GetCachedTexture(modelMaterial.Texture0);
-				if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClamp))
+				Texture2D texture = this.Cache.GetCachedTexture(modelMaterial.DiffuseTexture);
+				if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClampS))
 				{
 					texture.WrappingMode = TextureWrapMode.Clamp;
 				}
@@ -539,8 +539,6 @@ namespace Everlook.Viewport.Rendering
 		public void Dispose()
 		{
 			this.IsDisposed = true;
-
-			this.Model.Dispose();
 
 			foreach (var vertexBuffer in this.VertexBufferLookup)
 			{

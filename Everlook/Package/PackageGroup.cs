@@ -311,24 +311,29 @@ namespace Everlook.Package
 		}
 
 		/// <inheritdoc />
+		public bool TryExtractFile(string filePath, out byte[] data)
+		{
+			data = null;
+
+			for (int i = this.Packages.Count - 1; i >= 0; --i)
+			{
+				if (this.Packages[i].TryExtractFile(filePath, out data))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <inheritdoc />
 		public byte[] ExtractFile(string filePath)
 		{
 			for (int i = this.Packages.Count - 1; i >= 0; --i)
 			{
-				if (this.Packages[i].ContainsFile(filePath))
+				if (this.Packages[i].TryExtractFile(filePath, out var data))
 				{
-					var fileInfo = this.Packages[i].GetFileInfo(filePath);
-					if (fileInfo is null)
-					{
-						continue;
-					}
-
-					if (fileInfo.IsDeleted)
-					{
-						continue;
-					}
-
-					return this.Packages[i].ExtractFile(filePath);
+					return data;
 				}
 			}
 

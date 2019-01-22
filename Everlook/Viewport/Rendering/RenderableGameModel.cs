@@ -422,22 +422,22 @@ namespace Everlook.Viewport.Rendering
 				string textureName;
 				switch (texture.TextureType)
 				{
-					case EMDXTextureType.Regular:
+					case MDXTextureType.Regular:
 					{
 						textureName = texture.Filename;
 						break;
 					}
-					case EMDXTextureType.MonsterSkin1:
+					case MDXTextureType.MonsterSkin1:
 					{
 						textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariation1.Value);
 						break;
 					}
-					case EMDXTextureType.MonsterSkin2:
+					case MDXTextureType.MonsterSkin2:
 					{
 						textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariation2.Value);
 						break;
 					}
-					case EMDXTextureType.MonsterSkin3:
+					case MDXTextureType.MonsterSkin3:
 					{
 						textureName = GetDisplayInfoTexturePath(this.CurrentDisplayInfo?.TextureVariation3.Value);
 						break;
@@ -578,17 +578,17 @@ namespace Everlook.Viewport.Rendering
 				int textureIndex;
 				switch (texture.TextureType)
 				{
-					case EMDXTextureType.MonsterSkin1:
+					case MDXTextureType.MonsterSkin1:
 					{
 						textureIndex = 0;
 						break;
 					}
-					case EMDXTextureType.MonsterSkin2:
+					case MDXTextureType.MonsterSkin2:
 					{
 						textureIndex = 1;
 						break;
 					}
-					case EMDXTextureType.MonsterSkin3:
+					case MDXTextureType.MonsterSkin3:
 					{
 						textureIndex = 2;
 						break;

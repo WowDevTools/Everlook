@@ -174,6 +174,12 @@ namespace Everlook.Package
 		}
 
 		/// <inheritdoc />
+		public bool TryExtractFile(string filePath, out byte[] data)
+		{
+			return this.Package.TryExtractFile(filePath, out data);
+		}
+
+		/// <inheritdoc />
 		public byte[] ExtractFile(string filePath)
 		{
 			return this.Package.ExtractFile(filePath);

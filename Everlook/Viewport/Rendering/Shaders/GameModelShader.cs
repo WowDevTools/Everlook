@@ -185,7 +185,7 @@ namespace Everlook.Viewport.Rendering.Shaders
 			Enable();
 
 			// Set two-sided rendering
-			if (modelMaterial.Flags.HasFlag(EMDXRenderFlag.TwoSided))
+			if (modelMaterial.Flags.HasFlag(MDXRenderFlag.TwoSided))
 			{
 				GL.Disable(EnableCap.CullFace);
 			}

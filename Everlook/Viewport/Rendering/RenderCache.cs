@@ -195,11 +195,11 @@ namespace Everlook.Viewport.Rendering
 				filename = texturePathOverride;
 			}
 
-			var wrapS = texture.Flags.HasFlag(EMDXTextureFlags.TextureWrapX)
+			var wrapS = texture.Flags.HasFlag(MDXTextureFlags.TextureWrapX)
 				? TextureWrapMode.Repeat
 				: TextureWrapMode.Clamp;
 
-			var wrapT = texture.Flags.HasFlag(EMDXTextureFlags.TextureWrapY)
+			var wrapT = texture.Flags.HasFlag(MDXTextureFlags.TextureWrapY)
 				? TextureWrapMode.Repeat
 				: TextureWrapMode.Clamp;
 
