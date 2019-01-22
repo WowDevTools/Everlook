@@ -109,14 +109,21 @@ namespace Everlook.Viewport.Rendering
 
 			byte[] boundingBoxIndexValues =
 			{
-				0, 1, 1,
-				2, 2, 3,
-				3, 0, 0,
-				4, 4, 7,
-				7, 3, 2,
-				6, 6, 7,
-				6, 5, 5,
-				4, 5, 1
+				0, 1,
+				1, 2,
+				2, 3,
+				3, 0,
+
+				0, 6,
+				6, 7,
+				7, 1,
+
+				2, 4,
+				4, 7,
+
+				4, 5,
+				5, 6,
+				5, 3
 			};
 
 			this.VertexIndexesBuffer = new Buffer<byte>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)

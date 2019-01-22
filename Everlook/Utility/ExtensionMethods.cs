@@ -153,12 +153,12 @@ namespace Everlook.Utility
 			yield return top.ToOpenGLVector();
 			yield return top.ToOpenGLVector() - new Vector3(xDiff, 0, 0);
 			yield return top.ToOpenGLVector() - new Vector3(xDiff, yDiff, 0);
-			yield return top.ToOpenGLVector() - new Vector3(xDiff, yDiff, 0);
+			yield return top.ToOpenGLVector() - new Vector3(0, yDiff, 0);
 
 			yield return bottom.ToOpenGLVector();
-			yield return bottom.ToOpenGLVector() - new Vector3(xDiff, 0, 0);
-			yield return bottom.ToOpenGLVector() - new Vector3(xDiff, yDiff, 0);
-			yield return bottom.ToOpenGLVector() - new Vector3(xDiff, yDiff, 0);
+			yield return bottom.ToOpenGLVector() + new Vector3(xDiff, 0, 0);
+			yield return bottom.ToOpenGLVector() + new Vector3(xDiff, yDiff, 0);
+			yield return bottom.ToOpenGLVector() + new Vector3(0, yDiff, 0);
 		}
 	}
 }
