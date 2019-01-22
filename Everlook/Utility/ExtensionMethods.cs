@@ -134,7 +134,7 @@ namespace Everlook.Utility
 		/// <returns>An OpenTK vector.</returns>
 		public static Quaternion ToOpenGLQuaternion(this System.Numerics.Quaternion quaternion)
 		{
-			return new Quaternion(quaternion.X, quaternion.Y, quaternion.Z);
+			return new Quaternion(quaternion.X, quaternion.Y, quaternion.Z, quaternion.W);
 		}
 
 		/// <summary>
