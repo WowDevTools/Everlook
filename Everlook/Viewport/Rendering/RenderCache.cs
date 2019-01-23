@@ -225,51 +225,44 @@ namespace Everlook.Viewport.Rendering
 				return GetCachedTexture(texturePath);
 			}
 
-			try
+			WarcraftFileType textureType = FileInfoUtilities.GetFileType(texturePath);
+			switch (textureType)
 			{
-				WarcraftFileType textureType = FileInfoUtilities.GetFileType(texturePath);
-				switch (textureType)
+				case WarcraftFileType.BinaryImage:
 				{
-					case WarcraftFileType.BinaryImage:
+					if (!package.TryExtractFile(texturePath, out var textureData))
 					{
-						var textureData = package.ExtractFile(texturePath);
-
-						if (textureData == null)
-						{
-							return this.FallbackTexture;
-						}
-
-						BLP texture = new BLP(textureData);
-						return CreateCachedTexture(texture, texturePath, wrappingModeS, wrappingModeT);
+						return this.FallbackTexture;
 					}
-					case WarcraftFileType.BitmapImage:
-					case WarcraftFileType.GIFImage:
-					case WarcraftFileType.IconImage:
-					case WarcraftFileType.PNGImage:
-					case WarcraftFileType.JPGImage:
-					case WarcraftFileType.TargaImage:
+
+					BLP texture = new BLP(textureData);
+					return CreateCachedTexture(texture, texturePath, wrappingModeS, wrappingModeT);
+				}
+				case WarcraftFileType.BitmapImage:
+				case WarcraftFileType.GIFImage:
+				case WarcraftFileType.IconImage:
+				case WarcraftFileType.PNGImage:
+				case WarcraftFileType.JPGImage:
+				case WarcraftFileType.TargaImage:
+				{
+					if (!package.TryExtractFile(texturePath, out var data))
 					{
-						using (MemoryStream ms = new MemoryStream(package.ExtractFile(texturePath)))
-						{
-							Bitmap texture = new Bitmap(ms);
-							return CreateCachedTexture(texture, texturePath);
-						}
+						return this.FallbackTexture;
+					}
+
+					using (MemoryStream ms = new MemoryStream(data))
+					{
+						Bitmap texture = new Bitmap(ms);
+						return CreateCachedTexture(texture, texturePath);
 					}
 				}
-			}
-			catch (InvalidFileSectorTableException fex)
-			{
-				Log.Warn
-				(
-					$"Failed to load the texture \"{texturePath}\" due to an invalid sector table (\"{fex.Message}\").\nA fallback texture has been loaded instead."
-				);
 			}
 
 			return this.FallbackTexture;
 		}
 
 		/// <summary>
-		/// Creates a cached texture for the specifed texture, using the specified path
+		/// Creates a cached texture for the specified texture, using the specified path
 		/// as a lookup key. This method will create a new texture, and cache it.
 		/// </summary>
 		/// /// <param name="imageData">A bitmap containing the image data.</param>
