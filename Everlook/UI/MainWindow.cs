@@ -639,8 +639,7 @@ namespace Everlook.UI
 
 					this.ModelVariationComboBox.Sensitive = true;
 
-					RenderableWorldModel wmo = this.RenderingEngine.RenderTarget as RenderableWorldModel;
-					if (wmo != null)
+					if (this.RenderingEngine.RenderTarget is RenderableWorldModel wmo)
 					{
 						wmo.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
 						wmo.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
@@ -654,12 +653,11 @@ namespace Everlook.UI
 						}
 
 						this.ModelVariationComboBox.Active = 0;
-						this.ModelVariationComboBox.Sensitive = this.RenderDoodadsCheckButton.Active;
+						this.ModelVariationComboBox.Sensitive = this.RenderDoodadsCheckButton.Active && doodadSetNames.Count > 1;
 						this.RenderDoodadsCheckButton.Sensitive = true;
 					}
 
-					RenderableGameModel mdx = this.RenderingEngine.RenderTarget as RenderableGameModel;
-					if (mdx != null)
+					if (this.RenderingEngine.RenderTarget is RenderableGameModel mdx)
 					{
 						mdx.ShouldRenderBounds = this.RenderBoundsCheckButton.Active;
 						mdx.ShouldRenderWireframe = this.RenderWireframeCheckButton.Active;
@@ -676,7 +674,7 @@ namespace Everlook.UI
 						}
 
 						this.ModelVariationComboBox.Active = 0;
-						this.ModelVariationComboBox.Sensitive = true;
+						this.ModelVariationComboBox.Sensitive = skinVariations.Count > 1;
 						this.RenderDoodadsCheckButton.Sensitive = false;
 					}
 
