@@ -81,7 +81,7 @@ namespace Everlook.UI
 		/// <summary>
 		/// Task scheduler for the UI thread. This allows task-based code to have very simple UI callbacks.
 		/// </summary>
-		private readonly TaskScheduler UiThreadScheduler;
+		private readonly TaskScheduler UiTaskScheduler;
 
 		/// <summary>
 		/// Whether or not the program is shutting down. This is used to remove callbacks and events.
@@ -123,7 +123,7 @@ namespace Everlook.UI
 			this.Shown += OnMainWindowShown;
 			this.WindowStateEvent += OnWindowStateChanged;
 
-			this.UiThreadScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+			this.UiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 			this.FileLoadingCancellationSource = new CancellationTokenSource();
 
 			var graphicsMode = new GraphicsMode
@@ -805,7 +805,7 @@ namespace Everlook.UI
 					ct
 				);
 
-				IRenderable renderable = await Task.Factory.StartNew
+				IRenderable renderable = await Task.Run
 				(
 					() => createRenderable(item, fileReference),
 					ct
@@ -819,14 +819,7 @@ namespace Everlook.UI
 					this.ViewportWidget.AttachBuffers();
 					renderable.Initialize();
 
-					// Replace the renderable on the UI thread
-					await Task.Factory.StartNew
-					(
-						() => this.RenderingEngine.SetRenderTarget(renderable),
-						ct,
-						TaskCreationOptions.None,
-						this.UiThreadScheduler
-					);
+					this.RenderingEngine.SetRenderTarget(renderable);
 
 					EnableControlPage(associatedControlPage);
 
@@ -948,7 +941,7 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="page">Sender.</param>
 		/// <param name="fileReference">E.</param>
-		private static void OnExportItemRequested(GamePage page, FileReference fileReference)
+		private static Task OnExportItemRequested(GamePage page, FileReference fileReference)
 		{
 			// TODO: Create a better exporter (EverlookExporter.Export(<>)?)
 			switch (fileReference.GetReferencedFileType())
@@ -980,6 +973,8 @@ namespace Everlook.UI
 					break;
 				}
 			}
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -988,9 +983,11 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="page">Sender.</param>
 		/// <param name="fileReference">E.</param>
-		private void OnEnqueueItemRequested(GamePage page, FileReference fileReference)
+		private Task OnEnqueueItemRequested(GamePage page, FileReference fileReference)
 		{
 			this.ExportQueueListStore.AppendValues(fileReference, IconManager.GetIcon("package-downgrade"));
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -1041,7 +1038,7 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="page">The <see cref="GamePage"/> in which the event originated.</param>
 		/// <param name="fileReferences">The file references to save.</param>
-		private async void OnSaveRequested(GamePage page, IEnumerable<FileReference> fileReferences)
+		private async Task OnSaveRequested(GamePage page, IEnumerable<FileReference> fileReferences)
 		{
 			uint statusMessageContextID = this.MainStatusBar.GetContextId($"itemLoad_{fileReferences.GetHashCode()}");
 
@@ -1111,7 +1108,7 @@ namespace Everlook.UI
 		/// </summary>
 		/// <param name="page">The <see cref="GamePage"/> in which the event originated.</param>
 		/// <param name="fileReference">The file reference to load.</param>
-		private async void OnFileLoadRequested(GamePage page, FileReference fileReference)
+		private async Task OnFileLoadRequested(GamePage page, FileReference fileReference)
 		{
 			WarcraftFileType referencedType = fileReference.GetReferencedFileType();
 

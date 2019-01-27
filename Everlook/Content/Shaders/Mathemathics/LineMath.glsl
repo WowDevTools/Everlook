@@ -32,7 +32,8 @@
 /// <returns>The distance from F to Q.</returns>
 float DistanceToLine(vec2 F, vec2 Q, vec2 QDir)
 {
-	return sqrt(dot((Q - F), (Q - F)) - dot(QDir, (Q - F)));
+	vec2 nearestPointOnLine = Q + QDir * dot(F - Q, QDir);
+	return distance(F, nearestPointOnLine);
 }
 
 #endif

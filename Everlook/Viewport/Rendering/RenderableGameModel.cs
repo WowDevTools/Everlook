@@ -37,6 +37,7 @@ using OpenTK.Graphics.OpenGL;
 using Warcraft.Core;
 using Warcraft.Core.Extensions;
 using Warcraft.Core.Shading.MDX;
+using Warcraft.Core.Structures;
 using Warcraft.DBC.Definitions;
 using Warcraft.DBC.SpecialFields;
 using Warcraft.MDX;
@@ -303,6 +304,11 @@ namespace Everlook.Viewport.Rendering
 
 				foreach (var renderBatch in skin.RenderBatches)
 				{
+					if (renderBatch.ShaderID == 0xFFFFu)
+					{
+						continue;
+					}
+
 					PrepareBatchForRender(renderBatch);
 
 					var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
@@ -346,7 +352,6 @@ namespace Everlook.Viewport.Rendering
 			Matrix4 modelViewProjection = modelViewMatrix * projectionMatrix;
 
 			this.Shader.Enable();
-			this.Shader.SetBaseInputColour(Color4.White);
 			this.Shader.SetIsInstance(false);
 			this.Shader.SetModelMatrix(this.ActorTransform.GetModelMatrix());
 			this.Shader.SetViewMatrix(viewMatrix);
@@ -374,6 +379,11 @@ namespace Everlook.Viewport.Rendering
 
 				foreach (var renderBatch in skin.RenderBatches)
 				{
+					if (renderBatch.ShaderID == 0xFFFFu)
+					{
+						continue;
+					}
+
 					PrepareBatchForRender(renderBatch);
 
 					var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
@@ -411,6 +421,55 @@ namespace Everlook.Viewport.Rendering
 			this.Shader.SetVertexShaderType(vertexShader);
 			this.Shader.SetFragmentShaderType(fragmentShader);
 			this.Shader.SetMaterial(batchMaterial);
+
+			var baseColour = Color4.White;
+			if (renderBatch.ColorIndex >= 0)
+			{
+				var colorAnimation = this.Model.ColourAnimations[renderBatch.ColorIndex];
+
+				// TODO: Sample based on animated values
+				RGB rgb;
+				float alpha;
+
+				if (colorAnimation.ColourTrack.IsComposite)
+				{
+					rgb = colorAnimation.ColourTrack.CompositeTimelineValues.First();
+					alpha = colorAnimation.OpacityTrack.CompositeTimelineValues.First() / 0x7fff;
+				}
+				else
+				{
+					rgb = colorAnimation.ColourTrack.Values.First().First();
+					alpha = colorAnimation.OpacityTrack.Values.First().First() / 0x7fff;
+				}
+
+				baseColour = new Color4
+				(
+					MathHelper.Clamp(rgb.R, 0.0f, 1.0f),
+					MathHelper.Clamp(rgb.G, 0.0f, 1.0f),
+					MathHelper.Clamp(rgb.B, 0.0f, 1.0f),
+					MathHelper.Clamp(alpha, 0.0f, 1.0f)
+				);
+			}
+
+			if ((short)renderBatch.TransparencyLookupTableIndex >= 0)
+			{
+				var transparencyAnimationIndex = this.Model.TransparencyLookupTable[renderBatch.TransparencyLookupTableIndex];
+				var transparencyAnimation = this.Model.TransparencyAnimations[transparencyAnimationIndex];
+
+				float alphaWeight;
+				if (transparencyAnimation.Weight.IsComposite)
+				{
+					alphaWeight = transparencyAnimation.Weight.CompositeTimelineValues.First() / 0x7fff;
+				}
+				else
+				{
+					alphaWeight = transparencyAnimation.Weight.Values.First().First() / 0x7fff;
+				}
+
+				baseColour.A *= alphaWeight;
+			}
+
+			this.Shader.SetBaseInputColour(baseColour);
 
 			var textureIndexes = this.Model.TextureLookupTable.Skip(renderBatch.TextureLookupTableIndex)
 				.Take(renderBatch.TextureCount);

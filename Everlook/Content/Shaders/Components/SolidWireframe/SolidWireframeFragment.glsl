@@ -33,12 +33,12 @@ in GeometryOut
 	/// <summary>
 	/// Gets whether or not this is the simple case where all three vertices are visible.
 	/// </summary>
-	bool IsSimpleWireframeCase;
+	flat bool IsSimpleWireframeCase;
 
 	/// <summary>
     /// Gets whether or not a single vertex is visible.
     /// </summary>
-    bool IsSingleVertexVisible;
+    flat bool IsSingleVertexVisible;
 
     /// <summary>
     /// Gets the interpolated distances to the three polygon edges from this fragment.

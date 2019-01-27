@@ -48,7 +48,7 @@ void main()
 		}
 		case Diffuse_Env:
         {
-            vOut.UV1 = SphereMap((inverse(ProjectionMatrix) * gl_Position).xyz, (ViewMatrix * ModelMatrix * vec4(vertexNormal, 1)).xyz);
+            vOut.UV1 = SphereMap((inverse(ProjectionMatrix) * gl_Position).xyz, (ViewMatrix * modelMatrix * vec4(vertexNormal, 1)).xyz);
             break;
         }
         case Diffuse_T1_T2:
@@ -60,18 +60,18 @@ void main()
         case Diffuse_T1_Env:
 	    {
 	        vOut.UV1 = vertexUV1;
-	        vOut.UV2 = SphereMap((inverse(ProjectionMatrix) * gl_Position).xyz, (ViewMatrix * ModelMatrix * vec4(vertexNormal, 1)).xyz);
+	        vOut.UV2 = SphereMap((inverse(ProjectionMatrix) * gl_Position).xyz, (ViewMatrix * modelMatrix * vec4(vertexNormal, 1)).xyz);
 	        break;
 	    }
 	    case Diffuse_Env_T1:
         {
-            vOut.UV1 = SphereMap((inverse(ProjectionMatrix) * gl_Position).xyz, (ViewMatrix * ModelMatrix * vec4(vertexNormal, 1)).xyz);
+            vOut.UV1 = SphereMap((inverse(ProjectionMatrix) * gl_Position).xyz, (ViewMatrix * modelMatrix * vec4(vertexNormal, 1)).xyz);
             vOut.UV2 = vertexUV1;
             break;
         }
         case Diffuse_Env_Env:
         {
-            vec2 envMap = SphereMap((inverse(ProjectionMatrix) * gl_Position).xyz, (ViewMatrix * ModelMatrix * vec4(vertexNormal, 1)).xyz);
+            vec2 envMap = SphereMap((inverse(ProjectionMatrix) * gl_Position).xyz, (ViewMatrix * modelMatrix * vec4(vertexNormal, 1)).xyz);
             vOut.UV1 = envMap;
             vOut.UV2 = envMap;
             break;

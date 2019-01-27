@@ -25,6 +25,7 @@ using System.Diagnostics.CodeAnalysis;
 using Everlook.Configuration;
 using Everlook.Viewport.Rendering.Core;
 using OpenTK;
+using OpenTK.Graphics.ES10;
 
 namespace Everlook.Viewport.Camera
 {
@@ -244,19 +245,16 @@ namespace Everlook.Viewport.Camera
 		/// </summary>
 		/// <returns>The viewport matrix.</returns>
 		[SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1117:ParametersMustBeOnSameLineOrSeparateLines", Justification = "Used for matrix parameter alignment.")]
-		public Matrix4 GetViewportMatrix()
+		public Matrix3 GetViewportMatrix()
 		{
 			float widthOver2 = this.ViewportWidth / 2.0f;
 			float heightOver2 = this.ViewportHeight / 2.0f;
-			const float farSubNearOver2 = (DefaultFarClippingDistance - DefaultNearClippingDistance) / 2.0f;
-			const float farPlusNearOver2 = (DefaultFarClippingDistance + DefaultNearClippingDistance) / 2.0f;
 
-			return new Matrix4
+			return new Matrix3
 			(
-				widthOver2, 0,           0,               widthOver2,
-				0,          heightOver2, 0,               heightOver2,
-				0,          0,           farSubNearOver2, farPlusNearOver2,
-				0,          0,           0,               1
+				widthOver2, 0,           widthOver2,
+				0,          heightOver2, heightOver2,
+				0,          0,           1
 			);
 		}
 	}

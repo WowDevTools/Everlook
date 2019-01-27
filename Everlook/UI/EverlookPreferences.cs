@@ -186,7 +186,7 @@ namespace Everlook.UI
 				{
 					string alias = this.AliasEntry.Text;
 					WarcraftVersion selectedVersion = (WarcraftVersion)this.GameVersionCombo.Active;
-					Uri uriToStore = new Uri(this.PathChooser.CurrentFolderUri);
+					Uri uriToStore = this.PathChooser.File.Uri;
 
 					if (Directory.Exists(uriToStore.LocalPath))
 					{

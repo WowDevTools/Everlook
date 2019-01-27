@@ -49,22 +49,22 @@ namespace Everlook.Explorer
 		/// <summary>
 		/// Raised whenever a file is selected in the tree which can be displayed in the interface.
 		/// </summary>
-		public event Action<GamePage, FileReference> FileLoadRequested;
+		public event Func<GamePage, FileReference, Task> FileLoadRequested;
 
 		/// <summary>
 		/// Raised whenever a file or folder is requested to be saved.
 		/// </summary>
-		public event Action<GamePage, IEnumerable<FileReference>> SaveRequested;
+		public event Func<GamePage, IEnumerable<FileReference>, Task> SaveRequested;
 
 		/// <summary>
 		/// Raised whenever a file is requested to be queued for exporting.
 		/// </summary>
-		public event Action<GamePage, FileReference> EnqueueFileExportRequested;
+		public event Func<GamePage, FileReference, Task> EnqueueFileExportRequested;
 
 		/// <summary>
 		/// Raised whenever a file is requeste to be exported.
 		/// </summary>
-		public event Action<GamePage, FileReference> ExportItemRequested;
+		public event Func<GamePage, FileReference, Task> ExportItemRequested;
 
 		/// <summary>
 		/// Gets the widget which is at the top level of the page.
@@ -77,6 +77,8 @@ namespace Everlook.Explorer
 		public string Alias { get; set; }
 
 		private readonly Alignment TreeAlignment;
+
+		private readonly TaskScheduler UiTaskScheduler;
 
 		private TreeView Tree { get; }
 
@@ -120,6 +122,8 @@ namespace Everlook.Explorer
 		/// <param name="version">The Warcraft version that the game page is contextually relevant for.</param>
 		public GamePage(PackageGroup packageGroup, SerializedTree nodeTree, WarcraftVersion version)
 		{
+			this.UiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
 			this.TreeModel = new FileTreeModel(nodeTree);
 			this.GameContext = new WarcraftGameContext(version, packageGroup, this.TreeModel);
 
@@ -739,36 +743,80 @@ namespace Everlook.Explorer
 		/// Requests the loading of the specified <see cref="FileReference"/> in the main UI.
 		/// </summary>
 		/// <param name="fileReference">The reference to request a load operation for.</param>
-		private void RequestFileLoad(FileReference fileReference)
+		private async void RequestFileLoad(FileReference fileReference)
 		{
-			this.FileLoadRequested?.Invoke(this, fileReference);
+			if (this.FileLoadRequested is null)
+			{
+				return;
+			}
+
+			await Task.Factory.StartNew
+			(
+				async () => await this.FileLoadRequested.Invoke(this, fileReference),
+				CancellationToken.None,
+				TaskCreationOptions.DenyChildAttach,
+				this.UiTaskScheduler
+			);
 		}
 
 		/// <summary>
 		/// Requests the saving of the specified list of <see cref="FileReference"/> objects in the main UI.
 		/// </summary>
 		/// <param name="fileReferences">The references to save.</param>
-		private void RequestSave(IEnumerable<FileReference> fileReferences)
+		private async void RequestSave(IEnumerable<FileReference> fileReferences)
 		{
-			this.SaveRequested?.Invoke(this, fileReferences);
+			if (this.SaveRequested is null)
+			{
+				return;
+			}
+
+			await Task.Factory.StartNew
+			(
+				async () => await this.SaveRequested.Invoke(this, fileReferences),
+				CancellationToken.None,
+				TaskCreationOptions.DenyChildAttach,
+				this.UiTaskScheduler
+			);
 		}
 
 		/// <summary>
 		/// Requests the exporting of the specified <see cref="FileReference"/> in the main UI.
 		/// </summary>
 		/// <param name="fileReference">The reference to request an  export operation for.</param>
-		private void RequestFileExport(FileReference fileReference)
+		private async void RequestFileExport(FileReference fileReference)
 		{
-			this.ExportItemRequested?.Invoke(this, fileReference);
+			if (this.ExportItemRequested is null)
+			{
+				return;
+			}
+
+			await Task.Factory.StartNew
+			(
+				async () => await this.ExportItemRequested.Invoke(this, fileReference),
+				CancellationToken.None,
+				TaskCreationOptions.DenyChildAttach,
+				this.UiTaskScheduler
+			);
 		}
 
 		/// <summary>
 		/// Requests the enqueueing for export of the specified <see cref="FileReference"/> in the main UI.
 		/// </summary>
 		/// <param name="fileReference">The reference to request an enqueued export operation for.</param>
-		private void RequestEnqueueFileExport(FileReference fileReference)
+		private async void RequestEnqueueFileExport(FileReference fileReference)
 		{
-			this.EnqueueFileExportRequested?.Invoke(this, fileReference);
+			if (this.EnqueueFileExportRequested is null)
+			{
+				return;
+			}
+
+			await Task.Factory.StartNew
+			(
+				async () => await this.EnqueueFileExportRequested.Invoke(this, fileReference),
+				CancellationToken.None,
+				TaskCreationOptions.DenyChildAttach,
+				this.UiTaskScheduler
+			);
 		}
 
 		/// <inheritdoc />

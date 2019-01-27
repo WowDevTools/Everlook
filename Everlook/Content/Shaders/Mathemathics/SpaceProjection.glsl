@@ -23,10 +23,10 @@
 #ifndef SpaceProjection_I
 #define SpaceProjection_I
 
-vec4 ProjectToScreen(mat4 viewportMatrix, vec4 clipSpaceCoordinate)
+vec3 ProjectToScreen(mat3 viewportMatrix, vec4 clipSpaceCoordinate)
 {
-	vec4 NDC = clipSpaceCoordinate / clipSpaceCoordinate.w;
-	return viewportMatrix * NDC;
+	vec3 NDC = clipSpaceCoordinate.xyz / clipSpaceCoordinate.w;
+	return transpose(viewportMatrix) * NDC;
 }
 
 #endif

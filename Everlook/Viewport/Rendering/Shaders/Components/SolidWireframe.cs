@@ -153,12 +153,12 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 		/// Sets the viewport matrix that will transform NDC coordinates to screen space coordinates.
 		/// </summary>
 		/// <param name="viewportMatrix">The viewport matrix.</param>
-		public void SetViewportMatrix(Matrix4 viewportMatrix)
+		public void SetViewportMatrix(Matrix3 viewportMatrix)
 		{
 			EnableParent();
 
 			int viewportMatrixLoc = GL.GetUniformLocation(this.ParentShaderNativeID, ViewportMatrix);
-			GL.UniformMatrix4(viewportMatrixLoc, false, ref viewportMatrix);
+			GL.UniformMatrix3(viewportMatrixLoc, false, ref viewportMatrix);
 		}
 	}
 }
