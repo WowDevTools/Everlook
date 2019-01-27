@@ -25,6 +25,8 @@
 
 /// <summary>
 /// Calculates the distance from a point to a line in screen space.
+/// This function has some issues when the distance is taken up close, and it becomes
+/// inaccurate.
 /// </summary>
 /// <param name="F">The origin point.</param>
 /// <param name="Q">A point on the line.</param>
