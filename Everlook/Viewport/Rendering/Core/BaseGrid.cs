@@ -145,6 +145,10 @@ namespace Everlook.Viewport.Rendering.Core
 
 			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
+			this.Shader.Enable();
+
+			GL.BlendFunc(BlendingFactor.One, BlendingFactor.Zero);
+
 			// Set the default line colour (a light gray)
 			this.Shader.SetLineColour(new Color4(64, 64, 64, 255));
 			this.Shader.SetMVPMatrix(modelViewProjection);

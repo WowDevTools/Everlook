@@ -231,6 +231,8 @@ namespace Everlook.Viewport.Rendering
 			// Set the texture ID as a uniform sampler in unit 0
 			this.Shader.SetTexture(this.Texture);
 
+			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
 			// Set the model view matrix
 			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
