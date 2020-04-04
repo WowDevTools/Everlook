@@ -21,11 +21,13 @@
 //
 
 using System;
+using System.Numerics;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders.Components;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 using Warcraft.Core.Shading.Blending;
 using Warcraft.Core.Shading.MDX;
 using Warcraft.MDX.Visual;
@@ -85,7 +87,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// Sets the current model matrix of the shader.
         /// </summary>
         /// <param name="modelMatrix">The model matrix.</param>
-        public void SetModelMatrix(Matrix4 modelMatrix)
+        public void SetModelMatrix(Matrix4x4 modelMatrix)
         {
             SetMatrix(modelMatrix, ModelMatrix);
         }
@@ -94,7 +96,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// Sets the current view matrix of the shader.
         /// </summary>
         /// <param name="viewMatrix">The model-view matrix.</param>
-        public void SetViewMatrix(Matrix4 viewMatrix)
+        public void SetViewMatrix(Matrix4x4 viewMatrix)
         {
             SetMatrix(viewMatrix, ViewMatrix);
         }
@@ -103,7 +105,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// Sets the current projection matrix of the shader.
         /// </summary>
         /// <param name="projectionMatrix">The projection matrix.</param>
-        public void SetProjectionMatrix(Matrix4 projectionMatrix)
+        public void SetProjectionMatrix(Matrix4x4 projectionMatrix)
         {
             SetMatrix(projectionMatrix, ProjectionMatrix);
         }
@@ -211,10 +213,10 @@ namespace Everlook.Viewport.Rendering.Shaders
 
             GL.BlendFuncSeparate
             (
-                (BlendingFactorSrc)srcC,
-                (BlendingFactorDest)dstC,
-                (BlendingFactorSrc)srcA,
-                (BlendingFactorDest)dstA
+                (BlendingFactor)srcC,
+                (BlendingFactor)dstC,
+                (BlendingFactor)srcA,
+                (BlendingFactor)dstA
             );
 
             switch (modelMaterial.BlendMode)

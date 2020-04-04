@@ -22,6 +22,7 @@
 
 using System;
 using System.Linq;
+using System.Numerics;
 using Everlook.Exceptions.Shader;
 using Everlook.Utility;
 using Everlook.Viewport.Camera;
@@ -31,6 +32,7 @@ using Everlook.Viewport.Rendering.Shaders;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 using Warcraft.Core.Structures;
 
 namespace Everlook.Viewport.Rendering
@@ -100,7 +102,7 @@ namespace Everlook.Viewport.Rendering
                 throw new ShaderNullException(typeof(BoundingBoxShader));
             }
 
-            _vertexBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+            _vertexBuffer = new Buffer<Vector3>(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = _boundingBoxData.GetCorners().ToArray()
             };
@@ -126,7 +128,7 @@ namespace Everlook.Viewport.Rendering
                 5, 3
             };
 
-            _vertexIndexesBuffer = new Buffer<byte>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
+            _vertexIndexesBuffer = new Buffer<byte>(BufferTargetARB.ElementArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = boundingBoxIndexValues
             };
@@ -135,7 +137,7 @@ namespace Everlook.Viewport.Rendering
         }
 
         /// <inheritdoc />
-        public void RenderInstances(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera, int count)
+        public void RenderInstances(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera, int count)
         {
             ThrowIfDisposed();
 
@@ -163,20 +165,23 @@ namespace Everlook.Viewport.Rendering
             _boxShader.SetProjectionMatrix(projectionMatrix);
 
             // Now draw the box
-            GL.DrawElementsInstanced
-            (
-                PrimitiveType.LineLoop,
-                24,
-                DrawElementsType.UnsignedByte,
-                new IntPtr(0),
-                count
-            );
+            unsafe
+            {
+                GL.DrawElementsInstanced
+                (
+                    PrimitiveType.LineLoop,
+                    24,
+                    DrawElementsType.UnsignedByte,
+                    (void*)0,
+                    (uint)count
+                );
+            }
 
             _vertexBuffer.DisableAttributes();
         }
 
         /// <inheritdoc />
-        public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+        public void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera)
         {
             ThrowIfDisposed();
 
@@ -201,13 +206,16 @@ namespace Everlook.Viewport.Rendering
             _boxShader.SetLineColour(this.LineColour);
 
             // Now draw the box
-            GL.DrawElements
-            (
-                PrimitiveType.LineLoop,
-                24,
-                DrawElementsType.UnsignedByte,
-                new IntPtr(0)
-            );
+            unsafe
+            {
+                GL.DrawElements
+                (
+                    PrimitiveType.LineLoop,
+                    24,
+                    DrawElementsType.UnsignedByte,
+                    (void*)0
+                );
+            }
 
             _vertexBuffer.DisableAttributes();
         }

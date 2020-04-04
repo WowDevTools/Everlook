@@ -213,12 +213,18 @@
             <e p="ModelFormat.cs" t="Include" />
           </e>
         </e>
+        <e p="Native" t="Include">
+          <e p="IGTKGLExt.cs" t="Include" />
+        </e>
         <e p="OpenTK.dll.config" t="Include" />
         <e p="Package" t="Include">
           <e p="PackageGroup.cs" t="Include" />
           <e p="PackageInteractionHandler.cs" t="Include" />
         </e>
         <e p="Program.cs" t="Include" />
+        <e p="Silk" t="Include">
+          <e p="GDKGLSymbolLoader.cs" t="Include" />
+        </e>
         <e p="UI" t="Include">
           <e p="ControlPage.cs" t="Include" />
           <e p="EverlookDirectoryExportDialog.cs" t="Include" />

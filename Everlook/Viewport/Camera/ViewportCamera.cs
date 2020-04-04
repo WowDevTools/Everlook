@@ -22,9 +22,9 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using Everlook.Configuration;
 using Everlook.Viewport.Rendering.Core;
-using OpenTK;
 
 namespace Everlook.Viewport.Camera
 {
@@ -196,13 +196,13 @@ namespace Everlook.Viewport.Camera
         /// <summary>
         /// Gets the calculated projection matrix for this camera, using the values contained inside it.
         /// </summary>
-        /// <returns>A <see cref="Matrix4"/> projection matrix.</returns>
-        public Matrix4 GetProjectionMatrix()
+        /// <returns>A <see cref="Matrix4x4"/> projection matrix.</returns>
+        public Matrix4x4 GetProjectionMatrix()
         {
-            Matrix4 projectionMatrix;
+            Matrix4x4 projectionMatrix;
             if (this.Projection == ProjectionType.Orthographic)
             {
-                projectionMatrix = Matrix4.CreateOrthographic
+                projectionMatrix = Matrix4x4.CreateOrthographic
                 (
                     this.ViewportWidth,
                     this.ViewportHeight,
@@ -213,7 +213,7 @@ namespace Everlook.Viewport.Camera
             else
             {
                 var aspectRatio = (float)this.ViewportWidth / this.ViewportHeight;
-                projectionMatrix = Matrix4.CreatePerspectiveFieldOfView
+                projectionMatrix = Matrix4x4.CreatePerspectiveFieldOfView
                 (
                     MathHelper.DegreesToRadians((float)EverlookConfiguration.Instance.CameraFOV),
                     aspectRatio,
@@ -228,10 +228,10 @@ namespace Everlook.Viewport.Camera
         /// <summary>
         /// Gets the view matrix of this camera (i.e, where it is looking).
         /// </summary>
-        /// <returns>A <see cref="Matrix4"/> view matrix.</returns>
-        public Matrix4 GetViewMatrix()
+        /// <returns>A <see cref="Matrix4x4"/> view matrix.</returns>
+        public Matrix4x4 GetViewMatrix()
         {
-            return Matrix4.LookAt
+            return Matrix4x4.LookAt
             (
                 this.Position,
                 this.Position + this.LookDirectionVector,

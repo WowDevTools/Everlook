@@ -24,6 +24,7 @@ using System;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders.Components;
 using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 using Warcraft.Core.Shading.Blending;
 using Warcraft.WMO.RootFile.Chunks;
 
@@ -98,10 +99,10 @@ namespace Everlook.Viewport.Rendering.Shaders
 
             GL.BlendFuncSeparate
             (
-                (BlendingFactorSrc)srcC,
-                (BlendingFactorDest)dstC,
-                (BlendingFactorSrc)srcA,
-                (BlendingFactorDest)dstA
+                (BlendingFactor)srcC,
+                (BlendingFactor)dstC,
+                (BlendingFactor)srcA,
+                (BlendingFactor)dstA
             );
 
             switch (modelMaterial.BlendMode)

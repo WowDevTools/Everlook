@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using Everlook.Configuration;
 using Everlook.Exceptions.Shader;
 using Everlook.Utility;
@@ -31,9 +32,7 @@ using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 using Warcraft.Core;
 using Warcraft.Core.Extensions;
 using Warcraft.Core.Shading.MDX;
@@ -78,7 +77,7 @@ namespace Everlook.Viewport.Rendering
                     this.ActorTransform.GetModelMatrix() *
                     new Vector4
                     (
-                        _model.BoundingBox.GetCenterCoordinates().ToOpenGLVector(),
+                        _model.BoundingBox.GetCenterCoordinates(),
                         1.0f
                     )
                 )
@@ -190,7 +189,7 @@ namespace Everlook.Viewport.Rendering
                 throw new ShaderNullException(typeof(GameModelShader));
             }
 
-            _vertexBuffer = new Buffer<byte>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+            _vertexBuffer = new Buffer<byte>(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = _model.Vertices.Select(v => v.PackForOpenGL()).SelectMany(b => b).ToArray()
             };
@@ -235,7 +234,7 @@ namespace Everlook.Viewport.Rendering
                     relativeIndex => skin.VertexIndices[relativeIndex]
                 ).ToArray();
 
-                var skinIndexBuffer = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
+                var skinIndexBuffer = new Buffer<ushort>(BufferTargetARB.ElementArrayBuffer, BufferUsageARB.StaticDraw)
                 {
                     Data = absoluteTriangleVertexIndexes
                 };
@@ -275,7 +274,7 @@ namespace Everlook.Viewport.Rendering
         }
 
         /// <inheritdoc />
-        public void RenderInstances(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera, int count)
+        public void RenderInstances(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera, int count)
         {
             ThrowIfDisposed();
 
@@ -333,14 +332,18 @@ namespace Everlook.Viewport.Rendering
                     PrepareBatchForRender(renderBatch);
 
                     var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
-                    GL.DrawElementsInstanced
-                    (
-                        PrimitiveType.Triangles,
-                        skinSection.TriangleCount,
-                        DrawElementsType.UnsignedShort,
-                        new IntPtr(skinSection.StartTriangleIndex * 2),
-                        count
-                    );
+
+                    unsafe
+                    {
+                        GL.DrawElementsInstanced
+                        (
+                            PrimitiveType.Triangles,
+                            skinSection.TriangleCount,
+                            DrawElementsType.UnsignedShort,
+                            (void*)(skinSection.StartTriangleIndex * 2),
+                            (uint)count
+                        );
+                    }
                 }
             }
 
@@ -355,7 +358,7 @@ namespace Everlook.Viewport.Rendering
         }
 
         /// <inheritdoc />
-        public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+        public void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera)
         {
             ThrowIfDisposed();
 
@@ -413,13 +416,16 @@ namespace Everlook.Viewport.Rendering
                     PrepareBatchForRender(renderBatch);
 
                     var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
-                    GL.DrawElements
-                    (
-                        PrimitiveType.Triangles,
-                        skinSection.TriangleCount,
-                        DrawElementsType.UnsignedShort,
-                        new IntPtr(skinSection.StartTriangleIndex * 2)
-                    );
+                    unsafe
+                    {
+                        GL.DrawElements
+                        (
+                            PrimitiveType.Triangles,
+                            skinSection.TriangleCount,
+                            DrawElementsType.UnsignedShort,
+                            (void*)(skinSection.StartTriangleIndex * 2)
+                        );
+                    }
                 }
             }
 

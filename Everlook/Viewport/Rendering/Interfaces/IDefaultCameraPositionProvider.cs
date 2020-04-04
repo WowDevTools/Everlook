@@ -20,7 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using OpenTK;
+using System.Numerics;
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {

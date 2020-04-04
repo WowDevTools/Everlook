@@ -24,7 +24,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Everlook.Explorer;
-using OpenTK.Audio.OpenAL;
+using Silk.NET.OpenAL;
 using Warcraft.Core;
 
 namespace Everlook.Audio.Wave
@@ -40,7 +40,7 @@ namespace Everlook.Audio.Wave
         private bool _isDisposed;
 
         /// <inheritdoc />
-        public ALFormat Format
+        public BufferFormat Format
         {
             get
             {
@@ -48,11 +48,11 @@ namespace Everlook.Audio.Wave
                 {
                     case 1:
                     {
-                        return this.BitsPerSample == 8 ? ALFormat.Mono8 : ALFormat.Mono16;
+                        return this.BitsPerSample == 8 ? BufferFormat.Mono8 : BufferFormat.Mono16;
                     }
                     case 2:
                     {
-                        return this.BitsPerSample == 8 ? ALFormat.Stereo8 : ALFormat.Stereo16;
+                        return this.BitsPerSample == 8 ? BufferFormat.Stereo8 : BufferFormat.Stereo16;
                     }
                     default:
                     {

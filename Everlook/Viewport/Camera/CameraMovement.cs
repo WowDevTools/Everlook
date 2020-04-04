@@ -21,7 +21,9 @@
 //
 
 using System;
+using System.Numerics;
 using Everlook.Configuration;
+using Gdk;
 using OpenTK;
 using OpenTK.Input;
 

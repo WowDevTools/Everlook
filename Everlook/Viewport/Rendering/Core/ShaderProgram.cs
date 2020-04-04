@@ -21,13 +21,12 @@
 //
 
 using System;
+using System.Numerics;
 using Everlook.Exceptions.Shader;
 using Everlook.Utility;
 using Everlook.Viewport.Rendering.Shaders.GLSLExtended;
 using log4net;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Core
 {
@@ -88,7 +87,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// Sets the Model-View-Projection matrix of this shader.
         /// </summary>
         /// <param name="mvpMatrix">The ModelViewProjection matrix.</param>
-        public void SetMVPMatrix(Matrix4 mvpMatrix)
+        public void SetMVPMatrix(Matrix4x4 mvpMatrix)
         {
             SetMatrix(mvpMatrix, MVPIdentifier);
         }
@@ -112,12 +111,12 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="matrix">The matrix.</param>
         /// <param name="uniformName">The name of the uniform variable.</param>
         /// <param name="shouldTranspose">Whether or not the matrix should be transposed.</param>
-        protected void SetMatrix(Matrix4 matrix, string uniformName, bool shouldTranspose = false)
+        protected void SetMatrix(Matrix4x4 matrix, string uniformName, bool shouldTranspose = false)
         {
             Enable();
 
             var variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
-            GL.UniformMatrix4(variableHandle, shouldTranspose, ref matrix);
+            GL.UniformMatrix4x4(variableHandle, shouldTranspose, ref matrix);
         }
 
         /// <summary>
@@ -247,10 +246,10 @@ namespace Everlook.Viewport.Rendering.Core
 
             GL.LinkProgram(program);
 
-            GL.GetProgram(program, GetProgramParameterName.LinkStatus, out var result);
+            GL.GetProgram(program, ProgramPropertyARB.LinkStatus, out var result);
             var linkingSucceeded = result > 0;
 
-            GL.GetProgram(program, GetProgramParameterName.InfoLogLength, out var linkingLogLength);
+            GL.GetProgram(program, ProgramPropertyARB.InfoLogLength, out var linkingLogLength);
             GL.GetProgramInfoLog(program, out var linkingLog);
 
             // Clean up the shader source code and unlinked object files from graphics memory
@@ -298,10 +297,10 @@ namespace Everlook.Viewport.Rendering.Core
             GL.ShaderSource(shader, shaderSource);
             GL.CompileShader(shader);
 
-            GL.GetShader(shader, ShaderParameter.CompileStatus, out var result);
+            GL.GetShader(shader, ShaderParameterName.CompileStatus, out var result);
             var compilationSucceeded = result > 0;
 
-            GL.GetShader(shader, ShaderParameter.InfoLogLength, out var compilationLogLength);
+            GL.GetShader(shader, ShaderParameterName.InfoLogLength, out var compilationLogLength);
             GL.GetShaderInfoLog(shader, out var compilationLog);
 
             if (!compilationSucceeded)

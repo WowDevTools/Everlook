@@ -22,7 +22,7 @@
 
 using System;
 using System.Collections.Generic;
-using OpenTK.Audio;
+using Silk.NET.OpenAL;
 
 namespace Everlook.Audio
 {

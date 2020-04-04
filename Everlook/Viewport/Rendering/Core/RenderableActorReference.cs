@@ -21,9 +21,9 @@
 //
 
 using System;
+using System.Numerics;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Interfaces;
-using OpenTK;
 
 namespace Everlook.Viewport.Rendering.Core
 {
@@ -88,7 +88,7 @@ namespace Everlook.Viewport.Rendering.Core
         }
 
         /// <inheritdoc />
-        public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+        public void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera)
         {
             _target.ActorTransform = this.ActorTransform;
             _target.Render(viewMatrix, projectionMatrix, camera);

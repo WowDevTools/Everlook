@@ -22,6 +22,7 @@
 
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Shaders.Components
 {

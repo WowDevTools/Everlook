@@ -25,7 +25,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Everlook.Explorer;
 using MP3Sharp;
-using OpenTK.Audio.OpenAL;
+using Silk.NET.OpenAL;
 using Warcraft.Core;
 
 namespace Everlook.Audio.MP3
@@ -41,7 +41,7 @@ namespace Everlook.Audio.MP3
         private bool _isDisposed;
 
         /// <inheritdoc />
-        public ALFormat Format
+        public BufferFormat Format
         {
             get
             {
@@ -49,11 +49,11 @@ namespace Everlook.Audio.MP3
                 {
                     case 1:
                     {
-                        return ALFormat.Mono16;
+                        return BufferFormat.Mono16;
                     }
                     case 2:
                     {
-                        return ALFormat.Stereo16;
+                        return BufferFormat.Stereo16;
                     }
                     default:
                     {

@@ -22,12 +22,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 using Warcraft.Core.Extensions;
 using Warcraft.Core.Structures;
 
@@ -177,7 +177,7 @@ namespace Everlook.Viewport.Rendering
             this.ActorTransform = new Transform();
 
             GL.Enable(EnableCap.Blend);
-            GL.BlendEquation(BlendEquationMode.FuncAdd);
+            GL.BlendEquation(BlendEquationModeEXT.FuncAdd);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             this.IsInitialized = true;
@@ -191,7 +191,7 @@ namespace Everlook.Viewport.Rendering
         protected abstract Texture2D LoadTexture();
 
         /// <inheritdoc />
-        public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+        public void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera)
         {
             ThrowIfDisposed();
 
@@ -218,24 +218,35 @@ namespace Everlook.Viewport.Rendering
             // Send the vertices to the shader
             GL.EnableVertexAttribArray(0);
             this.VertexBuffer.Bind();
-            GL.VertexAttribPointer(
-                0,
-                2,
-                VertexAttribPointerType.Float,
-                false,
-                0,
-                0);
+
+            unsafe
+            {
+                GL.VertexAttribPointer
+                (
+                    0u,
+                    2,
+                    VertexAttribPointerType.Float,
+                    false,
+                    0u,
+                    (void*)0
+                );
+            }
 
             // Send the UV coordinates to the shader
             GL.EnableVertexAttribArray(1);
             this.UVBuffer.Bind();
-            GL.VertexAttribPointer(
-                1,
-                2,
-                VertexAttribPointerType.Float,
-                false,
-                0,
-                0);
+            unsafe
+            {
+                GL.VertexAttribPointer
+                (
+                    1u,
+                    2,
+                    VertexAttribPointerType.Float,
+                    false,
+                    0u,
+                    (void*)0
+                );
+            }
 
             // Set the channel mask
             this.Shader.SetChannelMask(this.ChannelMask);
@@ -253,7 +264,10 @@ namespace Everlook.Viewport.Rendering
 
             // Finally, draw the image
             this.VertexIndexBuffer.Bind();
-            GL.DrawElements(BeginMode.Triangles, 6, DrawElementsType.UnsignedShort, 0);
+            unsafe
+            {
+                GL.DrawElements(PrimitiveType.Triangles, 6u, DrawElementsType.UnsignedShort, (void*)0);
+            }
 
             // Release the attribute arrays
             GL.DisableVertexAttribArray(0);
@@ -285,7 +299,7 @@ namespace Everlook.Viewport.Rendering
             };
 
             // Buffer the generated vertices in the GPU
-            return new Buffer<Vector2>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+            return new Buffer<Vector2>(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = vertexPositions.ToArray()
             };
@@ -300,7 +314,7 @@ namespace Everlook.Viewport.Rendering
             // Generate vertex indexes
             var vertexIndexes = new List<ushort> { 1, 0, 2, 2, 3, 1 };
 
-            return new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
+            return new Buffer<ushort>(BufferTargetARB.ElementArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = vertexIndexes.ToArray()
             };
@@ -322,7 +336,7 @@ namespace Everlook.Viewport.Rendering
             };
 
             // Buffer the generated UV coordinates in the GPU
-            return new Buffer<Vector2>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+            return new Buffer<Vector2>(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = textureCoordinates.ToArray()
             };

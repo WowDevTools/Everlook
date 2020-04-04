@@ -20,8 +20,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System.Numerics;
 using Everlook.Viewport.Camera;
-using OpenTK;
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {
@@ -37,6 +37,6 @@ namespace Everlook.Viewport.Rendering.Interfaces
         /// <param name="projectionMatrix">The projection matrix.</param>
         /// <param name="camera">The user camera.</param>
         /// <param name="count">The number of instances to render.</param>
-        void RenderInstances(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera, int count);
+        void RenderInstances(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera, int count);
     }
 }

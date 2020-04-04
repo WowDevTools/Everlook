@@ -23,7 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenTK;
+using System.Numerics;
 using Warcraft.Core.Interpolation;
 using Warcraft.Core.Structures;
 
@@ -56,16 +56,13 @@ namespace Everlook.Viewport.Rendering.Core
 
             // Two-component vector types
             { typeof(Vector2), v => new []{ (float)v.X, (float)v.Y } },
-            { typeof(System.Numerics.Vector2), v => new []{ (float)v.X, (float)v.Y } },
 
             // Three-component vector types
             { typeof(Vector3), v => new []{ (float)v.X, (float)v.Y, (float)v.Z } },
-            { typeof(System.Numerics.Vector3), v => new []{ (float)v.X, (float)v.Y, (float)v.Z } },
             { typeof(RGB), v => new []{ (float)v.R, (float)v.G, (float)v.B } },
 
             // Four-component vector types
             { typeof(Quaternion), v => new []{ (float)v.X, (float)v.Y, (float)v.Z, (float)v.W } },
-            { typeof(System.Numerics.Quaternion), v => new []{ (float)v.X, (float)v.Y, (float)v.Z, (float)v.W } },
         };
 
         private static readonly Dictionary<Type, Func<float[], dynamic>> TypeCoalescers =
@@ -86,16 +83,13 @@ namespace Everlook.Viewport.Rendering.Core
 
             // Two-component vector types
             { typeof(Vector2), v => new Vector2(v[0], v[1]) },
-            { typeof(System.Numerics.Vector2), v => new System.Numerics.Vector2(v[0], v[1]) },
 
             // Three-component vector types
             { typeof(Vector3), v => new Vector3(v[0], v[1], v[2]) },
-            { typeof(System.Numerics.Vector3), v => new System.Numerics.Vector3(v[0], v[1], v[2]) },
             { typeof(RGB), v => new RGB(v[0], v[1], v[2]) },
 
             // Four-component vector types
             { typeof(Quaternion), v => new Quaternion(v[0], v[1], v[2], v[3]) },
-            { typeof(System.Numerics.Quaternion), v => new System.Numerics.Quaternion(v[0], v[1], v[2], v[3]) },
         };
 
         /// <summary>

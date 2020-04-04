@@ -21,9 +21,9 @@
 //
 
 using System;
+using System.Numerics;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
-using OpenTK;
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {
@@ -72,6 +72,6 @@ namespace Everlook.Viewport.Rendering.Interfaces
         /// <param name="viewMatrix">The view matrix.</param>
         /// <param name="projectionMatrix">The projection matrix.</param>
         /// <param name="camera">The user camera.</param>
-        void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera);
+        void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera);
     }
 }

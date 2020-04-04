@@ -24,14 +24,14 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using log4net;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 using Warcraft.BLP;
-using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
+
 using Image = System.Drawing.Image;
+using PixelFormat = Silk.NET.OpenGL.PixelFormat;
 using Rectangle = System.Drawing.Rectangle;
 using SysPixelFormat = System.Drawing.Imaging.PixelFormat;
 
@@ -360,17 +360,17 @@ namespace Everlook.Viewport.Rendering.Core
                     {
                         case BLPPixelFormat.DXT1:
                         {
-                            compressionFormat = InternalFormat.CompressedRgbaS3tcDxt1Ext;
+                            compressionFormat = InternalFormat.CompressedRgbaS3TCDxt1Ext;
                             break;
                         }
                         case BLPPixelFormat.DXT3:
                         {
-                            compressionFormat = InternalFormat.CompressedRgbaS3tcDxt3Ext;
+                            compressionFormat = InternalFormat.CompressedRgbaS3TCDxt3Ext;
                             break;
                         }
                         case BLPPixelFormat.DXT5:
                         {
-                            compressionFormat = InternalFormat.CompressedRgbaS3tcDxt5Ext;
+                            compressionFormat = InternalFormat.CompressedRgbaS3TCDxt5Ext;
                             break;
                         }
                         default:
@@ -451,18 +451,18 @@ namespace Everlook.Viewport.Rendering.Core
                         (
                             TextureTarget.Texture2D,
                             0, // level
-                            PixelInternalFormat.Rgba,
-                            inTextureData.Width,
-                            inTextureData.Height,
+                            (int)InternalFormat.Rgba,
+                            (uint)inTextureData.Width,
+                            (uint)inTextureData.Height,
                             0, // border
-                            GLPixelFormat.Rgba,
+                            PixelFormat.Rgba,
                             PixelType.UnsignedByte,
-                            new IntPtr(ptr)
+                            ptr
                         );
                     }
                 }
 
-                GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+                GL.GenerateMipmap(TextureTarget.Texture2D);
             }
         }
 

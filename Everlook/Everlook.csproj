@@ -54,6 +54,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="AdvancedDLSupport" Version="3.2.0" />
     <PackageReference Include="AssimpNet" Version="4.1.0" />
     <PackageReference Include="GtkSharp" Version="3.22.25.74" />
     <PackageReference Include="ini-parser" Version="2.5.2" />
@@ -61,9 +62,12 @@
     <PackageReference Include="libwarcraft" Version="3.0.0-alpha1" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="MP3Sharp" Version="1.0.5" />
-    <PackageReference Include="OpenTK" Version="3.0.1" />
     
     <PackageReference Include="NETStandard.Library.NETFramework" Version="2.0.0-preview2-25405-01" />
+    
+    <PackageReference Include="Silk.NET.OpenAL" Version="1.0.1" />
+    
+    <PackageReference Include="Silk.NET.OpenGL" Version="1.0.1" />
     
     <PackageReference Include="System.Memory" Version="4.5.4" />
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />

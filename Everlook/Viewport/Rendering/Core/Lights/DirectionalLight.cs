@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Numerics;
 using OpenTK;
 using OpenTK.Graphics;
 
@@ -56,7 +57,7 @@ namespace Everlook.Viewport.Rendering.Core.Lights
         /// <summary>
         /// Gets or sets the colour of the light.
         /// </summary>
-        public Color4 LightColour { get; set; }
+        public Vector4 LightColour { get; set; }
 
         /// <summary>
         /// Gets or sets the intensity, in lux, of the light.

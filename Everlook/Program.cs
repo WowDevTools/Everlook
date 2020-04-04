@@ -25,12 +25,13 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using Everlook.Explorer;
+using Everlook.Silk;
 using Everlook.UI;
 using Everlook.Utility;
 using FileTree.Tree.Serialized;
 using GLib;
 using log4net;
-using OpenTK;
+using Silk.NET.Core.Platform;
 using Application = Gtk.Application;
 
 namespace Everlook
@@ -66,57 +67,27 @@ namespace Everlook
             Log.Info("----------------");
             Log.Info("Initializing Everlook...");
 
-            Log.Info("Initializing OpenTK...");
+            Log.Info("Initializing Silk...");
+            SilkManager.Register(new GDKGLSymbolLoader());
 
-            // OpenGL
-            var toolkitOptions = new ToolkitOptions
-            {
-                Backend = PlatformBackend.PreferNative,
-                EnableHighResolution = true
-            };
+            Log.Info("Initializing GTK...");
 
-            using (Toolkit.Init(toolkitOptions))
-            {
-                Log.Info($"OpenTK initialized using the {GetOpenTKBackend()} backend.");
+            // Bind any unhandled exceptions in the GTK UI so that they are logged.
+            ExceptionManager.UnhandledException += OnGLibUnhandledException;
 
-                Log.Info("Initializing GTK...");
+            Log.Info("Registering treeview types with the native backend...");
+            var nodeType = (GType)typeof(SerializedNode);
+            GType.Register(nodeType, typeof(SerializedNode));
 
-                // Bind any unhandled exceptions in the GTK UI so that they are logged.
-                ExceptionManager.UnhandledException += OnGLibUnhandledException;
+            var referenceType = (GType)typeof(FileReference);
+            GType.Register(referenceType, typeof(FileReference));
 
-                Log.Info("Registering treeview types with the native backend...");
-                var nodeType = (GType)typeof(SerializedNode);
-                GType.Register(nodeType, typeof(SerializedNode));
-
-                var referenceType = (GType)typeof(FileReference);
-                GType.Register(referenceType, typeof(FileReference));
-
-                // GTK
-                IconManager.LoadEmbeddedIcons();
-                Application.Init();
-                var win = MainWindow.Create();
-                win.Show();
-                Application.Run();
-            }
-        }
-
-        /// <summary>
-        /// Gets the backend used by OpenTK.
-        /// </summary>
-        /// <returns>The name of the backend.</returns>
-        private static string GetOpenTKBackend()
-        {
-            if (OpenTK.Configuration.RunningOnSdl2)
-            {
-                return "SDL2";
-            }
-
-            if (OpenTK.Configuration.RunningOnX11)
-            {
-                return "X11";
-            }
-
-            return "native";
+            // GTK
+            IconManager.LoadEmbeddedIcons();
+            Application.Init();
+            var win = MainWindow.Create();
+            win.Show();
+            Application.Run();
         }
 
         /// <summary>
@@ -167,18 +138,6 @@ namespace Everlook
                         "If you're on macOS, try installing GTK through Homebrew.\n" +
                         "If you're on Linux, check with your package maintainer that all dependencies are properly " +
                         "listed."
-                    );
-                    break;
-                }
-                case GraphicsException _:
-                {
-                    Log.Fatal
-                    (
-                        "Some type of graphics error occurred. On macOS, this is usally indicative of an OpenGL " +
-                        "context which doesn't meet Everlook's requirements. Please note that Everlook requires at " +
-                        "least OpenGL 3.3.\n" +
-                        "If you're running via XQuartz, please note that XQuartz does not provide contexts above " +
-                        "OpenGL 2.1."
                     );
                     break;
                 }

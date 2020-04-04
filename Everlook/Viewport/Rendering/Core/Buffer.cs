@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Everlook.Viewport.Rendering.Interfaces;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Core
 {
@@ -37,10 +37,10 @@ namespace Everlook.Viewport.Rendering.Core
         private readonly int _nativeBufferID;
 
         /// <inheritdoc />
-        public BufferTarget Target { get; }
+        public BufferTargetARB Target { get; }
 
         /// <inheritdoc />
-        public BufferUsageHint Usage { get; }
+        public BufferUsageARB Usage { get; }
 
         /// <inheritdoc />
         public int Length { get; private set; }
@@ -79,7 +79,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         /// <param name="target">The intended use of the buffer.</param>
         /// <param name="usage">A hint as to how the buffer's data might be read or written.</param>
-        public Buffer(BufferTarget target, BufferUsageHint usage)
+        public Buffer(BufferTargetARB target, BufferUsageARB usage)
         {
             this.Target = target;
             this.Usage = usage;

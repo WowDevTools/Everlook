@@ -23,7 +23,7 @@
 using System;
 using System.Collections.Generic;
 using Everlook.Viewport.Rendering.Core;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {
@@ -35,12 +35,12 @@ namespace Everlook.Viewport.Rendering.Interfaces
         /// <summary>
         /// Gets the intended use of the buffer.
         /// </summary>
-        BufferTarget Target { get; }
+        BufferTargetARB Target { get; }
 
         /// <summary>
         /// Gets a hinting value as to how the buffer's data might be read or written.
         /// </summary>
-        BufferUsageHint Usage { get; }
+        BufferUsageARB Usage { get; }
 
         /// <summary>
         /// Gets the byte count of the data in the buffer.

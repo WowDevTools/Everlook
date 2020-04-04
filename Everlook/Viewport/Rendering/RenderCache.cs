@@ -27,12 +27,11 @@ using Everlook.Utility;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders;
 using log4net;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 using Warcraft.BLP;
 using Warcraft.Core;
 using Warcraft.MDX.Visual;
 using Warcraft.MPQ;
-using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 using SysPixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Everlook.Viewport.Rendering
@@ -207,11 +206,11 @@ namespace Everlook.Viewport.Rendering
 
             var wrapS = texture.Flags.HasFlag(MDXTextureFlags.TextureWrapX)
                 ? TextureWrapMode.Repeat
-                : TextureWrapMode.Clamp;
+                : TextureWrapMode.ClampToBorder;
 
             var wrapT = texture.Flags.HasFlag(MDXTextureFlags.TextureWrapY)
                 ? TextureWrapMode.Repeat
-                : TextureWrapMode.Clamp;
+                : TextureWrapMode.ClampToBorder;
 
             return GetTexture(filename!, gameContext.Assets, wrapS, wrapT);
         }

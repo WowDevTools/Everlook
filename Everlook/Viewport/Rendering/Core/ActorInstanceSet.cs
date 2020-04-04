@@ -23,16 +23,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Interfaces;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Core
 {
     /// <summary>
-    /// Represets a set of actor instances, differing by their transforms.
+    /// Represents a set of actor instances, differing by their transforms.
     /// </summary>
     /// <typeparam name="T">A renderable supporting instanced rendering.</typeparam>
     public class ActorInstanceSet<T> : IRenderable, IBoundedModel
@@ -64,7 +64,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         public int Count => _instanceTransforms.Count;
 
-        private Buffer<Matrix4>? _instanceModelMatrices;
+        private Buffer<Matrix4x4>? _instanceModelMatrices;
 
         private List<Transform> _instanceTransforms;
 
@@ -92,26 +92,26 @@ namespace Everlook.Viewport.Rendering.Core
         /// <inheritdoc />
         public void Initialize()
         {
-            _instanceModelMatrices = new Buffer<Matrix4>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
+            _instanceModelMatrices = new Buffer<Matrix4x4>(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw);
 
             _instanceModelMatrices.AttachAttributePointer
             (
-                new VertexAttributePointer(6, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 0)
+                new VertexAttributePointer(6, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4x4>(), 0)
             );
 
             _instanceModelMatrices.AttachAttributePointer
             (
-                new VertexAttributePointer(7, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 16)
+                new VertexAttributePointer(7, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4x4>(), 16)
             );
 
             _instanceModelMatrices.AttachAttributePointer
             (
-                new VertexAttributePointer(8, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 32)
+                new VertexAttributePointer(8, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4x4>(), 32)
             );
 
             _instanceModelMatrices.AttachAttributePointer
             (
-                new VertexAttributePointer(9, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 48)
+                new VertexAttributePointer(9, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4x4>(), 48)
             );
 
             _instanceModelMatrices.Bind();
@@ -127,7 +127,7 @@ namespace Everlook.Viewport.Rendering.Core
         }
 
         /// <inheritdoc />
-        public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+        public void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera)
         {
             if (!this.IsInitialized || _instanceModelMatrices is null)
             {

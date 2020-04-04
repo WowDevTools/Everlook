@@ -22,12 +22,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Core
 {
@@ -119,7 +118,7 @@ namespace Everlook.Viewport.Rendering.Core
             vertexIndexes.AddRange(new ushort[] { 0, Quads * 2 });
             vertexIndexes.AddRange(new ushort[] { 1, (Quads * 2) + 1 });
 
-            _vertices = new Buffer<float>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+            _vertices = new Buffer<float>(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = vertices.ToArray()
             };
@@ -130,14 +129,14 @@ namespace Everlook.Viewport.Rendering.Core
                 new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0)
             );
 
-            _vertexIndexes = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
+            _vertexIndexes = new Buffer<ushort>(BufferTargetARB.ElementArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = vertexIndexes.ToArray()
             };
         }
 
         /// <inheritdoc />
-        public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+        public void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera)
         {
             ThrowIfDisposed();
 

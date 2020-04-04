@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Everlook.Configuration;
 using Everlook.Exceptions.Shader;
 using Everlook.Utility;
@@ -31,19 +32,10 @@ using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
 using log4net;
-using OpenTK;
+using Silk.NET.OpenGL;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
 using Warcraft.WMO.RootFile.Chunks;
-using BufferTarget = OpenTK.Graphics.OpenGL.BufferTarget;
-using BufferUsageHint = OpenTK.Graphics.OpenGL.BufferUsageHint;
-using DrawElementsType = OpenTK.Graphics.OpenGL.DrawElementsType;
-using EnableCap = OpenTK.Graphics.OpenGL.EnableCap;
-using GL = OpenTK.Graphics.OpenGL.GL;
-using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
-using TextureUnit = OpenTK.Graphics.OpenGL.TextureUnit;
-using TextureWrapMode = OpenTK.Graphics.OpenGL.TextureWrapMode;
-using VertexAttribPointerType = OpenTK.Graphics.OpenGL.VertexAttribPointerType;
 
 namespace Everlook.Viewport.Rendering
 {
@@ -95,8 +87,7 @@ namespace Everlook.Viewport.Rendering
                         _model.Groups
                         .First()
                         .GetBoundingBox()
-                        .GetCenterCoordinates()
-                        .ToOpenGLVector(),
+                        .GetCenterCoordinates(),
                         1.0f
                     )
                 )
@@ -314,8 +305,8 @@ namespace Everlook.Viewport.Rendering
                         (
                             new Transform
                             (
-                                doodadInstance.Position.ToOpenGLVector(),
-                                doodadInstance.Orientation.ToOpenGLQuaternion(),
+                                doodadInstance.Position,
+                                doodadInstance.Orientation,
                                 new Vector3(doodadInstance.Scale)
                             )
                         );
@@ -341,25 +332,25 @@ namespace Everlook.Viewport.Rendering
                 Buffers
             */
 
-            var vertexBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
-            var normalBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
-            var coordinateBuffer = new Buffer<Vector2>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
-            var vertexIndexes = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw);
+            var vertexBuffer = new Buffer<Vector3>(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw);
+            var normalBuffer = new Buffer<Vector3>(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw);
+            var coordinateBuffer = new Buffer<Vector2>(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw);
+            var vertexIndexes = new Buffer<ushort>(BufferTargetARB.ElementArrayBuffer, BufferUsageARB.StaticDraw);
 
             // Upload all of the vertices in this group
-            vertexBuffer.Data = modelGroup.GetVertices().Select(v => v.ToOpenGLVector()).ToArray();
+            vertexBuffer.Data = modelGroup.GetVertices().Select(v => v).ToArray();
             _vertexBufferLookup.Add(modelGroup, vertexBuffer);
 
             vertexBuffer.AttachAttributePointer(new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0));
 
             // Upload all of the normals in this group
-            normalBuffer.Data = modelGroup.GetNormals().Select(v => v.ToOpenGLVector()).ToArray();
+            normalBuffer.Data = modelGroup.GetNormals().Select(v => v).ToArray();
             _normalBufferLookup.Add(modelGroup, normalBuffer);
 
             normalBuffer.AttachAttributePointer(new VertexAttributePointer(1, 3, VertexAttribPointerType.Float, 0, 0));
 
             // Upload all of the UVs in this group
-            coordinateBuffer.Data = modelGroup.GetTextureCoordinates().Select(v => v.ToOpenGLVector()).ToArray();
+            coordinateBuffer.Data = modelGroup.GetTextureCoordinates().Select(v => v).ToArray();
             _textureCoordinateBufferLookup.Add(modelGroup, coordinateBuffer);
 
             coordinateBuffer.AttachAttributePointer
@@ -397,7 +388,7 @@ namespace Everlook.Viewport.Rendering
         }
 
         /// <inheritdoc />
-        public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+        public void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera)
         {
             ThrowIfDisposed();
 
@@ -466,7 +457,7 @@ namespace Everlook.Viewport.Rendering
         /// <summary>
         /// Renders the specified model group on a batch basis.
         /// </summary>
-        private void RenderGroup(ModelGroup modelGroup, Matrix4 modelViewProjection)
+        private void RenderGroup(ModelGroup modelGroup, Matrix4x4 modelViewProjection)
         {
             if (_shader is null || this.DoodadSet is null)
             {
@@ -524,15 +515,18 @@ namespace Everlook.Viewport.Rendering
                 _shader.BindTexture2D(TextureUnit.Texture0, TextureUniform.Texture0, texture);
 
                 // Finally, draw the model
-                GL.DrawRangeElements
-                (
-                    PrimitiveType.Triangles,
-                    renderBatch.FirstPolygonIndex,
-                    renderBatch.FirstPolygonIndex + renderBatch.PolygonIndexCount - 1,
-                    renderBatch.PolygonIndexCount,
-                    DrawElementsType.UnsignedShort,
-                    new IntPtr(renderBatch.FirstPolygonIndex * 2)
-                );
+                unsafe
+                {
+                    GL.DrawRangeElements
+                    (
+                        PrimitiveType.Triangles,
+                        renderBatch.FirstPolygonIndex,
+                        renderBatch.FirstPolygonIndex + renderBatch.PolygonIndexCount - 1,
+                        renderBatch.PolygonIndexCount,
+                        DrawElementsType.UnsignedShort,
+                        (void*)(renderBatch.FirstPolygonIndex * 2)
+                    );
+                }
             }
 
             // Release the attribute arrays

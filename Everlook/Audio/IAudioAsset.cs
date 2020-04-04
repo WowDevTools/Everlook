@@ -22,7 +22,7 @@
 
 using System;
 using System.IO;
-using OpenTK.Audio.OpenAL;
+using Silk.NET.OpenAL;
 
 namespace Everlook.Audio
 {
@@ -32,9 +32,9 @@ namespace Everlook.Audio
     public interface IAudioAsset : IDisposable
     {
         /// <summary>
-        /// Gets the <see cref="ALFormat"/> that the PCM data is in.
+        /// Gets the <see cref="BufferFormat"/> that the PCM data is in.
         /// </summary>
-        ALFormat Format { get; }
+        BufferFormat Format { get; }
 
         /// <summary>
         /// Gets the raw PCM data of the audio asset.

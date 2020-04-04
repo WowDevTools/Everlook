@@ -43,8 +43,6 @@ using Gdk;
 using GLib;
 using Gtk;
 using log4net;
-using OpenTK.Graphics;
-using OpenTK.Input;
 using Warcraft.Core;
 
 using static Everlook.Utility.DataLoadingDelegates;
@@ -126,18 +124,7 @@ namespace Everlook.UI
             _uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             _fileLoadingCancellationSource = new CancellationTokenSource();
 
-            var graphicsMode = new GraphicsMode
-            (
-                new ColorFormat(24),
-                24,
-                0,
-                4,
-                0,
-                2,
-                false
-            );
-
-            _viewportWidget = new ViewportArea(graphicsMode, 3, 3, GraphicsContextFlags.Default)
+            _viewportWidget = new ViewportArea(3, 3)
             {
                 AutoRender = true,
                 CanFocus = true
@@ -904,8 +891,8 @@ namespace Everlook.UI
 
             _viewportWidget.GrabFocus();
 
-            _renderingEngine.InitialMouseX = Mouse.GetCursorState().X;
-            _renderingEngine.InitialMouseY = Mouse.GetCursorState().Y;
+            _renderingEngine.InitialMouseX = args.Event.X;
+            _renderingEngine.InitialMouseY = args.Event.Y;
 
             _renderingEngine.WantsToMove = true;
         }

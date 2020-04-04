@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System.Numerics;
 using Everlook.Viewport.Rendering.Core;
 using OpenTK;
 using OpenTK.Graphics;
@@ -60,7 +61,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// Sets the current view matrix of the shader.
         /// </summary>
         /// <param name="viewMatrix">The model-view matrix.</param>
-        public void SetViewMatrix(Matrix4 viewMatrix)
+        public void SetViewMatrix(Matrix4x4 viewMatrix)
         {
             SetMatrix(viewMatrix, ViewMatrix);
         }
@@ -69,7 +70,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// Sets the current projection matrix of the shader.
         /// </summary>
         /// <param name="projectionMatrix">The projection matrix.</param>
-        public void SetProjectionMatrix(Matrix4 projectionMatrix)
+        public void SetProjectionMatrix(Matrix4x4 projectionMatrix)
         {
             SetMatrix(projectionMatrix, ProjectionMatrix);
         }

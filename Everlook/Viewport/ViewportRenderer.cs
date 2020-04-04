@@ -30,8 +30,7 @@ using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Gdk;
 using log4net;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport
 {
@@ -101,12 +100,12 @@ namespace Everlook.Viewport
         /// <summary>
         /// Gets or sets the X position of the mouse during the last frame, relative to the <see cref="_viewportWidget"/>.
         /// </summary>
-        public int InitialMouseX { get; set; }
+        public double InitialMouseX { get; set; }
 
         /// <summary>
         /// Gets or sets the Y position of the mouse during the last frame, relative to the <see cref="_viewportWidget"/>.
         /// </summary>
-        public int InitialMouseY { get; set; }
+        public double InitialMouseY { get; set; }
 
         /*
             Runtime transitional OpenGL data.
@@ -167,7 +166,7 @@ namespace Everlook.Viewport
             var extensions = new List<string>();
             for (var i = 0; i < numExtensions; ++i)
             {
-                extensions.Add(GL.GetString(StringNameIndexed.Extensions, i));
+                extensions.Add(GL.GetString(StringName.Extensions, i));
             }
 
             if (extensions.Contains("GL_KHR_debug"))
@@ -193,7 +192,7 @@ namespace Everlook.Viewport
 
             // Set a simple default blending function
             GL.Enable(EnableCap.Blend);
-            GL.BlendEquation(BlendEquationMode.FuncAdd);
+            GL.BlendEquation(BlendEquationModeEXT.FuncAdd);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             // Initialize the viewport
