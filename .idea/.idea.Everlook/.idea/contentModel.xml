@@ -9,6 +9,7 @@
     <e p="$USER_HOME$/.nuget/packages/libfiletree/1.0.0-rc7/contentFiles/any/netstandard2.0/dictionary.dic" t="Include" />
     <e p="$PROJECT_DIR$" t="IncludeFlat">
       <e p="Everlook" t="IncludeRecursive">
+        <e p="$(StyleCopRuleset" t="Include" />
         <e p="Audio" t="Include">
           <e p="AudioGroup.cs" t="Include" />
           <e p="AudioManager.cs" t="Include" />
@@ -332,6 +333,17 @@
             <e p="Debug" t="Include">
               <e p="net461" t="Include">
                 <e p="Everlook.AssemblyInfo.cs" t="Include" />
+                <e p="NuGet" t="Include">
+                  <e p="74B5D4541C0390BD6C62F006ECE74F7C0EC694F0" t="Include">
+                    <e p="Nullable" t="Include">
+                      <e p="1.2.0" t="Include">
+                        <e p="Nullable" t="Include">
+                          <e p="NullableAttributes.cs" t="Include" />
+                        </e>
+                      </e>
+                    </e>
+                  </e>
+                </e>
               </e>
             </e>
           </e>
@@ -340,7 +352,6 @@
       <e p="Everlook.sln" t="IncludeFlat" />
       <e p="packages" t="ExcludeRecursive" />
       <e p="stylecop.json" t="Include" />
-      <e p="stylecop.ruleset" t="Include" />
     </e>
   </component>
   <component name="RiderRiderContentModelStore">
