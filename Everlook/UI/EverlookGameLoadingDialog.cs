@@ -261,10 +261,10 @@ namespace Everlook.UI
                                            $"{_currentLoadingProgress.OperationCount}) {statusMessage}";
         }
 
-        /// <inheritdoc />
-        public override void Destroy()
+        /// <inheritdoc/>
+        protected override void Dispose(bool disposing)
         {
-            base.Destroy();
+            base.Dispose(disposing);
 
             GLib.Timeout.Remove(_jokeTimeoutID);
             GLib.Timeout.Remove(_secondaryProgressPulserTimeoutID);

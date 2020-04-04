@@ -125,8 +125,7 @@ namespace Everlook.Audio.Wave
                 );
             }
 
-            var fileBytes = fileReference.Extract();
-            if (fileBytes == null)
+            if (!fileReference.TryExtract(out var fileBytes))
             {
                 throw new ArgumentException("The file data could not be extracted.", nameof(fileReference));
             }

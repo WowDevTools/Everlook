@@ -110,7 +110,11 @@ namespace Everlook.UI
 
             this.Title = $"Export Image | {imageFilename}";
 
-            var file = _exportTarget.Extract();
+            if (!_exportTarget.TryExtract(out var file))
+            {
+                throw new ArgumentException("The file data could not be extracted.", nameof(_exportTarget));
+            }
+
             _image = new BLP(file);
 
             _exportFormatComboBox.Active = (int)_config.DefaultImageExportFormat;
@@ -240,8 +244,7 @@ namespace Everlook.UI
             {
                 _exportPopupMenu.ShowAll();
 
-                _exportPopupMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
-                //this.ExportPopupMenu.Popup();
+                _exportPopupMenu.PopupAtPointer(e.Event);
             }
         }
 

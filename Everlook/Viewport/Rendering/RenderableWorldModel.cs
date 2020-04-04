@@ -466,7 +466,7 @@ namespace Everlook.Viewport.Rendering
             {
                 foreach (var doodadInstanceSet in _doodadSets[this.DoodadSet])
                 {
-                    //doodadInstanceSet.ShouldRenderBounds = this.ShouldRenderBounds;
+                    doodadInstanceSet.ShouldRenderBounds = this.ShouldRenderBounds;
                 }
 
                 foreach (var doodadInstanceSet in _doodadSets[this.DoodadSet])

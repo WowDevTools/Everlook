@@ -554,9 +554,7 @@ namespace Everlook.Explorer
             }
 
             _treeContextMenu.ShowAll();
-
-            //this.TreeContextMenu.Popup(); // only available in GTK >= 3.22
-            _treeContextMenu.PopupForDevice(args.Event.Device, null, null, null, null, args.Event.Button, args.Event.Time);
+            _treeContextMenu.PopupAtPointer(args.Event);
         }
 
         /// <summary>
@@ -655,8 +653,7 @@ namespace Everlook.Explorer
                 case WarcraftFileType.Font:
                 case WarcraftFileType.Script:
                 {
-                    var fileData = fileReference.Extract();
-                    if (fileData != null)
+                    if (fileReference.TryExtract(out var fileData))
                     {
                         // create a temporary file and write the data to it.
                         var tempPath = Path.Combine(Path.GetTempPath(), fileReference.Filename);

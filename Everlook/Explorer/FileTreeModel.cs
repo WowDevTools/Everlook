@@ -36,7 +36,7 @@ using Object = GLib.Object;
 namespace Everlook.Explorer
 {
     /// <summary>
-    /// GTK TreeModel which serves an <see cref="OptimizedNodeTree"/>.
+    /// GTK TreeModel which serves tree nodes.
     /// </summary>
     public class FileTreeModel : Object, ITreeModelImplementor
     {

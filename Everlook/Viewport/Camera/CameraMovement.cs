@@ -24,7 +24,6 @@ using System;
 using System.Numerics;
 using Everlook.Configuration;
 using Everlook.Utility;
-using Gdk;
 
 namespace Everlook.Viewport.Camera
 {

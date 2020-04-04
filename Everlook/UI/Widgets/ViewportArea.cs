@@ -32,15 +32,11 @@ namespace Everlook.UI.Widgets
     /// The <see cref="ViewportArea"/> is a GTK widget for which an OpenGL context can be used to draw arbitrary
     /// graphics.
     /// </summary>
-    [CLSCompliant(false)]
     [ToolboxItem(true)]
     public class ViewportArea : GLArea
     {
         private readonly bool _isDebugEnabled;
         private readonly bool _isForwardCompatible;
-        private readonly bool _withDepthBuffer;
-        private readonly bool _withStencilBuffer;
-        private readonly bool _withAlpha;
 
         private bool _isInitialized;
 
@@ -82,17 +78,14 @@ namespace Everlook.UI.Widgets
         {
             _isDebugEnabled = isDebugEnabled;
             _isForwardCompatible = isForwardCompatible;
-            _withDepthBuffer = withDepthBuffer;
-            _withStencilBuffer = withStencilBuffer;
-            _withAlpha = withAlpha;
 
             AddTickCallback(UpdateFrameTime);
 
             SetRequiredVersion(glVersionMajor, glVersionMinor);
 
-            this.HasDepthBuffer = _withDepthBuffer;
-            this.HasStencilBuffer = _withStencilBuffer;
-            this.HasAlpha = _withAlpha;
+            this.HasDepthBuffer = withDepthBuffer;
+            this.HasStencilBuffer = withStencilBuffer;
+            this.HasAlpha = withAlpha;
         }
 
         /// <summary>

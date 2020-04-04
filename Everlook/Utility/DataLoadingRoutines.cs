@@ -66,7 +66,11 @@ namespace Everlook.Utility
             WMO worldModel;
             try
             {
-                var fileData = fileReference.Extract();
+                if (!fileReference.TryExtract(out var fileData))
+                {
+                    throw new FileNotFoundException();
+                }
+
                 worldModel = new WMO(fileData);
 
                 var modelPathWithoutExtension = $"{fileReference.FileDirectory.Replace('/', '\\')}\\" +
@@ -78,7 +82,11 @@ namespace Everlook.Utility
 
                     try
                     {
-                        var modelGroupData = fileReference.Context.Assets.ExtractFile(modelGroupPath);
+                        if (!fileReference.Context.Assets.TryExtractFile(modelGroupPath, out var modelGroupData))
+                        {
+                            throw new FileNotFoundException();
+                        }
+
                         worldModel.AddModelGroup(new ModelGroup(modelGroupData));
                     }
                     catch (FileNotFoundException fex)
@@ -116,14 +124,22 @@ namespace Everlook.Utility
             // Get the file name of the root object
             var modelRootPath = fileReference.FilePath.Remove(fileReference.FilePath.Length - 8, 4);
 
-            WMO worldModel;
             // Extract it and load just this model group
+            WMO worldModel;
             try
             {
-                var rootData = fileReference.Context.Assets.ExtractFile(modelRootPath);
+                if (!fileReference.Context.Assets.TryExtractFile(modelRootPath, out var rootData))
+                {
+                    throw new FileNotFoundException();
+                }
+
                 worldModel = new WMO(rootData);
 
-                var modelGroupData = fileReference.Extract();
+                if (!fileReference.TryExtract(out var modelGroupData))
+                {
+                    throw new FileNotFoundException();
+                }
+
                 worldModel.AddModelGroup(new ModelGroup(modelGroupData));
             }
             catch (FileNotFoundException fex)
@@ -193,7 +209,10 @@ namespace Everlook.Utility
             BLP image;
             try
             {
-                var fileData = fileReference.Extract();
+                if (!fileReference.TryExtract(out var fileData))
+                {
+                    throw new FileNotFoundException();
+                }
 
                 try
                 {
@@ -258,8 +277,7 @@ namespace Everlook.Utility
             Bitmap image;
             try
             {
-                var fileData = fileReference.Extract();
-                if (fileData is null)
+                if (!fileReference.TryExtract(out var fileData))
                 {
                     throw new FileNotFoundException();
                 }
@@ -319,7 +337,11 @@ namespace Everlook.Utility
             MDX model;
             try
             {
-                var fileData = fileReference.Extract();
+                if (!fileReference.TryExtract(out var fileData))
+                {
+                    throw new FileNotFoundException();
+                }
+
                 model = new MDX(fileData);
 
                 if (model.Version >= WarcraftVersion.Wrath)
@@ -332,7 +354,10 @@ namespace Everlook.Utility
                     for (var i = 0; i < model.SkinCount; ++i)
                     {
                         var modelSkinPath = $"{modelDirectory}\\{modelFilename}{i:D2}.skin";
-                        var skinData = fileReference.Context.Assets.ExtractFile(modelSkinPath);
+                        if (!fileReference.Context.Assets.TryExtractFile(modelSkinPath, out var skinData))
+                        {
+                            continue;
+                        }
 
                         using var ms = new MemoryStream(skinData);
                         using var br = new BinaryReader(ms);

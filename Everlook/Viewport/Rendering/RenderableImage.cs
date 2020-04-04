@@ -184,7 +184,7 @@ namespace Everlook.Viewport.Rendering
             this.Texture = LoadTexture();
 
             // Use cached shaders whenever possible
-            this.Shader = RenderCache.GetShader(EverlookShader.Plain2D) as Plain2DShader;
+            this.Shader = this.RenderCache.GetShader(EverlookShader.Plain2D) as Plain2DShader;
 
             this.ActorTransform = new Transform();
 

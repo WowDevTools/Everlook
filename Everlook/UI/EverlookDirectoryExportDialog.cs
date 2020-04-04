@@ -157,13 +157,13 @@ namespace Everlook.UI
         [GLib.ConnectBefore]
         private void OnItemListingButtonPressed(object? sender, ButtonPressEventArgs e)
         {
-            if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
+            if (e.Event.Type != EventType.ButtonPress || e.Event.Button != 3)
             {
-                _exportPopupMenu.ShowAll();
-
-                _exportPopupMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
-                //this.ExportPopupMenu.Popup();
+                return;
             }
+
+            _exportPopupMenu.ShowAll();
+            _exportPopupMenu.PopupAtPointer(e.Event);
         }
 
         /// <summary>

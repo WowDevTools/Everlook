@@ -43,8 +43,8 @@ namespace Everlook.Utility
         /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(typeof(IconManager));
 
-        private static readonly Dictionary<(string iconName, int iconSize), Pixbuf> IconCache =
-            new Dictionary<(string iconName, int iconSize), Pixbuf>();
+        private static readonly Dictionary<(string IconName, int IconSize), Pixbuf> IconCache =
+            new Dictionary<(string IconName, int IconSize), Pixbuf>();
 
         /// <summary>
         /// Loads all embedded builtin icons into the application's icon theme.
@@ -289,7 +289,6 @@ namespace Everlook.Utility
                 {
                     return GetIcon("text-xml");
                 }
-                case WarcraftFileType.Unknown:
                 default:
                 {
                     return GetIcon(Stock.File);

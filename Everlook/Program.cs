@@ -52,6 +52,11 @@ namespace Everlook
     internal class Program
     {
         /// <summary>
+        /// Holds the logging instance for this class.
+        /// </summary>
+        private static ILogger<Program>? _log;
+
+        /// <summary>
         /// The entry point.
         /// </summary>
         /// <param name="args">The command-line arguments.</param>
@@ -59,6 +64,8 @@ namespace Everlook
         [STAThread]
         public static async Task Main(string[] args)
         {
+            ExceptionManager.UnhandledException += OnUnhandledGLibException;
+
             IconManager.LoadEmbeddedIcons();
             Application.Init();
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -91,10 +98,16 @@ namespace Everlook
 
             var host = CreateHostBuilder(args).Build();
 
+            _log = host.Services.GetRequiredService<ILogger<Program>>();
             var app = host.Services.GetRequiredService<Startup>();
             app.Start();
 
             Application.Run();
+        }
+
+        private static void OnUnhandledGLibException(UnhandledExceptionArgs args)
+        {
+            _log.LogError((Exception)args.ExceptionObject, "Unhandled GLib exception.");
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args) => new HostBuilder()

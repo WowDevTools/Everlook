@@ -85,7 +85,7 @@ namespace Everlook.Explorer
         /// <param name="ct">A cancellation token.</param>
         /// <param name="progress">An <see cref="IProgress{GameLoadingProgress}"/> object for progress reporting.</param>
         /// <returns>A tuple with a package group and a node tree for the requested game.</returns>
-        public async Task<(PackageGroup? packageGroup, SerializedTree? nodeTree)> LoadGameAsync
+        public async Task<(PackageGroup? PackageGroup, SerializedTree? NodeTree)> LoadGameAsync
         (
             string gameAlias,
             string gamePath,
@@ -156,7 +156,7 @@ namespace Everlook.Explorer
                 double totalSteps = packagePaths.Count * 2;
 
                 // Load packages
-                var packages = new List<(string packageName, IPackage package)>();
+                var packages = new List<(string PackageName, IPackage Package)>();
                 foreach (var packagePath in packagePaths)
                 {
                     ct.ThrowIfCancellationRequested();
@@ -219,15 +219,15 @@ namespace Everlook.Explorer
                                     CompletionPercentage = steps / totalSteps,
                                     State = GameLoadingState.BuildingNodeTree,
                                     Alias = gameAlias,
-                                    CurrentPackage = packageInfo.packageName,
+                                    CurrentPackage = packageInfo.PackageName,
                                     NodesCreationProgress = p
                                 }
                             );
                         }
                     );
 
-                    await Task.Run(() => builder.AddPackage(packageInfo.packageName, packageInfo.package, createNodesProgress, ct), ct);
-                    packageGroup.AddPackage((PackageInteractionHandler)packageInfo.package);
+                    await Task.Run(() => builder.AddPackage(packageInfo.PackageName, packageInfo.Package, createNodesProgress, ct), ct);
+                    packageGroup.AddPackage((PackageInteractionHandler)packageInfo.Package);
 
                     ++completedSteps;
                 }

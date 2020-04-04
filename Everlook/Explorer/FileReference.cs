@@ -21,8 +21,8 @@
 //
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Threading.Tasks;
 using Everlook.Utility;
 using FileTree.Tree.Nodes;
 using FileTree.Tree.Serialized;
@@ -86,12 +86,12 @@ namespace Everlook.Explorer
         {
             get
             {
-                if (this.IsFile)
+                if (!this.IsFile)
                 {
-                    return this.Context.Assets.GetReferenceInfo(this);
+                    return null;
                 }
 
-                return null;
+                return this.Context.Assets.TryGetReferenceInfo(this, out var result) ? result : null;
             }
         }
 
@@ -160,21 +160,13 @@ namespace Everlook.Explorer
         }
 
         /// <summary>
-        /// Asynchronously extracts this instance from the package group it is associated with.
+        /// Attempts to extract this instance from the package group it is associated with.
         /// </summary>
-        /// <returns>A task wrapping the raw data of the file pointed to by the reference.</returns>
-        public Task<byte[]?> ExtractAsync()
+        /// <param name="data">The extracted data.</param>
+        /// <returns>true if the data was successfully extracted; otherwise, false.</returns>
+        public bool TryExtract([NotNullWhen(true)] out byte[]? data)
         {
-            return Task.Factory.StartNew(Extract);
-        }
-
-        /// <summary>
-        /// Extracts this instance from the package group it is associated with.
-        /// </summary>
-        /// <returns>The raw data of the file pointed to by the reference.</returns>
-        public byte[]? Extract()
-        {
-            return this.Context.Assets.ExtractVersionedReference(this);
+            return this.Context.Assets.TryExtractVersionedReference(this, out data);
         }
 
         /// <summary>

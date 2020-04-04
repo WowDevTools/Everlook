@@ -43,7 +43,6 @@ using Gdk;
 using GLib;
 using Gtk;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Silk.NET.OpenGL;
 using Warcraft.Core;
@@ -558,7 +557,7 @@ namespace Everlook.UI
             sw.Start();
 
             var loader = new GameLoader();
-            var dialog = EverlookGameLoadingDialog.Create(this);
+            using var dialog = EverlookGameLoadingDialog.Create(this);
             dialog.ShowAll();
 
             var loadingProgress = default(OverallLoadingProgress);
@@ -602,7 +601,6 @@ namespace Everlook.UI
             }
 
             dialog.Hide();
-            dialog.Destroy();
 
             sw.Stop();
             _log.LogDebug($"Game loading took {sw.Elapsed.TotalMilliseconds}ms ({sw.Elapsed.TotalSeconds}s)");
@@ -1157,8 +1155,7 @@ namespace Everlook.UI
                     Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
                 }
 
-                var file = await fileReference.ExtractAsync();
-                if (file != null)
+                if (fileReference.TryExtract(out var file))
                 {
                     try
                     {

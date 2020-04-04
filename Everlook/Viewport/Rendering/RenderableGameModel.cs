@@ -325,7 +325,7 @@ namespace Everlook.Viewport.Rendering
             _vertexBuffer.Bind();
             _vertexBuffer.EnableAttributes();
 
-            GL.Enable(EnableCap.DepthTest);
+            this.GL.Enable(EnableCap.DepthTest);
 
             var modelViewMatrix = this.ActorTransform.GetModelMatrix() * viewMatrix;
             var modelViewProjection = modelViewMatrix * projectionMatrix;
@@ -344,7 +344,7 @@ namespace Everlook.Viewport.Rendering
                 _shader.Wireframe.SetViewportMatrix(camera.GetViewportMatrix());
 
                 // Override blend setting
-                GL.Enable(EnableCap.Blend);
+                this.GL.Enable(EnableCap.Blend);
             }
 
             foreach (var skin in _model.Skins)
@@ -353,7 +353,7 @@ namespace Everlook.Viewport.Rendering
                 if (this.ShouldRenderWireframe)
                 {
                     // Override blend setting
-                    GL.Enable(EnableCap.Blend);
+                    this.GL.Enable(EnableCap.Blend);
                 }
 
                 foreach (var renderBatch in skin.RenderBatches)
@@ -369,7 +369,7 @@ namespace Everlook.Viewport.Rendering
 
                     unsafe
                     {
-                        GL.DrawElementsInstanced
+                        this.GL.DrawElementsInstanced
                         (
                             PrimitiveType.Triangles,
                             skinSection.TriangleCount,
@@ -409,7 +409,7 @@ namespace Everlook.Viewport.Rendering
             _vertexBuffer.Bind();
             _vertexBuffer.EnableAttributes();
 
-            GL.Enable(EnableCap.DepthTest);
+            this.GL.Enable(EnableCap.DepthTest);
 
             var modelViewMatrix = this.ActorTransform.GetModelMatrix() * viewMatrix;
             var modelViewProjection = modelViewMatrix * projectionMatrix;
@@ -428,7 +428,7 @@ namespace Everlook.Viewport.Rendering
                 _shader.Wireframe.SetViewportMatrix(camera.GetViewportMatrix());
 
                 // Override blend setting
-                GL.Enable(EnableCap.Blend);
+                this.GL.Enable(EnableCap.Blend);
             }
 
             foreach (var skin in _model.Skins)
@@ -437,7 +437,7 @@ namespace Everlook.Viewport.Rendering
                 if (this.ShouldRenderWireframe)
                 {
                     // Override blend setting
-                    GL.Enable(EnableCap.Blend);
+                    this.GL.Enable(EnableCap.Blend);
                 }
 
                 foreach (var renderBatch in skin.RenderBatches)
@@ -452,7 +452,7 @@ namespace Everlook.Viewport.Rendering
                     var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
                     unsafe
                     {
-                        GL.DrawElements
+                        this.GL.DrawElements
                         (
                             PrimitiveType.Triangles,
                             skinSection.TriangleCount,

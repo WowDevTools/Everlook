@@ -207,77 +207,67 @@ namespace Everlook.Package
         }
 
         /// <summary>
-        /// Gets the reference info for the specified reference. This method gets the most recent info for the file from
-        /// overriding packages.
+        /// Attempts to get the reference info for the specified reference. This method gets the most recent info for
+        /// the file from overriding packages.
         /// </summary>
         /// <returns>The reference info.</returns>
         /// <param name="fileReference">Reference reference.</param>
-        public MPQFileInfo GetReferenceInfo(FileReference fileReference)
+        /// <param name="fileInfo">The file information.</param>
+        public bool TryGetReferenceInfo(FileReference fileReference, [NotNullWhen(true)] out MPQFileInfo? fileInfo)
         {
-            if (fileReference == null)
-            {
-                throw new ArgumentNullException(nameof(fileReference));
-            }
-
-            return GetFileInfo(fileReference.FilePath);
+            return TryGetFileInfo(fileReference.FilePath, out fileInfo);
         }
 
         /// <summary>
-        /// Gets the file info for the specified reference in its specific package. If the file does not exist in
-        /// the package referenced in <paramref name="fileReference"/>, this method returned will return null.
+        /// Attempts to get the file info for the specified reference in its specific package. If the file does not
+        /// exist in the package referenced in <paramref name="fileReference"/>, this method will return false.
         /// </summary>
         /// <returns>The reference info.</returns>
         /// <param name="fileReference">Reference reference.</param>
-        public MPQFileInfo? GetVersionedReferenceInfo(FileReference fileReference)
+        /// <param name="fileInfo">The file info.</param>
+        public bool TryGetVersionedReferenceInfo
+        (
+            FileReference fileReference,
+            [NotNullWhen(true)] out MPQFileInfo? fileInfo
+        )
         {
-            if (fileReference == null)
-            {
-                throw new ArgumentNullException(nameof(fileReference));
-            }
-
             var package = GetPackageByName(fileReference.PackageName);
-            return package.GetReferenceInfo(fileReference);
+            return package.TryGetReferenceInfo(fileReference, out fileInfo);
         }
 
         /// <summary>
-        /// Extracts a file from a specific package in the package group. If the file does not exist in
+        /// Attempts to extract a file from a specific package in the package group. If the file does not exist in
         /// the package referenced in <paramref name="fileReference"/>, this method returned will return null.
         /// </summary>
         /// <returns>The unversioned file or null.</returns>
         /// <param name="fileReference">Reference reference.</param>
-        public byte[]? ExtractVersionedReference(FileReference fileReference)
+        /// <param name="data">The data.</param>
+        public bool TryExtractVersionedReference(FileReference fileReference, [NotNullWhen(true)] out byte[]? data)
         {
-            if (fileReference == null)
-            {
-                throw new ArgumentNullException(nameof(fileReference));
-            }
+            data = null;
 
             if (fileReference.IsVirtual)
             {
-                return ExtractReference(fileReference);
+                return TryExtractReference(fileReference, out data);
             }
 
             var package = GetPackageByName(fileReference.PackageName);
-            return package?.ExtractReference(fileReference);
+            return !(package is null) && package.TryExtractReference(fileReference, out data);
         }
 
         /// <summary>
-        /// Extracts a file from the package group. This method returns the most recently overridden version
+        /// Attempts to extract a file from the package group. This method returns the most recently overridden version
         /// of the specified file with no regard for the origin package. The returned file may originate from the
         /// package referenced in the <paramref name="fileReference"/>, or it may originate from a patch package.
         ///
-        /// If the file does not exist in any package, this method will return null.
+        /// If the file does not exist in any package, this method will return false.
         /// </summary>
         /// <returns>The file or null.</returns>
         /// <param name="fileReference">Reference reference.</param>
-        public byte[] ExtractReference(FileReference fileReference)
+        /// <param name="data">The data.</param>
+        public bool TryExtractReference(FileReference fileReference, [NotNullWhen(true)] out byte[]? data)
         {
-            if (fileReference == null)
-            {
-                throw new ArgumentNullException(nameof(fileReference));
-            }
-
-            return ExtractFile(fileReference.FilePath);
+            return TryExtractFile(fileReference.FilePath, out data);
         }
 
         /// <summary>
@@ -323,7 +313,7 @@ namespace Everlook.Package
         }
 
         /// <inheritdoc />
-        public bool TryExtractFile(string filePath, out byte[]? data)
+        public bool TryExtractFile(string filePath, [NotNullWhen(true)] out byte[]? data)
         {
             data = null;
 
@@ -339,6 +329,7 @@ namespace Everlook.Package
         }
 
         /// <inheritdoc />
+        [Obsolete]
         public byte[] ExtractFile(string filePath)
         {
             for (var i = _packages.Count - 1; i >= 0; --i)
@@ -387,8 +378,7 @@ namespace Everlook.Package
             {
                 if (_packages[i].ContainsFile(filePath))
                 {
-                    fileInfo = _packages[i].GetFileInfo(filePath);
-                    return true;
+                    return _packages[i].TryGetFileInfo(filePath, out fileInfo);
                 }
             }
 
@@ -396,6 +386,7 @@ namespace Everlook.Package
         }
 
         /// <inheritdoc />
+        [Obsolete]
         public MPQFileInfo GetFileInfo(string filePath)
         {
             if (!TryGetFileInfo(filePath, out var fileInfo))
