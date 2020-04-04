@@ -105,7 +105,7 @@ namespace Everlook.Viewport.Rendering
         /// <inheritdoc />
         public int VertexCount => (int)_model.Vertices.Count;
 
-        private readonly string _modelPath;
+        private readonly string? _modelPath;
         private readonly RenderCache _cache = RenderCache.Instance;
         private readonly WarcraftGameContext _gameContext;
 
@@ -117,11 +117,11 @@ namespace Everlook.Viewport.Rendering
         private readonly Dictionary<MDXSkin, Buffer<ushort>> _skinIndexArrayBuffers =
             new Dictionary<MDXSkin, Buffer<ushort>>();
 
-        private Buffer<byte> _vertexBuffer;
+        private Buffer<byte>? _vertexBuffer;
 
-        private GameModelShader _shader;
+        private GameModelShader? _shader;
 
-        private RenderableBoundingBox _boundingBox;
+        private RenderableBoundingBox? _boundingBox;
 
         /// <inheritdoc />
         public bool IsInitialized { get; set; }
@@ -137,7 +137,7 @@ namespace Everlook.Viewport.Rendering
         /// <summary>
         /// Gets or sets the current display info for this model.
         /// </summary>
-        public CreatureDisplayInfoRecord CurrentDisplayInfo { get; set; }
+        public CreatureDisplayInfoRecord? CurrentDisplayInfo { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderableGameModel"/> class.
@@ -284,6 +284,11 @@ namespace Everlook.Viewport.Rendering
                 return;
             }
 
+            if (_vertexBuffer is null || _shader is null)
+            {
+                return;
+            }
+
             _vertexBuffer.Bind();
             _vertexBuffer.EnableAttributes();
 
@@ -342,7 +347,7 @@ namespace Everlook.Viewport.Rendering
             // Render bounding boxes
             if (this.ShouldRenderBounds)
             {
-                _boundingBox.RenderInstances(viewMatrix, projectionMatrix, camera, count);
+                _boundingBox?.RenderInstances(viewMatrix, projectionMatrix, camera, count);
             }
 
             // Release the attribute arrays
@@ -355,6 +360,11 @@ namespace Everlook.Viewport.Rendering
             ThrowIfDisposed();
 
             if (!this.IsInitialized)
+            {
+                return;
+            }
+
+            if (_vertexBuffer is null || _shader is null)
             {
                 return;
             }
@@ -416,7 +426,7 @@ namespace Everlook.Viewport.Rendering
             // Render bounding boxes
             if (this.ShouldRenderBounds)
             {
-                _boundingBox.Render(viewMatrix, projectionMatrix, camera);
+                _boundingBox?.Render(viewMatrix, projectionMatrix, camera);
             }
 
             // Release the attribute arrays
@@ -433,6 +443,11 @@ namespace Everlook.Viewport.Rendering
             var fragmentShader = MDXShaderHelper.GetFragmentShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
             var vertexShader = MDXShaderHelper.GetVertexShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
             var batchMaterial = _model.Materials[renderBatch.MaterialIndex];
+
+            if (_shader is null)
+            {
+                return;
+            }
 
             _shader.SetVertexShaderType(vertexShader);
             _shader.SetFragmentShaderType(fragmentShader);
@@ -618,10 +633,15 @@ namespace Everlook.Viewport.Rendering
         /// </summary>
         /// <param name="textureName">The name of the texture.</param>
         /// <returns>The full path to the texture.</returns>
-        private string GetDisplayInfoTexturePath(string textureName)
+        private string GetDisplayInfoTexturePath(string? textureName)
         {
             // An empty string represents the fallback texture
-            if (textureName == null)
+            if (textureName is null)
+            {
+                return string.Empty;
+            }
+
+            if (_modelPath is null)
             {
                 return string.Empty;
             }
@@ -650,6 +670,11 @@ namespace Everlook.Viewport.Rendering
             if (displayInfoRecord == null)
             {
                 throw new ArgumentNullException(nameof(displayInfoRecord));
+            }
+
+            if (_modelPath is null)
+            {
+                throw new InvalidOperationException();
             }
 
             foreach (var texture in _model.Textures)
@@ -712,7 +737,7 @@ namespace Everlook.Viewport.Rendering
         {
             this.IsDisposed = true;
 
-            _vertexBuffer.Dispose();
+            _vertexBuffer?.Dispose();
 
             foreach (var skinIndexArrayBuffer in _skinIndexArrayBuffers)
             {

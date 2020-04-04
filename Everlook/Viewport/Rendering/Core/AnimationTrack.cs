@@ -43,6 +43,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="tracks">The tracks to wrap around.</param>
         public AnimationTrack(MDXTrack<T> tracks)
         {
+            this.Timelines = new List<ITimeline<T>>();
         }
     }
 }

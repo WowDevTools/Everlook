@@ -2,7 +2,7 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
-  <object class="GtkDialog" id="GameLoadingDialog">
+  <object class="GtkDialog" id="_gameLoadingDialog">
     <property name="width_request">800</property>
     <property name="height_request">140</property>
     <property name="can_focus">False</property>
@@ -20,17 +20,17 @@
       <placeholder/>
     </child>
     <child internal-child="vbox">
-      <object class="GtkBox" id="dialog-vbox1">
+      <object class="GtkBox" id="_dialog-vbox1">
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <property name="homogeneous">True</property>
         <child internal-child="action_area">
-          <object class="GtkButtonBox" id="dialog-action_area1">
+          <object class="GtkButtonBox" id="_dialog-action_area1">
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="CancelGameLoadingButton">
+              <object class="GtkButton" id="_cancelGameLoadingButton">
                 <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -55,7 +55,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkLabel" id="GameLoadingDialogLabel">
+              <object class="GtkLabel" id="_gameLoadingDialogLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Loading game...</property>
@@ -73,7 +73,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkLabel" id="AdditionalInfoLabel">
+              <object class="GtkLabel" id="_additionalInfoLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">&lt;i&gt;Work work, zug zug&lt;/i&gt;</property>
@@ -92,7 +92,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkProgressBar" id="GameLoadingProgressBar">
+              <object class="GtkProgressBar" id="_gameLoadingProgressBar">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="show_text">True</property>
@@ -112,7 +112,7 @@
             <property name="can_focus">False</property>
             <property name="top_padding">8</property>
             <child>
-              <object class="GtkProgressBar" id="TreeBuildingProgressBar">
+              <object class="GtkProgressBar" id="_treeBuildingProgressBar">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="text" translatable="yes">Loading...</property>

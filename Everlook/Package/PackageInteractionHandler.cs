@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using Everlook.Explorer;
@@ -47,7 +48,7 @@ namespace Everlook.Package
         /// Gets the package path.
         /// </summary>
         /// <value>The package path.</value>
-        public string PackagePath
+        public string? PackagePath
         {
             get;
             private set;
@@ -59,7 +60,7 @@ namespace Everlook.Package
         /// <value>The name of the package.</value>
         public string PackageName => Path.GetFileNameWithoutExtension(this.PackagePath);
 
-        private MPQ _package;
+        private MPQ? _package;
 
         /// <summary>
         /// Asynchronously loads a package at the given path.
@@ -85,7 +86,7 @@ namespace Everlook.Package
         /// does not initialize or load any package information. Use <see cref="Load"/> to fill the handler, or
         /// <see cref="LoadAsync"/> to create it asynchronously.
         /// </summary>
-        public PackageInteractionHandler()
+        private PackageInteractionHandler()
         {
         }
 
@@ -138,7 +139,7 @@ namespace Everlook.Package
         /// </summary>
         /// <param name="fileReference">Reference reference.</param>
         /// <returns>The raw data of the file pointed to by the reference.</returns>
-        public byte[] ExtractReference(FileReference fileReference)
+        public byte[]? ExtractReference(FileReference fileReference)
         {
             if (!fileReference.IsFile)
             {
@@ -166,7 +167,7 @@ namespace Everlook.Package
         /// </summary>
         /// <returns>The reference info.</returns>
         /// <param name="fileReference">Reference reference.</param>
-        public MPQFileInfo GetReferenceInfo(FileReference fileReference)
+        public MPQFileInfo? GetReferenceInfo(FileReference fileReference)
         {
             if (!fileReference.IsFile)
             {
@@ -177,51 +178,79 @@ namespace Everlook.Package
         }
 
         /// <inheritdoc />
-        public bool TryExtractFile(string filePath, out byte[] data)
+        public bool TryExtractFile(string filePath, [NotNullWhen(true)] out byte[]? data)
         {
+            data = null;
+
+            if (_package is null)
+            {
+                return false;
+            }
+
             return _package.TryExtractFile(filePath, out data);
         }
 
         /// <inheritdoc />
-        public byte[] ExtractFile(string filePath)
+        public byte[]? ExtractFile(string filePath)
         {
-            return _package.ExtractFile(filePath);
+            return _package?.ExtractFile(filePath);
         }
 
         /// <inheritdoc />
         public bool HasFileList()
         {
+            if (_package is null)
+            {
+                return false;
+            }
+
             return _package.HasFileList();
         }
 
         /// <inheritdoc />
         public IEnumerable<string> GetFileList()
         {
+            if (_package is null)
+            {
+                return new string[] { };
+            }
+
             return _package.GetFileList();
         }
 
         /// <inheritdoc />
         public bool ContainsFile(string filePath)
         {
+            if (_package is null)
+            {
+                return false;
+            }
+
             return _package.ContainsFile(filePath);
         }
 
         /// <inheritdoc />
-        public bool TryGetFileInfo(string filePath, out MPQFileInfo fileInfo)
+        public bool TryGetFileInfo(string filePath, [NotNullWhen(true)] out MPQFileInfo? fileInfo)
         {
+            fileInfo = null;
+            if (_package is null)
+            {
+                return false;
+            }
+
             return _package.TryGetFileInfo(filePath, out fileInfo);
         }
 
         /// <inheritdoc />
-        public MPQFileInfo GetFileInfo(string filePath)
+        public MPQFileInfo? GetFileInfo(string filePath)
         {
-            return _package.GetFileInfo(filePath);
+            return _package?.GetFileInfo(filePath);
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            _package.Dispose();
+            _package?.Dispose();
         }
     }
 }

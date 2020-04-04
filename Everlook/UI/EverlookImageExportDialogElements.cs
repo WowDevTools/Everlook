@@ -32,15 +32,15 @@ namespace Everlook.UI
 {
     public partial class EverlookImageExportDialog
     {
-        [UIElement] private readonly ListStore _mipLevelListStore;
-        [UIElement] private readonly TreeView _mipLevelListingTreeView;
-        [UIElement] private readonly CellRendererToggle _exportMipToggleRenderer;
+        [UIElement] private readonly ListStore _mipLevelListStore = null!;
+        [UIElement] private readonly TreeView _mipLevelListingTreeView = null!;
+        [UIElement] private readonly CellRendererToggle _exportMipToggleRenderer = null!;
 
-        [UIElement] private readonly Menu _exportPopupMenu;
-        [UIElement] private readonly ImageMenuItem _selectAllItem;
-        [UIElement] private readonly ImageMenuItem _selectNoneItem;
+        [UIElement] private readonly Menu _exportPopupMenu = null!;
+        [UIElement] private readonly ImageMenuItem _selectAllItem = null!;
+        [UIElement] private readonly ImageMenuItem _selectNoneItem = null!;
 
-        [UIElement] private readonly ComboBox _exportFormatComboBox;
-        [UIElement] private readonly FileChooserButton _exportDirectoryFileChooserButton;
+        [UIElement] private readonly ComboBox _exportFormatComboBox = null!;
+        [UIElement] private readonly FileChooserButton _exportDirectoryFileChooserButton = null!;
     }
 }

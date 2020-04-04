@@ -35,7 +35,7 @@ namespace Everlook.Viewport.Rendering.Core
     /// A type supporting numerical operators. If this type is not a numeric type, runtime exceptions will be thrown.
     /// You have been warned.
     /// </typeparam>
-    public sealed class SplineTimeline<T> : Timeline<SplineKey<T>>, ITimeline<T> where T : struct
+    public sealed class SplineTimeline<T> : Timeline<SplineKey<T>>, ITimeline<T> where T : notnull
     {
         /// <inheritdoc />
         public new T Value

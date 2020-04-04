@@ -34,7 +34,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         protected override string VertexShaderResourceName => "BaseGrid.BaseGridVertex";
 
         /// <inheritdoc />
-        protected override string GeometryShaderResourceName => null;
+        protected override string? GeometryShaderResourceName => null;
 
         /// <inheritdoc />
         protected override string FragmentShaderResourceName => "BaseGrid.BaseGridFragment";

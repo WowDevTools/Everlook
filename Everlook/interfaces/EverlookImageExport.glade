@@ -2,7 +2,7 @@
 <!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
-  <object class="GtkListStore" id="ImageFormatListStore">
+  <object class="GtkListStore" id="_imageFormatListStore">
     <columns>
       <!-- column-name ImageFormatName -->
       <column type="gchararray"/>
@@ -22,7 +22,7 @@
       </row>
     </data>
   </object>
-  <object class="GtkListStore" id="MipLevelListStore">
+  <object class="GtkListStore" id="_mipLevelListStore">
     <columns>
       <!-- column-name bShouldExportMip -->
       <column type="gboolean"/>
@@ -30,23 +30,23 @@
       <column type="gchararray"/>
     </columns>
   </object>
-  <object class="GtkDialog" id="EverlookImageExportDialog">
+  <object class="GtkDialog" id="_everlookImageExportDialog">
     <property name="width_request">350</property>
     <property name="height_request">400</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Export Image | &lt;ImageName&gt;</property>
     <property name="type_hint">dialog</property>
     <child internal-child="vbox">
-      <object class="GtkBox" id="dialog-vbox1">
+      <object class="GtkBox" id="_dialog-vbox1">
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
-          <object class="GtkButtonBox" id="dialog-action_area1">
+          <object class="GtkButtonBox" id="_dialog-action_area1">
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="CancelButton">
+              <object class="GtkButton" id="_cancelButton">
                 <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -60,7 +60,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="OKButton">
+              <object class="GtkButton" id="_oKButton">
                 <property name="label">gtk-ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -82,7 +82,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkFrame" id="ExportSettingsFrame">
+          <object class="GtkFrame" id="_exportSettingsFrame">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label_xalign">0</property>
@@ -104,19 +104,19 @@
                         <property name="can_focus">False</property>
                         <property name="right_padding">8</property>
                         <child>
-                          <object class="GtkTreeView" id="MipLevelListingTreeView">
+                          <object class="GtkTreeView" id="_mipLevelListingTreeView">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="model">MipLevelListStore</property>
                             <property name="search_column">0</property>
                             <child internal-child="selection">
-                              <object class="GtkTreeSelection" id="treeview-selection"/>
+                              <object class="GtkTreeSelection" id="_treeview-selection"/>
                             </child>
                             <child>
-                              <object class="GtkTreeViewColumn" id="ShouldExportColumn">
+                              <object class="GtkTreeViewColumn" id="_shouldExportColumn">
                                 <property name="title" translatable="yes">Export</property>
                                 <child>
-                                  <object class="GtkCellRendererToggle" id="ExportMipToggleRenderer"/>
+                                  <object class="GtkCellRendererToggle" id="_exportMipToggleRenderer"/>
                                   <attributes>
                                     <attribute name="active">0</attribute>
                                   </attributes>
@@ -124,10 +124,10 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkTreeViewColumn" id="MipDescriptionColumn">
+                              <object class="GtkTreeViewColumn" id="_mipDescriptionColumn">
                                 <property name="title" translatable="yes">Mipmap</property>
                                 <child>
-                                  <object class="GtkCellRendererText" id="MipDescriptionTextRenderer"/>
+                                  <object class="GtkCellRendererText" id="_mipDescriptionTextRenderer"/>
                                   <attributes>
                                     <attribute name="text">1</attribute>
                                   </attributes>
@@ -152,7 +152,7 @@
                         <property name="margin_top">4</property>
                         <property name="margin_bottom">4</property>
                         <child>
-                          <object class="GtkSeparator" id="separator1">
+                          <object class="GtkSeparator" id="_separator1">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                           </object>
@@ -173,7 +173,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkLabel" id="label2">
+                              <object class="GtkLabel" id="_label2">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Export format: </property>
@@ -192,13 +192,13 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkComboBox" id="ExportFormatComboBox">
+                              <object class="GtkComboBox" id="_exportFormatComboBox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="model">ImageFormatListStore</property>
+                                <property name="model">_imageFormatListStore</property>
                                 <property name="active">0</property>
                                 <child>
-                                  <object class="GtkCellRendererText" id="ImageFormatRenderer"/>
+                                  <object class="GtkCellRendererText" id="_imageFormatRenderer"/>
                                   <attributes>
                                     <attribute name="text">0</attribute>
                                   </attributes>
@@ -229,7 +229,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkLabel" id="label5">
+                              <object class="GtkLabel" id="_label5">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Export Directory: </property>
@@ -247,7 +247,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkFileChooserButton" id="ExportDirectoryFileChooserButton">
+                              <object class="GtkFileChooserButton" id="_exportDirectoryFileChooserButton">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="action">select-folder</property>
@@ -274,7 +274,7 @@
               </object>
             </child>
             <child type="label">
-              <object class="GtkLabel" id="label1">
+              <object class="GtkLabel" id="_label1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Export Settings</property>
@@ -294,7 +294,7 @@
       <action-widget response="-5">OKButton</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkFileChooserDialog" id="ExportDirectoryFileChooserDialog">
+  <object class="GtkFileChooserDialog" id="_exportDirectoryFileChooserDialog">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Select a Folder</property>
     <property name="type_hint">dialog</property>
@@ -302,12 +302,12 @@
     <property name="attached_to">EverlookImageExportDialog</property>
     <property name="action">select-folder</property>
     <child internal-child="vbox">
-      <object class="GtkBox" id="filechooserdialog-vbox2">
+      <object class="GtkBox" id="_filechooserdialog-vbox2">
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
-          <object class="GtkButtonBox" id="filechooserdialog-action_area2">
+          <object class="GtkButtonBox" id="_filechooserdialog-action_area2">
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
@@ -330,21 +330,21 @@
       </object>
     </child>
   </object>
-  <object class="GtkImage" id="image1">
+  <object class="GtkImage" id="_image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-yes</property>
   </object>
-  <object class="GtkImage" id="image2">
+  <object class="GtkImage" id="_image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-remove</property>
   </object>
-  <object class="GtkMenu" id="ExportPopupMenu">
+  <object class="GtkMenu" id="_exportPopupMenu">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkImageMenuItem" id="SelectAllItem">
+      <object class="GtkImageMenuItem" id="_selectAllItem">
         <property name="label" translatable="yes">Select All</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -353,7 +353,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="SelectNoneItem">
+      <object class="GtkImageMenuItem" id="_selectNoneItem">
         <property name="label" translatable="yes">Select None</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>

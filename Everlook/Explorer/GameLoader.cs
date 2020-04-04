@@ -52,7 +52,7 @@ namespace Everlook.Explorer
         /// <summary>
         /// A dictionary used for generating node trees.
         /// </summary>
-        private ListfileDictionary _dictionary;
+        private ListfileDictionary? _dictionary;
 
         /// <summary>
         /// Loads the bundled dictionary from disk.
@@ -85,12 +85,12 @@ namespace Everlook.Explorer
         /// <param name="ct">A cancellation token.</param>
         /// <param name="progress">An <see cref="IProgress{GameLoadingProgress}"/> object for progress reporting.</param>
         /// <returns>A tuple with a package group and a node tree for the requested game.</returns>
-        public async Task<(PackageGroup packageGroup, SerializedTree nodeTree)> LoadGameAsync
+        public async Task<(PackageGroup? packageGroup, SerializedTree? nodeTree)> LoadGameAsync
         (
             string gameAlias,
             string gamePath,
             CancellationToken ct,
-            IProgress<GameLoadingProgress> progress = null
+            IProgress<GameLoadingProgress>? progress = null
         )
         {
             progress?.Report(new GameLoadingProgress
@@ -120,7 +120,7 @@ namespace Everlook.Explorer
             var packageTreeFilePath = Path.Combine(gamePath, packageTreeFilename);
 
             var packageGroup = new PackageGroup(packageSetHash);
-            SerializedTree nodeTree = null;
+            SerializedTree? nodeTree = null;
 
             var generateTree = true;
             if (File.Exists(packageTreeFilePath))

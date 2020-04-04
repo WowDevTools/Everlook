@@ -70,7 +70,7 @@ namespace Everlook.Explorer
         /// Gets the file info of this reference.
         /// </summary>
         /// <value>The file info.</value>
-        public MPQFileInfo ReferenceInfo
+        public MPQFileInfo? ReferenceInfo
         {
             get
             {
@@ -127,19 +127,10 @@ namespace Everlook.Explorer
         /// <param name="packageName">The name of the package this reference belongs to.</param>
         /// <param name="filePath">The complete file path this reference points to.</param>
         public FileReference(IGameContext gameContext, SerializedNode node, string packageName, string filePath)
-            : this(gameContext)
         {
             this.PackageName = packageName;
             this.FilePath = filePath.Replace('/', '\\');
             this.Node = node;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FileReference"/> class.
-        /// </summary>
-        /// <param name="gameContext">The game context for the reference.</param>
-        public FileReference(IGameContext gameContext)
-        {
             this.Context = gameContext;
         }
 
@@ -147,7 +138,7 @@ namespace Everlook.Explorer
         /// Asynchronously extracts this instance from the package group it is associated with.
         /// </summary>
         /// <returns>A task wrapping the raw data of the file pointed to by the reference.</returns>
-        public Task<byte[]> ExtractAsync()
+        public Task<byte[]?> ExtractAsync()
         {
             return Task.Factory.StartNew(Extract);
         }
@@ -156,7 +147,7 @@ namespace Everlook.Explorer
         /// Extracts this instance from the package group it is associated with.
         /// </summary>
         /// <returns>The raw data of the file pointed to by the reference.</returns>
-        public byte[] Extract()
+        public byte[]? Extract()
         {
             return this.Context.Assets.ExtractVersionedReference(this);
         }

@@ -77,14 +77,20 @@ namespace Everlook.Viewport.Rendering
 
                 if (_fallbackTextureInternal == null)
                 {
-                    _fallbackTextureInternal = new Texture2D(ResourceManager.GetFallbackImage());
+                    var fallbackImage = ResourceManager.GetFallbackImage();
+                    if (fallbackImage is null)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    _fallbackTextureInternal = new Texture2D(fallbackImage);
                 }
 
                 return _fallbackTextureInternal;
             }
         }
 
-        private Texture2D _fallbackTextureInternal;
+        private Texture2D? _fallbackTextureInternal;
 
         /// <summary>
         /// A singleton instance of the rendering cache.
@@ -183,7 +189,7 @@ namespace Everlook.Viewport.Rendering
         /// <param name="gameContext">The context of the texture definition.</param>
         /// <param name="texturePathOverride">Optional. Overrides the filename in the texture definition.</param>
         /// <returns>A <see cref="Texture2D"/> object.</returns>
-        public Texture2D GetTexture(MDXTexture texture, IGameContext gameContext, string texturePathOverride = null)
+        public Texture2D GetTexture(MDXTexture texture, IGameContext gameContext, string? texturePathOverride = null)
         {
             ThrowIfDisposed();
 
@@ -196,7 +202,7 @@ namespace Everlook.Viewport.Rendering
                     return this.FallbackTexture;
                 }
 
-                filename = texturePathOverride;
+                filename = texturePathOverride!;
             }
 
             var wrapS = texture.Flags.HasFlag(MDXTextureFlags.TextureWrapX)
@@ -207,7 +213,7 @@ namespace Everlook.Viewport.Rendering
                 ? TextureWrapMode.Repeat
                 : TextureWrapMode.Clamp;
 
-            return GetTexture(filename, gameContext.Assets, wrapS, wrapT);
+            return GetTexture(filename!, gameContext.Assets, wrapS, wrapT);
         }
 
         /// <summary>

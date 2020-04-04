@@ -210,7 +210,7 @@ namespace Everlook.Explorer
         /// </summary>
         /// <param name="nodePath">The path to the node. Expected to have '\' as its separator character.</param>
         /// <returns>The path to the node.</returns>
-        public TreePath GetPath(string nodePath)
+        public TreePath? GetPath(string nodePath)
         {
             if (string.IsNullOrEmpty(nodePath))
             {

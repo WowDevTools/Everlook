@@ -77,7 +77,7 @@ namespace Everlook.Viewport
         /// Gets the current rendering target. This is an object capable of being shown in an
         /// OpenGL viewport.
         /// </summary>
-        public IRenderable RenderTarget { get; private set; }
+        public IRenderable? RenderTarget { get; private set; }
 
         /// <summary>
         /// The camera viewpoint of the observer.
@@ -140,7 +140,7 @@ namespace Everlook.Viewport
         /// <summary>
         /// The base grid, rendered underneath models.
         /// </summary>
-        private BaseGrid _grid;
+        private BaseGrid? _grid;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Everlook.Viewport.ViewportRenderer"/> class.
@@ -266,6 +266,11 @@ namespace Everlook.Viewport
                 GL.Viewport(0, 0, widgetWidth, widgetHeight);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+                if (!this.HasRenderTarget || this.RenderTarget is null)
+                {
+                    return;
+                }
+
                 // Calculate the current relative movement of the camera
                 if (this.WantsToMove)
                 {
@@ -284,11 +289,6 @@ namespace Everlook.Viewport
                     }
                 }
 
-                if (!this.HasRenderTarget)
-                {
-                    return;
-                }
-
                 // Render the current object
                 // Tick the actor, advancing any time-dependent behaviour
                 var tickingRenderable = this.RenderTarget as ITickingActor;
@@ -303,7 +303,7 @@ namespace Everlook.Viewport
 
                 if (this.RenderTarget.Projection == ProjectionType.Perspective)
                 {
-                    _grid.Render(view, projection, _camera);
+                    _grid?.Render(view, projection, _camera);
                 }
 
                 // Then render the visual component
@@ -359,7 +359,7 @@ namespace Everlook.Viewport
         /// Sets the render target that is currently being rendered by the viewport renderer.
         /// </summary>
         /// <param name="inRenderable">inRenderable.</param>
-        public void SetRenderTarget(IRenderable inRenderable)
+        public void SetRenderTarget(IRenderable? inRenderable)
         {
             ThrowIfDisposed();
 
@@ -372,18 +372,19 @@ namespace Everlook.Viewport
                 this.RenderTarget = inRenderable;
 
                 // Set the default camera values
-                if (this.HasRenderTarget)
+                if (!this.HasRenderTarget || this.RenderTarget is null)
                 {
-                    _camera.ViewportWidth = _viewportWidget.AllocatedWidth;
-                    _camera.ViewportHeight = _viewportWidget.AllocatedHeight;
-
-                    if (this.RenderTarget is IDefaultCameraPositionProvider cameraPositionProvider)
-                    {
-                        _camera.Position = cameraPositionProvider.DefaultCameraPosition;
-                    }
-
-                    _camera.Projection = this.RenderTarget.Projection;
+                    return;
                 }
+                _camera.ViewportWidth = _viewportWidget.AllocatedWidth;
+                _camera.ViewportHeight = _viewportWidget.AllocatedHeight;
+
+                if (this.RenderTarget is IDefaultCameraPositionProvider cameraPositionProvider)
+                {
+                    _camera.Position = cameraPositionProvider.DefaultCameraPosition;
+                }
+
+                _camera.Projection = this.RenderTarget.Projection;
 
                 _camera.ResetRotation();
             }

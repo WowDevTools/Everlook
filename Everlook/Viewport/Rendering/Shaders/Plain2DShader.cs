@@ -40,7 +40,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         protected override string FragmentShaderResourceName => "Plain2D.Plain2DFragment";
 
         /// <inheritdoc />
-        protected override string GeometryShaderResourceName => null;
+        protected override string? GeometryShaderResourceName => null;
 
         /// <summary>
         /// Sets the channel mask of the shader.

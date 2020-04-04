@@ -58,12 +58,23 @@ namespace Everlook.Viewport.Rendering.Core
             var vertexShaderSource = GetShaderSource(this.VertexShaderResourceName);
             var fragmentShaderSource = GetShaderSource(this.FragmentShaderResourceName);
 
+            if (vertexShaderSource is null || fragmentShaderSource is null)
+            {
+                throw new InvalidOperationException();
+            }
+
             var vertexShaderID = CompileShader(ShaderType.VertexShader, vertexShaderSource);
             var fragmentShaderID = CompileShader(ShaderType.FragmentShader, fragmentShaderSource);
 
             if (!string.IsNullOrEmpty(this.GeometryShaderResourceName))
             {
-                var geometryShaderSource = GetShaderSource(this.GeometryShaderResourceName);
+                var geometryShaderSource = GetShaderSource(this.GeometryShaderResourceName!);
+
+                if (geometryShaderSource is null)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 var geometryShaderID = CompileShader(ShaderType.GeometryShader, geometryShaderSource);
                 this.NativeShaderProgramID = LinkShader(vertexShaderID, fragmentShaderID, geometryShaderID);
             }
@@ -209,7 +220,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// Valid: WorldModelGeometry, Plain2D.Plain2DGeometry
         /// Invalid: Resources.Content.Shaders.WorldModelGeometry.glsl.
         /// </summary>
-        protected abstract string GeometryShaderResourceName { get; }
+        protected abstract string? GeometryShaderResourceName { get; }
 
         /// <summary>
         /// Links a vertex shader and a fragment shader into a complete shader program.
@@ -314,10 +325,15 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         /// <param name="shaderResourceName">The name of the shader.</param>
         /// <returns>The source of the shader.</returns>
-        private static string GetShaderSource(string shaderResourceName)
+        private static string? GetShaderSource(string shaderResourceName)
         {
             var baseDirectory = "Everlook.Content.Shaders";
             var shaderSource = ResourceManager.LoadStringResource($"{baseDirectory}.{shaderResourceName}.glsl");
+
+            if (shaderSource is null)
+            {
+                return null;
+            }
 
             var shaderSourceWithResolvedIncludes = GLSLPreprocessor.ProcessIncludes(shaderSource, baseDirectory);
 

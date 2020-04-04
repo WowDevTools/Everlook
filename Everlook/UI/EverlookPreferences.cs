@@ -62,7 +62,7 @@ namespace Everlook.UI
         {
             using (var builder = new Builder(null, "Everlook.interfaces.EverlookPreferences.glade", null))
             {
-                return new EverlookPreferences(builder, builder.GetObject("PreferencesDialog").Handle);
+                return new EverlookPreferences(builder, builder.GetObject("_preferencesDialog").Handle);
             }
         }
 
@@ -250,7 +250,7 @@ namespace Everlook.UI
             }
 
             // Make sure we've got the latest from disk
-            _config.Reload();
+            _config.LoadFromDisk();
 
             LoadConfigurationValues();
         }

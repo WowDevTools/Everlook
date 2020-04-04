@@ -107,6 +107,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <typeparam name="T">A type registered with the <see cref="DynamicInterpolator"/>.</typeparam>
         /// <returns>An interpolated value.</returns>
         public static T InterpolateLinear<T>(T leaving, T approaching, float alpha)
+            where T : notnull
         {
             // Early bail outs
             if (alpha == 0)
@@ -142,6 +143,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <typeparam name="T">A type registered with the <see cref="DynamicInterpolator"/>.</typeparam>
         /// <returns>An interpolated value.</returns>
         public static T InterpolateHermite<T>(SplineKey<T> leaving, SplineKey<T> approaching, float alpha)
+            where T : notnull
         {
             // Early bail outs
             if (alpha == 0)

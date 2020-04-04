@@ -37,7 +37,7 @@ namespace Everlook.Audio
     /// </summary>
     public sealed class AudioSource : IDisposable, IEquatable<AudioSource>
     {
-        private IAudioAsset _audioAsset;
+        private IAudioAsset? _audioAsset;
         private int _soundBufferID;
         private int _soundSourceID;
 
@@ -399,7 +399,6 @@ namespace Everlook.Audio
             AL.DeleteBuffer(_soundBufferID);
 
             _audioAsset?.Dispose();
-            _audioAsset = null;
         }
 
         /// <inheritdoc />

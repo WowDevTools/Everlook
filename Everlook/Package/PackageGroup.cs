@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -106,7 +107,7 @@ namespace Everlook.Package
             string groupName,
             string packageDirectory,
             CancellationToken ct,
-            IProgress<GameLoadingProgress> progress = null
+            IProgress<GameLoadingProgress>? progress = null
         )
         {
             var group = new PackageGroup(groupName);
@@ -227,7 +228,7 @@ namespace Everlook.Package
         /// </summary>
         /// <returns>The reference info.</returns>
         /// <param name="fileReference">Reference reference.</param>
-        public MPQFileInfo GetVersionedReferenceInfo(FileReference fileReference)
+        public MPQFileInfo? GetVersionedReferenceInfo(FileReference fileReference)
         {
             if (fileReference == null)
             {
@@ -244,7 +245,7 @@ namespace Everlook.Package
         /// </summary>
         /// <returns>The unversioned file or null.</returns>
         /// <param name="fileReference">Reference reference.</param>
-        public byte[] ExtractVersionedReference(FileReference fileReference)
+        public byte[]? ExtractVersionedReference(FileReference fileReference)
         {
             if (fileReference == null)
             {
@@ -322,7 +323,7 @@ namespace Everlook.Package
         }
 
         /// <inheritdoc />
-        public bool TryExtractFile(string filePath, out byte[] data)
+        public bool TryExtractFile(string filePath, out byte[]? data)
         {
             data = null;
 
@@ -358,7 +359,7 @@ namespace Everlook.Package
         }
 
         /// <inheritdoc />
-        public IEnumerable<string> GetFileList()
+        public IEnumerable<string>? GetFileList()
         {
             return null;
         }
@@ -378,7 +379,7 @@ namespace Everlook.Package
         }
 
         /// <inheritdoc />
-        public bool TryGetFileInfo(string filePath, out MPQFileInfo fileInfo)
+        public bool TryGetFileInfo(string filePath, [NotNullWhen(true)] out MPQFileInfo? fileInfo)
         {
             fileInfo = null;
 

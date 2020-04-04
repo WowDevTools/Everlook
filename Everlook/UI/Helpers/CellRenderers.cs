@@ -72,7 +72,8 @@ namespace Everlook.UI.Helpers
             transientText = Regex.Replace
             (
                 transientText,
-                @"(\B[A-Z0-9]+?(?=[A-Z][^A-Z])|\B[A-Z0-9]+?(?=[^A-Z]))", " $1"
+                @"(\B[A-Z0-9]+?(?=[A-Z][^A-Z])|\B[A-Z0-9]+?(?=[^A-Z]))",
+                " $1"
             );
 
             cellText.Text = transientText;

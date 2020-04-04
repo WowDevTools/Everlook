@@ -101,7 +101,7 @@ namespace Everlook.Utility
         }
 
         /// <inheritdoc />
-        public FileReference GetReferenceForPath(string path)
+        public FileReference? GetReferenceForPath(string path)
         {
             if (string.IsNullOrEmpty(path))
             {

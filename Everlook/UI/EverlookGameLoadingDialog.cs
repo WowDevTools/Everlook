@@ -74,7 +74,7 @@ namespace Everlook.UI
         {
             using (var builder = new Builder(null, "Everlook.interfaces.EverlookGameLoadingDialog.glade", null))
             {
-                return new EverlookGameLoadingDialog(builder, builder.GetObject("GameLoadingDialog").Handle, parent);
+                return new EverlookGameLoadingDialog(builder, builder.GetObject("_gameLoadingDialog").Handle, parent);
             }
         }
 

@@ -39,72 +39,72 @@ namespace Everlook.UI
         /*
             Main UI elements
         */
-        [UIElement] private readonly ToolButton _aboutButton;
-        [UIElement] private readonly AboutDialog _aboutDialog;
-        [UIElement] private readonly ToolButton _preferencesButton;
+        [UIElement] private readonly ToolButton _aboutButton = null!;
+        [UIElement] private readonly AboutDialog _aboutDialog = null!;
+        [UIElement] private readonly ToolButton _preferencesButton = null!;
 
-        [UIElement] private readonly Paned _viewportPaned;
-        [UIElement] private readonly Paned _lowerBoxPaned;
-        [UIElement] private readonly Alignment _lowerBoxAlignment;
+        [UIElement] private readonly Paned _viewportPaned = null!;
+        [UIElement] private readonly Paned _lowerBoxPaned = null!;
+        [UIElement] private readonly Alignment _lowerBoxAlignment = null!;
 
-        [UIElement] private readonly Alignment _viewportAlignment;
+        [UIElement] private readonly Alignment _viewportAlignment = null!;
         private readonly ViewportArea _viewportWidget;
 
-        [UIElement] private readonly ComboBox _fileFilterComboBox;
+        [UIElement] private readonly ComboBox _fileFilterComboBox = null!;
 
-        [UIElement] private readonly Button _cancelCurrentActionButton;
+        [UIElement] private readonly Button _cancelCurrentActionButton = null!;
 
         /*
             Export queue elements
         */
-        [UIElement] private readonly TreeView _exportQueueTreeView;
-        [UIElement] private readonly ListStore _exportQueueListStore;
+        [UIElement] private readonly TreeView _exportQueueTreeView = null!;
+        [UIElement] private readonly ListStore _exportQueueListStore = null!;
 
-        [UIElement] private readonly Menu _queueContextMenu;
-        [UIElement] private readonly ImageMenuItem _removeQueueItem;
+        [UIElement] private readonly Menu _queueContextMenu = null!;
+        [UIElement] private readonly ImageMenuItem _removeQueueItem = null!;
 
-        [UIElement] private readonly Button _clearExportQueueButton;
-        [UIElement] private readonly Button _runExportQueueButton;
+        [UIElement] private readonly Button _clearExportQueueButton = null!;
+        [UIElement] private readonly Button _runExportQueueButton = null!;
 
         /*
             Game explorer elements
         */
-        [UIElement] private readonly Notebook _gameTabNotebook;
+        [UIElement] private readonly Notebook _gameTabNotebook = null!;
         private readonly List<GamePage> _gamePages = new List<GamePage>();
 
         /*
             General item control elements
         */
 
-        [UIElement] private readonly Notebook _itemControlNotebook;
+        [UIElement] private readonly Notebook _itemControlNotebook = null!;
 
         /*
             Image control elements
         */
-        [UIElement] private readonly CheckButton _renderAlphaCheckButton;
-        [UIElement] private readonly CheckButton _renderRedCheckButton;
-        [UIElement] private readonly CheckButton _renderGreenCheckButton;
-        [UIElement] private readonly CheckButton _renderBlueCheckButton;
+        [UIElement] private readonly CheckButton _renderAlphaCheckButton = null!;
+        [UIElement] private readonly CheckButton _renderRedCheckButton = null!;
+        [UIElement] private readonly CheckButton _renderGreenCheckButton = null!;
+        [UIElement] private readonly CheckButton _renderBlueCheckButton = null!;
 
-        [UIElement] private readonly Label _mipCountLabel;
+        [UIElement] private readonly Label _mipCountLabel = null!;
 
         /*
             Status bar elements
         */
-        [UIElement] private readonly Statusbar _mainStatusBar;
-        [UIElement] private readonly Spinner _statusSpinner;
+        [UIElement] private readonly Statusbar _mainStatusBar = null!;
+        [UIElement] private readonly Spinner _statusSpinner = null!;
 
         /*
             Model control elements
         */
 
-        [UIElement] private readonly CheckButton _renderBoundsCheckButton;
-        [UIElement] private readonly CheckButton _renderWireframeCheckButton;
-        [UIElement] private readonly CheckButton _renderDoodadsCheckButton;
+        [UIElement] private readonly CheckButton _renderBoundsCheckButton = null!;
+        [UIElement] private readonly CheckButton _renderWireframeCheckButton = null!;
+        [UIElement] private readonly CheckButton _renderDoodadsCheckButton = null!;
 
-        [UIElement] private readonly ComboBox _modelVariationComboBox;
-        [UIElement] private readonly ListStore _modelVariationListStore;
-        [UIElement] private readonly CellRendererText _modelVariationTextRenderer;
+        [UIElement] private readonly ComboBox _modelVariationComboBox = null!;
+        [UIElement] private readonly ListStore _modelVariationListStore = null!;
+        [UIElement] private readonly CellRendererText _modelVariationTextRenderer = null!;
 
         /*
             Animation control elements
@@ -118,8 +118,8 @@ namespace Everlook.UI
             Object info elements
         */
 
-        [UIElement] private readonly Label _polyCountLabel;
-        [UIElement] private readonly Label _vertexCountLabel;
-        [UIElement] private readonly Label _skinCountLabel;
+        [UIElement] private readonly Label _polyCountLabel = null!;
+        [UIElement] private readonly Label _vertexCountLabel = null!;
+        [UIElement] private readonly Label _skinCountLabel = null!;
     }
 }

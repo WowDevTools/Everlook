@@ -173,9 +173,9 @@ namespace Everlook.Viewport.Rendering
         /// <summary>
         /// Gets or sets the current doodad set.
         /// </summary>
-        public string DoodadSet { get; set; }
+        public string? DoodadSet { get; set; }
 
-        private WorldModelShader _shader;
+        private WorldModelShader? _shader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderableWorldModel"/> class.
@@ -407,6 +407,11 @@ namespace Everlook.Viewport.Rendering
                 return;
             }
 
+            if (_shader is null || this.DoodadSet is null)
+            {
+                return;
+            }
+
             _shader.Enable();
             _shader.Wireframe.Enabled = this.ShouldRenderWireframe;
             if (_shader.Wireframe.Enabled)
@@ -464,6 +469,11 @@ namespace Everlook.Viewport.Rendering
         /// </summary>
         private void RenderGroup(ModelGroup modelGroup, Matrix4 modelViewProjection)
         {
+            if (_shader is null || this.DoodadSet is null)
+            {
+                return;
+            }
+
             // Reenable depth test
             GL.Enable(EnableCap.DepthTest);
 

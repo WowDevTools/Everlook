@@ -84,7 +84,7 @@ namespace Everlook.Database
                     LoadDatabase(databaseName);
                 }
 
-                return _databases[databaseName] as DBC<T>;
+                return (DBC<T>)_databases[databaseName];
             }
         }
 

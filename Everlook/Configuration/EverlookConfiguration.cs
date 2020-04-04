@@ -251,7 +251,7 @@ namespace Everlook.Configuration
                     Directory.CreateDirectory(Directory.GetParent(GetConfigurationFilePath()).FullName);
                     File.Create(GetConfigurationFilePath()).Close();
 
-                    Reload();
+                    _configurationData = LoadFromDisk();
                     WriteDefaults();
                     Commit();
                 }
@@ -266,7 +266,7 @@ namespace Everlook.Configuration
                     */
 
                     // Uncomment this when needed
-                    Reload();
+                    _configurationData = LoadFromDisk();
 
                     /*
                         Place any changes after this comment.
@@ -286,7 +286,7 @@ namespace Everlook.Configuration
                     DeleteConfigurationSection(_configurationData, "General");
 
                     Commit();
-                    Reload();
+                    LoadFromDisk();
                 }
             }
         }
@@ -294,11 +294,12 @@ namespace Everlook.Configuration
         /// <summary>
         /// Reloads the configuration from disk.
         /// </summary>
-        public void Reload()
+        /// <returns>The configuration data.</returns>
+        public IniData LoadFromDisk()
         {
             lock (_readLock)
             {
-                _configurationData = _defaultParser.ReadFile(GetConfigurationFilePath());
+                return _defaultParser.ReadFile(GetConfigurationFilePath());
             }
         }
 
@@ -475,6 +476,7 @@ namespace Everlook.Configuration
         /// <param name="storeAsLowerCase">Whether or not to store the resulting option as a lower-case string.</param>
         /// <typeparam name="T">Any object which has a string representation.</typeparam>
         private void SetOption<T>(string section, string keyName, T optionValue, bool storeAsLowerCase = true)
+            where T : notnull
         {
             var value = optionValue.ToString();
             if (storeAsLowerCase)

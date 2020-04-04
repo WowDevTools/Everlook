@@ -59,8 +59,8 @@ namespace Everlook.Viewport.Rendering.Core
         /// <inheritdoc />
         public ProjectionType Projection => ProjectionType.Perspective;
 
-        private Buffer<float> _vertices;
-        private Buffer<ushort> _vertexIndexes;
+        private Buffer<float>? _vertices;
+        private Buffer<ushort>? _vertexIndexes;
 
         /// <summary>
         /// Gets or sets a value indicating whether this object has been disposed.
@@ -74,7 +74,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         public BaseGrid()
         {
-            _shader = RenderCache.Instance.GetShader(EverlookShader.BaseGrid) as BaseGridShader;
+            _shader = (BaseGridShader)RenderCache.Instance.GetShader(EverlookShader.BaseGrid);
             this.ActorTransform = new Transform();
 
             this.IsInitialized = false;
@@ -141,6 +141,11 @@ namespace Everlook.Viewport.Rendering.Core
         {
             ThrowIfDisposed();
 
+            if (_vertices is null || _vertexIndexes is null)
+            {
+                return;
+            }
+
             GL.Enable(EnableCap.Blend);
             GL.Enable(EnableCap.DepthTest);
             GL.Disable(EnableCap.CullFace);
@@ -187,8 +192,8 @@ namespace Everlook.Viewport.Rendering.Core
         public void Dispose()
         {
             this.IsDisposed = true;
-            _vertices.Dispose();
-            _vertexIndexes.Dispose();
+            _vertices?.Dispose();
+            _vertexIndexes?.Dispose();
         }
     }
 }

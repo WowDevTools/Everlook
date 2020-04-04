@@ -63,7 +63,7 @@ namespace Everlook.Audio.MP3
             }
         }
 
-        private byte[] _pcmDataInternal;
+        private byte[]? _pcmDataInternal;
 
         /// <inheritdoc />
         public byte[] PCMData
@@ -89,11 +89,10 @@ namespace Everlook.Audio.MP3
 
                 return _pcmDataInternal;
             }
-            private set => _pcmDataInternal = value;
         }
 
         /// <inheritdoc />
-        public Stream PCMStream { get; private set; }
+        public Stream PCMStream { get; }
 
         /// <inheritdoc />
         public int Channels { get; }
@@ -162,9 +161,6 @@ namespace Everlook.Audio.MP3
             _isDisposed = true;
 
             this.PCMStream?.Dispose();
-
-            this.PCMStream = null;
-            this.PCMData = null;
         }
     }
 }

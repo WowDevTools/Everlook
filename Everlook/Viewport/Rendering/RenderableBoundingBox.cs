@@ -65,8 +65,8 @@ namespace Everlook.Viewport.Rendering
         private bool IsDisposed { get; set; }
 
         private Box _boundingBoxData;
-        private Buffer<Vector3> _vertexBuffer;
-        private Buffer<byte> _vertexIndexesBuffer;
+        private Buffer<Vector3>? _vertexBuffer;
+        private Buffer<byte>? _vertexIndexesBuffer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderableBoundingBox"/> class. The bounds data is taken from
@@ -80,7 +80,7 @@ namespace Everlook.Viewport.Rendering
             this.LineColour = Color4.LimeGreen;
 
             this.ActorTransform = transform;
-            _boxShader = RenderCache.Instance.GetShader(EverlookShader.BoundingBox) as BoundingBoxShader;
+            _boxShader = (BoundingBoxShader)RenderCache.Instance.GetShader(EverlookShader.BoundingBox);
 
             this.IsInitialized = false;
         }
@@ -139,6 +139,11 @@ namespace Everlook.Viewport.Rendering
         {
             ThrowIfDisposed();
 
+            if (_vertexBuffer is null || _vertexIndexesBuffer is null)
+            {
+                return;
+            }
+
             GL.Disable(EnableCap.CullFace);
             GL.Disable(EnableCap.DepthTest);
 
@@ -174,6 +179,11 @@ namespace Everlook.Viewport.Rendering
         public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
         {
             ThrowIfDisposed();
+
+            if (_vertexBuffer is null || _vertexIndexesBuffer is null)
+            {
+                return;
+            }
 
             GL.Disable(EnableCap.CullFace);
             GL.Disable(EnableCap.DepthTest);
@@ -219,8 +229,8 @@ namespace Everlook.Viewport.Rendering
         {
             this.IsDisposed = true;
 
-            _vertexBuffer.Dispose();
-            _vertexIndexesBuffer.Dispose();
+            _vertexBuffer?.Dispose();
+            _vertexIndexesBuffer?.Dispose();
         }
     }
 }

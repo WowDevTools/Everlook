@@ -84,7 +84,7 @@ namespace Everlook.Viewport.Rendering.Shaders.GLSLExtended
         /// </summary>
         /// <param name="source">The unmodifed GLSL source.</param>
         /// <returns>GLSL source code with all functions forward declared.</returns>
-        public static string ProcessForwardDeclarations(string source)
+        public static string? ProcessForwardDeclarations(string source)
         {
             // Find a list of functions
 

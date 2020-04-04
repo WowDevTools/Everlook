@@ -55,7 +55,7 @@ namespace Everlook.UI
         /// <summary>
         /// The image we're exporting.
         /// </summary>
-        private BLP _image;
+        private BLP _image = null!;
 
         /// <summary>
         /// Creates an instance of the Image Export dialog, using the glade XML UI file.

@@ -64,7 +64,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         public int Count => _instanceTransforms.Count;
 
-        private Buffer<Matrix4> _instanceModelMatrices;
+        private Buffer<Matrix4>? _instanceModelMatrices;
 
         private List<Transform> _instanceTransforms;
 
@@ -129,7 +129,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <inheritdoc />
         public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
         {
-            if (!this.IsInitialized)
+            if (!this.IsInitialized || _instanceModelMatrices is null)
             {
                 return;
             }

@@ -60,6 +60,6 @@ namespace Everlook.Utility
         /// <param name="path">The path to the file.</param>
         /// <returns>A file reference pointing to the path.</returns>
         /// <exception cref="ArgumentNullException">Thrown if the path is null or empty.</exception>
-        FileReference GetReferenceForPath(string path);
+        FileReference? GetReferenceForPath(string path);
     }
 }

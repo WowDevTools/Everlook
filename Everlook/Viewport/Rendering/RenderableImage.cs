@@ -52,7 +52,7 @@ namespace Everlook.Viewport.Rendering
         public bool IsStatic => true;
 
         /// <inheritdoc />
-        public Transform ActorTransform { get; set; }
+        public Transform ActorTransform { get; set; } = new Transform();
 
         /// <inheritdoc />
         public bool IsInitialized { get; set; }
@@ -60,32 +60,32 @@ namespace Everlook.Viewport.Rendering
         /// <summary>
         /// Gets the native OpenGL ID for the vertex buffer.
         /// </summary>
-        protected Buffer<Vector2> VertexBuffer { get; private set; }
+        protected Buffer<Vector2>? VertexBuffer { get; private set; }
 
         /// <summary>
         /// Gets the native OpenGL ID for the UV coordinate buffer.
         /// </summary>
-        protected Buffer<Vector2> UVBuffer { get; private set; }
+        protected Buffer<Vector2>? UVBuffer { get; private set; }
 
         /// <summary>
         /// Gets the native OpenGL ID for the vertex index buffer.
         /// </summary>
-        protected Buffer<ushort> VertexIndexBuffer { get; private set; }
+        protected Buffer<ushort>? VertexIndexBuffer { get; private set; }
 
         /// <summary>
         /// Gets or sets the native OpenGL ID for the image on the GPU.
         /// </summary>
-        protected Texture2D Texture { get; set; }
+        protected Texture2D? Texture { get; set; }
 
         /// <summary>
         /// Gets or sets the native OpenGL ID for the unlit 2D shader.
         /// </summary>
-        protected Plain2DShader Shader { get; set; }
+        protected Plain2DShader? Shader { get; set; }
 
         /// <summary>
         /// Gets or sets the path to the encapsulated texture in the package group.
         /// </summary>
-        protected string TexturePath { get; set; }
+        protected string? TexturePath { get; set; }
 
         /// <inheritdoc />
         public ProjectionType Projection => ProjectionType.Orthographic;
@@ -196,6 +196,18 @@ namespace Everlook.Viewport.Rendering
             ThrowIfDisposed();
 
             if (!this.IsInitialized)
+            {
+                return;
+            }
+
+            if
+            (
+                this.Shader is null ||
+                this.VertexBuffer is null ||
+                this.VertexIndexBuffer is null ||
+                this.UVBuffer is null ||
+                this.Texture is null
+            )
             {
                 return;
             }
@@ -333,9 +345,9 @@ namespace Everlook.Viewport.Rendering
         {
             this.IsDisposed = true;
 
-            this.VertexBuffer.Dispose();
-            this.VertexIndexBuffer.Dispose();
-            this.UVBuffer.Dispose();
+            this.VertexBuffer?.Dispose();
+            this.VertexIndexBuffer?.Dispose();
+            this.UVBuffer?.Dispose();
         }
     }
 }

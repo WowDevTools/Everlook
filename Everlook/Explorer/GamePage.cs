@@ -49,22 +49,22 @@ namespace Everlook.Explorer
         /// <summary>
         /// Raised whenever a file is selected in the tree which can be displayed in the interface.
         /// </summary>
-        public event Func<GamePage, FileReference, Task> FileLoadRequested;
+        public event Func<GamePage, FileReference, Task>? FileLoadRequested;
 
         /// <summary>
         /// Raised whenever a file or folder is requested to be saved.
         /// </summary>
-        public event Func<GamePage, IEnumerable<FileReference>, Task> SaveRequested;
+        public event Func<GamePage, IEnumerable<FileReference>, Task>? SaveRequested;
 
         /// <summary>
         /// Raised whenever a file is requested to be queued for exporting.
         /// </summary>
-        public event Func<GamePage, FileReference, Task> EnqueueFileExportRequested;
+        public event Func<GamePage, FileReference, Task>? EnqueueFileExportRequested;
 
         /// <summary>
         /// Raised whenever a file is requeste to be exported.
         /// </summary>
-        public event Func<GamePage, FileReference, Task> ExportItemRequested;
+        public event Func<GamePage, FileReference, Task>? ExportItemRequested;
 
         /// <summary>
         /// Gets the widget which is at the top level of the page.
@@ -120,8 +120,10 @@ namespace Everlook.Explorer
         /// <param name="packageGroup">The package group which the node tree maps to.</param>
         /// <param name="nodeTree">The prebuilt node tree to display.</param>
         /// <param name="version">The Warcraft version that the game page is contextually relevant for.</param>
-        public GamePage(PackageGroup packageGroup, SerializedTree nodeTree, WarcraftVersion version)
+        /// <param name="alias">The name of the page.</param>
+        public GamePage(PackageGroup packageGroup, SerializedTree nodeTree, WarcraftVersion version, string alias)
         {
+            this.Alias = alias;
             _uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
             _treeModel = new FileTreeModel(nodeTree);

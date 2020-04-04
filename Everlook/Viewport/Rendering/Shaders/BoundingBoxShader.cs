@@ -45,7 +45,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         protected override string FragmentShaderResourceName => "BoundingBox.BoundingBoxFragment";
 
         /// <inheritdoc />
-        protected override string GeometryShaderResourceName => null;
+        protected override string? GeometryShaderResourceName => null;
 
         /// <summary>
         /// Sets the instancing flag.

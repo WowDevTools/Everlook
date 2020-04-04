@@ -36,59 +36,59 @@ namespace Everlook.UI
             New game dialog
         */
 
-        [UIElement] private readonly Dialog _newGamePathDialog;
-        [UIElement] private readonly Entry _aliasEntry;
-        [UIElement] private readonly ComboBox _gameVersionCombo;
-        [UIElement] private readonly FileChooserButton _pathChooser;
+        [UIElement] private readonly Dialog _newGamePathDialog = null!;
+        [UIElement] private readonly Entry _aliasEntry = null!;
+        [UIElement] private readonly ComboBox _gameVersionCombo = null!;
+        [UIElement] private readonly FileChooserButton _pathChooser = null!;
 
         /*
             General settings
         */
 
-        [UIElement] private readonly TreeView _gamePathSelectionTreeView;
-        [UIElement] private readonly ListStore _gamePathListStore;
-        [UIElement] private readonly Button _addPathButton;
-        [UIElement] private readonly Button _removePathButton;
+        [UIElement] private readonly TreeView _gamePathSelectionTreeView = null!;
+        [UIElement] private readonly ListStore _gamePathListStore = null!;
+        [UIElement] private readonly Button _addPathButton = null!;
+        [UIElement] private readonly Button _removePathButton = null!;
 
         /*
             Export settings
         */
 
-        [UIElement] private readonly FileChooserButton _defaultExportDirectoryFileChooserButton;
-        [UIElement] private readonly ComboBox _defaultModelExportFormatComboBox;
-        [UIElement] private readonly ComboBox _defaultImageExportFormatComboBox;
-        [UIElement] private readonly ComboBox _defaultAudioExportFormatComboBox;
-        [UIElement] private readonly Switch _keepDirectoryStructureSwitch;
+        [UIElement] private readonly FileChooserButton _defaultExportDirectoryFileChooserButton = null!;
+        [UIElement] private readonly ComboBox _defaultModelExportFormatComboBox = null!;
+        [UIElement] private readonly ComboBox _defaultImageExportFormatComboBox = null!;
+        [UIElement] private readonly ComboBox _defaultAudioExportFormatComboBox = null!;
+        [UIElement] private readonly Switch _keepDirectoryStructureSwitch = null!;
 
         /*
             Privacy settings
         */
 
-        [UIElement] private readonly CheckButton _allowStatsCheckButton;
+        [UIElement] private readonly CheckButton _allowStatsCheckButton = null!;
 
-        [UIElement] private readonly CheckButton _sendMachineIDCheckButton;
-        [UIElement] private readonly CheckButton _sendInstallIDCheckButton;
-        [UIElement] private readonly CheckButton _sendOSCheckButton;
-        [UIElement] private readonly CheckButton _sendAppVersionCheckButton;
-        [UIElement] private readonly CheckButton _sendRuntimeInfoCheckButton;
+        [UIElement] private readonly CheckButton _sendMachineIDCheckButton = null!;
+        [UIElement] private readonly CheckButton _sendInstallIDCheckButton = null!;
+        [UIElement] private readonly CheckButton _sendOSCheckButton = null!;
+        [UIElement] private readonly CheckButton _sendAppVersionCheckButton = null!;
+        [UIElement] private readonly CheckButton _sendRuntimeInfoCheckButton = null!;
 
         /*
             Viewport settings
         */
 
-        [UIElement] private readonly ColorButton _viewportColourButton;
-        [UIElement] private readonly ColorButton _wireframeColourButton;
-        [UIElement] private readonly Switch _occludeBoundingBoxesSwitch;
-        [UIElement] private readonly Adjustment _cameraSpeedAdjustment;
-        [UIElement] private readonly Adjustment _rotationSpeedAdjustment;
-        [UIElement] private readonly Adjustment _cameraFOVAdjustment;
-        [UIElement] private readonly Adjustment _sprintMultiplierAdjustment;
+        [UIElement] private readonly ColorButton _viewportColourButton = null!;
+        [UIElement] private readonly ColorButton _wireframeColourButton = null!;
+        [UIElement] private readonly Switch _occludeBoundingBoxesSwitch = null!;
+        [UIElement] private readonly Adjustment _cameraSpeedAdjustment = null!;
+        [UIElement] private readonly Adjustment _rotationSpeedAdjustment = null!;
+        [UIElement] private readonly Adjustment _cameraFOVAdjustment = null!;
+        [UIElement] private readonly Adjustment _sprintMultiplierAdjustment = null!;
 
         /*
             Explorer settings
         */
 
-        [UIElement] private readonly CheckButton _showUnknownFilesCheckButton;
-        [UIElement] private readonly CheckButton _autoplayAudioCheckButton;
+        [UIElement] private readonly CheckButton _showUnknownFilesCheckButton = null!;
+        [UIElement] private readonly CheckButton _autoplayAudioCheckButton = null!;
     }
 }

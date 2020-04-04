@@ -94,10 +94,9 @@ namespace Everlook.Utility
         /// <param name="width">The width of the output <see cref="Pixbuf"/>.</param>
         /// <param name="height">The height of the output <see cref="Pixbuf"/>.</param>
         /// <returns>A pixel buffer containing the image.</returns>
-        private static Pixbuf LoadEmbeddedImage(string resourceName, int width = 16, int height = 16)
+        private static Pixbuf? LoadEmbeddedImage(string resourceName, int width = 16, int height = 16)
         {
-            using (var vectorStream =
-                Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+            using (var vectorStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
             {
                 if (vectorStream == null)
                 {

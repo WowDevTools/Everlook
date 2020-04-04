@@ -41,7 +41,7 @@ namespace Everlook.UI.Widgets
         private static int _graphicsContextCount;
         private static bool _isSharedContextInitialized;
 
-        private IGraphicsContext _tkGraphicsContext;
+        private IGraphicsContext? _tkGraphicsContext;
         private bool _isInitialized;
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace Everlook.UI.Widgets
                 return true;
             }
 
-            var frameTimeSeconds = (frameTimeµSeconds - _previousFrameTime) / 10e6;
+            var frameTimeSeconds = (frameTimeµSeconds - _previousFrameTime.Value) / 10e6;
 
             this.DeltaTime = (float)frameTimeSeconds;
             _previousFrameTime = frameTimeµSeconds;
@@ -194,24 +194,24 @@ namespace Everlook.UI.Widgets
         /// Called when the first <see cref="GraphicsContext"/> is created in the case where
         /// GraphicsContext.ShareContexts == true;
         /// </summary>
-        public static event EventHandler GraphicsContextInitialized;
+        public static event EventHandler? GraphicsContextInitialized;
 
         /// <summary>
         /// Called when the first <see cref="GraphicsContext"/> is being destroyed in the case where
         /// GraphicsContext.ShareContext == true;
         /// </summary>
-        public static event EventHandler GraphicsContextShuttingDown;
+        public static event EventHandler? GraphicsContextShuttingDown;
 
         /// <summary>
         /// Called when this <see cref="ViewportArea"/> has finished initializing and has a valid
         /// <see cref="GraphicsContext"/>.
         /// </summary>
-        public event EventHandler Initialized;
+        public event EventHandler? Initialized;
 
         /// <summary>
         /// Called when this <see cref="ViewportArea"/> is being disposed.
         /// </summary>
-        public event EventHandler ShuttingDown;
+        public event EventHandler? ShuttingDown;
 
         /// <summary>
         /// Invokes the <see cref="GraphicsContextInitialized"/> event.

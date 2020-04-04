@@ -96,7 +96,7 @@ namespace Everlook.UI
         /// <summary>
         /// A single global audio source. Used for playing individual files.
         /// </summary>
-        private AudioSource _globalAudio;
+        private AudioSource? _globalAudio;
 
         /// <summary>
         /// Creates an instance of the <see cref="MainWindow"/> class, loading the glade XML UI as needed.
@@ -106,7 +106,7 @@ namespace Everlook.UI
         {
             using (var builder = new Builder(null, "Everlook.interfaces.Everlook.glade", null))
             {
-                return new MainWindow(builder, builder.GetObject("MainWindow").Handle);
+                return new MainWindow(builder, builder.GetObject("_mainWindow").Handle);
             }
         }
 
@@ -533,6 +533,12 @@ namespace Everlook.UI
                 loadingProgress.FinishedOperations = loadedGames;
                 dialog.OverallProgressNotifier.Report(loadingProgress);
 
+                if (!Directory.Exists(gameTarget.Path))
+                {
+                    Log.Warn($"Could not find game folder for {gameTarget.Alias}. Has the directory moved?");
+                    continue;
+                }
+
                 try
                 {
                     (var group, var nodeTree) = await loader.LoadGameAsync
@@ -542,6 +548,11 @@ namespace Everlook.UI
                         dialog.CancellationSource.Token,
                         dialog.GameLoadProgressNotifier
                     );
+
+                    if (group is null || nodeTree is null)
+                    {
+                        continue;
+                    }
 
                     AddGamePage(gameTarget.Alias, gameTarget.Version, group, nodeTree);
                 }
@@ -560,10 +571,7 @@ namespace Everlook.UI
 
         private void AddGamePage(string alias, WarcraftVersion version, PackageGroup group, SerializedTree nodeTree)
         {
-            var page = new GamePage(group, nodeTree, version)
-            {
-                Alias = alias
-            };
+            var page = new GamePage(group, nodeTree, version, alias);
 
             page.FileLoadRequested += OnFileLoadRequested;
             page.SaveRequested += OnSaveRequested;
@@ -868,7 +876,7 @@ namespace Everlook.UI
             }
 
             var validButtonIsPressed = false;
-            if (_renderingEngine.RenderTarget.Projection == ProjectionType.Perspective)
+            if (_renderingEngine.HasRenderTarget && _renderingEngine.RenderTarget!.Projection == ProjectionType.Perspective)
             {
                 // Exclusively check for right click
                 if (args.Event.Button == 3)
@@ -1197,6 +1205,11 @@ namespace Everlook.UI
                 case WarcraftFileType.WaveAudio:
                 case WarcraftFileType.MP3Audio:
                 {
+                    if (_globalAudio is null)
+                    {
+                        return;
+                    }
+
                     AudioManager.UnregisterSource(_globalAudio);
 
                     if (_config.AutoplayAudioFiles)

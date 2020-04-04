@@ -62,7 +62,7 @@ namespace Everlook.Audio.Wave
             }
         }
 
-        private byte[] _pcmDataInternal;
+        private byte[]? _pcmDataInternal;
 
         /// <inheritdoc />
         public byte[] PCMData
@@ -211,9 +211,6 @@ namespace Everlook.Audio.Wave
             _isDisposed = true;
 
             this.PCMStream?.Dispose();
-
-            this.PCMStream = null;
-            this.PCMData = null;
         }
     }
 }

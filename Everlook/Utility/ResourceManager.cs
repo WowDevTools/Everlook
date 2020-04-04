@@ -36,11 +36,10 @@ namespace Everlook.Utility
         /// </summary>
         /// <param name="resourcePath">The resource path of the shader.</param>
         /// <returns>The source code of a shader.</returns>
-        public static string LoadStringResource(string resourcePath)
+        public static string? LoadStringResource(string resourcePath)
         {
             string resourceString;
-            using (var resourceStream =
-                Assembly.GetExecutingAssembly().GetManifestResourceStream(resourcePath))
+            using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourcePath))
             {
                 if (resourceStream == null)
                 {
@@ -60,14 +59,13 @@ namespace Everlook.Utility
         /// Gets a fallback image which can be used for textures that fail to load.
         /// </summary>
         /// <returns>A bitmap containing a fallback texture.</returns>
-        public static Bitmap GetFallbackImage()
+        public static Bitmap? GetFallbackImage()
         {
             // Load the fallback texture
             var executingAssembly = Assembly.GetExecutingAssembly();
             const string fallbackTextureName = "Everlook.Content.Textures.FallbackTexture.png";
 
-            using (var imageStream =
-                executingAssembly.GetManifestResourceStream(fallbackTextureName))
+            using (var imageStream = executingAssembly.GetManifestResourceStream(fallbackTextureName))
             {
                 if (imageStream == null)
                 {

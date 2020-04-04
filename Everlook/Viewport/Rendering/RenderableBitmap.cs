@@ -19,6 +19,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
+using System;
 using System.Drawing;
 using Everlook.Viewport.Rendering.Core;
 using Warcraft.Core.Structures;
@@ -55,6 +57,11 @@ namespace Everlook.Viewport.Rendering
         /// <inheritdoc />
         protected override Texture2D LoadTexture()
         {
+            if (this.TexturePath is null)
+            {
+                throw new InvalidOperationException();
+            }
+
             if (Cache.HasCachedTextureForPath(this.TexturePath))
             {
                 return Cache.GetCachedTexture(this.TexturePath);

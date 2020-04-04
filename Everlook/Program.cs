@@ -137,7 +137,7 @@ namespace Everlook
         /// <param name="unhandledExceptionEventArgs">
         /// The event object containing the information about the exception.
         /// </param>
-        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
+        private static void OnUnhandledException(object? sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
         {
             // Force english exception output
             System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -150,7 +150,7 @@ namespace Everlook
             Log.Fatal("Please report this to <jarl.gullberg@gmail.com> or via GitHub. Include the full log and a " +
                       "description of what you were doing when it happened.");
 
-            var unhandledException = unhandledExceptionEventArgs.ExceptionObject as Exception;
+            var unhandledException = (Exception)unhandledExceptionEventArgs.ExceptionObject;
             switch (unhandledException)
             {
                 case null:
@@ -184,7 +184,7 @@ namespace Everlook
                 }
             }
 
-            Log.Fatal($"Exception type: {unhandledException.GetType().FullName}");
+            Log.Fatal($"Exception type: {unhandledException!.GetType().FullName}");
             Log.Fatal($"Exception Message: {unhandledException.Message}");
             Log.Fatal($"Exception Stacktrace: {unhandledException.StackTrace}");
 

@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System;
 using Everlook.Viewport.Rendering.Core;
 using Warcraft.BLP;
 using Warcraft.Core.Structures;
@@ -52,6 +53,11 @@ namespace Everlook.Viewport.Rendering
         /// <inheritdoc />
         protected override Texture2D LoadTexture()
         {
+            if (this.TexturePath is null)
+            {
+                throw new InvalidOperationException();
+            }
+
             if (Cache.HasCachedTextureForPath(this.TexturePath))
             {
                 return Cache.GetCachedTexture(this.TexturePath);
