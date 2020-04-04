@@ -183,7 +183,7 @@ namespace Everlook.Viewport.Rendering
         {
             ThrowIfDisposed();
 
-            string filename = texture.Filename;
+            var filename = texture.Filename;
             if (string.IsNullOrEmpty(texture.Filename))
             {
                 if (string.IsNullOrEmpty(texturePathOverride))
@@ -225,7 +225,7 @@ namespace Everlook.Viewport.Rendering
                 return GetCachedTexture(texturePath);
             }
 
-            WarcraftFileType textureType = FileInfoUtilities.GetFileType(texturePath);
+            var textureType = FileInfoUtilities.GetFileType(texturePath);
             switch (textureType)
             {
                 case WarcraftFileType.BinaryImage:
@@ -235,7 +235,7 @@ namespace Everlook.Viewport.Rendering
                         return this.FallbackTexture;
                     }
 
-                    BLP texture = new BLP(textureData);
+                    var texture = new BLP(textureData);
                     return CreateCachedTexture(texture, texturePath, wrappingModeS, wrappingModeT);
                 }
                 case WarcraftFileType.BitmapImage:
@@ -250,9 +250,9 @@ namespace Everlook.Viewport.Rendering
                         return this.FallbackTexture;
                     }
 
-                    using (MemoryStream ms = new MemoryStream(data))
+                    using (var ms = new MemoryStream(data))
                     {
-                        Bitmap texture = new Bitmap(ms);
+                        var texture = new Bitmap(ms);
                         return CreateCachedTexture(texture, texturePath);
                     }
                 }
@@ -276,7 +276,7 @@ namespace Everlook.Viewport.Rendering
         {
             ThrowIfDisposed();
 
-            Texture2D texture = new Texture2D(imageData, wrappingModeS, wrappingModeT);
+            var texture = new Texture2D(imageData, wrappingModeS, wrappingModeT);
 
             this._textureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), texture);
             return texture;
@@ -295,7 +295,7 @@ namespace Everlook.Viewport.Rendering
         {
             ThrowIfDisposed();
 
-            Texture2D texture = new Texture2D(imageData);
+            var texture = new Texture2D(imageData);
 
             this._textureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), texture);
             return texture;
@@ -374,13 +374,13 @@ namespace Everlook.Viewport.Rendering
 
             this.IsDisposed = true;
 
-            foreach (KeyValuePair<string, Texture2D> cachedTexture in this._textureCache)
+            foreach (var cachedTexture in this._textureCache)
             {
                 cachedTexture.Value?.Dispose();
             }
             this._textureCache.Clear();
 
-            foreach (KeyValuePair<EverlookShader, ShaderProgram> cachedShader in this._shaderCache)
+            foreach (var cachedShader in this._shaderCache)
             {
                 cachedShader.Value?.Dispose();
             }

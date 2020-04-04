@@ -75,7 +75,7 @@ namespace Everlook.Database
         /// <returns>A database of type <typeparamref name="T"/>.</returns>
         public DBC<T> GetDatabase<T>() where T : DBCRecord, new()
         {
-            DatabaseName databaseName = GetDatabaseNameFromRecordType(typeof(T));
+            var databaseName = GetDatabaseNameFromRecordType(typeof(T));
 
             lock (this._databaseLock)
             {
@@ -97,7 +97,7 @@ namespace Everlook.Database
         /// <returns>A record of type <typeparamref name="T"/>.</returns>
         public T GetRecordByID<T>(int id) where T : DBCRecord, new()
         {
-            DBC<T> database = GetDatabase<T>();
+            var database = GetDatabase<T>();
             return database.GetRecordByID(id);
         }
 
@@ -110,7 +110,7 @@ namespace Everlook.Database
         /// <returns>A record of type <typeparamref name="T"/>.</returns>
         public T GetRecordByIndex<T>(int index) where T : DBCRecord, new()
         {
-            DBC<T> database = GetDatabase<T>();
+            var database = GetDatabase<T>();
             return database[index];
         }
 
@@ -138,13 +138,13 @@ namespace Everlook.Database
                 return;
             }
 
-            Type genericDBCType = typeof(DBC<>);
-            Type specificDBCType = genericDBCType.MakeGenericType(GetRecordTypeFromDatabaseName(databaseName));
+            var genericDBCType = typeof(DBC<>);
+            var specificDBCType = genericDBCType.MakeGenericType(GetRecordTypeFromDatabaseName(databaseName));
 
-            string databasePath = GetDatabasePackagePath(databaseName);
-            byte[] databaseData = this._contentSource.ExtractFile(databasePath);
+            var databasePath = GetDatabasePackagePath(databaseName);
+            var databaseData = this._contentSource.ExtractFile(databasePath);
 
-            IDBC database = (IDBC)Activator.CreateInstance(specificDBCType, this._version, databaseData);
+            var database = (IDBC)Activator.CreateInstance(specificDBCType, this._version, databaseData);
             this._databases.Add(databaseName, database);
         }
 

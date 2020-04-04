@@ -138,8 +138,8 @@ namespace Everlook.Viewport.Rendering
         /// <returns>The number of reasonable mipmap levels.</returns>
         private uint GetNumReasonableMipLevels()
         {
-            uint smallestXRes = GetResolution().X;
-            uint smallestYRes = GetResolution().Y;
+            var smallestXRes = GetResolution().X;
+            var smallestYRes = GetResolution().Y;
 
             uint mipLevels = 0;
             while (smallestXRes > 1 && smallestYRes > 1)
@@ -234,7 +234,7 @@ namespace Everlook.Viewport.Rendering
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             // Set the model view matrix
-            Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
+            var modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
             // Send the model matrix to the shader
             this.Shader.SetMVPMatrix(modelViewProjection);
@@ -261,10 +261,10 @@ namespace Everlook.Viewport.Rendering
         protected Buffer<Vector2> GenerateVertices()
         {
             // Generate vertex positions
-            uint halfWidth = GetResolution().X / 2;
-            uint halfHeight = GetResolution().Y / 2;
+            var halfWidth = GetResolution().X / 2;
+            var halfHeight = GetResolution().Y / 2;
 
-            List<Vector2> vertexPositions = new List<Vector2>
+            var vertexPositions = new List<Vector2>
             {
                 new Vector2(-halfWidth, halfHeight),
                 new Vector2(halfWidth, halfHeight),
@@ -286,7 +286,7 @@ namespace Everlook.Viewport.Rendering
         protected static Buffer<ushort> GenerateVertexIndexes()
         {
             // Generate vertex indexes
-            List<ushort> vertexIndexes = new List<ushort> { 1, 0, 2, 2, 3, 1 };
+            var vertexIndexes = new List<ushort> { 1, 0, 2, 2, 3, 1 };
 
             return new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
             {
@@ -301,7 +301,7 @@ namespace Everlook.Viewport.Rendering
         protected static Buffer<Vector2> GenerateTextureCoordinates()
         {
             // Generate UV coordinates
-            List<Vector2> textureCoordinates = new List<Vector2>
+            var textureCoordinates = new List<Vector2>
             {
                 new Vector2(0, 0),
                 new Vector2(1, 0),

@@ -64,7 +64,7 @@ namespace Everlook.UI
         /// <returns>An initialized instance of the EverlookImageExportDialog class.</returns>
         public static EverlookImageExportDialog Create(FileReference inExportTarget)
         {
-            using (Builder builder = new Builder(null, "Everlook.interfaces.EverlookImageExport.glade", null))
+            using (var builder = new Builder(null, "Everlook.interfaces.EverlookImageExport.glade", null))
             {
                 return new EverlookImageExportDialog
                 (
@@ -103,16 +103,16 @@ namespace Everlook.UI
         /// </summary>
         private void LoadInformation()
         {
-            string imageFilename = IOPath.GetFileNameWithoutExtension(this._exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
+            var imageFilename = IOPath.GetFileNameWithoutExtension(this._exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
             this.Title = $"Export Image | {imageFilename}";
 
-            byte[] file = this._exportTarget.Extract();
+            var file = this._exportTarget.Extract();
             this._image = new BLP(file);
 
             this._exportFormatComboBox.Active = (int)this._config.DefaultImageExportFormat;
 
             this._mipLevelListStore.Clear();
-            foreach (string mipString in this._image.GetMipMapLevelStrings())
+            foreach (var mipString in this._image.GetMipMapLevelStrings())
             {
                 this._mipLevelListStore.AppendValues(true, mipString);
             }
@@ -125,7 +125,7 @@ namespace Everlook.UI
         /// </summary>
         public void RunExport()
         {
-            string imageFilename = IOPath.GetFileNameWithoutExtension(this._exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
+            var imageFilename = IOPath.GetFileNameWithoutExtension(this._exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
 
             string exportPath;
             if (this._config.KeepFileDirectoryStructure)
@@ -145,19 +145,19 @@ namespace Everlook.UI
                 );
             }
 
-            int i = 0;
+            var i = 0;
             this._mipLevelListStore.Foreach
             (
                 (model, path, iter) =>
                 {
-                    bool shouldExport = (bool)this._mipLevelListStore.GetValue(iter, 0);
+                    var shouldExport = (bool)this._mipLevelListStore.GetValue(iter, 0);
 
                     if (shouldExport)
                     {
-                        string formatExtension = GetFileExtensionFromImageFormat((ImageFormat)this._exportFormatComboBox.Active);
+                        var formatExtension = GetFileExtensionFromImageFormat((ImageFormat)this._exportFormatComboBox.Active);
                         Directory.CreateDirectory(Directory.GetParent(exportPath).FullName);
 
-                        string fullExportPath = $"{exportPath}_{i}.{formatExtension}";
+                        var fullExportPath = $"{exportPath}_{i}.{formatExtension}";
 
                         using (var fs = File.OpenWrite(fullExportPath))
                         {
@@ -278,7 +278,7 @@ namespace Everlook.UI
             TreeIter iter;
             this._mipLevelListStore.GetIterFromString(out iter, e.Path);
 
-            bool currentValue = (bool)this._mipLevelListStore.GetValue(iter, 0);
+            var currentValue = (bool)this._mipLevelListStore.GetValue(iter, 0);
 
             this._mipLevelListStore.SetValue(iter, 0, !currentValue);
         }

@@ -50,7 +50,7 @@ namespace Everlook.UI
         /// <returns>An initialized instance of the EverlookDirectoryExportDialog class.</returns>
         public static EverlookDirectoryExportDialog Create(FileReference inExportTarget)
         {
-            using (Builder builder = new Builder(null, "Everlook.interfaces.EverlookDirectoryExport.glade", null))
+            using (var builder = new Builder(null, "Everlook.interfaces.EverlookDirectoryExport.glade", null))
             {
                 return new EverlookDirectoryExportDialog
                 (
@@ -210,7 +210,7 @@ namespace Everlook.UI
             TreeIter iter;
             this._itemExportListStore.GetIterFromString(out iter, e.Path);
 
-            bool currentValue = (bool)this._itemExportListStore.GetValue(iter, 0);
+            var currentValue = (bool)this._itemExportListStore.GetValue(iter, 0);
 
             this._itemExportListStore.SetValue(iter, 0, !currentValue);
         }

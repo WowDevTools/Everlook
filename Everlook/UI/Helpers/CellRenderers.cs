@@ -45,13 +45,13 @@ namespace Everlook.UI.Helpers
         /// <param name="iter">The iter pointing to the rendered row.</param>
         public static void RenderModelVariationName(ICellLayout cellLayout, CellRenderer cell, ITreeModel model, TreeIter iter)
         {
-            CellRendererText cellText = cell as CellRendererText;
+            var cellText = cell as CellRendererText;
             if (cellText == null)
             {
                 return;
             }
 
-            string storedText = (string)model.GetValue(iter, 0);
+            var storedText = (string)model.GetValue(iter, 0);
 
             // Builtin override for the standard set name
             if (storedText.ToLowerInvariant().Contains("set_$defaultglobal"))
@@ -60,7 +60,7 @@ namespace Everlook.UI.Helpers
                 return;
             }
 
-            string transientText = storedText.FastReplaceCaseInsensitive("set_", string.Empty);
+            var transientText = storedText.FastReplaceCaseInsensitive("set_", string.Empty);
 
             // Insert spaces between words and abbreviations
             transientText = Regex.Replace(transientText, @"(\B[A-Z0-9]+?(?=[A-Z][^A-Z])|\B[A-Z0-9]+?(?=[^A-Z]))", " $1");
@@ -77,8 +77,8 @@ namespace Everlook.UI.Helpers
         /// <param name="iter">The <see cref="TreeIter"/> pointing to the row the reference is in.</param>
         public static void RenderExportQueueReferenceName(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
         {
-            CellRendererText cellText = cell as CellRendererText;
-            FileReference reference = (FileReference)model.GetValue(iter, 0);
+            var cellText = cell as CellRendererText;
+            var reference = (FileReference)model.GetValue(iter, 0);
 
             if (reference == null || cellText == null)
             {
@@ -97,8 +97,8 @@ namespace Everlook.UI.Helpers
         /// <param name="iter">The <see cref="TreeIter"/> pointing to the row the icon is in.</param>
         public static void RenderExportQueueReferenceIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
         {
-            CellRendererPixbuf cellIcon = cell as CellRendererPixbuf;
-            FileReference reference = (FileReference)model.GetValue(iter, 0);
+            var cellIcon = cell as CellRendererPixbuf;
+            var reference = (FileReference)model.GetValue(iter, 0);
 
             if (reference == null || cellIcon == null)
             {

@@ -55,16 +55,16 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         protected ShaderProgram()
         {
-            string vertexShaderSource = GetShaderSource(this.VertexShaderResourceName);
-            string fragmentShaderSource = GetShaderSource(this.FragmentShaderResourceName);
+            var vertexShaderSource = GetShaderSource(this.VertexShaderResourceName);
+            var fragmentShaderSource = GetShaderSource(this.FragmentShaderResourceName);
 
-            int vertexShaderID = CompileShader(ShaderType.VertexShader, vertexShaderSource);
-            int fragmentShaderID = CompileShader(ShaderType.FragmentShader, fragmentShaderSource);
+            var vertexShaderID = CompileShader(ShaderType.VertexShader, vertexShaderSource);
+            var fragmentShaderID = CompileShader(ShaderType.FragmentShader, fragmentShaderSource);
 
             if (!string.IsNullOrEmpty(this.GeometryShaderResourceName))
             {
-                string geometryShaderSource = GetShaderSource(this.GeometryShaderResourceName);
-                int geometryShaderID = CompileShader(ShaderType.GeometryShader, geometryShaderSource);
+                var geometryShaderSource = GetShaderSource(this.GeometryShaderResourceName);
+                var geometryShaderID = CompileShader(ShaderType.GeometryShader, geometryShaderSource);
                 this.NativeShaderProgramID = LinkShader(vertexShaderID, fragmentShaderID, geometryShaderID);
             }
             else
@@ -91,7 +91,7 @@ namespace Everlook.Viewport.Rendering.Core
         {
             Enable();
 
-            int variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+            var variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
             GL.Uniform1(variableHandle, value ? 1 : 0);
         }
 
@@ -105,7 +105,7 @@ namespace Everlook.Viewport.Rendering.Core
         {
             Enable();
 
-            int variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+            var variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
             GL.UniformMatrix4(variableHandle, shouldTranspose, ref matrix);
         }
 
@@ -118,7 +118,7 @@ namespace Everlook.Viewport.Rendering.Core
         {
             Enable();
 
-            int variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+            var variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
             GL.Uniform1(variableHandle, value);
         }
 
@@ -131,7 +131,7 @@ namespace Everlook.Viewport.Rendering.Core
         {
             Enable();
 
-            int variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+            var variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
             GL.Uniform4(variableHandle, value);
         }
 
@@ -144,7 +144,7 @@ namespace Everlook.Viewport.Rendering.Core
         {
             Enable();
 
-            int variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+            var variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
             GL.Uniform4(variableHandle, value);
         }
 
@@ -157,7 +157,7 @@ namespace Everlook.Viewport.Rendering.Core
         {
             Enable();
 
-            int variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+            var variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
             GL.Uniform1(variableHandle, value);
         }
 
@@ -177,7 +177,7 @@ namespace Everlook.Viewport.Rendering.Core
 
             Enable();
 
-            int textureVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniform.ToString());
+            var textureVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniform.ToString());
             GL.Uniform1(textureVariableHandle, (int)uniform);
 
             GL.ActiveTexture(textureUnit);
@@ -222,7 +222,7 @@ namespace Everlook.Viewport.Rendering.Core
         private static int LinkShader(int vertexShaderID, int fragmentShaderID, int geometryShaderID = -1)
         {
             Log.Info("Linking shader program...");
-            int program = GL.CreateProgram();
+            var program = GL.CreateProgram();
 
             GL.AttachShader(program, vertexShaderID);
             GL.AttachShader(program, fragmentShaderID);
@@ -234,11 +234,11 @@ namespace Everlook.Viewport.Rendering.Core
 
             GL.LinkProgram(program);
 
-            GL.GetProgram(program, GetProgramParameterName.LinkStatus, out int result);
-            bool linkingSucceeded = result > 0;
+            GL.GetProgram(program, GetProgramParameterName.LinkStatus, out var result);
+            var linkingSucceeded = result > 0;
 
-            GL.GetProgram(program, GetProgramParameterName.InfoLogLength, out int linkingLogLength);
-            GL.GetProgramInfoLog(program, out string linkingLog);
+            GL.GetProgram(program, GetProgramParameterName.InfoLogLength, out var linkingLogLength);
+            GL.GetProgramInfoLog(program, out var linkingLog);
 
             // Clean up the shader source code and unlinked object files from graphics memory
             GL.DetachShader(program, vertexShaderID);
@@ -279,17 +279,17 @@ namespace Everlook.Viewport.Rendering.Core
                 );
             }
 
-            int shader = GL.CreateShader(shaderType);
+            var shader = GL.CreateShader(shaderType);
 
             Log.Info("Compiling shader...");
             GL.ShaderSource(shader, shaderSource);
             GL.CompileShader(shader);
 
-            GL.GetShader(shader, ShaderParameter.CompileStatus, out int result);
-            bool compilationSucceeded = result > 0;
+            GL.GetShader(shader, ShaderParameter.CompileStatus, out var result);
+            var compilationSucceeded = result > 0;
 
-            GL.GetShader(shader, ShaderParameter.InfoLogLength, out int compilationLogLength);
-            GL.GetShaderInfoLog(shader, out string compilationLog);
+            GL.GetShader(shader, ShaderParameter.InfoLogLength, out var compilationLogLength);
+            GL.GetShaderInfoLog(shader, out var compilationLog);
 
             if (!compilationSucceeded)
             {

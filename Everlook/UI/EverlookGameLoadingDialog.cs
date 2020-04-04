@@ -72,7 +72,7 @@ namespace Everlook.UI
         /// <returns>An initialized instance of the EverlookGameLoadingDialog class.</returns>
         public static EverlookGameLoadingDialog Create(Window parent)
         {
-            using (Builder builder = new Builder(null, "Everlook.interfaces.EverlookGameLoadingDialog.glade", null))
+            using (var builder = new Builder(null, "Everlook.interfaces.EverlookGameLoadingDialog.glade", null))
             {
                 return new EverlookGameLoadingDialog(builder, builder.GetObject("GameLoadingDialog").Handle, parent);
             }
@@ -103,7 +103,7 @@ namespace Everlook.UI
             {
                 SetFraction(loadingProgress.CompletionPercentage);
 
-                string statusText = string.Empty;
+                var statusText = string.Empty;
                 switch (loadingProgress.State)
                 {
                     case GameLoadingState.SettingUp:
@@ -158,7 +158,7 @@ namespace Everlook.UI
                 }
             });
 
-            using (Stream shaderStream =
+            using (var shaderStream =
                 Assembly.GetExecutingAssembly().GetManifestResourceStream("Everlook.Content.jokes.txt"))
             {
                 if (shaderStream == null)
@@ -166,7 +166,7 @@ namespace Everlook.UI
                     return;
                 }
 
-                using (StreamReader sr = new StreamReader(shaderStream))
+                using (var sr = new StreamReader(shaderStream))
                 {
                     while (sr.BaseStream.Length > sr.BaseStream.Position)
                     {

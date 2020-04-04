@@ -100,7 +100,7 @@ namespace Everlook.Explorer
                 Alias = gameAlias
             });
 
-            List<string> packagePaths = Directory.EnumerateFiles
+            var packagePaths = Directory.EnumerateFiles
             (
                 gamePath,
                 "*",
@@ -115,14 +115,14 @@ namespace Everlook.Explorer
                 return (null, null);
             }
 
-            string packageSetHash = GeneratePathSetHash(packagePaths);
-            string packageTreeFilename = $".{packageSetHash}.tree";
-            string packageTreeFilePath = Path.Combine(gamePath, packageTreeFilename);
+            var packageSetHash = GeneratePathSetHash(packagePaths);
+            var packageTreeFilename = $".{packageSetHash}.tree";
+            var packageTreeFilePath = Path.Combine(gamePath, packageTreeFilename);
 
-            PackageGroup packageGroup = new PackageGroup(packageSetHash);
+            var packageGroup = new PackageGroup(packageSetHash);
             SerializedTree nodeTree = null;
 
-            bool generateTree = true;
+            var generateTree = true;
             if (File.Exists(packageTreeFilePath))
             {
                 progress?.Report(new GameLoadingProgress
@@ -156,8 +156,8 @@ namespace Everlook.Explorer
                 double totalSteps = packagePaths.Count * 2;
 
                 // Load packages
-                List<(string packageName, IPackage package)> packages = new List<(string packageName, IPackage package)>();
-                foreach (string packagePath in packagePaths)
+                var packages = new List<(string packageName, IPackage package)>();
+                foreach (var packagePath in packagePaths)
                 {
                     ct.ThrowIfCancellationRequested();
 
@@ -170,7 +170,7 @@ namespace Everlook.Explorer
 
                     try
                     {
-                        PackageInteractionHandler package = await PackageInteractionHandler.LoadAsync(packagePath);
+                        var package = await PackageInteractionHandler.LoadAsync(packagePath);
                         packages.Add((Path.GetFileNameWithoutExtension(packagePath), package));
                     }
                     catch (FileLoadException fex)
@@ -195,7 +195,7 @@ namespace Everlook.Explorer
                 }
 
                 // Generate node tree
-                TreeBuilder builder = new TreeBuilder();
+                var builder = new TreeBuilder();
                 foreach (var packageInfo in packages)
                 {
                     ct.ThrowIfCancellationRequested();
@@ -207,7 +207,7 @@ namespace Everlook.Explorer
                         Alias = gameAlias
                     });
 
-                    double steps = completedSteps;
+                    var steps = completedSteps;
                     var createNodesProgress = new Progress<PackageNodesCreationProgress>
                     (
                         p =>
@@ -299,20 +299,20 @@ namespace Everlook.Explorer
         /// <returns>The hash created from the path set.</returns>
         private static string GeneratePathSetHash(IEnumerable<string> packagePaths)
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (string path in packagePaths)
+            var sb = new StringBuilder();
+            foreach (var path in packagePaths)
             {
-                string packageName = Path.GetFileNameWithoutExtension(path);
-                string packageSize = new FileInfo(path).Length.ToString();
+                var packageName = Path.GetFileNameWithoutExtension(path);
+                var packageSize = new FileInfo(path).Length.ToString();
 
                 sb.Append(packageName);
                 sb.Append(packageSize);
             }
 
-            using (MD5 md5 = MD5.Create())
+            using (var md5 = MD5.Create())
             {
-                byte[] input = Encoding.UTF8.GetBytes(sb.ToString());
-                byte[] hash = md5.ComputeHash(input);
+                var input = Encoding.UTF8.GetBytes(sb.ToString());
+                var hash = md5.ComputeHash(input);
 
                 return BitConverter.ToString(hash);
             }

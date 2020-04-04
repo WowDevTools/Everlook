@@ -100,7 +100,7 @@ namespace Everlook.Explorer
         /// <returns>The file path of the node in the package.</returns>
         public string GetNodeFilePath(SerializedNode node)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             var currentNode = node;
             while (!(currentNode.Type.HasFlag(NodeType.Package) || currentNode.Type.HasFlag(NodeType.Meta)))
@@ -138,13 +138,13 @@ namespace Everlook.Explorer
                 yield break;
             }
 
-            List<SerializedNode> folderNodes = new List<SerializedNode> { fileReference.Node };
+            var folderNodes = new List<SerializedNode> { fileReference.Node };
 
             while (folderNodes.Count > 0)
             {
                 var folderNode = folderNodes.First();
 
-                foreach (ulong offset in folderNode.ChildOffsets)
+                foreach (var offset in folderNode.ChildOffsets)
                 {
                     var childNode = this._tree.GetNode(offset);
 
@@ -218,13 +218,13 @@ namespace Everlook.Explorer
             }
 
             var parentNode = this._tree.Root;
-            string[] pathParts = nodePath.Split('\\');
+            var pathParts = nodePath.Split('\\');
 
             var result = new TreePath();
 
             foreach (var part in pathParts)
             {
-                bool foundNode = false;
+                var foundNode = false;
                 foreach (var nodeOffset in parentNode.ChildOffsets)
                 {
                     var node = this._tree.GetNode(nodeOffset);
@@ -281,9 +281,9 @@ namespace Everlook.Explorer
 
             ulong currentOffset = 0;
             var currentNode = this._tree.Root;
-            foreach (int index in path.Indices)
+            foreach (var index in path.Indices)
             {
-                ulong longIndex = (ulong)index;
+                var longIndex = (ulong)index;
                 if (longIndex > currentNode.ChildCount - 1)
                 {
                     return false;
@@ -320,7 +320,7 @@ namespace Everlook.Explorer
             while (node.ParentOffset > -1)
             {
                 var parentNode = this._tree.GetNode((ulong)node.ParentOffset);
-                ulong nodeOffset = this._tree.GetNodeOffset(node);
+                var nodeOffset = this._tree.GetNodeOffset(node);
                 result.PrependIndex(parentNode.ChildOffsets.IndexOf(nodeOffset));
 
                 node = parentNode;
@@ -367,12 +367,12 @@ namespace Everlook.Explorer
                 throw new InvalidDataException("The given iter was not valid for this model.");
             }
 
-            ulong currentOffset = (ulong)iter.UserData;
+            var currentOffset = (ulong)iter.UserData;
             var currentNode = this._tree.GetNode(currentOffset);
             var parentNode = this._tree.GetNode((ulong)currentNode.ParentOffset);
 
-            int currentIndex = parentNode.ChildOffsets.IndexOf(currentOffset);
-            int nextIndex = currentIndex + 1;
+            var currentIndex = parentNode.ChildOffsets.IndexOf(currentOffset);
+            var nextIndex = currentIndex + 1;
 
             if (nextIndex < (int)parentNode.ChildCount)
             {
@@ -396,13 +396,13 @@ namespace Everlook.Explorer
                 throw new InvalidDataException("The given iter was not valid for this model.");
             }
 
-            ulong currentOffset = (ulong)iter.UserData;
+            var currentOffset = (ulong)iter.UserData;
             var currentNode = this._tree.GetNode(currentOffset);
 
             var parentNode = this._tree.GetNode((ulong)currentNode.ParentOffset);
 
-            int currentIndex = parentNode.ChildOffsets.IndexOf(currentOffset);
-            int previousIndex = currentIndex - 1;
+            var currentIndex = parentNode.ChildOffsets.IndexOf(currentOffset);
+            var previousIndex = currentIndex - 1;
 
             if (previousIndex >= 0 && previousIndex < (int)parentNode.ChildCount)
             {

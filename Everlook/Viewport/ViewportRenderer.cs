@@ -164,9 +164,9 @@ namespace Everlook.Viewport
 
             Log.Info($"Initializing {nameof(ViewportRenderer)} and setting up default OpenGL state...");
 
-            int numExtensions = GL.GetInteger(GetPName.NumExtensions);
-            List<string> extensions = new List<string>();
-            for (int i = 0; i < numExtensions; ++i)
+            var numExtensions = GL.GetInteger(GetPName.NumExtensions);
+            var extensions = new List<string>();
+            for (var i = 0; i < numExtensions; ++i)
             {
                 extensions.Add(GL.GetString(StringNameIndexed.Extensions, i));
             }
@@ -198,8 +198,8 @@ namespace Everlook.Viewport
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             // Initialize the viewport
-            int widgetWidth = this._viewportWidget.AllocatedWidth;
-            int widgetHeight = this._viewportWidget.AllocatedHeight;
+            var widgetWidth = this._viewportWidget.AllocatedWidth;
+            var widgetHeight = this._viewportWidget.AllocatedHeight;
             GL.Viewport(0, 0, widgetWidth, widgetHeight);
             GL.ClearColor
             (
@@ -234,7 +234,7 @@ namespace Everlook.Viewport
 
         private static void OnGLDebugMessage(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userparam)
         {
-            string messageContent = Marshal.PtrToStringAuto(message, length);
+            var messageContent = Marshal.PtrToStringAuto(message, length);
 
             Log.Debug
             (
@@ -252,8 +252,8 @@ namespace Everlook.Viewport
             lock (this._renderTargetLock)
             {
                 // Make sure the viewport is accurate for the current widget size on screen
-                int widgetWidth = this._viewportWidget.AllocatedWidth;
-                int widgetHeight = this._viewportWidget.AllocatedHeight;
+                var widgetWidth = this._viewportWidget.AllocatedWidth;
+                var widgetHeight = this._viewportWidget.AllocatedHeight;
                 GL.Viewport(0, 0, widgetWidth, widgetHeight);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
@@ -282,15 +282,15 @@ namespace Everlook.Viewport
 
                 // Render the current object
                 // Tick the actor, advancing any time-dependent behaviour
-                ITickingActor tickingRenderable = this.RenderTarget as ITickingActor;
+                var tickingRenderable = this.RenderTarget as ITickingActor;
                 tickingRenderable?.Tick(this.DeltaTime);
 
                 // Update the camera with new parameters
                 this._camera.ViewportHeight = widgetHeight;
                 this._camera.ViewportWidth = widgetWidth;
 
-                Matrix4 view = this._camera.GetViewMatrix();
-                Matrix4 projection = this._camera.GetProjectionMatrix();
+                var view = this._camera.GetViewMatrix();
+                var projection = this._camera.GetProjectionMatrix();
 
                 if (this.RenderTarget.Projection == ProjectionType.Perspective)
                 {
@@ -307,8 +307,8 @@ namespace Everlook.Viewport
         /// </summary>
         private void Calculate2DMovement()
         {
-            int mouseX = Mouse.GetCursorState().X;
-            int mouseY = Mouse.GetCursorState().Y;
+            var mouseX = Mouse.GetCursorState().X;
+            var mouseY = Mouse.GetCursorState().Y;
 
             float deltaMouseX = this.InitialMouseX - mouseX;
             float deltaMouseY = this.InitialMouseY - mouseY;
@@ -325,8 +325,8 @@ namespace Everlook.Viewport
         /// </summary>
         private void Calculate3DMovement()
         {
-            int mouseX = Mouse.GetCursorState().X;
-            int mouseY = Mouse.GetCursorState().Y;
+            var mouseX = Mouse.GetCursorState().X;
+            var mouseY = Mouse.GetCursorState().Y;
 
             float deltaMouseX = this.InitialMouseX - mouseX;
             float deltaMouseY = this.InitialMouseY - mouseY;

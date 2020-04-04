@@ -78,7 +78,7 @@ namespace Everlook.Audio.MP3
                 }
 
                 // Decode the whole stream
-                using (MemoryStream pcm = new MemoryStream())
+                using (var pcm = new MemoryStream())
                 {
                     // Quick note: this is inside the actual MP3 stream, not the PCM stream
                     this.PCMStream.Seek(0, SeekOrigin.Begin);
@@ -122,7 +122,7 @@ namespace Everlook.Audio.MP3
                 throw new ArgumentException("The provided file reference was not an MP3 audio file.", nameof(fileReference));
             }
 
-            byte[] fileBytes = fileReference.Extract();
+            var fileBytes = fileReference.Extract();
             if (fileBytes == null)
             {
                 throw new ArgumentException("The file data could not be extracted.", nameof(fileReference));

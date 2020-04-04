@@ -121,7 +121,7 @@ namespace Everlook.Viewport.Rendering.Core
             var approachingValues = TypeFlatteners[typeof(T)](approaching);
 
             var interpolatedValues = new List<float>();
-            for (int i = 0; i < leavingValues.Length; ++i)
+            for (var i = 0; i < leavingValues.Length; ++i)
             {
                 var leavingValue = leavingValues[i];
                 var approachingValue = approachingValues[i];
@@ -159,7 +159,7 @@ namespace Everlook.Viewport.Rendering.Core
             var approachingTangents = TypeFlatteners[typeof(T)](approaching.InTangent);
 
             var interpolatedValues = new List<float>();
-            for (int i = 0; i < leavingValues.Length; ++i)
+            for (var i = 0; i < leavingValues.Length; ++i)
             {
                 var leavingValue = leavingValues[i];
                 var approachingValue = approachingValues[i];

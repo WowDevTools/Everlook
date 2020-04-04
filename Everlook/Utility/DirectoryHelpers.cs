@@ -37,7 +37,7 @@ namespace Everlook.Utility
         /// <returns>The local dir, terminated by a directory separator.</returns>
         public static string GetLocalDir()
         {
-            Uri codeBaseURI = new UriBuilder(Assembly.GetExecutingAssembly().Location).Uri;
+            var codeBaseURI = new UriBuilder(Assembly.GetExecutingAssembly().Location).Uri;
 
             return Path.GetDirectoryName(Uri.UnescapeDataString(codeBaseURI.AbsolutePath));
         }

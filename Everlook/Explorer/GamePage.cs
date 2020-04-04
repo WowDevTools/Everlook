@@ -149,16 +149,16 @@ namespace Everlook.Explorer
                 EnableTreeLines = true
             };
 
-            CellRendererPixbuf nodeIconRenderer = new CellRendererPixbuf
+            var nodeIconRenderer = new CellRendererPixbuf
             {
                 Xalign = 0.0f
             };
-            CellRendererText nodeNameRenderer = new CellRendererText
+            var nodeNameRenderer = new CellRendererText
             {
                 Xalign = 0.0f
             };
 
-            TreeViewColumn column = new TreeViewColumn
+            var column = new TreeViewColumn
             {
                 Title = "Data Files",
                 Spacing = 4
@@ -171,7 +171,7 @@ namespace Everlook.Explorer
 
             this.Tree.AppendColumn(column);
 
-            ScrolledWindow sw = new ScrolledWindow
+            var sw = new ScrolledWindow
             {
                 this.Tree
             };
@@ -229,7 +229,7 @@ namespace Everlook.Explorer
             this._treeContextMenu.Add(this._queueForExportItem);
 
             // Separator
-            SeparatorMenuItem separator = new SeparatorMenuItem();
+            var separator = new SeparatorMenuItem();
             this._treeContextMenu.Add(separator);
 
             // Copy path context button
@@ -489,7 +489,7 @@ namespace Everlook.Explorer
                 return;
             }
 
-            List<FileReference> exportTargets = new List<FileReference>();
+            var exportTargets = new List<FileReference>();
             if (fileReference.IsDirectory)
             {
                 foreach (var subfile in this._treeModel.EnumerateFilesOfReference(fileReference))
@@ -653,11 +653,11 @@ namespace Everlook.Explorer
                 case WarcraftFileType.Font:
                 case WarcraftFileType.Script:
                 {
-                    byte[] fileData = fileReference.Extract();
+                    var fileData = fileReference.Extract();
                     if (fileData != null)
                     {
                         // create a temporary file and write the data to it.
-                        string tempPath = Path.Combine(Path.GetTempPath(), fileReference.Filename);
+                        var tempPath = Path.Combine(Path.GetTempPath(), fileReference.Filename);
                         if (File.Exists(tempPath))
                         {
                             File.Delete(tempPath);
@@ -695,8 +695,8 @@ namespace Everlook.Explorer
             var nodeA = (SerializedNode)model.GetValue(a, 0);
             var nodeB = (SerializedNode)model.GetValue(b, 0);
 
-            NodeType typeofA = nodeA.Type;
-            NodeType typeofB = nodeB.Type;
+            var typeofA = nodeA.Type;
+            var typeofB = nodeB.Type;
 
             // Special case for meta nodes - if A is a meta node, but B is not
             if (typeofA.HasFlag(NodeType.Meta) && !typeofB.HasFlag(NodeType.Meta))
@@ -720,11 +720,11 @@ namespace Everlook.Explorer
                 return sortABeforeB;
             }
 
-            string nodeAName = this._treeModel.GetNodeName(nodeA);
+            var nodeAName = this._treeModel.GetNodeName(nodeA);
 
-            string nodeBName = this._treeModel.GetNodeName(nodeB);
+            var nodeBName = this._treeModel.GetNodeName(nodeB);
 
-            int result = string.CompareOrdinal(nodeAName, nodeBName);
+            var result = string.CompareOrdinal(nodeAName, nodeBName);
 
             if (result <= sortABeforeB)
             {

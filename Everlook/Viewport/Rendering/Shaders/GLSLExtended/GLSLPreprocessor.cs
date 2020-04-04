@@ -48,7 +48,7 @@ namespace Everlook.Viewport.Rendering.Shaders.GLSLExtended
             // Remove any trailing dot separators from the resource directory.
             baseResourceDirectory = baseResourceDirectory.TrimEnd('.');
 
-            StringBuilder sourceBuilder = new StringBuilder(source);
+            var sourceBuilder = new StringBuilder(source);
 
             // Resolve their files in reverse order
             foreach (var match in matches)

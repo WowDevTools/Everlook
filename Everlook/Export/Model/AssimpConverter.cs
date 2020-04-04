@@ -88,7 +88,7 @@ namespace Everlook.Export.Model
                     mesh.UVComponentCount[0] = 2;
                     mesh.UVComponentCount[1] = 2;
 
-                    for (int i = 0; i < skinVertexIndexes.Length; ++i)
+                    for (var i = 0; i < skinVertexIndexes.Length; ++i)
                     {
                         var localIndex = skinVertexIndexes[i];
                         var vertex = skinVerts[localIndex];
@@ -101,7 +101,7 @@ namespace Everlook.Export.Model
 
                         if (mesh.HasBones)
                         {
-                            for (int boneAttributeIndex = 0; boneAttributeIndex < 4; ++boneAttributeIndex)
+                            for (var boneAttributeIndex = 0; boneAttributeIndex < 4; ++boneAttributeIndex)
                             {
                                 var bone = mesh.Bones[vertex.BoneIndices[boneAttributeIndex]];
 

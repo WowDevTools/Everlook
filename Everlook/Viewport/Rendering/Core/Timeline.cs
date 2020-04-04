@@ -119,7 +119,7 @@ namespace Everlook.Viewport.Rendering.Core
             {
                 if (this.Looping)
                 {
-                    float overflow = time - (this.Duration - this.Position);
+                    var overflow = time - (this.Duration - this.Position);
 
                     this.Position = overflow;
                     return;
@@ -153,7 +153,7 @@ namespace Everlook.Viewport.Rendering.Core
 
             uint leavingTimestamp = 0;
             uint approachingTimestamp = 0;
-            for (int i = 0; i < allTimestamps.Count; ++i)
+            for (var i = 0; i < allTimestamps.Count; ++i)
             {
                 if (allTimestamps[i] < normalizedTime)
                 {
@@ -172,7 +172,7 @@ namespace Everlook.Viewport.Rendering.Core
                     break;
                 }
 
-                int nextIndex = i + 1;
+                var nextIndex = i + 1;
                 if (nextIndex == this.Timestamps.Count)
                 {
                     approaching = this.Values.First();
@@ -185,7 +185,7 @@ namespace Everlook.Viewport.Rendering.Core
 
             // Calculate alpha value
             float normalizationFactor = Math.Abs(leavingTimestamp - approachingTimestamp);
-            float alpha = normalizedTime / normalizationFactor;
+            var alpha = normalizedTime / normalizationFactor;
 
             return (leaving, approaching, alpha);
         }

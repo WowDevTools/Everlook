@@ -49,13 +49,13 @@ namespace Everlook.Utility
                 return false;
             }
 
-            for (int i = 0; i < x.Count; i++)
+            for (var i = 0; i < x.Count; i++)
             {
                 var leftReference = x[i];
                 var rightReference = y[i];
 
-                bool areValuesEqual = string.Equals(leftReference.Value, rightReference.Value, StringComparison.OrdinalIgnoreCase);
-                bool areOffsetsEqual = leftReference.Offset == rightReference.Offset;
+                var areValuesEqual = string.Equals(leftReference.Value, rightReference.Value, StringComparison.OrdinalIgnoreCase);
+                var areOffsetsEqual = leftReference.Offset == rightReference.Offset;
                 if (!(areValuesEqual && areOffsetsEqual))
                 {
                     return false;
@@ -70,7 +70,7 @@ namespace Everlook.Utility
         {
             unchecked
             {
-                int hash = 17;
+                var hash = 17;
 
                 foreach (var reference in obj)
                 {

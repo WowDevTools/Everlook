@@ -85,16 +85,16 @@ namespace Everlook
                 ExceptionManager.UnhandledException += OnGLibUnhandledException;
 
                 Log.Info("Registering treeview types with the native backend...");
-                GType nodeType = (GType)typeof(SerializedNode);
+                var nodeType = (GType)typeof(SerializedNode);
                 GType.Register(nodeType, typeof(SerializedNode));
 
-                GType referenceType = (GType)typeof(FileReference);
+                var referenceType = (GType)typeof(FileReference);
                 GType.Register(referenceType, typeof(FileReference));
 
                 // GTK
                 IconManager.LoadEmbeddedIcons();
                 Application.Init();
-                MainWindow win = MainWindow.Create();
+                var win = MainWindow.Create();
                 win.Show();
                 Application.Run();
             }

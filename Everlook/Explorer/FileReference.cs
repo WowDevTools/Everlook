@@ -173,7 +173,7 @@ namespace Everlook.Explorer
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            FileReference other = obj as FileReference;
+            var other = obj as FileReference;
             return other != null && Equals(other);
         }
 

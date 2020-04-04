@@ -303,7 +303,7 @@ namespace Everlook.UI
                         var variationObject = this._modelVariationListStore.GetValue(activeIter, 1);
                         if (variationObject != null)
                         {
-                            int variationID = (int)variationObject;
+                            var variationID = (int)variationObject;
 
                             mdx.SetDisplayInfoByID(variationID);
                         }
@@ -320,7 +320,7 @@ namespace Everlook.UI
         {
             this._renderAlphaCheckButton.Toggled += (sender, args) =>
             {
-                RenderableImage image = this._renderingEngine.RenderTarget as RenderableImage;
+                var image = this._renderingEngine.RenderTarget as RenderableImage;
                 if (image == null)
                 {
                     return;
@@ -331,7 +331,7 @@ namespace Everlook.UI
 
             this._renderRedCheckButton.Toggled += (sender, args) =>
             {
-                RenderableImage image = this._renderingEngine.RenderTarget as RenderableImage;
+                var image = this._renderingEngine.RenderTarget as RenderableImage;
                 if (image == null)
                 {
                     return;
@@ -342,7 +342,7 @@ namespace Everlook.UI
 
             this._renderGreenCheckButton.Toggled += (sender, args) =>
             {
-                RenderableImage image = this._renderingEngine.RenderTarget as RenderableImage;
+                var image = this._renderingEngine.RenderTarget as RenderableImage;
                 if (image == null)
                 {
                     return;
@@ -353,7 +353,7 @@ namespace Everlook.UI
 
             this._renderBlueCheckButton.Toggled += (sender, args) =>
             {
-                RenderableImage image = this._renderingEngine.RenderTarget as RenderableImage;
+                var image = this._renderingEngine.RenderTarget as RenderableImage;
                 if (image == null)
                 {
                     return;
@@ -455,11 +455,11 @@ namespace Everlook.UI
         /// <returns>A task wrapping the refiltering of the loaded game trees.</returns>
         private async Task RefilterTrees()
         {
-            ComboBox box = this._fileFilterComboBox;
+            var box = this._fileFilterComboBox;
 
             this._statusSpinner.Active = true;
-            uint refilterStatusContextID = this._mainStatusBar.GetContextId("refreshFilter");
-            uint refilterStatusMessageID = this._mainStatusBar.Push
+            var refilterStatusContextID = this._mainStatusBar.GetContextId("refreshFilter");
+            var refilterStatusMessageID = this._mainStatusBar.Push
             (
                 refilterStatusContextID,
                 "Refiltering node trees..."
@@ -471,7 +471,7 @@ namespace Everlook.UI
                 page.SetTreeSensitivity(false);
             }
 
-            FilterType filterType = (FilterType)box.Active;
+            var filterType = (FilterType)box.Active;
             foreach (var page in this._gamePages)
             {
                 page.ShouldDisplayUnknownFiles = this._config.ShowUnknownFilesWhenFiltering;
@@ -516,16 +516,16 @@ namespace Everlook.UI
         /// </summary>
         private async Task LoadGames()
         {
-            Stopwatch sw = new Stopwatch();
+            var sw = new Stopwatch();
             sw.Start();
 
-            GameLoader loader = new GameLoader();
-            EverlookGameLoadingDialog dialog = EverlookGameLoadingDialog.Create(this);
+            var loader = new GameLoader();
+            var dialog = EverlookGameLoadingDialog.Create(this);
             dialog.ShowAll();
 
             var loadingProgress = default(OverallLoadingProgress);
             loadingProgress.OperationCount = GamePathStorage.Instance.GamePaths.Count;
-            int loadedGames = 0;
+            var loadedGames = 0;
 
             foreach (var gameTarget in GamePathStorage.Instance.GamePaths)
             {
@@ -535,7 +535,7 @@ namespace Everlook.UI
 
                 try
                 {
-                    (PackageGroup group, SerializedTree nodeTree) = await loader.LoadGameAsync
+                    (var group, var nodeTree) = await loader.LoadGameAsync
                     (
                         gameTarget.Alias,
                         gameTarget.Path,
@@ -560,7 +560,7 @@ namespace Everlook.UI
 
         private void AddGamePage(string alias, WarcraftVersion version, PackageGroup group, SerializedTree nodeTree)
         {
-            GamePage page = new GamePage(group, nodeTree, version)
+            var page = new GamePage(group, nodeTree, version)
             {
                 Alias = alias
             };
@@ -612,7 +612,7 @@ namespace Everlook.UI
             {
                 case ControlPage.Image:
                 {
-                    RenderableImage image = this._renderingEngine.RenderTarget as RenderableImage;
+                    var image = this._renderingEngine.RenderTarget as RenderableImage;
                     if (image == null)
                     {
                         return;
@@ -647,7 +647,7 @@ namespace Everlook.UI
 
                         var doodadSetNames = wmo.GetDoodadSetNames().ToList();
                         this._modelVariationListStore.Clear();
-                        for (int i = 0; i < doodadSetNames.Count; ++i)
+                        for (var i = 0; i < doodadSetNames.Count; ++i)
                         {
                             this._modelVariationListStore.AppendValues(doodadSetNames[i], i);
                         }
@@ -789,9 +789,9 @@ namespace Everlook.UI
 
             this._statusSpinner.Active = true;
 
-            string modelName = fileReference.Filename;
-            uint modelStatusMessageContextID = this._mainStatusBar.GetContextId($"itemLoad_{modelName}");
-            uint modelStatusMessageID = this._mainStatusBar.Push
+            var modelName = fileReference.Filename;
+            var modelStatusMessageContextID = this._mainStatusBar.GetContextId($"itemLoad_{modelName}");
+            var modelStatusMessageID = this._mainStatusBar.Push
             (
                 modelStatusMessageContextID,
                 $"Loading \"{modelName}\"..."
@@ -799,13 +799,13 @@ namespace Everlook.UI
 
             try
             {
-                T item = await Task.Run
+                var item = await Task.Run
                 (
                     () => referenceLoadingRoutine(fileReference),
                     ct
                 );
 
-                IRenderable renderable = await Task.Run
+                var renderable = await Task.Run
                 (
                     () => createRenderable(item, fileReference),
                     ct
@@ -859,7 +859,7 @@ namespace Everlook.UI
                 return;
             }
 
-            bool validButtonIsPressed = false;
+            var validButtonIsPressed = false;
             if (this._renderingEngine.RenderTarget.Projection == ProjectionType.Perspective)
             {
                 // Exclusively check for right click
@@ -906,7 +906,7 @@ namespace Everlook.UI
                 return;
             }
 
-            bool validButtonIsPressed = false;
+            var validButtonIsPressed = false;
             if (this._renderingEngine.RenderTarget?.Projection == ProjectionType.Perspective)
             {
                 // Exclusively check for right click
@@ -1040,19 +1040,19 @@ namespace Everlook.UI
         /// <param name="fileReferences">The file references to save.</param>
         private async Task OnSaveRequested(GamePage page, IEnumerable<FileReference> fileReferences)
         {
-            uint statusMessageContextID = this._mainStatusBar.GetContextId($"itemLoad_{fileReferences.GetHashCode()}");
+            var statusMessageContextID = this._mainStatusBar.GetContextId($"itemLoad_{fileReferences.GetHashCode()}");
 
             foreach (var fileReference in fileReferences)
             {
                 this._statusSpinner.Active = true;
 
-                uint statusMessageID = this._mainStatusBar.Push
+                var statusMessageID = this._mainStatusBar.Push
                 (
                     statusMessageContextID,
                     $"Saving \"{fileReference.Filename}\"..."
                 );
 
-                string cleanFilepath = fileReference.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
+                var cleanFilepath = fileReference.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
 
                 string exportpath;
                 if (this._config.KeepFileDirectoryStructure)
@@ -1062,12 +1062,12 @@ namespace Everlook.UI
                 }
                 else
                 {
-                    string filename = IOPath.GetFileName(cleanFilepath);
+                    var filename = IOPath.GetFileName(cleanFilepath);
                     exportpath = IOPath.Combine(this._config.DefaultExportDirectory, filename);
                     Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
                 }
 
-                byte[] file = await fileReference.ExtractAsync();
+                var file = await fileReference.ExtractAsync();
                 if (file != null)
                 {
                     try
@@ -1110,7 +1110,7 @@ namespace Everlook.UI
         /// <param name="fileReference">The file reference to load.</param>
         private async Task OnFileLoadRequested(GamePage page, FileReference fileReference)
         {
-            WarcraftFileType referencedType = fileReference.GetReferencedFileType();
+            var referencedType = fileReference.GetReferencedFileType();
 
             switch (referencedType)
             {
@@ -1239,7 +1239,7 @@ namespace Everlook.UI
 
             this._exportQueueListStore.GetIter(out var iter, path);
 
-            FileReference queuedReference = (FileReference)this._exportQueueListStore.GetValue(iter, 0);
+            var queuedReference = (FileReference)this._exportQueueListStore.GetValue(iter, 0);
 
             if (string.IsNullOrEmpty(queuedReference?.FilePath))
             {

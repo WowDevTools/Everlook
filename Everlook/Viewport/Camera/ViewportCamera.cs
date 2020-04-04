@@ -213,7 +213,7 @@ namespace Everlook.Viewport.Camera
             }
             else
             {
-                float aspectRatio = (float)this.ViewportWidth / this.ViewportHeight;
+                var aspectRatio = (float)this.ViewportWidth / this.ViewportHeight;
                 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView
                 (
                     MathHelper.DegreesToRadians((float)EverlookConfiguration.Instance.CameraFOV),
@@ -247,8 +247,8 @@ namespace Everlook.Viewport.Camera
         [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1117:ParametersMustBeOnSameLineOrSeparateLines", Justification = "Used for matrix parameter alignment.")]
         public Matrix3 GetViewportMatrix()
         {
-            float widthOver2 = this.ViewportWidth / 2.0f;
-            float heightOver2 = this.ViewportHeight / 2.0f;
+            var widthOver2 = this.ViewportWidth / 2.0f;
+            var heightOver2 = this.ViewportHeight / 2.0f;
 
             return new Matrix3
             (

@@ -77,7 +77,7 @@ namespace Everlook.Audio.Wave
                 }
 
                 // Decode the whole stream
-                using (MemoryStream pcm = new MemoryStream())
+                using (var pcm = new MemoryStream())
                 {
                     this.PCMStream.Seek(0, SeekOrigin.Begin);
 
@@ -121,17 +121,17 @@ namespace Everlook.Audio.Wave
                 throw new ArgumentException("The provided file reference was not a wave audio file.", nameof(fileReference));
             }
 
-            byte[] fileBytes = fileReference.Extract();
+            var fileBytes = fileReference.Extract();
             if (fileBytes == null)
             {
                 throw new ArgumentException("The file data could not be extracted.", nameof(fileReference));
             }
 
-            using (MemoryStream ms = new MemoryStream(fileBytes))
+            using (var ms = new MemoryStream(fileBytes))
             {
-                using (BinaryReader br = new BinaryReader(ms))
+                using (var br = new BinaryReader(ms))
                 {
-                    string signature = new string(br.ReadChars(4));
+                    var signature = new string(br.ReadChars(4));
                     if (signature != "RIFF")
                     {
                         throw new NotSupportedException("The file data is not a wave file.");
@@ -140,13 +140,13 @@ namespace Everlook.Audio.Wave
                     // Skip chunk size
                     br.BaseStream.Position += 4;
 
-                    string format = new string(br.ReadChars(4));
+                    var format = new string(br.ReadChars(4));
                     if (format != "WAVE")
                     {
                         throw new NotSupportedException("The file data is not a wave file.");
                     }
 
-                    string formatSignature = new string(br.ReadChars(4));
+                    var formatSignature = new string(br.ReadChars(4));
                     if (formatSignature != "fmt ")
                     {
                         throw new NotSupportedException("The file data is not a wave file.");
@@ -169,13 +169,13 @@ namespace Everlook.Audio.Wave
 
                     this.BitsPerSample = br.ReadInt16();
 
-                    string dataSignature = new string(br.ReadChars(4));
+                    var dataSignature = new string(br.ReadChars(4));
                     if (dataSignature != "data")
                     {
                         throw new NotSupportedException("The file data is not a wave file.");
                     }
 
-                    int dataChunkSize = br.ReadInt32();
+                    var dataChunkSize = br.ReadInt32();
 
                     this.PCMStream = new MemoryStream(br.ReadBytes(dataChunkSize));
                 }

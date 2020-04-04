@@ -73,7 +73,7 @@ namespace Everlook.Utility
         /// <returns><c>true</c> if is running on unix; otherwise, <c>false</c>.</returns>
         public static bool IsRunningOnUnix()
         {
-            int platform = (int)Environment.OSVersion.Platform;
+            var platform = (int)Environment.OSVersion.Platform;
             if ((platform == 4) || (platform == 6) || (platform == 128))
             {
                 return true;

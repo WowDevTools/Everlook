@@ -50,7 +50,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         /// <param name="lightColour">The colour of the light.</param>
         public void SetAmbientColour(Color4 lightColour)
         {
-            int colourLoc = GL.GetUniformLocation(this._parentShaderNativeID, AmbientColourIdentifier);
+            var colourLoc = GL.GetUniformLocation(this._parentShaderNativeID, AmbientColourIdentifier);
             GL.Uniform4(colourLoc, lightColour);
         }
 
@@ -60,7 +60,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         /// <param name="lightIntensity">The intensity, in lux.</param>
         public void SetAmbientIntensity(float lightIntensity)
         {
-            int intensityLoc = GL.GetUniformLocation(this._parentShaderNativeID, AmbientIntensityIdentifier);
+            var intensityLoc = GL.GetUniformLocation(this._parentShaderNativeID, AmbientIntensityIdentifier);
             GL.Uniform1(intensityLoc, lightIntensity);
         }
     }

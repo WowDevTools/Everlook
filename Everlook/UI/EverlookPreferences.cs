@@ -60,7 +60,7 @@ namespace Everlook.UI
         /// <returns>An initialized instance of the EverlookPreferences class.</returns>
         public static EverlookPreferences Create()
         {
-            using (Builder builder = new Builder(null, "Everlook.interfaces.EverlookPreferences.glade", null))
+            using (var builder = new Builder(null, "Everlook.interfaces.EverlookPreferences.glade", null))
             {
                 return new EverlookPreferences(builder, builder.GetObject("PreferencesDialog").Handle);
             }
@@ -119,7 +119,7 @@ namespace Everlook.UI
         [ConnectBefore]
         private void OnAllowStatsToggled(object sender, EventArgs e)
         {
-            bool suboptionSensitivity = this._allowStatsCheckButton.Active;
+            var suboptionSensitivity = this._allowStatsCheckButton.Active;
 
             this._sendMachineIDCheckButton.Sensitive = suboptionSensitivity;
             this._sendInstallIDCheckButton.Sensitive = suboptionSensitivity;
@@ -177,16 +177,16 @@ namespace Everlook.UI
         /// <param name="eventArgs">The event arguments.</param>
         private void OnAddPathButtonClicked(object sender, EventArgs eventArgs)
         {
-            Uri defaultLocation = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+            var defaultLocation = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
             this._pathChooser.SetCurrentFolderUri(defaultLocation.ToString());
 
             switch ((ResponseType)this._newGamePathDialog.Run())
             {
                 case ResponseType.Ok:
                 {
-                    string alias = this._aliasEntry.Text;
-                    WarcraftVersion selectedVersion = (WarcraftVersion)this._gameVersionCombo.Active;
-                    Uri uriToStore = this._pathChooser.File.Uri;
+                    var alias = this._aliasEntry.Text;
+                    var selectedVersion = (WarcraftVersion)this._gameVersionCombo.Active;
+                    var uriToStore = this._pathChooser.File.Uri;
 
                     if (Directory.Exists(uriToStore.LocalPath))
                     {
@@ -220,9 +220,9 @@ namespace Everlook.UI
                 return;
             }
 
-            string alias = (string)this._gamePathListStore.GetValue(selectedIter, 0);
-            string path = (string)this._gamePathListStore.GetValue(selectedIter, 1);
-            WarcraftVersion version = (WarcraftVersion)this._gamePathListStore.GetValue(selectedIter, 2);
+            var alias = (string)this._gamePathListStore.GetValue(selectedIter, 0);
+            var path = (string)this._gamePathListStore.GetValue(selectedIter, 1);
+            var version = (WarcraftVersion)this._gamePathListStore.GetValue(selectedIter, 2);
 
             GamePathStorage.Instance.RemoveStoredPath(alias, version, path);
             this._gamePathListStore.Remove(ref selectedIter);
@@ -234,7 +234,7 @@ namespace Everlook.UI
         /// </summary>
         private void LoadPreferences()
         {
-            foreach ((string alias, WarcraftVersion version, string gamePath) in GamePathStorage.Instance.GamePaths)
+            foreach ((var alias, var version, var gamePath) in GamePathStorage.Instance.GamePaths)
             {
                 if (Directory.Exists(gamePath))
                 {
@@ -269,7 +269,7 @@ namespace Everlook.UI
                 }
             }
 
-            string fullExportPath = System.IO.Path.GetFullPath(this._config.DefaultExportDirectory);
+            var fullExportPath = System.IO.Path.GetFullPath(this._config.DefaultExportDirectory);
             this._defaultExportDirectoryFileChooserButton.SetUri(new Uri(fullExportPath).AbsoluteUri);
 
             this._defaultModelExportFormatComboBox.Active = (int)this._config.DefaultModelExportFormat;
@@ -305,16 +305,16 @@ namespace Everlook.UI
             (
                 (model, path, iter) =>
                 {
-                    string alias = (string)model.GetValue(iter, 0);
-                    string gamePath = (string)model.GetValue(iter, 1);
-                    WarcraftVersion version = (WarcraftVersion)this._gamePathListStore.GetValue(iter, 2);
+                    var alias = (string)model.GetValue(iter, 0);
+                    var gamePath = (string)model.GetValue(iter, 1);
+                    var version = (WarcraftVersion)this._gamePathListStore.GetValue(iter, 2);
                     GamePathStorage.Instance.StorePath(alias, version, gamePath);
 
                     return false;
                 }
             );
 
-            string selectedExportDirectory = new Uri(this._defaultExportDirectoryFileChooserButton.Uri).LocalPath;
+            var selectedExportDirectory = new Uri(this._defaultExportDirectoryFileChooserButton.Uri).LocalPath;
             if (!Directory.Exists(selectedExportDirectory))
             {
                 try

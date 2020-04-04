@@ -65,18 +65,18 @@ namespace Everlook.Utility
             WMO worldModel;
             try
             {
-                byte[] fileData = fileReference.Extract();
+                var fileData = fileReference.Extract();
                 worldModel = new WMO(fileData);
 
-                string modelPathWithoutExtension = $"{fileReference.FileDirectory.Replace('/', '\\')}\\{Path.GetFileNameWithoutExtension(fileReference.Filename)}";
-                for (int i = 0; i < worldModel.GroupCount; ++i)
+                var modelPathWithoutExtension = $"{fileReference.FileDirectory.Replace('/', '\\')}\\{Path.GetFileNameWithoutExtension(fileReference.Filename)}";
+                for (var i = 0; i < worldModel.GroupCount; ++i)
                 {
                     // Extract the groups as well
-                    string modelGroupPath = $"{modelPathWithoutExtension}_{i:D3}.wmo";
+                    var modelGroupPath = $"{modelPathWithoutExtension}_{i:D3}.wmo";
 
                     try
                     {
-                        byte[] modelGroupData = fileReference.Context.Assets.ExtractFile(modelGroupPath);
+                        var modelGroupData = fileReference.Context.Assets.ExtractFile(modelGroupPath);
                         worldModel.AddModelGroup(new ModelGroup(modelGroupData));
                     }
                     catch (FileNotFoundException fex)
@@ -109,16 +109,16 @@ namespace Everlook.Utility
             }
 
             // Get the file name of the root object
-            string modelRootPath = fileReference.FilePath.Remove(fileReference.FilePath.Length - 8, 4);
+            var modelRootPath = fileReference.FilePath.Remove(fileReference.FilePath.Length - 8, 4);
 
             WMO worldModel;
             // Extract it and load just this model group
             try
             {
-                byte[] rootData = fileReference.Context.Assets.ExtractFile(modelRootPath);
+                var rootData = fileReference.Context.Assets.ExtractFile(modelRootPath);
                 worldModel = new WMO(rootData);
 
-                byte[] modelGroupData = fileReference.Extract();
+                var modelGroupData = fileReference.Extract();
                 worldModel.AddModelGroup(new ModelGroup(modelGroupData));
             }
             catch (FileNotFoundException fex)
@@ -152,7 +152,7 @@ namespace Everlook.Utility
                 throw new ArgumentException("The given context must be a warcraft-typed context.", nameof(fileReference.Context));
             }
 
-            RenderableWorldModel renderableWorldModel = new RenderableWorldModel(worldModel, warcraftContext);
+            var renderableWorldModel = new RenderableWorldModel(worldModel, warcraftContext);
             renderableWorldModel.LoadDoodads();
 
             return renderableWorldModel;
@@ -173,7 +173,7 @@ namespace Everlook.Utility
             BLP image;
             try
             {
-                byte[] fileData = fileReference.Extract();
+                var fileData = fileReference.Extract();
 
                 try
                 {
@@ -207,7 +207,7 @@ namespace Everlook.Utility
         /// <returns>An encapsulated renderable OpenGL object.</returns>
         public static IRenderable CreateRenderableBinaryImage(BLP binaryImage, FileReference fileReference)
         {
-            RenderableBLP renderableImage = new RenderableBLP(binaryImage, fileReference.FilePath);
+            var renderableImage = new RenderableBLP(binaryImage, fileReference.FilePath);
 
             return renderableImage;
         }
@@ -227,8 +227,8 @@ namespace Everlook.Utility
             Bitmap image;
             try
             {
-                byte[] fileData = fileReference.Extract();
-                using (MemoryStream ms = new MemoryStream(fileData))
+                var fileData = fileReference.Extract();
+                using (var ms = new MemoryStream(fileData))
                 {
                     image = new Bitmap(ms);
                 }
@@ -254,7 +254,7 @@ namespace Everlook.Utility
         /// <returns>An encapsulated renderable OpenGL object.</returns>
         public static IRenderable CreateRenderableBitmapImage(Bitmap bitmapImage, FileReference fileReference)
         {
-            RenderableBitmap renderableImage = new RenderableBitmap(bitmapImage, fileReference.FilePath);
+            var renderableImage = new RenderableBitmap(bitmapImage, fileReference.FilePath);
 
             return renderableImage;
         }
@@ -274,7 +274,7 @@ namespace Everlook.Utility
             MDX model;
             try
             {
-                byte[] fileData = fileReference.Extract();
+                var fileData = fileReference.Extract();
                 model = new MDX(fileData);
 
                 if (model.Version >= WarcraftVersion.Wrath)
@@ -283,8 +283,8 @@ namespace Everlook.Utility
                     var modelFilename = Path.GetFileNameWithoutExtension(fileReference.Filename);
                     var modelDirectory = fileReference.FileDirectory.Replace(Path.DirectorySeparatorChar, '\\');
 
-                    List<MDXSkin> skins = new List<MDXSkin>();
-                    for (int i = 0; i < model.SkinCount; ++i)
+                    var skins = new List<MDXSkin>();
+                    for (var i = 0; i < model.SkinCount; ++i)
                     {
                         var modelSkinPath = $"{modelDirectory}\\{modelFilename}{i:D2}.skin";
                         var skinData = fileReference.Context.Assets.ExtractFile(modelSkinPath);
@@ -339,7 +339,7 @@ namespace Everlook.Utility
                 throw new ArgumentException("The given context must be a warcraft-typed context.", nameof(fileReference.Context));
             }
 
-            RenderableGameModel renderableModel = new RenderableGameModel(gameModel, warcraftContext, fileReference.FilePath);
+            var renderableModel = new RenderableGameModel(gameModel, warcraftContext, fileReference.FilePath);
 
             return renderableModel;
         }

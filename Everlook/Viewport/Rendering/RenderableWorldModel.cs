@@ -201,7 +201,7 @@ namespace Everlook.Viewport.Rendering
             // TODO: Load and cache sound emitters
 
             // Load the textures used in this model
-            foreach (string texture in this._model.GetTextures())
+            foreach (var texture in this._model.GetTextures())
             {
                 if (!string.IsNullOrEmpty(texture))
                 {
@@ -223,7 +223,7 @@ namespace Everlook.Viewport.Rendering
             // TODO: Implement antiportal handling. For now, skip them
 
             // TODO: Upload convex planes for debug rendering
-            foreach (ModelGroup modelGroup in this._model.Groups)
+            foreach (var modelGroup in this._model.Groups)
             {
                 InitializeModelGroup(modelGroup);
             }
@@ -327,10 +327,10 @@ namespace Everlook.Viewport.Rendering
                 Buffers
             */
 
-            Buffer<Vector3> vertexBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
-            Buffer<Vector3> normalBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
-            Buffer<Vector2> coordinateBuffer = new Buffer<Vector2>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
-            Buffer<ushort> vertexIndexes = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw);
+            var vertexBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
+            var normalBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
+            var coordinateBuffer = new Buffer<Vector2>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
+            var vertexIndexes = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw);
 
             // Upload all of the vertices in this group
             vertexBuffer.Data = modelGroup.GetVertices().Select(v => v.ToOpenGLVector()).ToArray();
@@ -354,7 +354,7 @@ namespace Everlook.Viewport.Rendering
             vertexIndexes.Data = modelGroup.GetVertexIndices().ToArray();
             this._vertexIndexBufferLookup.Add(modelGroup, vertexIndexes);
 
-            RenderableBoundingBox boundingBox = new RenderableBoundingBox
+            var boundingBox = new RenderableBoundingBox
             (
                 modelGroup.GetBoundingBox(),
                 this.ActorTransform
@@ -398,11 +398,11 @@ namespace Everlook.Viewport.Rendering
                 this._shader.Wireframe.SetViewportMatrix(camera.GetViewportMatrix());
             }
 
-            Matrix4 modelView = this.ActorTransform.GetModelMatrix() * viewMatrix;
-            Matrix4 modelViewProjection = modelView * projectionMatrix;
+            var modelView = this.ActorTransform.GetModelMatrix() * viewMatrix;
+            var modelViewProjection = modelView * projectionMatrix;
 
             // TODO: Fix frustum culling
-            foreach (ModelGroup modelGroup in this._model.Groups)
+            foreach (var modelGroup in this._model.Groups)
             {
                 RenderGroup(modelGroup, modelViewProjection);
             }
@@ -411,7 +411,7 @@ namespace Everlook.Viewport.Rendering
             if (this.ShouldRenderBounds)
             {
                 // TODO: Ordering
-                foreach (ModelGroup modelGroup in this._model.Groups)
+                foreach (var modelGroup in this._model.Groups)
                 {
                     this._boundingBoxLookup[modelGroup].Render(viewMatrix, projectionMatrix, camera);
                 }
@@ -472,19 +472,19 @@ namespace Everlook.Viewport.Rendering
             }
 
             // Render all the different materials (opaque first, transparent after)
-            foreach (RenderBatch renderBatch in modelGroup.GetRenderBatches()
+            foreach (var renderBatch in modelGroup.GetRenderBatches()
                 .OrderBy(batch => batch.MaterialIndex)
                 .ThenBy(batch => this._model.GetMaterial(batch.MaterialIndex).BlendMode))
             {
                 this._shader.Enable();
 
-                ModelMaterial modelMaterial = this._model.GetMaterial(renderBatch.MaterialIndex);
+                var modelMaterial = this._model.GetMaterial(renderBatch.MaterialIndex);
 
                 this._shader.SetMaterial(modelMaterial);
                 this._shader.SetMVPMatrix(modelViewProjection);
 
                 // Set the texture as the first diffuse texture in unit 0
-                Texture2D texture = this._cache.GetCachedTexture(modelMaterial.DiffuseTexture);
+                var texture = this._cache.GetCachedTexture(modelMaterial.DiffuseTexture);
                 if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClampS))
                 {
                     texture.WrappingMode = TextureWrapMode.Clamp;

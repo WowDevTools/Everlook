@@ -148,7 +148,7 @@ namespace Everlook.Viewport.Rendering
 
             this._vertexIndexesBuffer.Bind();
 
-            Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
+            var modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
             this._boxShader.Enable();
             this._boxShader.SetIsInstance(true);
@@ -184,7 +184,7 @@ namespace Everlook.Viewport.Rendering
 
             this._vertexIndexesBuffer.Bind();
 
-            Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
+            var modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
             this._boxShader.Enable();
             this._boxShader.SetMVPMatrix(modelViewProjection);

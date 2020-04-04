@@ -352,8 +352,8 @@ namespace Everlook.Viewport.Rendering.Core
 
                 for (uint i = 0; i < inTextureData.GetMipMapCount(); ++i)
                 {
-                    byte[] compressedMipMap = inTextureData.GetRawMipMap(i);
-                    Resolution mipResolution = inTextureData.GetMipLevelResolution(i);
+                    var compressedMipMap = inTextureData.GetRawMipMap(i);
+                    var mipResolution = inTextureData.GetMipLevelResolution(i);
 
                     InternalFormat compressionFormat;
                     switch (inTextureData.GetPixelFormat())
@@ -410,7 +410,7 @@ namespace Everlook.Viewport.Rendering.Core
                 Bind();
 
                 // Extract raw RGB data from the largest bitmap
-                BitmapData pixels = inTextureData.LockBits
+                var pixels = inTextureData.LockBits
                 (
                     new Rectangle(0, 0, inTextureData.Width, inTextureData.Height),
                     ImageLockMode.ReadOnly,

@@ -318,12 +318,12 @@ namespace Everlook.Configuration
 
             this._configurationData[Export].AddKey(nameof(this.DefaultExportDirectory), Export);
 
-            KeyData modelExportKeyData = new KeyData(nameof(this.DefaultModelExportFormat))
+            var modelExportKeyData = new KeyData(nameof(this.DefaultModelExportFormat))
             {
                 Value = "0"
             };
 
-            List<string> modelExportKeyComments = new List<string>
+            var modelExportKeyComments = new List<string>
             {
                 "Valid options: ",
                 "0: Collada",
@@ -333,12 +333,12 @@ namespace Everlook.Configuration
 
             this._configurationData[Export].AddKey(modelExportKeyData);
 
-            KeyData imageExportKeyData = new KeyData(nameof(this.DefaultImageExportFormat))
+            var imageExportKeyData = new KeyData(nameof(this.DefaultImageExportFormat))
             {
                 Value = "0"
             };
 
-            List<string> imageExportKeyComments = new List<string>
+            var imageExportKeyComments = new List<string>
             {
                 "Valid options: ",
                 "0: PNG",
@@ -351,12 +351,12 @@ namespace Everlook.Configuration
 
             this._configurationData[Export].AddKey(imageExportKeyData);
 
-            KeyData audioExportKeyData = new KeyData(nameof(this.DefaultAudioExportFormat))
+            var audioExportKeyData = new KeyData(nameof(this.DefaultAudioExportFormat))
             {
                 Value = "0"
             };
 
-            List<string> audioExportKeyComments = new List<string>
+            var audioExportKeyComments = new List<string>
             {
                 "Valid options: ",
                 "0: WAV",
@@ -410,7 +410,7 @@ namespace Everlook.Configuration
         {
             if (configData.Sections[keySection].ContainsKey(oldKeyName))
             {
-                string oldKeyData = configData.Sections[keySection][oldKeyName];
+                var oldKeyData = configData.Sections[keySection][oldKeyName];
 
                 AddNewConfigurationOption(configData, keySection, newKeyName, oldKeyData);
 
@@ -422,7 +422,7 @@ namespace Everlook.Configuration
         {
             if (configData.Sections.ContainsSection(oldSectionName))
             {
-                SectionData oldSectionData = configData.Sections.GetSectionData(oldSectionName);
+                var oldSectionData = configData.Sections.GetSectionData(oldSectionName);
                 configData.Sections.RemoveSection(oldSectionName);
                 configData.Sections.AddSection(newSectionName);
                 configData.Sections.SetSectionData(newSectionName, oldSectionData);
@@ -441,7 +441,7 @@ namespace Everlook.Configuration
         {
             if (!configData.Sections[newKeySection].ContainsKey(keyName))
             {
-                string keyValue = configData.Sections[oldKeySection][keyName];
+                var keyValue = configData.Sections[oldKeySection][keyName];
                 configData.Sections[newKeySection].AddKey(keyName, keyValue);
 
                 configData.Sections[oldKeySection].RemoveKey(keyName);
@@ -487,7 +487,7 @@ namespace Everlook.Configuration
         /// <returns>true or false, depending on what the option is set to.</returns>
         private bool GetBooleanOption(string section, string keyName, bool defaultValue = false)
         {
-            if (bool.TryParse(this._configurationData[section][keyName], out bool optionValue))
+            if (bool.TryParse(this._configurationData[section][keyName], out var optionValue))
             {
                 return optionValue;
             }
@@ -504,7 +504,7 @@ namespace Everlook.Configuration
         /// <returns>The value of the option.</returns>
         private int GetIntegerOption(string section, string keyName, int defaultValue = -1)
         {
-            if (int.TryParse(this._configurationData[section][keyName], out int optionValue))
+            if (int.TryParse(this._configurationData[section][keyName], out var optionValue))
             {
                 return optionValue;
             }
@@ -538,7 +538,7 @@ namespace Everlook.Configuration
         /// <returns>The value of the option.</returns>
         private RGBA GetColourOption(string section, string keyName, RGBA defaultValue = default(RGBA))
         {
-            RGBA value = default(RGBA);
+            var value = default(RGBA);
             if (value.Parse(this._configurationData[section][keyName]))
             {
                 return value;
@@ -556,7 +556,7 @@ namespace Everlook.Configuration
         /// <returns>The value of the option.</returns>
         private double GetDoubleOption(string section, string keyName, double defaultValue = default(double))
         {
-            if (double.TryParse(this._configurationData[section][keyName], out double optionValue))
+            if (double.TryParse(this._configurationData[section][keyName], out var optionValue))
             {
                 return optionValue;
             }

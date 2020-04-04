@@ -50,11 +50,11 @@ namespace Everlook.Utility
         /// </summary>
         public static void LoadEmbeddedIcons()
         {
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            string[] manifestResourceNames = executingAssembly
+            var executingAssembly = Assembly.GetExecutingAssembly();
+            var manifestResourceNames = executingAssembly
                 .GetManifestResourceNames();
 
-            IEnumerable<string> manifestIcons = manifestResourceNames.Where
+            var manifestIcons = manifestResourceNames.Where
             (
                 path =>
                     path.Contains(".Icons.") &&
@@ -71,14 +71,14 @@ namespace Everlook.Utility
                 manifestIcons = manifestIcons.Where(path => path.EndsWith(".png"));
             }
 
-            foreach (string manifestIconName in manifestIcons)
+            foreach (var manifestIconName in manifestIcons)
             {
                 // Grab the second to last part of the resource name, that is, the filename before the extension.
                 // Note that this assumes that there is only a single extension.
-                string[] manifestNameParts = manifestIconName.Split('.');
-                string iconName = manifestNameParts.ElementAt(manifestNameParts.Length - 2);
+                var manifestNameParts = manifestIconName.Split('.');
+                var iconName = manifestNameParts.ElementAt(manifestNameParts.Length - 2);
 
-                Pixbuf iconBuffer = LoadEmbeddedImage(manifestIconName);
+                var iconBuffer = LoadEmbeddedImage(manifestIconName);
                 if (iconBuffer != null)
                 {
                     IconTheme.AddBuiltinIcon(iconName, 16, iconBuffer);
@@ -95,7 +95,7 @@ namespace Everlook.Utility
         /// <returns>A pixel buffer containing the image.</returns>
         private static Pixbuf LoadEmbeddedImage(string resourceName, int width = 16, int height = 16)
         {
-            using (Stream vectorStream =
+            using (var vectorStream =
                 Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
             {
                 if (vectorStream == null)
@@ -103,7 +103,7 @@ namespace Everlook.Utility
                     return null;
                 }
 
-                using (MemoryStream ms = new MemoryStream())
+                using (var ms = new MemoryStream())
                 {
                     vectorStream.CopyTo(ms);
 
@@ -316,7 +316,7 @@ namespace Everlook.Utility
                 return IconCache[key];
             }
 
-            Pixbuf icon = IconTheme.Default.LoadIcon(iconName, size, IconLookupFlags.UseBuiltin);
+            var icon = IconTheme.Default.LoadIcon(iconName, size, IconLookupFlags.UseBuiltin);
             IconCache.Add(key, icon);
 
             return IconCache[key];

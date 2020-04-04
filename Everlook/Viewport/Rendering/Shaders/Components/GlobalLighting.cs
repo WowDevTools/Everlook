@@ -59,7 +59,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            int colourLoc = GL.GetUniformLocation(this._parentShaderNativeID, LightColourIdentifier);
+            var colourLoc = GL.GetUniformLocation(this._parentShaderNativeID, LightColourIdentifier);
             GL.Uniform4(colourLoc, lightColour);
         }
 
@@ -71,7 +71,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            int vectorLoc = GL.GetUniformLocation(this._parentShaderNativeID, LightVectorIdentifier);
+            var vectorLoc = GL.GetUniformLocation(this._parentShaderNativeID, LightVectorIdentifier);
             GL.Uniform3(vectorLoc, lightVector);
         }
 
@@ -83,7 +83,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            int intensityLoc = GL.GetUniformLocation(this._parentShaderNativeID, LightIntensityIdentifier);
+            var intensityLoc = GL.GetUniformLocation(this._parentShaderNativeID, LightIntensityIdentifier);
             GL.Uniform1(intensityLoc, lightIntensity);
         }
     }

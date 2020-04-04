@@ -99,9 +99,9 @@ namespace Everlook.Viewport.Rendering.Core
         /// <returns>A matrix containing model-space transformation data.</returns>
         public Matrix4 GetModelMatrix()
         {
-            Matrix4 modelScale = Matrix4.CreateScale(this.Scale);
-            Matrix4 modelOrientation = Matrix4.CreateFromQuaternion(this.Orientation);
-            Matrix4 modelTranslation = Matrix4.CreateTranslation(this.Translation);
+            var modelScale = Matrix4.CreateScale(this.Scale);
+            var modelOrientation = Matrix4.CreateFromQuaternion(this.Orientation);
+            var modelTranslation = Matrix4.CreateTranslation(this.Translation);
 
             return modelScale * modelOrientation * modelTranslation;
         }

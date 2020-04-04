@@ -102,10 +102,10 @@ namespace Everlook.Package
         /// <returns>A loaded package group.</returns>
         public static async Task<PackageGroup> LoadAsync(string alias, string groupName, string packageDirectory, CancellationToken ct, IProgress<GameLoadingProgress> progress = null)
         {
-            PackageGroup group = new PackageGroup(groupName);
+            var group = new PackageGroup(groupName);
 
             // Grab all packages in the game directory
-            List<string> packagePaths = Directory.EnumerateFiles(packageDirectory, "*.*", SearchOption.AllDirectories)
+            var packagePaths = Directory.EnumerateFiles(packageDirectory, "*.*", SearchOption.AllDirectories)
                 .Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ"))
                 .OrderBy(a => a)
                 .ToList();
@@ -113,7 +113,7 @@ namespace Everlook.Package
             // Internal counters for progress reporting
             double completedSteps = 0;
             double totalSteps = packagePaths.Count;
-            foreach (string packagePath in packagePaths)
+            foreach (var packagePath in packagePaths)
             {
                 ct.ThrowIfCancellationRequested();
 
@@ -126,7 +126,7 @@ namespace Everlook.Package
                         Alias = alias
                     });
 
-                    PackageInteractionHandler handler = await PackageInteractionHandler.LoadAsync(packagePath);
+                    var handler = await PackageInteractionHandler.LoadAsync(packagePath);
                     group.AddPackage(handler);
 
                     ++completedSteps;
@@ -154,12 +154,12 @@ namespace Everlook.Package
         public void LoadPackagesFromPath(string path)
         {
             // Grab all packages in the game directory
-            List<string> packagePaths = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
+            var packagePaths = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
                 .Where(s => s.EndsWith(".mpq") || s.EndsWith(".MPQ"))
                 .OrderBy(a => a)
                 .ToList();
 
-            foreach (string packagePath in packagePaths)
+            foreach (var packagePath in packagePaths)
             {
                 try
                 {
@@ -227,7 +227,7 @@ namespace Everlook.Package
                 throw new ArgumentNullException(nameof(fileReference));
             }
 
-            PackageInteractionHandler package = GetPackageByName(fileReference.PackageName);
+            var package = GetPackageByName(fileReference.PackageName);
             return package.GetReferenceInfo(fileReference);
         }
 
@@ -249,7 +249,7 @@ namespace Everlook.Package
                 return ExtractReference(fileReference);
             }
 
-            PackageInteractionHandler package = GetPackageByName(fileReference.PackageName);
+            var package = GetPackageByName(fileReference.PackageName);
             return package?.ExtractReference(fileReference);
         }
 
@@ -299,7 +299,7 @@ namespace Everlook.Package
                 throw new ArgumentException("Cannot find a package with an empty name.", nameof(packageName));
             }
 
-            foreach (PackageInteractionHandler package in this._packages)
+            foreach (var package in this._packages)
             {
                 if (package.PackageName == packageName)
                 {
@@ -315,7 +315,7 @@ namespace Everlook.Package
         {
             data = null;
 
-            for (int i = this._packages.Count - 1; i >= 0; --i)
+            for (var i = this._packages.Count - 1; i >= 0; --i)
             {
                 if (this._packages[i].TryExtractFile(filePath, out data))
                 {
@@ -329,7 +329,7 @@ namespace Everlook.Package
         /// <inheritdoc />
         public byte[] ExtractFile(string filePath)
         {
-            for (int i = this._packages.Count - 1; i >= 0; --i)
+            for (var i = this._packages.Count - 1; i >= 0; --i)
             {
                 if (this._packages[i].TryExtractFile(filePath, out var data))
                 {
@@ -355,7 +355,7 @@ namespace Everlook.Package
         /// <inheritdoc />
         public bool ContainsFile(string filePath)
         {
-            for (int i = this._packages.Count - 1; i >= 0; --i)
+            for (var i = this._packages.Count - 1; i >= 0; --i)
             {
                 if (this._packages[i].ContainsFile(filePath))
                 {
@@ -371,7 +371,7 @@ namespace Everlook.Package
         {
             fileInfo = null;
 
-            for (int i = this._packages.Count - 1; i >= 0; --i)
+            for (var i = this._packages.Count - 1; i >= 0; --i)
             {
                 if (this._packages[i].ContainsFile(filePath))
                 {
@@ -397,7 +397,7 @@ namespace Everlook.Package
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            PackageGroup other = obj as PackageGroup;
+            var other = obj as PackageGroup;
             if (other != null)
             {
                 return this.GroupName.Equals(other.GroupName) &&

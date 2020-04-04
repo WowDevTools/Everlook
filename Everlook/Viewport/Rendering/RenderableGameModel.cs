@@ -210,7 +210,7 @@ namespace Everlook.Viewport.Rendering
             this._boundingBox = new RenderableBoundingBox(this._model.BoundingBox, this.ActorTransform);
             this._boundingBox.Initialize();
 
-            foreach (MDXTexture texture in this._model.Textures)
+            foreach (var texture in this._model.Textures)
             {
                 if (!this._textureLookup.ContainsKey(texture.Filename))
                 {
@@ -222,9 +222,9 @@ namespace Everlook.Viewport.Rendering
                 }
             }
 
-            foreach (MDXSkin skin in this._model.Skins)
+            foreach (var skin in this._model.Skins)
             {
-                ushort[] absoluteTriangleVertexIndexes = skin.Triangles.Select(relativeIndex => skin.VertexIndices[relativeIndex]).ToArray();
+                var absoluteTriangleVertexIndexes = skin.Triangles.Select(relativeIndex => skin.VertexIndices[relativeIndex]).ToArray();
                 var skinIndexBuffer = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
                 {
                     Data = absoluteTriangleVertexIndexes
@@ -237,7 +237,7 @@ namespace Everlook.Viewport.Rendering
                     // In models earlier than Cata, we need to calculate the shader selector value at runtime.
                     foreach (var renderBatch in skin.RenderBatches)
                     {
-                        ushort shaderSelector = MDXShaderHelper.GetRuntimeShaderID(renderBatch.ShaderID, renderBatch, this._model);
+                        var shaderSelector = MDXShaderHelper.GetRuntimeShaderID(renderBatch.ShaderID, renderBatch, this._model);
                         renderBatch.ShaderID = shaderSelector;
                     }
                 }
@@ -273,8 +273,8 @@ namespace Everlook.Viewport.Rendering
 
             GL.Enable(EnableCap.DepthTest);
 
-            Matrix4 modelViewMatrix = this.ActorTransform.GetModelMatrix() * viewMatrix;
-            Matrix4 modelViewProjection = modelViewMatrix * projectionMatrix;
+            var modelViewMatrix = this.ActorTransform.GetModelMatrix() * viewMatrix;
+            var modelViewProjection = modelViewMatrix * projectionMatrix;
 
             this._shader.Enable();
             this._shader.SetIsInstance(true);
@@ -348,8 +348,8 @@ namespace Everlook.Viewport.Rendering
 
             GL.Enable(EnableCap.DepthTest);
 
-            Matrix4 modelViewMatrix = this.ActorTransform.GetModelMatrix() * viewMatrix;
-            Matrix4 modelViewProjection = modelViewMatrix * projectionMatrix;
+            var modelViewMatrix = this.ActorTransform.GetModelMatrix() * viewMatrix;
+            var modelViewProjection = modelViewMatrix * projectionMatrix;
 
             this._shader.Enable();
             this._shader.SetIsInstance(false);
@@ -475,7 +475,7 @@ namespace Everlook.Viewport.Rendering
                 .Take(renderBatch.TextureCount);
             var textures = this._model.Textures.Where((t, i) => textureIndexes.Contains((short)i)).ToList();
 
-            for (int i = 0; i < textures.Count; ++i)
+            for (var i = 0; i < textures.Count; ++i)
             {
                 var texture = textures[i];
                 string textureName;

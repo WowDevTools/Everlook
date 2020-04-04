@@ -39,7 +39,7 @@ namespace Everlook.Utility
         public static string LoadStringResource(string resourcePath)
         {
             string resourceString;
-            using (Stream resourceStream =
+            using (var resourceStream =
                 Assembly.GetExecutingAssembly().GetManifestResourceStream(resourcePath))
             {
                 if (resourceStream == null)
@@ -47,7 +47,7 @@ namespace Everlook.Utility
                     return null;
                 }
 
-                using (StreamReader sr = new StreamReader(resourceStream))
+                using (var sr = new StreamReader(resourceStream))
                 {
                     resourceString = sr.ReadToEnd();
                 }
@@ -63,10 +63,10 @@ namespace Everlook.Utility
         public static Bitmap GetFallbackImage()
         {
             // Load the fallback texture
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
+            var executingAssembly = Assembly.GetExecutingAssembly();
             const string fallbackTextureName = "Everlook.Content.Textures.FallbackTexture.png";
 
-            using (Stream imageStream =
+            using (var imageStream =
                 executingAssembly.GetManifestResourceStream(fallbackTextureName))
             {
                 if (imageStream == null)

@@ -152,14 +152,14 @@ namespace Everlook.Viewport.Camera
                 }
             }
 
-            float speedMultiplier = (float)(DefaultMovementSpeed * EverlookConfiguration.Instance.CameraSpeed);
+            var speedMultiplier = (float)(DefaultMovementSpeed * EverlookConfiguration.Instance.CameraSpeed);
 
             if (Keyboard.GetState().IsKeyDown(Key.ShiftLeft))
             {
                 speedMultiplier *= (float)EverlookConfiguration.Instance.SprintMultiplier;
             }
 
-            float moveDistance = deltaTime * speedMultiplier;
+            var moveDistance = deltaTime * speedMultiplier;
 
             // Perform axial movement
             if (Keyboard.GetState().IsKeyDown(Key.W))

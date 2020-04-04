@@ -59,7 +59,7 @@ namespace Everlook.Viewport.Rendering.Core
             {
                 Bind();
 
-                T[] bufferData = new T[this.Length / Marshal.SizeOf<T>()];
+                var bufferData = new T[this.Length / Marshal.SizeOf<T>()];
                 GL.GetBufferSubData(this.Target, IntPtr.Zero, this.Length, bufferData);
 
                 return bufferData;

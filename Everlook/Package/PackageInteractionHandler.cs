@@ -72,7 +72,7 @@ namespace Everlook.Package
             (
                 () =>
                 {
-                    PackageInteractionHandler handler = new PackageInteractionHandler();
+                    var handler = new PackageInteractionHandler();
                     handler.Load(packagePath);
 
                     return handler;

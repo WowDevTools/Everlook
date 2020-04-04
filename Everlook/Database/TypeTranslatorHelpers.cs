@@ -48,7 +48,7 @@ namespace Everlook.Database
         /// <exception cref="ArgumentException">Thrown if the given type can't be resolved to a database name.</exception>
         public static DatabaseName GetDatabaseNameFromRecordType(Type recordType)
         {
-            string recordName = recordType.Name.Replace("Record", string.Empty);
+            var recordName = recordType.Name.Replace("Record", string.Empty);
             if (Enum.TryParse(recordName, true, out DatabaseName databaseName))
             {
                 return databaseName;

@@ -83,14 +83,14 @@ namespace Everlook.Viewport.Rendering.Core
         /// <inheritdoc />
         public void Initialize()
         {
-            List<float> vertices = new List<float>();
-            List<ushort> vertexIndexes = new List<ushort>();
-            float quadSize = GridSize / Quads;
+            var vertices = new List<float>();
+            var vertexIndexes = new List<ushort>();
+            var quadSize = GridSize / Quads;
 
             // Generate opposing edges of vertices on the X/Z plane
-            for (int x = 0; x <= Quads; ++x)
+            for (var x = 0; x <= Quads; ++x)
             {
-                float offsetX = (-GridSize / 2) + (x * quadSize);
+                var offsetX = (-GridSize / 2) + (x * quadSize);
 
                 vertices.AddRange(new[] { offsetX, 0.0f, GridSize / 2 });
                 vertices.AddRange(new[] { offsetX, 0.0f, -GridSize / 2 });
@@ -99,9 +99,9 @@ namespace Everlook.Viewport.Rendering.Core
             }
 
             // Fill in the missing opposing vertices on the Z axis
-            for (int z = 1; z < Quads; ++z)
+            for (var z = 1; z < Quads; ++z)
             {
-                float offsetZ = (-GridSize / 2) + (z * quadSize);
+                var offsetZ = (-GridSize / 2) + (z * quadSize);
 
                 vertices.AddRange(new[] { -GridSize / 2, 0.0f, offsetZ });
                 vertices.AddRange(new[] { GridSize / 2, 0.0f, offsetZ });
@@ -143,7 +143,7 @@ namespace Everlook.Viewport.Rendering.Core
             this._vertices.EnableAttributes();
             this._vertexIndexes.Bind();
 
-            Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
+            var modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
             this._shader.Enable();
 
@@ -153,7 +153,7 @@ namespace Everlook.Viewport.Rendering.Core
             this._shader.SetLineColour(new Color4(64, 64, 64, 255));
             this._shader.SetMVPMatrix(modelViewProjection);
 
-            int lineCount = ((Quads * 2) + 2) * 2;
+            var lineCount = ((Quads * 2) + 2) * 2;
             GL.DrawElements
             (
                 PrimitiveType.Lines,
