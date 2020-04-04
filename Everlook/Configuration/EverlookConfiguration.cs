@@ -479,6 +479,14 @@ namespace Everlook.Configuration
             where T : notnull
         {
             var value = optionValue.ToString();
+            if (value is null)
+            {
+                throw new InvalidOperationException
+                (
+                    "The value was null when transformed into its string representation."
+                );
+            }
+
             if (storeAsLowerCase)
             {
                 value = value.ToLowerInvariant();

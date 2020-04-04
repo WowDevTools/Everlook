@@ -52,14 +52,14 @@ namespace Everlook.Explorer
         /// Gets the name of the package where the file is stored.
         /// </summary>
         /// <value>The name of the package.</value>
-        public string PackageName { get; } = string.Empty;
+        public string PackageName { get; }
 
         /// <summary>
         /// Gets the file path of the file inside the package. This string uses the backslash character ('\') as its
         /// directory separator.
         /// </summary>
         /// <value>The file path.</value>
-        public string FilePath { get; } = string.Empty;
+        public string FilePath { get; }
 
         /// <summary>
         /// Gets the directory that the file resides in.
@@ -162,10 +162,9 @@ namespace Everlook.Explorer
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            var other = obj as FileReference;
-            return other != null && Equals(other);
+            return obj is FileReference other && Equals(other);
         }
 
         /// <inheritdoc />

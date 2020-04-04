@@ -239,6 +239,11 @@ namespace Everlook.Utility
             try
             {
                 var fileData = fileReference.Extract();
+                if (fileData is null)
+                {
+                    throw new FileNotFoundException();
+                }
+
                 using (var ms = new MemoryStream(fileData))
                 {
                     image = new Bitmap(ms);

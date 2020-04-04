@@ -143,7 +143,11 @@ namespace Everlook.Database
             var databasePath = GetDatabasePackagePath(databaseName);
             var databaseData = _contentSource.ExtractFile(databasePath);
 
-            var database = (IDBC)Activator.CreateInstance(specificDBCType, _version, databaseData);
+            if (!(Activator.CreateInstance(specificDBCType, _version, databaseData) is IDBC database))
+            {
+                throw new InvalidOperationException("Something caused the database instantiation to fail.");
+            }
+
             _databases.Add(databaseName, database);
         }
 

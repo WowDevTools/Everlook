@@ -407,10 +407,9 @@ namespace Everlook.Package
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            var other = obj as PackageGroup;
-            if (other != null)
+            if (obj is PackageGroup other)
             {
                 return this.GroupName.Equals(other.GroupName) &&
                 _packages.Equals(other._packages);
