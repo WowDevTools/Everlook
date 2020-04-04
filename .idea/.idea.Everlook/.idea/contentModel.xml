@@ -330,7 +330,7 @@
                 <e p="NuGet" t="Include">
                   <e p="74B5D4541C0390BD6C62F006ECE74F7C0EC694F0" t="Include">
                     <e p="Nullable" t="Include">
-                      <e p="1.2.0" t="Include">
+                      <e p="1.2.1" t="Include">
                         <e p="Nullable" t="Include">
                           <e p="NullableAttributes.cs" t="Include" />
                         </e>
