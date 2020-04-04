@@ -103,7 +103,11 @@ namespace Everlook.UI
         /// </summary>
         private void LoadInformation()
         {
-            var imageFilename = IOPath.GetFileNameWithoutExtension(_exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
+            var imageFilename = IOPath.GetFileNameWithoutExtension
+            (
+                _exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator()
+            );
+
             this.Title = $"Export Image | {imageFilename}";
 
             var file = _exportTarget.Extract();
@@ -125,7 +129,10 @@ namespace Everlook.UI
         /// </summary>
         public void RunExport()
         {
-            var imageFilename = IOPath.GetFileNameWithoutExtension(_exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
+            var imageFilename = IOPath.GetFileNameWithoutExtension
+            (
+                _exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator()
+            );
 
             string exportPath;
             if (_config.KeepFileDirectoryStructure)
@@ -154,7 +161,11 @@ namespace Everlook.UI
 
                     if (shouldExport)
                     {
-                        var formatExtension = GetFileExtensionFromImageFormat((ImageFormat)_exportFormatComboBox.Active);
+                        var formatExtension = GetFileExtensionFromImageFormat
+                        (
+                            (ImageFormat)_exportFormatComboBox.Active
+                        );
+
                         Directory.CreateDirectory(Directory.GetParent(exportPath).FullName);
 
                         var fullExportPath = $"{exportPath}_{i}.{formatExtension}";

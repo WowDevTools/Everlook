@@ -663,7 +663,16 @@ namespace Everlook.Explorer
                             File.Delete(tempPath);
                         }
 
-                        using (Stream tempStream = File.Open(tempPath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Read))
+                        using
+                        (
+                            Stream tempStream = File.Open
+                            (
+                                tempPath,
+                                FileMode.CreateNew,
+                                FileAccess.ReadWrite,
+                                FileShare.Read
+                            )
+                        )
                         {
                             tempStream.Write(fileData, 0, fileData.Length);
                             tempStream.Flush();

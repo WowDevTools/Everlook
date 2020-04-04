@@ -54,7 +54,13 @@ namespace Everlook.Utility
                 var leftReference = x[i];
                 var rightReference = y[i];
 
-                var areValuesEqual = string.Equals(leftReference.Value, rightReference.Value, StringComparison.OrdinalIgnoreCase);
+                var areValuesEqual = string.Equals
+                (
+                    leftReference.Value,
+                    rightReference.Value,
+                    StringComparison.OrdinalIgnoreCase
+                );
+
                 var areOffsetsEqual = leftReference.Offset == rightReference.Offset;
                 if (!(areValuesEqual && areOffsetsEqual))
                 {

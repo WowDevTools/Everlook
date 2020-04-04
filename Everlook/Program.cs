@@ -134,7 +134,9 @@ namespace Everlook
         /// the exception and all relevant information to a logfile and prints it to the console for debugging purposes.
         /// </summary>
         /// <param name="sender">The sending object.</param>
-        /// <param name="unhandledExceptionEventArgs">The event object containing the information about the exception.</param>
+        /// <param name="unhandledExceptionEventArgs">
+        /// The event object containing the information about the exception.
+        /// </param>
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
         {
             // Force english exception output
@@ -159,10 +161,12 @@ namespace Everlook
                 {
                     Log.Fatal
                     (
-                        "This exception is typical of instances where the GTK runtime has not been properly copied to the working directory or is not available on your system.\n" +
+                        "This exception is typical of instances where the GTK runtime has not been properly copied " +
+                        "to the working directory or is not available on your system.\n" +
                         "If you're on Windows, make sure that the bundled GTK libraries are present.\n" +
                         "If you're on macOS, try installing GTK through Homebrew.\n" +
-                        "If you're on Linux, check with your package maintainer that all dependencies are properly listed."
+                        "If you're on Linux, check with your package maintainer that all dependencies are properly " +
+                        "listed."
                     );
                     break;
                 }
@@ -170,9 +174,11 @@ namespace Everlook
                 {
                     Log.Fatal
                     (
-                        "Some type of graphics error occurred. On macOS, this is usally indicative of an OpenGL context " +
-                        "which doesn't meet Everlook's requirements. Please note that Everlook requires at least OpenGL 3.3.\n" +
-                        "If you're running via XQuartz, please note that XQuartz does not provide contexts above OpenGL 2.1."
+                        "Some type of graphics error occurred. On macOS, this is usally indicative of an OpenGL " +
+                        "context which doesn't meet Everlook's requirements. Please note that Everlook requires at " +
+                        "least OpenGL 3.3.\n" +
+                        "If you're running via XQuartz, please note that XQuartz does not provide contexts above " +
+                        "OpenGL 2.1."
                     );
                     break;
                 }

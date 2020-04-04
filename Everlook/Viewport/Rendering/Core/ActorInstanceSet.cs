@@ -35,7 +35,8 @@ namespace Everlook.Viewport.Rendering.Core
     /// Represets a set of actor instances, differing by their transforms.
     /// </summary>
     /// <typeparam name="T">A renderable supporting instanced rendering.</typeparam>
-    public class ActorInstanceSet<T> : IRenderable, IBoundedModel where T : class, IInstancedRenderable, IActor, IBoundedModel
+    public class ActorInstanceSet<T> : IRenderable, IBoundedModel
+        where T : class, IInstancedRenderable, IActor, IBoundedModel
     {
         /// <inheritdoc />
         public bool ShouldRenderBounds
@@ -92,10 +93,26 @@ namespace Everlook.Viewport.Rendering.Core
         public void Initialize()
         {
             _instanceModelMatrices = new Buffer<Matrix4>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
-            _instanceModelMatrices.AttachAttributePointer(new VertexAttributePointer(6, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 0));
-            _instanceModelMatrices.AttachAttributePointer(new VertexAttributePointer(7, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 16));
-            _instanceModelMatrices.AttachAttributePointer(new VertexAttributePointer(8, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 32));
-            _instanceModelMatrices.AttachAttributePointer(new VertexAttributePointer(9, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 48));
+
+            _instanceModelMatrices.AttachAttributePointer
+            (
+                new VertexAttributePointer(6, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 0)
+            );
+
+            _instanceModelMatrices.AttachAttributePointer
+            (
+                new VertexAttributePointer(7, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 16)
+            );
+
+            _instanceModelMatrices.AttachAttributePointer
+            (
+                new VertexAttributePointer(8, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 32)
+            );
+
+            _instanceModelMatrices.AttachAttributePointer
+            (
+                new VertexAttributePointer(9, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 48)
+            );
 
             _instanceModelMatrices.Bind();
             _instanceModelMatrices.EnableAttributes();
@@ -130,7 +147,10 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         public void Dispose()
         {
-            throw new NotSupportedException("A renderable instance set should not be disposed. Dispose the source actor instead.");
+            throw new NotSupportedException
+            (
+                "A renderable instance set should not be disposed. Dispose the source actor instead."
+            );
         }
     }
 }

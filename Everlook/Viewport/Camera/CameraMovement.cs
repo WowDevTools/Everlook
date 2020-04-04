@@ -136,8 +136,15 @@ namespace Everlook.Viewport.Camera
         public void Calculate3DMovement(float deltaMouseX, float deltaMouseY, float deltaTime)
         {
             // Perform radial movement
-            RotateHorizontal(deltaMouseX * DefaultTurningSpeed * (float)EverlookConfiguration.Instance.RotationSpeed * deltaTime);
-            RotateVertical(deltaMouseY * DefaultTurningSpeed * (float)EverlookConfiguration.Instance.RotationSpeed * deltaTime);
+            RotateHorizontal
+            (
+                deltaMouseX * DefaultTurningSpeed * (float)EverlookConfiguration.Instance.RotationSpeed * deltaTime
+            );
+
+            RotateVertical
+            (
+                deltaMouseY * DefaultTurningSpeed * (float)EverlookConfiguration.Instance.RotationSpeed * deltaTime
+            );
 
             // Constrain the viewing angles to no more than 90 degrees in any direction
             if (this.ConstrainVerticalView)

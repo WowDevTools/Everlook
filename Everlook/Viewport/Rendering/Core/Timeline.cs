@@ -91,7 +91,13 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="timestamps">The timestamps in the timeline.</param>
         /// <param name="values">The values at the timestamps in the timeline.</param>
         /// <param name="duration">The duration of the timeline.</param>
-        public Timeline(InterpolationType interpolation, IReadOnlyCollection<uint> timestamps, IReadOnlyCollection<T> values, float duration)
+        public Timeline
+        (
+            InterpolationType interpolation,
+            IReadOnlyCollection<uint> timestamps,
+            IReadOnlyCollection<T> values,
+            float duration
+        )
             : this(interpolation, timestamps, values)
         {
             this.Duration = duration;
@@ -103,7 +109,12 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="interpolation">The interpolation type of the timeline.</param>
         /// <param name="timestamps">The timestamps in the timeline.</param>
         /// <param name="values">The values at the timestamps in the timeline.</param>
-        public Timeline(InterpolationType interpolation, IReadOnlyCollection<uint> timestamps, IReadOnlyCollection<T> values)
+        public Timeline
+        (
+            InterpolationType interpolation,
+            IReadOnlyCollection<uint> timestamps,
+            IReadOnlyCollection<T> values
+        )
         {
             this.Interpolation = interpolation;
             this.Timestamps = timestamps.ToList();

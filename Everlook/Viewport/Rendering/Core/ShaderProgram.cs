@@ -50,8 +50,8 @@ namespace Everlook.Viewport.Rendering.Core
         protected int NativeShaderProgramID { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ShaderProgram"/> class, compiling and linking its associated shader sources into
-        /// a shader program on the GPU.
+        /// Initializes a new instance of the <see cref="ShaderProgram"/> class, compiling and linking its associated
+        /// shader sources into a shader program on the GPU.
         /// </summary>
         protected ShaderProgram()
         {
@@ -185,8 +185,8 @@ namespace Everlook.Viewport.Rendering.Core
         }
 
         /// <summary>
-        /// Gets the name of vertex shader in the resources. This will be used with the resource path to load the source.
-        /// Do not include any extensions. Folder prefixes are optional.
+        /// Gets the name of vertex shader in the resources. This will be used with the resource path to load the
+        /// source. Do not include any extensions. Folder prefixes are optional.
         ///
         /// Valid: WorldModelVertex, Plain2D.Plain2DVertex
         /// Invalid: Resources.Content.Shaders.WorldModelVertex.glsl.
@@ -194,8 +194,8 @@ namespace Everlook.Viewport.Rendering.Core
         protected abstract string VertexShaderResourceName { get; }
 
         /// <summary>
-        /// Gets the name of the fragment shader in the resources. This will be used with the resource path to load the source.
-        /// Do not include any extensions. Folder prefixes are optional.
+        /// Gets the name of the fragment shader in the resources. This will be used with the resource path to load the
+        /// source. Do not include any extensions. Folder prefixes are optional.
         ///
         /// Valid: WorldModelFragment, Plain2D.Plain2DFragment
         /// Invalid: Resources.Content.Shaders.WorldModelFragment.glsl.
@@ -216,7 +216,9 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         /// <param name="vertexShaderID">The native handle to the object code of the vertex shader.</param>
         /// <param name="fragmentShaderID">The native handle to the object code of the fragment shader.</param>
-        /// <param name="geometryShaderID">Optional. The native handle to the object code of the geometry shader.</param>
+        /// <param name="geometryShaderID">
+        /// Optional. The native handle to the object code of the geometry shader.
+        /// </param>
         /// <returns>A native handle to a shader program.</returns>
         /// <exception cref="ShaderLinkingException">Thrown if the linking fails.</exception>
         private static int LinkShader(int vertexShaderID, int fragmentShaderID, int geometryShaderID = -1)

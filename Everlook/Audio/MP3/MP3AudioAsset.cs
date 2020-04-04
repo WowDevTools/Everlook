@@ -119,7 +119,10 @@ namespace Everlook.Audio.MP3
 
             if (fileReference.GetReferencedFileType() != WarcraftFileType.MP3Audio)
             {
-                throw new ArgumentException("The provided file reference was not an MP3 audio file.", nameof(fileReference));
+                throw new ArgumentException
+                (
+                    "The provided file reference was not an MP3 audio file.", nameof(fileReference)
+                );
             }
 
             var fileBytes = fileReference.Extract();

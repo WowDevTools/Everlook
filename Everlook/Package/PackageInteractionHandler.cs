@@ -151,8 +151,11 @@ namespace Everlook.Package
             }
             catch (InvalidFileSectorTableException fex)
             {
-                Log.Warn(
-                    $"Failed to extract the file \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
+                Log.Warn
+                (
+                    $"Failed to extract the file \"{fileReference.FilePath}\" due to an invalid sector table " +
+                    $"(\"{fex.Message}\")."
+                );
                 throw;
             }
         }

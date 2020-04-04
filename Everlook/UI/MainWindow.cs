@@ -653,7 +653,8 @@ namespace Everlook.UI
                         }
 
                         _modelVariationComboBox.Active = 0;
-                        _modelVariationComboBox.Sensitive = _renderDoodadsCheckButton.Active && doodadSetNames.Count > 1;
+                        _modelVariationComboBox.Sensitive = _renderDoodadsCheckButton.Active &&
+                                                            doodadSetNames.Count > 1;
                         _renderDoodadsCheckButton.Sensitive = true;
                     }
 
@@ -778,7 +779,14 @@ namespace Everlook.UI
         /// <param name="associatedControlPage">The control page which the file is associated with, that is, the one with relevant controls.</param>
         /// <param name="ct">A cancellation token for this operation.</param>
         /// <typeparam name="T">The type of object to load.</typeparam>
-        private async Task DisplayRenderableFile<T>(FileReference fileReference, LoadReference<T> referenceLoadingRoutine, CreateRenderable<T> createRenderable, ControlPage associatedControlPage, CancellationToken ct)
+        private async Task DisplayRenderableFile<T>
+        (
+            FileReference fileReference,
+            LoadReference<T> referenceLoadingRoutine,
+            CreateRenderable<T> createRenderable,
+            ControlPage associatedControlPage,
+            CancellationToken ct
+        )
         {
             if (fileReference == null)
             {
@@ -1077,7 +1085,10 @@ namespace Everlook.UI
                             File.Delete(exportpath);
                         }
 
-                        using (var fs = new FileStream(exportpath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+                        using
+                        (
+                            var fs = new FileStream(exportpath, FileMode.CreateNew, FileAccess.Write, FileShare.None)
+                        )
                         {
                             await fs.WriteAsync(file, 0, file.Length);
                         }
@@ -1093,7 +1104,10 @@ namespace Everlook.UI
                 }
                 else
                 {
-                    Log.Warn($"Failed to save \"{fileReference.Filename}\": Could not extract any data from the archives.");
+                    Log.Warn
+                    (
+                        $"Failed to save \"{fileReference.Filename}\": Could not extract any data from the archives."
+                    );
                 }
 
                 _mainStatusBar.Remove(statusMessageContextID, statusMessageID);

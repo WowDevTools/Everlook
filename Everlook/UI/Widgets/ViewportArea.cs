@@ -31,7 +31,8 @@ using OpenTK.Graphics;
 namespace Everlook.UI.Widgets
 {
     /// <summary>
-    /// The <see cref="ViewportArea"/> is a GTK widget for which an OpenGL context can be used to draw arbitrary graphics.
+    /// The <see cref="ViewportArea"/> is a GTK widget for which an OpenGL context can be used to draw arbitrary
+    /// graphics.
     /// </summary>
     [CLSCompliant(false)]
     [ToolboxItem(true)]
@@ -70,7 +71,9 @@ namespace Everlook.UI.Widgets
         /// Initializes a new instance of the <see cref="ViewportArea"/> class. The given <see cref="GraphicsMode"/> is
         /// used to hint the area about context creation.
         /// </summary>
-        /// <param name="graphicsMode">The <see cref="GraphicsMode"/> which the widget should be constructed with.</param>
+        /// <param name="graphicsMode">
+        /// The <see cref="GraphicsMode"/> which the widget should be constructed with.
+        /// </param>
         public ViewportArea(GraphicsMode graphicsMode)
             : this(graphicsMode, 1, 0, GraphicsContextFlags.Default)
         {
@@ -79,13 +82,21 @@ namespace Everlook.UI.Widgets
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewportArea"/> class.
         /// </summary>
-        /// <param name="graphicsMode">The <see cref="GraphicsMode"/> which the widget should be constructed with.</param>
+        /// <param name="graphicsMode">
+        /// The <see cref="GraphicsMode"/> which the widget should be constructed with.
+        /// </param>
         /// <param name="glVersionMajor">The major OpenGL version to attempt to initialize.</param>
         /// <param name="glVersionMinor">The minor OpenGL version to attempt to initialize.</param>
         /// <param name="contextFlags">
         /// Any flags which should be used during initialization of the <see cref="GraphicsContext"/>.
         /// </param>
-        public ViewportArea(GraphicsMode graphicsMode, int glVersionMajor, int glVersionMinor, GraphicsContextFlags contextFlags)
+        public ViewportArea
+        (
+            GraphicsMode graphicsMode,
+            int glVersionMajor,
+            int glVersionMinor,
+            GraphicsContextFlags contextFlags
+        )
         {
             this.ContextFlags = contextFlags;
 
@@ -247,7 +258,8 @@ namespace Everlook.UI.Widgets
         }
 
         /// <summary>
-        /// Initializes the <see cref="ViewportArea"/> with its given values and creates a <see cref="GraphicsContext"/>.
+        /// Initializes the <see cref="ViewportArea"/> with its given values and creates a
+        /// <see cref="GraphicsContext"/>.
         /// </summary>
         private void Initialize()
         {

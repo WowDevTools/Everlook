@@ -177,7 +177,11 @@ namespace Everlook.Configuration
                                 {
                                     storedPaths.Add
                                     (
-                                        (br.ReadNullTerminatedString(), (WarcraftVersion)br.ReadUInt32(), br.ReadNullTerminatedString())
+                                        (
+                                            br.ReadNullTerminatedString(),
+                                            (WarcraftVersion)br.ReadUInt32(),
+                                            br.ReadNullTerminatedString()
+                                        )
                                     );
                                 }
                             }

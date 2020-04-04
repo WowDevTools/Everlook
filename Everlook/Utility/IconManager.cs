@@ -43,7 +43,8 @@ namespace Everlook.Utility
         /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(typeof(IconManager));
 
-        private static readonly Dictionary<(string iconName, int iconSize), Pixbuf> IconCache = new Dictionary<(string iconName, int iconSize), Pixbuf>();
+        private static readonly Dictionary<(string iconName, int iconSize), Pixbuf> IconCache =
+            new Dictionary<(string iconName, int iconSize), Pixbuf>();
 
         /// <summary>
         /// Loads all embedded builtin icons into the application's icon theme.

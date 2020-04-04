@@ -190,7 +190,14 @@ namespace Everlook.UI
 
                     if (Directory.Exists(uriToStore.LocalPath))
                     {
-                        _gamePathListStore.AppendValues(alias, uriToStore.LocalPath, (uint)selectedVersion, selectedVersion.ToString());
+                        _gamePathListStore.AppendValues
+                        (
+                            alias,
+                            uriToStore.LocalPath,
+                            (uint)selectedVersion,
+                            selectedVersion.ToString()
+                        );
+
                         this.DidGameListChange = true;
                     }
 

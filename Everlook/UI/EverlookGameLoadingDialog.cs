@@ -257,7 +257,8 @@ namespace Everlook.UI
         /// <param name="statusMessage">The status message to set.</param>
         private void SetStatusMessage(string statusMessage)
         {
-            _gameLoadingDialogLabel.Text = $"({_currentLoadingProgress.FinishedOperations}/{_currentLoadingProgress.OperationCount}) {statusMessage}";
+            _gameLoadingDialogLabel.Text = $"({_currentLoadingProgress.FinishedOperations}/" +
+                                           $"{_currentLoadingProgress.OperationCount}) {statusMessage}";
         }
 
         /// <inheritdoc />

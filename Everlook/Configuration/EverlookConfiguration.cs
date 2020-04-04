@@ -275,7 +275,13 @@ namespace Everlook.Configuration
                     AddNewConfigurationOption(_configurationData, Viewport, nameof(this.RotationSpeed), "1.0");
                     AddNewConfigurationOption(_configurationData, Viewport, nameof(this.CameraFOV), "45.0");
 
-                    MoveConfigurationOption(_configurationData, "General", Viewport, nameof(this.ViewportBackgroundColour));
+                    MoveConfigurationOption
+                    (
+                        _configurationData,
+                        "General",
+                        Viewport,
+                        nameof(this.ViewportBackgroundColour)
+                    );
 
                     DeleteConfigurationSection(_configurationData, "General");
 
@@ -406,7 +412,13 @@ namespace Everlook.Configuration
             }
         }
 
-        private void RenameConfigurationOption(IniData configData, string keySection, string oldKeyName, string newKeyName)
+        private void RenameConfigurationOption
+        (
+            IniData configData,
+            string keySection,
+            string oldKeyName,
+            string newKeyName
+        )
         {
             if (configData.Sections[keySection].ContainsKey(oldKeyName))
             {
@@ -437,7 +449,13 @@ namespace Everlook.Configuration
             }
         }
 
-        private void MoveConfigurationOption(IniData configData, string oldKeySection, string newKeySection, string keyName)
+        private void MoveConfigurationOption
+        (
+            IniData configData,
+            string oldKeySection,
+            string newKeySection,
+            string keyName
+        )
         {
             if (!configData.Sections[newKeySection].ContainsKey(keyName))
             {

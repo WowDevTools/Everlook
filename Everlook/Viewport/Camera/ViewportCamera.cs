@@ -244,7 +244,13 @@ namespace Everlook.Viewport.Camera
         /// Gets the NDC to screen transformation matrix.
         /// </summary>
         /// <returns>The viewport matrix.</returns>
-        [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1117:ParametersMustBeOnSameLineOrSeparateLines", Justification = "Used for matrix parameter alignment.")]
+        [
+            SuppressMessage
+            (
+                "StyleCop.CSharp.SpacingRules", "SA1117:ParametersMustBeOnSameLineOrSeparateLines",
+                Justification = "Used for matrix parameter alignment."
+            )
+        ]
         public Matrix3 GetViewportMatrix()
         {
             var widthOver2 = this.ViewportWidth / 2.0f;

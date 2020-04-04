@@ -90,7 +90,11 @@ namespace Everlook.Utility
             doodadReference = GetReferenceForPath(Path.ChangeExtension(doodadInstance.Name, "m2"));
             if (doodadReference == null)
             {
-                throw new ArgumentException($"Failed to retrieve doodad reference for {doodadInstance.Name}", nameof(doodadInstance));
+                throw new ArgumentException
+                (
+                    $"Failed to retrieve doodad reference for {doodadInstance.Name}",
+                    nameof(doodadInstance)
+                );
             }
 
             return doodadReference;

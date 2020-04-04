@@ -68,7 +68,8 @@ namespace Everlook.Utility
                 var fileData = fileReference.Extract();
                 worldModel = new WMO(fileData);
 
-                var modelPathWithoutExtension = $"{fileReference.FileDirectory.Replace('/', '\\')}\\{Path.GetFileNameWithoutExtension(fileReference.Filename)}";
+                var modelPathWithoutExtension = $"{fileReference.FileDirectory.Replace('/', '\\')}\\" +
+                                                $"{Path.GetFileNameWithoutExtension(fileReference.Filename)}";
                 for (var i = 0; i < worldModel.GroupCount; ++i)
                 {
                     // Extract the groups as well
@@ -88,8 +89,11 @@ namespace Everlook.Utility
             }
             catch (InvalidFileSectorTableException fex)
             {
-                Log.Warn(
-                    $"Failed to load the model \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
+                Log.Warn
+                (
+                    $"Failed to load the model \"{fileReference.FilePath}\" due to an invalid sector table " +
+                    $"(\"{fex.Message}\")."
+                );
                 throw;
             }
 
@@ -128,7 +132,11 @@ namespace Everlook.Utility
             }
             catch (InvalidFileSectorTableException fex)
             {
-                Log.Warn($"Failed to load the model group \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex}\")");
+                Log.Warn
+                (
+                    $"Failed to load the model group \"{fileReference.FilePath}\" due to an invalid sector table " +
+                    $"(\"{fex}\")"
+                );
                 throw;
             }
 
@@ -149,7 +157,10 @@ namespace Everlook.Utility
             if (warcraftContext == null)
             {
                 // TODO: This is bad practice. Refactor
-                throw new ArgumentException("The given context must be a warcraft-typed context.", nameof(fileReference.Context));
+                throw new ArgumentException
+                (
+                    "The given context must be a warcraft-typed context.", nameof(fileReference.Context)
+                );
             }
 
             var renderableWorldModel = new RenderableWorldModel(worldModel, warcraftContext);
@@ -314,7 +325,11 @@ namespace Everlook.Utility
             }
             catch (InvalidFileSectorTableException fex)
             {
-                Log.Warn($"Failed to load the model \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
+                Log.Warn
+                (
+                    $"Failed to load the model \"{fileReference.FilePath}\" due to an invalid sector table " +
+                    $"(\"{fex.Message}\")."
+                );
                 throw;
             }
 
@@ -336,7 +351,10 @@ namespace Everlook.Utility
             if (warcraftContext == null)
             {
                 // TODO: This is bad practice. Refactor
-                throw new ArgumentException("The given context must be a warcraft-typed context.", nameof(fileReference.Context));
+                throw new ArgumentException
+                (
+                    "The given context must be a warcraft-typed context.", nameof(fileReference.Context)
+                );
             }
 
             var renderableModel = new RenderableGameModel(gameModel, warcraftContext, fileReference.FilePath);

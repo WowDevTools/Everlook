@@ -58,7 +58,8 @@ namespace Everlook.Viewport.Rendering
         /// <summary>
         /// The cache dictionary that maps active OpenGL shaders on the GPU.
         /// </summary>
-        private readonly Dictionary<EverlookShader, ShaderProgram> _shaderCache = new Dictionary<EverlookShader, ShaderProgram>();
+        private readonly Dictionary<EverlookShader, ShaderProgram> _shaderCache =
+            new Dictionary<EverlookShader, ShaderProgram>();
 
         /// <summary>
         /// Gets or sets a value indicating whether this object has been disposed.
@@ -131,7 +132,10 @@ namespace Everlook.Viewport.Rendering
                 throw new ArgumentNullException(nameof(texturePath));
             }
 
-            return _textureCache.ContainsKey(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant());
+            return _textureCache.ContainsKey
+            (
+                texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant()
+            );
         }
 
         /// <summary>
@@ -216,7 +220,13 @@ namespace Everlook.Viewport.Rendering
         /// <param name="wrappingModeS">The wrapping mode to use for the texture on the S axis.</param>
         /// <param name="wrappingModeT">The wrapping mode to use for the texture on the T axis.</param>
         /// <returns>A <see cref="Texture2D"/> object.</returns>
-        public Texture2D GetTexture(string texturePath, IPackage package, TextureWrapMode wrappingModeS = TextureWrapMode.Repeat, TextureWrapMode wrappingModeT = TextureWrapMode.Repeat)
+        public Texture2D GetTexture
+        (
+            string texturePath,
+            IPackage package,
+            TextureWrapMode wrappingModeS = TextureWrapMode.Repeat,
+            TextureWrapMode wrappingModeT = TextureWrapMode.Repeat
+        )
         {
             ThrowIfDisposed();
 
@@ -272,7 +282,13 @@ namespace Everlook.Viewport.Rendering
         /// <param name="wrappingModeS">How the texture should wrap on the S axis.</param>
         /// <param name="wrappingModeT">How the texture should wrap on the T axis.</param>
         /// <returns>A new cached texture created from the data.</returns>
-        public Texture2D CreateCachedTexture(BLP imageData, string texturePath, TextureWrapMode wrappingModeS = TextureWrapMode.Repeat, TextureWrapMode wrappingModeT = TextureWrapMode.Repeat)
+        public Texture2D CreateCachedTexture
+        (
+            BLP imageData,
+            string texturePath,
+            TextureWrapMode wrappingModeS = TextureWrapMode.Repeat,
+            TextureWrapMode wrappingModeT = TextureWrapMode.Repeat
+        )
         {
             ThrowIfDisposed();
 
@@ -344,7 +360,11 @@ namespace Everlook.Viewport.Rendering
                 }
                 default:
                 {
-                    throw new ArgumentOutOfRangeException(nameof(shader), "No implemented shader class for this shader.");
+                    throw new ArgumentOutOfRangeException
+                    (
+                        nameof(shader),
+                        "No implemented shader class for this shader."
+                    );
                 }
             }
 

@@ -50,7 +50,12 @@ namespace Everlook.Viewport.Rendering
     /// <summary>
     /// Represents a renderable Game Object Model.
     /// </summary>
-    public sealed class RenderableGameModel : IInstancedRenderable, ITickingActor, IDefaultCameraPositionProvider, IModelInfoProvider, IBoundedModel
+    public sealed class RenderableGameModel :
+        IInstancedRenderable,
+        ITickingActor,
+        IDefaultCameraPositionProvider,
+        IModelInfoProvider,
+        IBoundedModel
     {
         /// <inheritdoc />
         public bool IsStatic => false;
@@ -109,7 +114,8 @@ namespace Everlook.Viewport.Rendering
         /// </summary>
         private readonly Dictionary<string, Texture2D> _textureLookup = new Dictionary<string, Texture2D>();
 
-        private readonly Dictionary<MDXSkin, Buffer<ushort>> _skinIndexArrayBuffers = new Dictionary<MDXSkin, Buffer<ushort>>();
+        private readonly Dictionary<MDXSkin, Buffer<ushort>> _skinIndexArrayBuffers =
+            new Dictionary<MDXSkin, Buffer<ushort>>();
 
         private Buffer<byte> _vertexBuffer;
 
@@ -224,7 +230,11 @@ namespace Everlook.Viewport.Rendering
 
             foreach (var skin in _model.Skins)
             {
-                var absoluteTriangleVertexIndexes = skin.Triangles.Select(relativeIndex => skin.VertexIndices[relativeIndex]).ToArray();
+                var absoluteTriangleVertexIndexes = skin.Triangles.Select
+                (
+                    relativeIndex => skin.VertexIndices[relativeIndex]
+                ).ToArray();
+
                 var skinIndexBuffer = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
                 {
                     Data = absoluteTriangleVertexIndexes
@@ -237,7 +247,13 @@ namespace Everlook.Viewport.Rendering
                     // In models earlier than Cata, we need to calculate the shader selector value at runtime.
                     foreach (var renderBatch in skin.RenderBatches)
                     {
-                        var shaderSelector = MDXShaderHelper.GetRuntimeShaderID(renderBatch.ShaderID, renderBatch, _model);
+                        var shaderSelector = MDXShaderHelper.GetRuntimeShaderID
+                        (
+                            renderBatch.ShaderID,
+                            renderBatch,
+                            _model
+                        );
+
                         renderBatch.ShaderID = shaderSelector;
                     }
                 }
@@ -579,7 +595,10 @@ namespace Everlook.Viewport.Rendering
                 yield break;
             }
 
-            var textureListMapping = new Dictionary<IReadOnlyList<StringReference>, CreatureDisplayInfoRecord>(new StringReferenceListComparer());
+            var textureListMapping = new Dictionary<IReadOnlyList<StringReference>, CreatureDisplayInfoRecord>
+            (
+                new StringReferenceListComparer()
+            );
 
             // Finally, return any record with a unique set of textures
             foreach (var displayRecord in modelDisplayRecords)
@@ -617,7 +636,8 @@ namespace Everlook.Viewport.Rendering
         /// <param name="variationID">The ID of the record.</param>
         public void SetDisplayInfoByID(int variationID)
         {
-            this.CurrentDisplayInfo = _gameContext.Database.GetDatabase<CreatureDisplayInfoRecord>().GetRecordByID(variationID);
+            this.CurrentDisplayInfo = _gameContext.Database.GetDatabase<CreatureDisplayInfoRecord>()
+                .GetRecordByID(variationID);
             CacheDisplayInfo(this.CurrentDisplayInfo);
         }
 

@@ -68,7 +68,15 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="byteStride">The byte offset between consecutive attributes.</param>
         /// <param name="firstAttributeByteOffset">The offset to the first component of the first attribute.</param>
         /// <param name="isNormalized">Whether or not the data should be normalized.</param>
-        public VertexAttributePointer(int layoutIndex, int componentCount, VertexAttribPointerType type, int byteStride, int firstAttributeByteOffset, bool isNormalized = false)
+        public VertexAttributePointer
+        (
+            int layoutIndex,
+            int componentCount,
+            VertexAttribPointerType type,
+            int byteStride,
+            int firstAttributeByteOffset,
+            bool isNormalized = false
+        )
         {
             this.LayoutIndex = layoutIndex;
             this.ComponentCount = componentCount;

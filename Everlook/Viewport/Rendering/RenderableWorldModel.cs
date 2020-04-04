@@ -51,7 +51,11 @@ namespace Everlook.Viewport.Rendering
     /// <summary>
     /// Represents a renderable World Model Object.
     /// </summary>
-    public sealed class RenderableWorldModel : IRenderable, ITickingActor, IDefaultCameraPositionProvider, IModelInfoProvider
+    public sealed class RenderableWorldModel :
+        IRenderable,
+        ITickingActor,
+        IDefaultCameraPositionProvider,
+        IModelInfoProvider
     {
         /// <summary>
         /// Logger instance for this class.
@@ -119,17 +123,28 @@ namespace Everlook.Viewport.Rendering
         private readonly Dictionary<string, Texture2D> _textureLookup = new Dictionary<string, Texture2D>();
 
         // Actual model data
-        private readonly Dictionary<ModelGroup, Buffer<Vector3>> _vertexBufferLookup = new Dictionary<ModelGroup, Buffer<Vector3>>();
-        private readonly Dictionary<ModelGroup, Buffer<Vector3>> _normalBufferLookup = new Dictionary<ModelGroup, Buffer<Vector3>>();
-        private readonly Dictionary<ModelGroup, Buffer<Vector2>> _textureCoordinateBufferLookup = new Dictionary<ModelGroup, Buffer<Vector2>>();
-        private readonly Dictionary<ModelGroup, Buffer<ushort>> _vertexIndexBufferLookup = new Dictionary<ModelGroup, Buffer<ushort>>();
+        private readonly Dictionary<ModelGroup, Buffer<Vector3>> _vertexBufferLookup =
+            new Dictionary<ModelGroup, Buffer<Vector3>>();
+
+        private readonly Dictionary<ModelGroup, Buffer<Vector3>> _normalBufferLookup =
+            new Dictionary<ModelGroup, Buffer<Vector3>>();
+
+        private readonly Dictionary<ModelGroup, Buffer<Vector2>> _textureCoordinateBufferLookup =
+            new Dictionary<ModelGroup, Buffer<Vector2>>();
+
+        private readonly Dictionary<ModelGroup, Buffer<ushort>> _vertexIndexBufferLookup =
+            new Dictionary<ModelGroup, Buffer<ushort>>();
 
         // Bounding boxes
-        private readonly Dictionary<ModelGroup, RenderableBoundingBox> _boundingBoxLookup = new Dictionary<ModelGroup, RenderableBoundingBox>();
+        private readonly Dictionary<ModelGroup, RenderableBoundingBox> _boundingBoxLookup =
+            new Dictionary<ModelGroup, RenderableBoundingBox>();
 
         // Doodad sets
-        private readonly Dictionary<string, RenderableGameModel> _doodadCache = new Dictionary<string, RenderableGameModel>();
-        private readonly Dictionary<string, List<ActorInstanceSet<RenderableGameModel>>> _doodadSets = new Dictionary<string, List<ActorInstanceSet<RenderableGameModel>>>();
+        private readonly Dictionary<string, RenderableGameModel> _doodadCache =
+            new Dictionary<string, RenderableGameModel>();
+
+        private readonly Dictionary<string, List<ActorInstanceSet<RenderableGameModel>>> _doodadSets =
+            new Dictionary<string, List<ActorInstanceSet<RenderableGameModel>>>();
 
         /// <inheritdoc />
         public int PolygonCount => _model.Groups.Sum(g => g.GroupData.VertexIndices.VertexIndices.Count / 3);
@@ -348,7 +363,10 @@ namespace Everlook.Viewport.Rendering
             coordinateBuffer.Data = modelGroup.GetTextureCoordinates().Select(v => v.ToOpenGLVector()).ToArray();
             _textureCoordinateBufferLookup.Add(modelGroup, coordinateBuffer);
 
-            coordinateBuffer.AttachAttributePointer(new VertexAttributePointer(2, 2, VertexAttribPointerType.Float, 0, 0));
+            coordinateBuffer.AttachAttributePointer
+            (
+                new VertexAttributePointer(2, 2, VertexAttribPointerType.Float, 0, 0)
+            );
 
             // Upload vertex indices for this group
             vertexIndexes.Data = modelGroup.GetVertexIndices().ToArray();

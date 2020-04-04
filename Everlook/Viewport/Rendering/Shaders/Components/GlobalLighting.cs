@@ -38,7 +38,8 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         private readonly int _parentShaderNativeID;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GlobalLighting"/> class, and attaches it to the given parent shader.
+        /// Initializes a new instance of the <see cref="GlobalLighting"/> class, and attaches it to the given parent
+        /// shader.
         /// </summary>
         /// <param name="parentShaderID">The native ID of the parent shader.</param>
         public GlobalLighting(int parentShaderID)

@@ -118,7 +118,11 @@ namespace Everlook.Audio.Wave
 
             if (fileReference.GetReferencedFileType() != WarcraftFileType.WaveAudio)
             {
-                throw new ArgumentException("The provided file reference was not a wave audio file.", nameof(fileReference));
+                throw new ArgumentException
+                (
+                    "The provided file reference was not a wave audio file.",
+                    nameof(fileReference)
+                );
             }
 
             var fileBytes = fileReference.Extract();

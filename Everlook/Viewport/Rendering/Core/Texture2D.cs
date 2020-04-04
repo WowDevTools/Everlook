@@ -184,8 +184,11 @@ namespace Everlook.Viewport.Rendering.Core
                 }
                 catch (GraphicsErrorException gex)
                 {
-                    Log.Warn($"GraphicsErrorException in CreateFromDXT (failed to create DXT texture): {gex.Message}\n" +
-                             "The texture will be loaded as a bitmap instead.");
+                    Log.Warn
+                    (
+                        $"GraphicsErrorException in CreateFromDXT (failed to create DXT texture): {gex.Message}\n" +
+                        "The texture will be loaded as a bitmap instead."
+                    );
                 }
                 finally
                 {

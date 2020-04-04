@@ -232,7 +232,16 @@ namespace Everlook.Viewport
             );
         }
 
-        private static void OnGLDebugMessage(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userparam)
+        private static void OnGLDebugMessage
+        (
+            DebugSource source,
+            DebugType type,
+            int id,
+            DebugSeverity severity,
+            int length,
+            IntPtr message,
+            IntPtr userparam
+        )
         {
             var messageContent = Marshal.PtrToStringAuto(message, length);
 

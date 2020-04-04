@@ -42,7 +42,11 @@ namespace Everlook.Database.Access
         /// <exception cref="ArgumentException">
         /// Thrown if the given <see cref="ForeignKey{T}"/>is not a key for the WMO group ID field.
         /// </exception>
-        public static WMOAreaTableRecord GetWMOGroupArea(this DBC<WMOAreaTableRecord> database, ForeignKey<uint> groupID)
+        public static WMOAreaTableRecord GetWMOGroupArea
+        (
+            this DBC<WMOAreaTableRecord> database,
+            ForeignKey<uint> groupID
+        )
         {
             if (groupID.Field != nameof(WMOAreaTableRecord.WMOGroupID))
             {

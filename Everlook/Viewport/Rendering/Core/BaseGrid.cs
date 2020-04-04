@@ -95,7 +95,10 @@ namespace Everlook.Viewport.Rendering.Core
                 vertices.AddRange(new[] { offsetX, 0.0f, GridSize / 2 });
                 vertices.AddRange(new[] { offsetX, 0.0f, -GridSize / 2 });
 
-                vertexIndexes.AddRange(new[] { (ushort)(((vertices.Count - 3) / 3) - 1), (ushort)((vertices.Count / 3) - 1) });
+                vertexIndexes.AddRange
+                (
+                    new[] { (ushort)(((vertices.Count - 3) / 3) - 1), (ushort)((vertices.Count / 3) - 1) }
+                );
             }
 
             // Fill in the missing opposing vertices on the Z axis
@@ -106,7 +109,10 @@ namespace Everlook.Viewport.Rendering.Core
                 vertices.AddRange(new[] { -GridSize / 2, 0.0f, offsetZ });
                 vertices.AddRange(new[] { GridSize / 2, 0.0f, offsetZ });
 
-                vertexIndexes.AddRange(new[] { (ushort)(((vertices.Count - 3) / 3) - 1), (ushort)((vertices.Count / 3) - 1) });
+                vertexIndexes.AddRange
+                (
+                    new[] { (ushort)(((vertices.Count - 3) / 3) - 1), (ushort)((vertices.Count / 3) - 1) }
+                );
             }
 
             // Manually link the outer edges on the Z axis

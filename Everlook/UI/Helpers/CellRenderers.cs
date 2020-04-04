@@ -43,7 +43,13 @@ namespace Everlook.UI.Helpers
         /// <param name="cell">The cell.</param>
         /// <param name="model">The model of the combobox.</param>
         /// <param name="iter">The iter pointing to the rendered row.</param>
-        public static void RenderModelVariationName(ICellLayout cellLayout, CellRenderer cell, ITreeModel model, TreeIter iter)
+        public static void RenderModelVariationName
+        (
+            ICellLayout cellLayout,
+            CellRenderer cell,
+            ITreeModel model,
+            TreeIter iter
+        )
         {
             var cellText = cell as CellRendererText;
             if (cellText == null)
@@ -63,7 +69,11 @@ namespace Everlook.UI.Helpers
             var transientText = storedText.FastReplaceCaseInsensitive("set_", string.Empty);
 
             // Insert spaces between words and abbreviations
-            transientText = Regex.Replace(transientText, @"(\B[A-Z0-9]+?(?=[A-Z][^A-Z])|\B[A-Z0-9]+?(?=[^A-Z]))", " $1");
+            transientText = Regex.Replace
+            (
+                transientText,
+                @"(\B[A-Z0-9]+?(?=[A-Z][^A-Z])|\B[A-Z0-9]+?(?=[^A-Z]))", " $1"
+            );
 
             cellText.Text = transientText;
         }
@@ -75,7 +85,13 @@ namespace Everlook.UI.Helpers
         /// <param name="cell">The cell which the reference is in.</param>
         /// <param name="model">The model of the treeview.</param>
         /// <param name="iter">The <see cref="TreeIter"/> pointing to the row the reference is in.</param>
-        public static void RenderExportQueueReferenceName(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
+        public static void RenderExportQueueReferenceName
+        (
+            TreeViewColumn column,
+            CellRenderer cell,
+            ITreeModel model,
+            TreeIter iter
+        )
         {
             var cellText = cell as CellRendererText;
             var reference = (FileReference)model.GetValue(iter, 0);
@@ -95,7 +111,13 @@ namespace Everlook.UI.Helpers
         /// <param name="cell">The cell which the icon is in.</param>
         /// <param name="model">The model of the treeview.</param>
         /// <param name="iter">The <see cref="TreeIter"/> pointing to the row the icon is in.</param>
-        public static void RenderExportQueueReferenceIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
+        public static void RenderExportQueueReferenceIcon
+        (
+            TreeViewColumn column,
+            CellRenderer cell,
+            ITreeModel model,
+            TreeIter iter
+        )
         {
             var cellIcon = cell as CellRendererPixbuf;
             var reference = (FileReference)model.GetValue(iter, 0);

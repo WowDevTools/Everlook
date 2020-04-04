@@ -100,7 +100,14 @@ namespace Everlook.Package
         /// <param name="ct">A <see cref="CancellationToken"/> which can be used to cancel the operation.</param>
         /// <param name="progress">The progress reporting object.</param>
         /// <returns>A loaded package group.</returns>
-        public static async Task<PackageGroup> LoadAsync(string alias, string groupName, string packageDirectory, CancellationToken ct, IProgress<GameLoadingProgress> progress = null)
+        public static async Task<PackageGroup> LoadAsync
+        (
+            string alias,
+            string groupName,
+            string packageDirectory,
+            CancellationToken ct,
+            IProgress<GameLoadingProgress> progress = null
+        )
         {
             var group = new PackageGroup(groupName);
 
@@ -307,7 +314,11 @@ namespace Everlook.Package
                 }
             }
 
-            throw new ArgumentException($"No package with the given name could be found: {packageName}", nameof(packageName));
+            throw new ArgumentException
+            (
+                $"No package with the given name could be found: {packageName}",
+                nameof(packageName)
+            );
         }
 
         /// <inheritdoc />

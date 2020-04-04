@@ -38,7 +38,8 @@ namespace Everlook.Viewport.Rendering.Core
     /// </summary>
     public class DynamicInterpolator
     {
-        private static readonly Dictionary<Type, Func<dynamic, float[]>> TypeFlatteners = new Dictionary<Type, Func<dynamic, float[]>>
+        private static readonly Dictionary<Type, Func<dynamic, float[]>> TypeFlatteners =
+        new Dictionary<Type, Func<dynamic, float[]>>
         {
             // Single-element numeric types
             { typeof(byte), v => new []{ (float)v } },
@@ -67,7 +68,8 @@ namespace Everlook.Viewport.Rendering.Core
             { typeof(System.Numerics.Quaternion), v => new []{ (float)v.X, (float)v.Y, (float)v.Z, (float)v.W } },
         };
 
-        private static readonly Dictionary<Type, Func<float[], dynamic>> TypeCoalescers = new Dictionary<Type, Func<float[], dynamic>>
+        private static readonly Dictionary<Type, Func<float[], dynamic>> TypeCoalescers =
+        new Dictionary<Type, Func<float[], dynamic>>
         {
             // Single-element numeric types
             { typeof(byte), a => (byte)a.First() },
@@ -167,7 +169,17 @@ namespace Everlook.Viewport.Rendering.Core
                 var leavingTangent = leavingTangents[i];
                 var approachingTangent = approachingTangents[i];
 
-                interpolatedValues.Add(Interpolation.InterpolateHermite(leavingValue, leavingTangent, approachingValue, approachingTangent, alpha));
+                interpolatedValues.Add
+                (
+                    Interpolation.InterpolateHermite
+                    (
+                        leavingValue,
+                        leavingTangent,
+                        approachingValue,
+                        approachingTangent,
+                        alpha
+                    )
+                );
             }
 
             return TypeCoalescers[typeof(T)](interpolatedValues.ToArray());
