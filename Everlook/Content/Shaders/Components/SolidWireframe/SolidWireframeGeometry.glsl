@@ -40,7 +40,7 @@ out GeometryOut
 	flat vec2 ABDir;
 } gOut;
 
-uniform mat3 ViewportMatrix;
+uniform mat4 ViewportMatrix;
 uniform bool IsWireframeEnabled;
 
 void InitializeOutput()
@@ -124,13 +124,13 @@ int DetermineCase(float P0z, float P1z, float P2z)
 vec2 ComputeLineDirection(int Q, int QPrim)
 {
 	vec4 Qp = gl_in[Q].gl_Position;
-	vec3 Qv = ProjectToScreen(ViewportMatrix, Qp);
+	vec3 Qv = ProjectToScreen(mat3(ViewportMatrix), Qp);
 
 	vec4 QPrimp = gl_in[QPrim].gl_Position;
 	return normalize
 	(
 		Qv -
-		ProjectToScreen(ViewportMatrix, Qp + (QPrimp - Qp))
+		ProjectToScreen(mat3(ViewportMatrix), Qp + (QPrimp - Qp))
 	).xy;
 }
 
@@ -149,8 +149,8 @@ void SetComplexCasePoints(int complexCase)
 	gOut.IsSimpleWireframeCase = false;
 	TriangleProjectionIndexes projectionIndices = ProjectionLookup[complexCase];
 
-	gOut.A = ProjectToScreen(ViewportMatrix, gl_in[projectionIndices.A].gl_Position).xy;
-	gOut.B = ProjectToScreen(ViewportMatrix, gl_in[projectionIndices.B].gl_Position).xy;
+	gOut.A = ProjectToScreen(mat3(ViewportMatrix), gl_in[projectionIndices.A].gl_Position).xy;
+	gOut.B = ProjectToScreen(mat3(ViewportMatrix), gl_in[projectionIndices.B].gl_Position).xy;
 
 	gOut.ADir = ComputeLineDirection(projectionIndices.A, projectionIndices.APrim);
 	gOut.BDir = ComputeLineDirection(projectionIndices.B, projectionIndices.BPrim);
@@ -181,7 +181,7 @@ void ComputeEdgeDistanceData()
 			vec2 P[3];
 			for (int i = 0; i < 3; ++i)
 			{
-				P[i] = ProjectToScreen(ViewportMatrix, gl_in[i].gl_Position).xy;
+				P[i] = ProjectToScreen(mat3(ViewportMatrix), gl_in[i].gl_Position).xy;
 			}
 
             EdgeDistances = ComputeVertexHeights(P);
