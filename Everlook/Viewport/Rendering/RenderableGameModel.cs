@@ -73,7 +73,7 @@ namespace Everlook.Viewport.Rendering
                     this.ActorTransform.GetModelMatrix() *
                     new Vector4
                     (
-                        this._model.BoundingBox.GetCenterCoordinates().ToOpenGLVector(),
+                        _model.BoundingBox.GetCenterCoordinates().ToOpenGLVector(),
                         1.0f
                     )
                 )
@@ -95,10 +95,10 @@ namespace Everlook.Viewport.Rendering
         public Transform ActorTransform { get; set; }
 
         /// <inheritdoc />
-        public int PolygonCount => (int)this._model.Skins.Sum(s => s.Triangles.Count / 3);
+        public int PolygonCount => (int)_model.Skins.Sum(s => s.Triangles.Count / 3);
 
         /// <inheritdoc />
-        public int VertexCount => (int)this._model.Vertices.Count;
+        public int VertexCount => (int)_model.Vertices.Count;
 
         private readonly string _modelPath;
         private readonly RenderCache _cache = RenderCache.Instance;
@@ -142,7 +142,7 @@ namespace Everlook.Viewport.Rendering
         public RenderableGameModel(MDX inModel, WarcraftGameContext gameContext, string modelPath)
             : this(inModel, gameContext)
         {
-            this._modelPath = modelPath;
+            _modelPath = modelPath;
         }
 
         /// <summary>
@@ -152,8 +152,8 @@ namespace Everlook.Viewport.Rendering
         /// <param name="gameContext">The game context.</param>
         public RenderableGameModel(MDX inModel, WarcraftGameContext gameContext)
         {
-            this._model = inModel;
-            this._gameContext = gameContext;
+            _model = inModel;
+            _gameContext = gameContext;
 
             this.ActorTransform = new Transform();
 
@@ -177,16 +177,16 @@ namespace Everlook.Viewport.Rendering
                 return;
             }
 
-            this._shader = this._cache.GetShader(EverlookShader.GameModel) as GameModelShader;
+            _shader = _cache.GetShader(EverlookShader.GameModel) as GameModelShader;
 
-            if (this._shader == null)
+            if (_shader == null)
             {
                 throw new ShaderNullException(typeof(GameModelShader));
             }
 
-            this._vertexBuffer = new Buffer<byte>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+            _vertexBuffer = new Buffer<byte>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
             {
-                Data = this._model.Vertices.Select(v => v.PackForOpenGL()).SelectMany(b => b).ToArray()
+                Data = _model.Vertices.Select(v => v.PackForOpenGL()).SelectMany(b => b).ToArray()
             };
 
             var attributePointers = new[]
@@ -205,24 +205,24 @@ namespace Everlook.Viewport.Rendering
                 new VertexAttributePointer(5, 2, VertexAttribPointerType.Float, MDXVertex.GetSize(), 40)
             };
 
-            this._vertexBuffer.AttachAttributePointers(attributePointers);
+            _vertexBuffer.AttachAttributePointers(attributePointers);
 
-            this._boundingBox = new RenderableBoundingBox(this._model.BoundingBox, this.ActorTransform);
-            this._boundingBox.Initialize();
+            _boundingBox = new RenderableBoundingBox(_model.BoundingBox, this.ActorTransform);
+            _boundingBox.Initialize();
 
-            foreach (var texture in this._model.Textures)
+            foreach (var texture in _model.Textures)
             {
-                if (!this._textureLookup.ContainsKey(texture.Filename))
+                if (!_textureLookup.ContainsKey(texture.Filename))
                 {
-                    this._textureLookup.Add
+                    _textureLookup.Add
                     (
                         texture.Filename,
-                        this._cache.GetTexture(texture, this._gameContext)
+                        _cache.GetTexture(texture, _gameContext)
                     );
                 }
             }
 
-            foreach (var skin in this._model.Skins)
+            foreach (var skin in _model.Skins)
             {
                 var absoluteTriangleVertexIndexes = skin.Triangles.Select(relativeIndex => skin.VertexIndices[relativeIndex]).ToArray();
                 var skinIndexBuffer = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
@@ -230,14 +230,14 @@ namespace Everlook.Viewport.Rendering
                     Data = absoluteTriangleVertexIndexes
                 };
 
-                this._skinIndexArrayBuffers.Add(skin, skinIndexBuffer);
+                _skinIndexArrayBuffers.Add(skin, skinIndexBuffer);
 
-                if (this._model.Version <= WarcraftVersion.Wrath)
+                if (_model.Version <= WarcraftVersion.Wrath)
                 {
                     // In models earlier than Cata, we need to calculate the shader selector value at runtime.
                     foreach (var renderBatch in skin.RenderBatches)
                     {
-                        var shaderSelector = MDXShaderHelper.GetRuntimeShaderID(renderBatch.ShaderID, renderBatch, this._model);
+                        var shaderSelector = MDXShaderHelper.GetRuntimeShaderID(renderBatch.ShaderID, renderBatch, _model);
                         renderBatch.ShaderID = shaderSelector;
                     }
                 }
@@ -268,34 +268,34 @@ namespace Everlook.Viewport.Rendering
                 return;
             }
 
-            this._vertexBuffer.Bind();
-            this._vertexBuffer.EnableAttributes();
+            _vertexBuffer.Bind();
+            _vertexBuffer.EnableAttributes();
 
             GL.Enable(EnableCap.DepthTest);
 
             var modelViewMatrix = this.ActorTransform.GetModelMatrix() * viewMatrix;
             var modelViewProjection = modelViewMatrix * projectionMatrix;
 
-            this._shader.Enable();
-            this._shader.SetIsInstance(true);
-            this._shader.SetModelMatrix(this.ActorTransform.GetModelMatrix());
-            this._shader.SetViewMatrix(viewMatrix);
-            this._shader.SetProjectionMatrix(projectionMatrix);
-            this._shader.SetMVPMatrix(modelViewProjection);
+            _shader.Enable();
+            _shader.SetIsInstance(true);
+            _shader.SetModelMatrix(this.ActorTransform.GetModelMatrix());
+            _shader.SetViewMatrix(viewMatrix);
+            _shader.SetProjectionMatrix(projectionMatrix);
+            _shader.SetMVPMatrix(modelViewProjection);
 
-            this._shader.Wireframe.Enabled = this.ShouldRenderWireframe;
+            _shader.Wireframe.Enabled = this.ShouldRenderWireframe;
             if (this.ShouldRenderWireframe)
             {
-                this._shader.Wireframe.SetWireframeColour(EverlookConfiguration.Instance.WireframeColour);
-                this._shader.Wireframe.SetViewportMatrix(camera.GetViewportMatrix());
+                _shader.Wireframe.SetWireframeColour(EverlookConfiguration.Instance.WireframeColour);
+                _shader.Wireframe.SetViewportMatrix(camera.GetViewportMatrix());
 
                 // Override blend setting
                 GL.Enable(EnableCap.Blend);
             }
 
-            foreach (var skin in this._model.Skins)
+            foreach (var skin in _model.Skins)
             {
-                this._skinIndexArrayBuffers[skin].Bind();
+                _skinIndexArrayBuffers[skin].Bind();
                 if (this.ShouldRenderWireframe)
                 {
                     // Override blend setting
@@ -326,11 +326,11 @@ namespace Everlook.Viewport.Rendering
             // Render bounding boxes
             if (this.ShouldRenderBounds)
             {
-                this._boundingBox.RenderInstances(viewMatrix, projectionMatrix, camera, count);
+                _boundingBox.RenderInstances(viewMatrix, projectionMatrix, camera, count);
             }
 
             // Release the attribute arrays
-            this._vertexBuffer.DisableAttributes();
+            _vertexBuffer.DisableAttributes();
         }
 
         /// <inheritdoc />
@@ -343,34 +343,34 @@ namespace Everlook.Viewport.Rendering
                 return;
             }
 
-            this._vertexBuffer.Bind();
-            this._vertexBuffer.EnableAttributes();
+            _vertexBuffer.Bind();
+            _vertexBuffer.EnableAttributes();
 
             GL.Enable(EnableCap.DepthTest);
 
             var modelViewMatrix = this.ActorTransform.GetModelMatrix() * viewMatrix;
             var modelViewProjection = modelViewMatrix * projectionMatrix;
 
-            this._shader.Enable();
-            this._shader.SetIsInstance(false);
-            this._shader.SetModelMatrix(this.ActorTransform.GetModelMatrix());
-            this._shader.SetViewMatrix(viewMatrix);
-            this._shader.SetProjectionMatrix(projectionMatrix);
-            this._shader.SetMVPMatrix(modelViewProjection);
+            _shader.Enable();
+            _shader.SetIsInstance(false);
+            _shader.SetModelMatrix(this.ActorTransform.GetModelMatrix());
+            _shader.SetViewMatrix(viewMatrix);
+            _shader.SetProjectionMatrix(projectionMatrix);
+            _shader.SetMVPMatrix(modelViewProjection);
 
-            this._shader.Wireframe.Enabled = this.ShouldRenderWireframe;
+            _shader.Wireframe.Enabled = this.ShouldRenderWireframe;
             if (this.ShouldRenderWireframe)
             {
-                this._shader.Wireframe.SetWireframeColour(EverlookConfiguration.Instance.WireframeColour);
-                this._shader.Wireframe.SetViewportMatrix(camera.GetViewportMatrix());
+                _shader.Wireframe.SetWireframeColour(EverlookConfiguration.Instance.WireframeColour);
+                _shader.Wireframe.SetViewportMatrix(camera.GetViewportMatrix());
 
                 // Override blend setting
                 GL.Enable(EnableCap.Blend);
             }
 
-            foreach (var skin in this._model.Skins)
+            foreach (var skin in _model.Skins)
             {
-                this._skinIndexArrayBuffers[skin].Bind();
+                _skinIndexArrayBuffers[skin].Bind();
                 if (this.ShouldRenderWireframe)
                 {
                     // Override blend setting
@@ -400,11 +400,11 @@ namespace Everlook.Viewport.Rendering
             // Render bounding boxes
             if (this.ShouldRenderBounds)
             {
-                this._boundingBox.Render(viewMatrix, projectionMatrix, camera);
+                _boundingBox.Render(viewMatrix, projectionMatrix, camera);
             }
 
             // Release the attribute arrays
-            this._vertexBuffer.DisableAttributes();
+            _vertexBuffer.DisableAttributes();
         }
 
         /// <summary>
@@ -416,16 +416,16 @@ namespace Everlook.Viewport.Rendering
         {
             var fragmentShader = MDXShaderHelper.GetFragmentShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
             var vertexShader = MDXShaderHelper.GetVertexShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
-            var batchMaterial = this._model.Materials[renderBatch.MaterialIndex];
+            var batchMaterial = _model.Materials[renderBatch.MaterialIndex];
 
-            this._shader.SetVertexShaderType(vertexShader);
-            this._shader.SetFragmentShaderType(fragmentShader);
-            this._shader.SetMaterial(batchMaterial);
+            _shader.SetVertexShaderType(vertexShader);
+            _shader.SetFragmentShaderType(fragmentShader);
+            _shader.SetMaterial(batchMaterial);
 
             var baseColour = Color4.White;
             if (renderBatch.ColorIndex >= 0)
             {
-                var colorAnimation = this._model.ColourAnimations[renderBatch.ColorIndex];
+                var colorAnimation = _model.ColourAnimations[renderBatch.ColorIndex];
 
                 // TODO: Sample based on animated values
                 RGB rgb;
@@ -453,8 +453,8 @@ namespace Everlook.Viewport.Rendering
 
             if ((short)renderBatch.TransparencyLookupTableIndex >= 0)
             {
-                var transparencyAnimationIndex = this._model.TransparencyLookupTable[renderBatch.TransparencyLookupTableIndex];
-                var transparencyAnimation = this._model.TransparencyAnimations[transparencyAnimationIndex];
+                var transparencyAnimationIndex = _model.TransparencyLookupTable[renderBatch.TransparencyLookupTableIndex];
+                var transparencyAnimation = _model.TransparencyAnimations[transparencyAnimationIndex];
 
                 float alphaWeight;
                 if (transparencyAnimation.Weight.IsComposite)
@@ -469,11 +469,11 @@ namespace Everlook.Viewport.Rendering
                 baseColour.A *= alphaWeight;
             }
 
-            this._shader.SetBaseInputColour(baseColour);
+            _shader.SetBaseInputColour(baseColour);
 
-            var textureIndexes = this._model.TextureLookupTable.Skip(renderBatch.TextureLookupTableIndex)
+            var textureIndexes = _model.TextureLookupTable.Skip(renderBatch.TextureLookupTableIndex)
                 .Take(renderBatch.TextureCount);
-            var textures = this._model.Textures.Where((t, i) => textureIndexes.Contains((short)i)).ToList();
+            var textures = _model.Textures.Where((t, i) => textureIndexes.Contains((short)i)).ToList();
 
             for (var i = 0; i < textures.Count; ++i)
             {
@@ -509,27 +509,27 @@ namespace Everlook.Viewport.Rendering
                     }
                 }
 
-                var textureObject = this._textureLookup[textureName];
+                var textureObject = _textureLookup[textureName];
                 switch (i)
                 {
                     case 0:
                     {
-                        this._shader.BindTexture0(textureObject);
+                        _shader.BindTexture0(textureObject);
                         break;
                     }
                     case 1:
                     {
-                        this._shader.BindTexture1(textureObject);
+                        _shader.BindTexture1(textureObject);
                         break;
                     }
                     case 2:
                     {
-                        this._shader.BindTexture2(textureObject);
+                        _shader.BindTexture2(textureObject);
                         break;
                     }
                     case 3:
                     {
-                        this._shader.BindTexture3(textureObject);
+                        _shader.BindTexture3(textureObject);
                         break;
                     }
                     default:
@@ -548,13 +548,13 @@ namespace Everlook.Viewport.Rendering
         {
             // Just like other places, sometimes the files are stored as *.mdx. We'll force that extension on both.
             // Get any model data record which uses this model
-            var modelDataRecords = this._gameContext.Database.GetDatabase<CreatureModelDataRecord>().Where
+            var modelDataRecords = _gameContext.Database.GetDatabase<CreatureModelDataRecord>().Where
             (
                 r =>
                 string.Equals
                 (
                     Path.ChangeExtension(r.ModelPath.Value, "mdx"),
-                    Path.ChangeExtension(this._modelPath, "mdx"),
+                    Path.ChangeExtension(_modelPath, "mdx"),
                     StringComparison.InvariantCultureIgnoreCase
                 )
             ).ToList();
@@ -568,7 +568,7 @@ namespace Everlook.Viewport.Rendering
             var modelDataRecordIDs = modelDataRecords.Select(r => r.ID).ToList();
 
             // Then get any display info record which references this model
-            var displayInfoDatabase = this._gameContext.Database.GetDatabase<CreatureDisplayInfoRecord>();
+            var displayInfoDatabase = _gameContext.Database.GetDatabase<CreatureDisplayInfoRecord>();
             var modelDisplayRecords = displayInfoDatabase.Where
             (
                 r => modelDataRecordIDs.Contains(r.Model.Key)
@@ -607,7 +607,7 @@ namespace Everlook.Viewport.Rendering
                 return string.Empty;
             }
 
-            var modelDirectory = this._modelPath.Remove(this._modelPath.LastIndexOf('\\'));
+            var modelDirectory = _modelPath.Remove(_modelPath.LastIndexOf('\\'));
             return $"{modelDirectory}\\{textureName}.blp";
         }
 
@@ -617,7 +617,7 @@ namespace Everlook.Viewport.Rendering
         /// <param name="variationID">The ID of the record.</param>
         public void SetDisplayInfoByID(int variationID)
         {
-            this.CurrentDisplayInfo = this._gameContext.Database.GetDatabase<CreatureDisplayInfoRecord>().GetRecordByID(variationID);
+            this.CurrentDisplayInfo = _gameContext.Database.GetDatabase<CreatureDisplayInfoRecord>().GetRecordByID(variationID);
             CacheDisplayInfo(this.CurrentDisplayInfo);
         }
 
@@ -632,7 +632,7 @@ namespace Everlook.Viewport.Rendering
                 throw new ArgumentNullException(nameof(displayInfoRecord));
             }
 
-            foreach (var texture in this._model.Textures)
+            foreach (var texture in _model.Textures)
             {
                 int textureIndex;
                 switch (texture.TextureType)
@@ -659,18 +659,18 @@ namespace Everlook.Viewport.Rendering
                 }
 
                 var textureName = displayInfoRecord.TextureVariations[textureIndex].Value;
-                var modelDirectory = this._modelPath.Remove(this._modelPath.LastIndexOf('\\'));
+                var modelDirectory = _modelPath.Remove(_modelPath.LastIndexOf('\\'));
                 var texturePath = $"{modelDirectory}\\{textureName}.blp";
 
-                if (this._textureLookup.ContainsKey(texturePath))
+                if (_textureLookup.ContainsKey(texturePath))
                 {
                     continue;
                 }
 
-                this._textureLookup.Add
+                _textureLookup.Add
                 (
                     texturePath,
-                    this._cache.GetTexture(texture, this._gameContext, texturePath)
+                    _cache.GetTexture(texture, _gameContext, texturePath)
                 );
             }
         }
@@ -692,9 +692,9 @@ namespace Everlook.Viewport.Rendering
         {
             this.IsDisposed = true;
 
-            this._vertexBuffer.Dispose();
+            _vertexBuffer.Dispose();
 
-            foreach (var skinIndexArrayBuffer in this._skinIndexArrayBuffers)
+            foreach (var skinIndexArrayBuffer in _skinIndexArrayBuffers)
             {
                 skinIndexArrayBuffer.Value.Dispose();
             }
@@ -709,15 +709,15 @@ namespace Everlook.Viewport.Rendering
                 return false;
             }
 
-            return (otherModel._model == this._model) &&
-                    (otherModel._gameContext == this._gameContext) &&
+            return (otherModel._model == _model) &&
+                    (otherModel._gameContext == _gameContext) &&
                     (otherModel.IsStatic == this.IsStatic);
         }
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return (this.IsStatic.GetHashCode() + this._model.GetHashCode() + this._gameContext.GetHashCode()).GetHashCode();
+            return (this.IsStatic.GetHashCode() + _model.GetHashCode() + _gameContext.GetHashCode()).GetHashCode();
         }
     }
 }

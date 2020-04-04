@@ -119,17 +119,17 @@ namespace Everlook.UI.Widgets
         {
             var frameTimeµSeconds = frameClock.FrameTime;
 
-            if (!this._previousFrameTime.HasValue)
+            if (!_previousFrameTime.HasValue)
             {
-                this._previousFrameTime = frameTimeµSeconds;
+                _previousFrameTime = frameTimeµSeconds;
 
                 return true;
             }
 
-            var frameTimeSeconds = (frameTimeµSeconds - this._previousFrameTime) / 10e6;
+            var frameTimeSeconds = (frameTimeµSeconds - _previousFrameTime) / 10e6;
 
             this.DeltaTime = (float)frameTimeSeconds;
-            this._previousFrameTime = frameTimeµSeconds;
+            _previousFrameTime = frameTimeµSeconds;
 
             return true;
         }
@@ -237,7 +237,7 @@ namespace Everlook.UI.Widgets
         /// <inheritdoc />
         protected override bool OnDrawn(Cairo.Context cr)
         {
-            if (!this._isInitialized)
+            if (!_isInitialized)
             {
                 Initialize();
             }
@@ -251,17 +251,17 @@ namespace Everlook.UI.Widgets
         /// </summary>
         private void Initialize()
         {
-            this._isInitialized = true;
+            _isInitialized = true;
 
             // Make the GDK GL context current
             MakeCurrent();
 
             // Create a dummy context that will grab the GdkGLContext that is current on the thread
-            this._tkGraphicsContext = new GraphicsContext(ContextHandle.Zero, null);
+            _tkGraphicsContext = new GraphicsContext(ContextHandle.Zero, null);
 
             if (this.ContextFlags.HasFlag(GraphicsContextFlags.Debug))
             {
-                this._tkGraphicsContext.ErrorChecking = true;
+                _tkGraphicsContext.ErrorChecking = true;
             }
 
             if (GraphicsContext.ShareContexts)
@@ -271,13 +271,13 @@ namespace Everlook.UI.Widgets
                 if (!_isSharedContextInitialized)
                 {
                     _isSharedContextInitialized = true;
-                    ((IGraphicsContextInternal)this._tkGraphicsContext).LoadAll();
+                    ((IGraphicsContextInternal)_tkGraphicsContext).LoadAll();
                     OnGraphicsContextInitialized();
                 }
             }
             else
             {
-                ((IGraphicsContextInternal)this._tkGraphicsContext).LoadAll();
+                ((IGraphicsContextInternal)_tkGraphicsContext).LoadAll();
                 OnGraphicsContextInitialized();
             }
 

@@ -43,12 +43,12 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         /// <param name="parentShaderID">The native ID of the parent shader.</param>
         public GlobalLighting(int parentShaderID)
         {
-            this._parentShaderNativeID = parentShaderID;
+            _parentShaderNativeID = parentShaderID;
         }
 
         private void EnableParent()
         {
-            GL.UseProgram(this._parentShaderNativeID);
+            GL.UseProgram(_parentShaderNativeID);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            var colourLoc = GL.GetUniformLocation(this._parentShaderNativeID, LightColourIdentifier);
+            var colourLoc = GL.GetUniformLocation(_parentShaderNativeID, LightColourIdentifier);
             GL.Uniform4(colourLoc, lightColour);
         }
 
@@ -71,7 +71,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            var vectorLoc = GL.GetUniformLocation(this._parentShaderNativeID, LightVectorIdentifier);
+            var vectorLoc = GL.GetUniformLocation(_parentShaderNativeID, LightVectorIdentifier);
             GL.Uniform3(vectorLoc, lightVector);
         }
 
@@ -83,7 +83,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            var intensityLoc = GL.GetUniformLocation(this._parentShaderNativeID, LightIntensityIdentifier);
+            var intensityLoc = GL.GetUniformLocation(_parentShaderNativeID, LightIntensityIdentifier);
             GL.Uniform1(intensityLoc, lightIntensity);
         }
     }

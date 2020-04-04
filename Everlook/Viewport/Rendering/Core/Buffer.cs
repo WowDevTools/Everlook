@@ -85,7 +85,7 @@ namespace Everlook.Viewport.Rendering.Core
             this.Usage = usage;
             this.Attributes = new List<VertexAttributePointer>();
 
-            this._nativeBufferID = GL.GenBuffer();
+            _nativeBufferID = GL.GenBuffer();
         }
 
         /// <inheritdoc />
@@ -136,13 +136,13 @@ namespace Everlook.Viewport.Rendering.Core
         /// <inheritdoc />
         public void Bind()
         {
-            GL.BindBuffer(this.Target, this._nativeBufferID);
+            GL.BindBuffer(this.Target, _nativeBufferID);
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            GL.DeleteBuffer(this._nativeBufferID);
+            GL.DeleteBuffer(_nativeBufferID);
         }
     }
 }

@@ -64,8 +64,8 @@ namespace Everlook.Database
         /// <param name="contentSource">The <see cref="IPackage"/> where data can be retrieved.</param>
         public ClientDatabaseProvider(WarcraftVersion version, IPackage contentSource)
         {
-            this._version = version;
-            this._contentSource = contentSource;
+            _version = version;
+            _contentSource = contentSource;
         }
 
         /// <summary>
@@ -77,14 +77,14 @@ namespace Everlook.Database
         {
             var databaseName = GetDatabaseNameFromRecordType(typeof(T));
 
-            lock (this._databaseLock)
+            lock (_databaseLock)
             {
                 if (!ContainsDatabase(databaseName))
                 {
                     LoadDatabase(databaseName);
                 }
 
-                return this._databases[databaseName] as DBC<T>;
+                return _databases[databaseName] as DBC<T>;
             }
         }
 
@@ -121,9 +121,9 @@ namespace Everlook.Database
         /// <returns>true if the provider contains the given database; false otherwise.</returns>
         public bool ContainsDatabase(DatabaseName databaseName)
         {
-            lock (this._databaseLock)
+            lock (_databaseLock)
             {
-                return this._databases.ContainsKey(databaseName);
+                return _databases.ContainsKey(databaseName);
             }
         }
 
@@ -133,7 +133,7 @@ namespace Everlook.Database
         /// <param name="databaseName">The name of the database.</param>
         private void LoadDatabase(DatabaseName databaseName)
         {
-            if (this._databases.ContainsKey(databaseName))
+            if (_databases.ContainsKey(databaseName))
             {
                 return;
             }
@@ -142,10 +142,10 @@ namespace Everlook.Database
             var specificDBCType = genericDBCType.MakeGenericType(GetRecordTypeFromDatabaseName(databaseName));
 
             var databasePath = GetDatabasePackagePath(databaseName);
-            var databaseData = this._contentSource.ExtractFile(databasePath);
+            var databaseData = _contentSource.ExtractFile(databasePath);
 
-            var database = (IDBC)Activator.CreateInstance(specificDBCType, this._version, databaseData);
-            this._databases.Add(databaseName, database);
+            var database = (IDBC)Activator.CreateInstance(specificDBCType, _version, databaseData);
+            _databases.Add(databaseName, database);
         }
 
         /// <summary>

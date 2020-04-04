@@ -106,7 +106,7 @@ namespace Everlook.Configuration
         {
             if (!this.GamePaths.Contains((alias, version, pathToStore)))
             {
-                lock (this._storageLock)
+                lock (_storageLock)
                 {
                     using (var fs = File.Open(GetPathStoragePath(), FileMode.Append, FileAccess.Write))
                     {
@@ -134,7 +134,7 @@ namespace Everlook.Configuration
             if (storedPaths.Contains((alias, version, pathToRemove)))
             {
                 ClearPaths();
-                lock (this._storageLock)
+                lock (_storageLock)
                 {
                     storedPaths.Remove((alias, version, pathToRemove));
 
@@ -158,7 +158,7 @@ namespace Everlook.Configuration
         private ICollection<(string Alias, WarcraftVersion Version, string Path)> ReadStoredPaths()
         {
             ICollection<(string, WarcraftVersion, string)> storedPaths = new List<(string, WarcraftVersion, string)>();
-            lock (this._storageLock)
+            lock (_storageLock)
             {
                 try
                 {
@@ -196,7 +196,7 @@ namespace Everlook.Configuration
 
         private void ClearPaths()
         {
-            lock (this._storageLock)
+            lock (_storageLock)
             {
                 File.Delete(GetPathStoragePath());
 

@@ -63,8 +63,8 @@ namespace Everlook.Explorer
         /// <param name="nodeTree">The precomputed node tree to wrap around.</param>
         public FileTreeModel(SerializedTree nodeTree)
         {
-            this._tree = nodeTree;
-            this._stamp = new Random().Next();
+            _tree = nodeTree;
+            _stamp = new Random().Next();
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Everlook.Explorer
         /// <returns>The name of the node.</returns>
         public string GetNodeName(SerializedNode node)
         {
-            return this._tree.GetNodeName(node);
+            return _tree.GetNodeName(node);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Everlook.Explorer
             var currentNode = node;
             while (!(currentNode.Type.HasFlag(NodeType.Package) || currentNode.Type.HasFlag(NodeType.Meta)))
             {
-                currentNode = this._tree.GetNode((ulong)currentNode.ParentOffset);
+                currentNode = _tree.GetNode((ulong)currentNode.ParentOffset);
             }
 
             return GetNodeName(currentNode);
@@ -112,7 +112,7 @@ namespace Everlook.Explorer
 
                 sb.Insert(0, GetNodeName(currentNode));
 
-                currentNode = this._tree.GetNode((ulong)currentNode.ParentOffset);
+                currentNode = _tree.GetNode((ulong)currentNode.ParentOffset);
             }
 
             return sb.ToString();
@@ -146,7 +146,7 @@ namespace Everlook.Explorer
 
                 foreach (var offset in folderNode.ChildOffsets)
                 {
-                    var childNode = this._tree.GetNode(offset);
+                    var childNode = _tree.GetNode(offset);
 
                     if (childNode.Type.HasFlag(NodeType.File))
                     {
@@ -178,12 +178,12 @@ namespace Everlook.Explorer
         /// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
         public FileReference GetReferenceByIter(IGameContext gameContext, TreeIter iter)
         {
-            if (iter.Stamp != this._stamp)
+            if (iter.Stamp != _stamp)
             {
                 throw new InvalidDataException("The given iter was not valid for this model.");
             }
 
-            var node = this._tree.GetNode((ulong)iter.UserData);
+            var node = _tree.GetNode((ulong)iter.UserData);
             if (node == null)
             {
                 throw new InvalidDataException("The iter did not contain a valid node offset.");
@@ -217,7 +217,7 @@ namespace Everlook.Explorer
                 throw new ArgumentNullException(nameof(nodePath));
             }
 
-            var parentNode = this._tree.Root;
+            var parentNode = _tree.Root;
             var pathParts = nodePath.Split('\\');
 
             var result = new TreePath();
@@ -227,8 +227,8 @@ namespace Everlook.Explorer
                 var foundNode = false;
                 foreach (var nodeOffset in parentNode.ChildOffsets)
                 {
-                    var node = this._tree.GetNode(nodeOffset);
-                    if (!string.Equals(this._tree.GetNodeName(node), part, StringComparison.OrdinalIgnoreCase))
+                    var node = _tree.GetNode(nodeOffset);
+                    if (!string.Equals(_tree.GetNodeName(node), part, StringComparison.OrdinalIgnoreCase))
                     {
                         // Skip descendant nodes that are not part of the path
                         continue;
@@ -280,7 +280,7 @@ namespace Everlook.Explorer
             iter = TreeIter.Zero;
 
             ulong currentOffset = 0;
-            var currentNode = this._tree.Root;
+            var currentNode = _tree.Root;
             foreach (var index in path.Indices)
             {
                 var longIndex = (ulong)index;
@@ -290,11 +290,11 @@ namespace Everlook.Explorer
                 }
 
                 currentOffset = currentNode.ChildOffsets[index];
-                currentNode = this._tree.GetNode(currentOffset);
+                currentNode = _tree.GetNode(currentOffset);
             }
 
             iter.UserData = new IntPtr((long)currentOffset);
-            iter.Stamp = this._stamp;
+            iter.Stamp = _stamp;
             return true;
         }
 
@@ -305,13 +305,13 @@ namespace Everlook.Explorer
         /// <returns>The TreePath corresponding to the given iter.</returns>
         public TreePath GetPath(TreeIter iter)
         {
-            if (iter.Stamp != this._stamp)
+            if (iter.Stamp != _stamp)
             {
                 throw new InvalidDataException("The given iter was not valid for this model.");
             }
 
             var result = new TreePath();
-            var node = this._tree.GetNode((ulong)iter.UserData);
+            var node = _tree.GetNode((ulong)iter.UserData);
             if (node == null)
             {
                 return result;
@@ -319,14 +319,14 @@ namespace Everlook.Explorer
 
             while (node.ParentOffset > -1)
             {
-                var parentNode = this._tree.GetNode((ulong)node.ParentOffset);
-                var nodeOffset = this._tree.GetNodeOffset(node);
+                var parentNode = _tree.GetNode((ulong)node.ParentOffset);
+                var nodeOffset = _tree.GetNodeOffset(node);
                 result.PrependIndex(parentNode.ChildOffsets.IndexOf(nodeOffset));
 
                 node = parentNode;
             }
 
-            result.PrependIndex(this._tree.Root.ChildOffsets.IndexOf((ulong)iter.UserData));
+            result.PrependIndex(_tree.Root.ChildOffsets.IndexOf((ulong)iter.UserData));
             return result;
         }
 
@@ -339,12 +339,12 @@ namespace Everlook.Explorer
         /// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
         public void GetValue(TreeIter iter, int column, ref Value value)
         {
-            if (iter.Stamp != this._stamp && !iter.Equals(TreeIter.Zero))
+            if (iter.Stamp != _stamp && !iter.Equals(TreeIter.Zero))
             {
                 throw new InvalidDataException("The given iter was not valid for this model.");
             }
 
-            var node = iter.Equals(TreeIter.Zero) ? this._tree.Root : this._tree.GetNode((ulong)iter.UserData);
+            var node = iter.Equals(TreeIter.Zero) ? _tree.Root : _tree.GetNode((ulong)iter.UserData);
             if (node == null)
             {
                 return;
@@ -362,14 +362,14 @@ namespace Everlook.Explorer
         /// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
         public bool IterNext(ref TreeIter iter)
         {
-            if (iter.Stamp != this._stamp)
+            if (iter.Stamp != _stamp)
             {
                 throw new InvalidDataException("The given iter was not valid for this model.");
             }
 
             var currentOffset = (ulong)iter.UserData;
-            var currentNode = this._tree.GetNode(currentOffset);
-            var parentNode = this._tree.GetNode((ulong)currentNode.ParentOffset);
+            var currentNode = _tree.GetNode(currentOffset);
+            var parentNode = _tree.GetNode((ulong)currentNode.ParentOffset);
 
             var currentIndex = parentNode.ChildOffsets.IndexOf(currentOffset);
             var nextIndex = currentIndex + 1;
@@ -391,15 +391,15 @@ namespace Everlook.Explorer
         /// <exception cref="InvalidDataException">Thrown if the iter doesn't belong to the model.</exception>
         public bool IterPrevious(ref TreeIter iter)
         {
-            if (iter.Stamp != this._stamp)
+            if (iter.Stamp != _stamp)
             {
                 throw new InvalidDataException("The given iter was not valid for this model.");
             }
 
             var currentOffset = (ulong)iter.UserData;
-            var currentNode = this._tree.GetNode(currentOffset);
+            var currentNode = _tree.GetNode(currentOffset);
 
-            var parentNode = this._tree.GetNode((ulong)currentNode.ParentOffset);
+            var parentNode = _tree.GetNode((ulong)currentNode.ParentOffset);
 
             var currentIndex = parentNode.ChildOffsets.IndexOf(currentOffset);
             var previousIndex = currentIndex - 1;
@@ -423,14 +423,14 @@ namespace Everlook.Explorer
         /// <exception cref="ArgumentException">Thrown if the iter is not valid.</exception>
         public bool IterChildren(out TreeIter iter, TreeIter parent)
         {
-            if (parent.Stamp != this._stamp)
+            if (parent.Stamp != _stamp)
             {
                 throw new InvalidDataException("The given parent was not valid for this model.");
             }
 
             iter = TreeIter.Zero;
 
-            var node = parent.Equals(TreeIter.Zero) ? this._tree.Root : this._tree.GetNode((ulong)parent.UserData);
+            var node = parent.Equals(TreeIter.Zero) ? _tree.Root : _tree.GetNode((ulong)parent.UserData);
             if (node == null)
             {
                 throw new ArgumentException("The given iter was not valid.", nameof(parent));
@@ -442,7 +442,7 @@ namespace Everlook.Explorer
             }
 
             iter.UserData = new IntPtr((long)node.ChildOffsets.First());
-            iter.Stamp = this._stamp;
+            iter.Stamp = _stamp;
             return true;
         }
 
@@ -455,12 +455,12 @@ namespace Everlook.Explorer
         /// <exception cref="ArgumentException">Thrown if the iter is not valid.</exception>
         public bool IterHasChild(TreeIter iter)
         {
-            if (iter.Stamp != this._stamp)
+            if (iter.Stamp != _stamp)
             {
                 throw new InvalidDataException("The given iter was not valid for this model.");
             }
 
-            var node = iter.Equals(TreeIter.Zero) ? this._tree.Root : this._tree.GetNode((ulong)iter.UserData);
+            var node = iter.Equals(TreeIter.Zero) ? _tree.Root : _tree.GetNode((ulong)iter.UserData);
             if (node == null)
             {
                 throw new ArgumentException("The given iter was not valid.", nameof(iter));
@@ -480,15 +480,15 @@ namespace Everlook.Explorer
         {
             if (iter.Equals(TreeIter.Zero))
             {
-                return (int)this._tree.Root.ChildCount;
+                return (int)_tree.Root.ChildCount;
             }
 
-            if (iter.Stamp != this._stamp)
+            if (iter.Stamp != _stamp)
             {
                 throw new InvalidDataException("The given iter was not valid for this model.");
             }
 
-            var node = this._tree.GetNode((ulong)iter.UserData);
+            var node = _tree.GetNode((ulong)iter.UserData);
             if (node == null)
             {
                 throw new ArgumentException("The given iter was not valid.", nameof(iter));
@@ -508,7 +508,7 @@ namespace Everlook.Explorer
         /// <exception cref="ArgumentException">Thrown if the iter is not valid.</exception>
         public bool IterNthChild(out TreeIter iter, TreeIter parent, int n)
         {
-            if (parent.Stamp != this._stamp && !parent.Equals(TreeIter.Zero))
+            if (parent.Stamp != _stamp && !parent.Equals(TreeIter.Zero))
             {
                 throw new InvalidDataException("The given parent was not valid for this model.");
             }
@@ -520,7 +520,7 @@ namespace Everlook.Explorer
                 return false;
             }
 
-            var node = iter.Equals(TreeIter.Zero) ? this._tree.Root : this._tree.GetNode((ulong)iter.UserData);
+            var node = iter.Equals(TreeIter.Zero) ? _tree.Root : _tree.GetNode((ulong)iter.UserData);
 
             if (node == null)
             {
@@ -533,7 +533,7 @@ namespace Everlook.Explorer
             }
 
             iter.UserData = new IntPtr((long)node.ChildOffsets[n]);
-            iter.Stamp = this._stamp;
+            iter.Stamp = _stamp;
             return true;
         }
 
@@ -547,27 +547,27 @@ namespace Everlook.Explorer
         /// <exception cref="ArgumentException">Thrown if the iter is not valid.</exception>
         public bool IterParent(out TreeIter iter, TreeIter child)
         {
-            if (child.Stamp != this._stamp)
+            if (child.Stamp != _stamp)
             {
                 throw new InvalidDataException("The given child was not valid for this model.");
             }
 
             iter = TreeIter.Zero;
 
-            var childNode = this._tree.GetNode((ulong)child.UserData);
+            var childNode = _tree.GetNode((ulong)child.UserData);
             if (childNode == null)
             {
                 throw new ArgumentException("The given iter was not valid.", nameof(child));
             }
 
-            var parentNode = this._tree.GetNode((ulong)childNode.ParentOffset);
+            var parentNode = _tree.GetNode((ulong)childNode.ParentOffset);
             if (parentNode == null)
             {
                 return false;
             }
 
-            iter.UserData = new IntPtr((long)this._tree.GetNodeOffset(parentNode));
-            iter.Stamp = this._stamp;
+            iter.UserData = new IntPtr((long)_tree.GetNodeOffset(parentNode));
+            iter.Stamp = _stamp;
             return true;
         }
 

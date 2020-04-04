@@ -43,7 +43,7 @@ namespace Everlook.Viewport.Rendering
         /// <param name="inTexturePath">The path under which this renderable texture is stored in the archives.</param>
         public RenderableBLP(BLP inImage, string inTexturePath)
         {
-            this._image = inImage;
+            _image = inImage;
             this.TexturePath = inTexturePath;
 
             this.IsInitialized = false;
@@ -57,13 +57,13 @@ namespace Everlook.Viewport.Rendering
                 return Cache.GetCachedTexture(this.TexturePath);
             }
 
-            return Cache.CreateCachedTexture(this._image, this.TexturePath);
+            return Cache.CreateCachedTexture(_image, this.TexturePath);
         }
 
         /// <inheritdoc />
         protected override Resolution GetResolution()
         {
-            return this._image.GetResolution();
+            return _image.GetResolution();
         }
 
         /// <inheritdoc />
@@ -75,13 +75,13 @@ namespace Everlook.Viewport.Rendering
                 return false;
             }
 
-            return otherImage._image == this._image;
+            return otherImage._image == _image;
         }
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return (this.IsStatic.GetHashCode() + this._image.GetHashCode()).GetHashCode();
+            return (this.IsStatic.GetHashCode() + _image.GetHashCode()).GetHashCode();
         }
     }
 }

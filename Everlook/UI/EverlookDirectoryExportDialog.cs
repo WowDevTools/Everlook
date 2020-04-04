@@ -72,23 +72,23 @@ namespace Everlook.UI
         {
             builder.Autoconnect(this);
 
-            this._exportTarget = inExportTarget;
+            _exportTarget = inExportTarget;
 
             /*
                  UI Setup
             */
-            this._exportItemToggleRenderer.Toggled += OnExportItemToggleClicked;
-            this._itemListingTreeView.ButtonPressEvent += OnItemListingButtonPressed;
-            this._selectAllItem.Activated += OnSelectAllItemActivated;
-            this._selectNoneItem.Activated += OnSelectNoneItemActivated;
+            _exportItemToggleRenderer.Toggled += OnExportItemToggleClicked;
+            _itemListingTreeView.ButtonPressEvent += OnItemListingButtonPressed;
+            _selectAllItem.Activated += OnSelectAllItemActivated;
+            _selectNoneItem.Activated += OnSelectNoneItemActivated;
 
             LoadInformation();
         }
 
         private void LoadInformation()
         {
-            this.Title = $"Export Directory | {this._exportTarget.Filename}";
-            this._exportDirectoryFileChooserButton.SetFilename(this._config.DefaultExportDirectory);
+            this.Title = $"Export Directory | {_exportTarget.Filename}";
+            _exportDirectoryFileChooserButton.SetFilename(_config.DefaultExportDirectory);
 
             // Load all references
             /*
@@ -159,9 +159,9 @@ namespace Everlook.UI
         {
             if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
             {
-                this._exportPopupMenu.ShowAll();
+                _exportPopupMenu.ShowAll();
 
-                this._exportPopupMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
+                _exportPopupMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
                 //this.ExportPopupMenu.Popup();
             }
         }
@@ -173,11 +173,11 @@ namespace Everlook.UI
         /// <param name="e">E.</param>
         private void OnSelectAllItemActivated(object sender, EventArgs e)
         {
-            this._itemExportListStore.Foreach
+            _itemExportListStore.Foreach
             (
                 (model, path, iter) =>
                 {
-                    this._itemExportListStore.SetValue(iter, 0, true);
+                    _itemExportListStore.SetValue(iter, 0, true);
                     return false;
                 }
             );
@@ -190,11 +190,11 @@ namespace Everlook.UI
         /// <param name="e">E.</param>
         private void OnSelectNoneItemActivated(object sender, EventArgs e)
         {
-            this._itemExportListStore.Foreach
+            _itemExportListStore.Foreach
             (
                 (model, path, iter) =>
                 {
-                    this._itemExportListStore.SetValue(iter, 0, false);
+                    _itemExportListStore.SetValue(iter, 0, false);
                     return false;
                 }
             );
@@ -208,11 +208,11 @@ namespace Everlook.UI
         private void OnExportItemToggleClicked(object sender, ToggledArgs e)
         {
             TreeIter iter;
-            this._itemExportListStore.GetIterFromString(out iter, e.Path);
+            _itemExportListStore.GetIterFromString(out iter, e.Path);
 
-            var currentValue = (bool)this._itemExportListStore.GetValue(iter, 0);
+            var currentValue = (bool)_itemExportListStore.GetValue(iter, 0);
 
-            this._itemExportListStore.SetValue(iter, 0, !currentValue);
+            _itemExportListStore.SetValue(iter, 0, !currentValue);
         }
 
         /// <summary>

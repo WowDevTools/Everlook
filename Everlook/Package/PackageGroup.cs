@@ -190,12 +190,12 @@ namespace Everlook.Package
                 throw new ArgumentNullException(nameof(package));
             }
 
-            if (this._packages.Contains(package))
+            if (_packages.Contains(package))
             {
                 return;
             }
 
-            this._packages.Add(package);
+            _packages.Add(package);
         }
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace Everlook.Package
                 throw new ArgumentException("Cannot find a package with an empty name.", nameof(packageName));
             }
 
-            foreach (var package in this._packages)
+            foreach (var package in _packages)
             {
                 if (package.PackageName == packageName)
                 {
@@ -315,9 +315,9 @@ namespace Everlook.Package
         {
             data = null;
 
-            for (var i = this._packages.Count - 1; i >= 0; --i)
+            for (var i = _packages.Count - 1; i >= 0; --i)
             {
-                if (this._packages[i].TryExtractFile(filePath, out data))
+                if (_packages[i].TryExtractFile(filePath, out data))
                 {
                     return true;
                 }
@@ -329,9 +329,9 @@ namespace Everlook.Package
         /// <inheritdoc />
         public byte[] ExtractFile(string filePath)
         {
-            for (var i = this._packages.Count - 1; i >= 0; --i)
+            for (var i = _packages.Count - 1; i >= 0; --i)
             {
-                if (this._packages[i].TryExtractFile(filePath, out var data))
+                if (_packages[i].TryExtractFile(filePath, out var data))
                 {
                     return data;
                 }
@@ -355,9 +355,9 @@ namespace Everlook.Package
         /// <inheritdoc />
         public bool ContainsFile(string filePath)
         {
-            for (var i = this._packages.Count - 1; i >= 0; --i)
+            for (var i = _packages.Count - 1; i >= 0; --i)
             {
-                if (this._packages[i].ContainsFile(filePath))
+                if (_packages[i].ContainsFile(filePath))
                 {
                     return true;
                 }
@@ -371,11 +371,11 @@ namespace Everlook.Package
         {
             fileInfo = null;
 
-            for (var i = this._packages.Count - 1; i >= 0; --i)
+            for (var i = _packages.Count - 1; i >= 0; --i)
             {
-                if (this._packages[i].ContainsFile(filePath))
+                if (_packages[i].ContainsFile(filePath))
                 {
-                    fileInfo = this._packages[i].GetFileInfo(filePath);
+                    fileInfo = _packages[i].GetFileInfo(filePath);
                     return true;
                 }
             }
@@ -401,7 +401,7 @@ namespace Everlook.Package
             if (other != null)
             {
                 return this.GroupName.Equals(other.GroupName) &&
-                this._packages.Equals(other._packages);
+                _packages.Equals(other._packages);
             }
 
             return false;
@@ -416,13 +416,13 @@ namespace Everlook.Package
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return (this.GroupName.GetHashCode() + this._packages.GetHashCode()).GetHashCode();
+            return (this.GroupName.GetHashCode() + _packages.GetHashCode()).GetHashCode();
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (var package in this._packages)
+            foreach (var package in _packages)
             {
                 package.Dispose();
             }

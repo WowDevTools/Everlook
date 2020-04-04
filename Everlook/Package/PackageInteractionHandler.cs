@@ -108,7 +108,7 @@ namespace Everlook.Package
         {
             if (File.Exists(inPackagePath))
             {
-                this._package = new MPQ(new FileStream(inPackagePath, FileMode.Open, FileAccess.Read, FileShare.Read));
+                _package = new MPQ(new FileStream(inPackagePath, FileMode.Open, FileAccess.Read, FileShare.Read));
             }
             else
             {
@@ -176,49 +176,49 @@ namespace Everlook.Package
         /// <inheritdoc />
         public bool TryExtractFile(string filePath, out byte[] data)
         {
-            return this._package.TryExtractFile(filePath, out data);
+            return _package.TryExtractFile(filePath, out data);
         }
 
         /// <inheritdoc />
         public byte[] ExtractFile(string filePath)
         {
-            return this._package.ExtractFile(filePath);
+            return _package.ExtractFile(filePath);
         }
 
         /// <inheritdoc />
         public bool HasFileList()
         {
-            return this._package.HasFileList();
+            return _package.HasFileList();
         }
 
         /// <inheritdoc />
         public IEnumerable<string> GetFileList()
         {
-            return this._package.GetFileList();
+            return _package.GetFileList();
         }
 
         /// <inheritdoc />
         public bool ContainsFile(string filePath)
         {
-            return this._package.ContainsFile(filePath);
+            return _package.ContainsFile(filePath);
         }
 
         /// <inheritdoc />
         public bool TryGetFileInfo(string filePath, out MPQFileInfo fileInfo)
         {
-            return this._package.TryGetFileInfo(filePath, out fileInfo);
+            return _package.TryGetFileInfo(filePath, out fileInfo);
         }
 
         /// <inheritdoc />
         public MPQFileInfo GetFileInfo(string filePath)
         {
-            return this._package.GetFileInfo(filePath);
+            return _package.GetFileInfo(filePath);
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            this._package.Dispose();
+            _package.Dispose();
         }
     }
 }

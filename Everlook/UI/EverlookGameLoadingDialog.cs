@@ -86,17 +86,17 @@ namespace Everlook.UI
 
             this.CancellationSource = new CancellationTokenSource();
 
-            this._cancelGameLoadingButton.Pressed += (o, args) =>
+            _cancelGameLoadingButton.Pressed += (o, args) =>
             {
-                this._gameLoadingDialogLabel.Text = "Cancelling...";
-                this._cancelGameLoadingButton.Sensitive = false;
+                _gameLoadingDialogLabel.Text = "Cancelling...";
+                _cancelGameLoadingButton.Sensitive = false;
 
                 this.CancellationSource.Cancel();
             };
 
             this.OverallProgressNotifier = new Progress<OverallLoadingProgress>(overallProgress =>
             {
-                this._currentLoadingProgress = overallProgress;
+                _currentLoadingProgress = overallProgress;
             });
 
             this.GameLoadProgressNotifier = new Progress<GameLoadingProgress>(loadingProgress =>
@@ -144,17 +144,17 @@ namespace Everlook.UI
                 {
                     DisplayNodeCreationProgress(loadingProgress.CurrentPackage, loadingProgress.NodesCreationProgress);
 
-                    this._isPulserDisabled = true;
+                    _isPulserDisabled = true;
                 }
                 else if (!(loadingProgress.OptimizationProgress is null))
                 {
                     DisplayTreeOptimizationProgress(loadingProgress.OptimizationProgress);
 
-                    this._isPulserDisabled = true;
+                    _isPulserDisabled = true;
                 }
                 else
                 {
-                    this._isPulserDisabled = false;
+                    _isPulserDisabled = false;
                 }
             });
 
@@ -171,24 +171,24 @@ namespace Everlook.UI
                     while (sr.BaseStream.Length > sr.BaseStream.Position)
                     {
                         // Add italics to all jokes. Jokes are in Pango markup format
-                        this._jokes.Add($"<i>{sr.ReadLine()}</i>");
+                        _jokes.Add($"<i>{sr.ReadLine()}</i>");
                     }
                 }
             }
 
             RefreshJoke();
 
-            this._jokeTimeoutID = GLib.Timeout.Add(6000, () =>
+            _jokeTimeoutID = GLib.Timeout.Add(6000, () =>
             {
                 RefreshJoke();
                 return true;
             });
 
-            this._secondaryProgressPulserTimeoutID = GLib.Timeout.Add(300, () =>
+            _secondaryProgressPulserTimeoutID = GLib.Timeout.Add(300, () =>
             {
-                if (!this._isPulserDisabled)
+                if (!_isPulserDisabled)
                 {
-                    this._treeBuildingProgressBar.Pulse();
+                    _treeBuildingProgressBar.Pulse();
                 }
 
                 return true;
@@ -203,17 +203,17 @@ namespace Everlook.UI
         {
             if (optimizationProgress.OptimizedNodes < optimizationProgress.NodeCount)
             {
-                this._treeBuildingProgressBar.Fraction =
+                _treeBuildingProgressBar.Fraction =
                     (float)optimizationProgress.OptimizedNodes / optimizationProgress.NodeCount;
 
-                this._treeBuildingProgressBar.Text = "Optimizing node names...";
+                _treeBuildingProgressBar.Text = "Optimizing node names...";
             }
             else
             {
-                this._treeBuildingProgressBar.Fraction =
+                _treeBuildingProgressBar.Fraction =
                     (float)optimizationProgress.TracedNodes / optimizationProgress.NodeCount;
 
-                this._treeBuildingProgressBar.Text = "Applying file type traces...";
+                _treeBuildingProgressBar.Text = "Applying file type traces...";
             }
         }
 
@@ -228,10 +228,10 @@ namespace Everlook.UI
             PackageNodesCreationProgress nodesCreationProgress
         )
         {
-            this._treeBuildingProgressBar.Fraction =
+            _treeBuildingProgressBar.Fraction =
                 (float)nodesCreationProgress.CompletedPaths / nodesCreationProgress.PathCount;
 
-            this._treeBuildingProgressBar.Text = $"Building nodes from paths in {currentPackage}...";
+            _treeBuildingProgressBar.Text = $"Building nodes from paths in {currentPackage}...";
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace Everlook.UI
         /// </summary>
         private void RefreshJoke()
         {
-            this._additionalInfoLabel.Markup = this._jokes[new Random().Next(this._jokes.Count)];
+            _additionalInfoLabel.Markup = _jokes[new Random().Next(_jokes.Count)];
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace Everlook.UI
         /// <param name="fraction">The fraction of the loading bar which is filled.</param>
         private void SetFraction(double fraction)
         {
-            this._gameLoadingProgressBar.Fraction = fraction;
+            _gameLoadingProgressBar.Fraction = fraction;
         }
 
         /// <summary>
@@ -257,7 +257,7 @@ namespace Everlook.UI
         /// <param name="statusMessage">The status message to set.</param>
         private void SetStatusMessage(string statusMessage)
         {
-            this._gameLoadingDialogLabel.Text = $"({this._currentLoadingProgress.FinishedOperations}/{this._currentLoadingProgress.OperationCount}) {statusMessage}";
+            _gameLoadingDialogLabel.Text = $"({_currentLoadingProgress.FinishedOperations}/{_currentLoadingProgress.OperationCount}) {statusMessage}";
         }
 
         /// <inheritdoc />
@@ -265,8 +265,8 @@ namespace Everlook.UI
         {
             base.Destroy();
 
-            GLib.Timeout.Remove(this._jokeTimeoutID);
-            GLib.Timeout.Remove(this._secondaryProgressPulserTimeoutID);
+            GLib.Timeout.Remove(_jokeTimeoutID);
+            GLib.Timeout.Remove(_secondaryProgressPulserTimeoutID);
         }
     }
 }

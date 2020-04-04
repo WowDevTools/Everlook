@@ -57,7 +57,7 @@ namespace Everlook.Explorer
         /// <summary>
         /// Loads the bundled dictionary from disk.
         /// </summary>
-        /// <param name="ct">A cancellation topen.</param>
+        /// <param name="ct">A cancellation to open.</param>
         /// <returns>A loaded ListfileDictionary.</returns>
         private static Task<ListfileDictionary> LoadDictionaryAsync(CancellationToken ct)
         {
@@ -182,7 +182,7 @@ namespace Everlook.Explorer
                 }
 
                 // Load dictionary if neccesary
-                if (this._dictionary == null)
+                if (_dictionary == null)
                 {
                     progress?.Report(new GameLoadingProgress
                     {
@@ -191,7 +191,7 @@ namespace Everlook.Explorer
                         Alias = gameAlias
                     });
 
-                    this._dictionary = await LoadDictionaryAsync(ct);
+                    _dictionary = await LoadDictionaryAsync(ct);
                 }
 
                 // Generate node tree
@@ -252,7 +252,7 @@ namespace Everlook.Explorer
                     }
                 );
 
-                var optimizer = new TreeOptimizer(this._dictionary);
+                var optimizer = new TreeOptimizer(_dictionary);
 
                 var treeClosureCopy = tree;
                 tree = await Task.Run(() => optimizer.OptimizeTree(treeClosureCopy, optimizeTreeProgress, ct), ct);

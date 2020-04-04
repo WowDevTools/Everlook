@@ -92,7 +92,7 @@ namespace Everlook.Viewport
         /// <summary>
         /// Gets the time taken to render the last frame (in seconds).
         /// </summary>
-        private float DeltaTime => (float)this._viewportWidget.DeltaTime;
+        private float DeltaTime => (float)_viewportWidget.DeltaTime;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the viewer wants to move in the world.
@@ -148,9 +148,9 @@ namespace Everlook.Viewport
         /// <param name="viewportWidget">The widget which the viewport should be rendered to.</param>
         public ViewportRenderer(ViewportArea viewportWidget)
         {
-            this._viewportWidget = viewportWidget;
-            this._camera = new ViewportCamera();
-            this._movement = new CameraMovement(this._camera);
+            _viewportWidget = viewportWidget;
+            _camera = new ViewportCamera();
+            _movement = new CameraMovement(_camera);
 
             this.IsInitialized = false;
         }
@@ -179,8 +179,8 @@ namespace Everlook.Viewport
             }
 
             // Generate the vertex array
-            GL.GenVertexArrays(1, out this._vertexArrayID);
-            GL.BindVertexArray(this._vertexArrayID);
+            GL.GenVertexArrays(1, out _vertexArrayID);
+            GL.BindVertexArray(_vertexArrayID);
 
             // GL.Disable(EnableCap.AlphaTest);
 
@@ -198,21 +198,21 @@ namespace Everlook.Viewport
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             // Initialize the viewport
-            var widgetWidth = this._viewportWidget.AllocatedWidth;
-            var widgetHeight = this._viewportWidget.AllocatedHeight;
+            var widgetWidth = _viewportWidget.AllocatedWidth;
+            var widgetHeight = _viewportWidget.AllocatedHeight;
             GL.Viewport(0, 0, widgetWidth, widgetHeight);
             GL.ClearColor
             (
-                (float)this._configuration.ViewportBackgroundColour.Red,
-                (float)this._configuration.ViewportBackgroundColour.Green,
-                (float)this._configuration.ViewportBackgroundColour.Blue,
-                (float)this._configuration.ViewportBackgroundColour.Alpha
+                (float)_configuration.ViewportBackgroundColour.Red,
+                (float)_configuration.ViewportBackgroundColour.Green,
+                (float)_configuration.ViewportBackgroundColour.Blue,
+                (float)_configuration.ViewportBackgroundColour.Alpha
             );
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            this._grid = new BaseGrid();
-            this._grid.Initialize();
+            _grid = new BaseGrid();
+            _grid.Initialize();
 
             this.IsInitialized = true;
         }
@@ -249,11 +249,11 @@ namespace Everlook.Viewport
         {
             ThrowIfDisposed();
 
-            lock (this._renderTargetLock)
+            lock (_renderTargetLock)
             {
                 // Make sure the viewport is accurate for the current widget size on screen
-                var widgetWidth = this._viewportWidget.AllocatedWidth;
-                var widgetHeight = this._viewportWidget.AllocatedHeight;
+                var widgetWidth = _viewportWidget.AllocatedWidth;
+                var widgetHeight = _viewportWidget.AllocatedHeight;
                 GL.Viewport(0, 0, widgetWidth, widgetHeight);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
@@ -286,19 +286,19 @@ namespace Everlook.Viewport
                 tickingRenderable?.Tick(this.DeltaTime);
 
                 // Update the camera with new parameters
-                this._camera.ViewportHeight = widgetHeight;
-                this._camera.ViewportWidth = widgetWidth;
+                _camera.ViewportHeight = widgetHeight;
+                _camera.ViewportWidth = widgetWidth;
 
-                var view = this._camera.GetViewMatrix();
-                var projection = this._camera.GetProjectionMatrix();
+                var view = _camera.GetViewMatrix();
+                var projection = _camera.GetProjectionMatrix();
 
                 if (this.RenderTarget.Projection == ProjectionType.Perspective)
                 {
-                    this._grid.Render(view, projection, this._camera);
+                    _grid.Render(view, projection, _camera);
                 }
 
                 // Then render the visual component
-                this.RenderTarget.Render(view, projection, this._camera);
+                this.RenderTarget.Render(view, projection, _camera);
             }
         }
 
@@ -313,7 +313,7 @@ namespace Everlook.Viewport
             float deltaMouseX = this.InitialMouseX - mouseX;
             float deltaMouseY = this.InitialMouseY - mouseY;
 
-            this._movement.Calculate2DMovement(deltaMouseX, deltaMouseY, this.DeltaTime);
+            _movement.Calculate2DMovement(deltaMouseX, deltaMouseY, this.DeltaTime);
 
             // Update the initial location for the next frame
             this.InitialMouseX = mouseX;
@@ -331,7 +331,7 @@ namespace Everlook.Viewport
             float deltaMouseX = this.InitialMouseX - mouseX;
             float deltaMouseY = this.InitialMouseY - mouseY;
 
-            this._movement.Calculate3DMovement(deltaMouseX, deltaMouseY, this.DeltaTime);
+            _movement.Calculate3DMovement(deltaMouseX, deltaMouseY, this.DeltaTime);
 
             // Return the mouse to its original position
             Mouse.SetPosition(this.InitialMouseX, this.InitialMouseY);
@@ -354,7 +354,7 @@ namespace Everlook.Viewport
         {
             ThrowIfDisposed();
 
-            lock (this._renderTargetLock)
+            lock (_renderTargetLock)
             {
                 // Dispose of the old render target
                 this.RenderTarget?.Dispose();
@@ -365,18 +365,18 @@ namespace Everlook.Viewport
                 // Set the default camera values
                 if (this.HasRenderTarget)
                 {
-                    this._camera.ViewportWidth = this._viewportWidget.AllocatedWidth;
-                    this._camera.ViewportHeight = this._viewportWidget.AllocatedHeight;
+                    _camera.ViewportWidth = _viewportWidget.AllocatedWidth;
+                    _camera.ViewportHeight = _viewportWidget.AllocatedHeight;
 
                     if (this.RenderTarget is IDefaultCameraPositionProvider cameraPositionProvider)
                     {
-                        this._camera.Position = cameraPositionProvider.DefaultCameraPosition;
+                        _camera.Position = cameraPositionProvider.DefaultCameraPosition;
                     }
 
-                    this._camera.Projection = this.RenderTarget.Projection;
+                    _camera.Projection = this.RenderTarget.Projection;
                 }
 
-                this._camera.ResetRotation();
+                _camera.ResetRotation();
             }
         }
 
@@ -399,7 +399,7 @@ namespace Everlook.Viewport
 
             this.RenderTarget?.Dispose();
 
-            GL.DeleteVertexArrays(1, ref this._vertexArrayID);
+            GL.DeleteVertexArrays(1, ref _vertexArrayID);
         }
     }
 }

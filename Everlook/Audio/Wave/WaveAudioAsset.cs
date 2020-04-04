@@ -71,9 +71,9 @@ namespace Everlook.Audio.Wave
             {
                 ThrowIfDisposed();
 
-                if (this._pcmDataInternal != null)
+                if (_pcmDataInternal != null)
                 {
-                    return this._pcmDataInternal;
+                    return _pcmDataInternal;
                 }
 
                 // Decode the whole stream
@@ -82,12 +82,12 @@ namespace Everlook.Audio.Wave
                     this.PCMStream.Seek(0, SeekOrigin.Begin);
 
                     this.PCMStream.CopyTo(pcm);
-                    this._pcmDataInternal = pcm.ToArray();
+                    _pcmDataInternal = pcm.ToArray();
                 }
 
-                return this._pcmDataInternal;
+                return _pcmDataInternal;
             }
-            private set => this._pcmDataInternal = value;
+            private set => _pcmDataInternal = value;
         }
 
         /// <inheritdoc />
@@ -195,7 +195,7 @@ namespace Everlook.Audio.Wave
         /// <inheritdoc />
         public void ThrowIfDisposed()
         {
-            if (this._isDisposed)
+            if (_isDisposed)
             {
                 throw new ObjectDisposedException(ToString());
             }
@@ -204,7 +204,7 @@ namespace Everlook.Audio.Wave
         /// <inheritdoc />
         public void Dispose()
         {
-            this._isDisposed = true;
+            _isDisposed = true;
 
             this.PCMStream?.Dispose();
 

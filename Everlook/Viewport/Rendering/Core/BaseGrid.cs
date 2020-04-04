@@ -74,7 +74,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         public BaseGrid()
         {
-            this._shader = RenderCache.Instance.GetShader(EverlookShader.BaseGrid) as BaseGridShader;
+            _shader = RenderCache.Instance.GetShader(EverlookShader.BaseGrid) as BaseGridShader;
             this.ActorTransform = new Transform();
 
             this.IsInitialized = false;
@@ -113,18 +113,18 @@ namespace Everlook.Viewport.Rendering.Core
             vertexIndexes.AddRange(new ushort[] { 0, Quads * 2 });
             vertexIndexes.AddRange(new ushort[] { 1, (Quads * 2) + 1 });
 
-            this._vertices = new Buffer<float>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+            _vertices = new Buffer<float>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
             {
                 Data = vertices.ToArray()
             };
 
             // Attach the vertex pointer
-            this._vertices.AttachAttributePointer
+            _vertices.AttachAttributePointer
             (
                 new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0)
             );
 
-            this._vertexIndexes = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
+            _vertexIndexes = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
             {
                 Data = vertexIndexes.ToArray()
             };
@@ -139,19 +139,19 @@ namespace Everlook.Viewport.Rendering.Core
             GL.Enable(EnableCap.DepthTest);
             GL.Disable(EnableCap.CullFace);
 
-            this._vertices.Bind();
-            this._vertices.EnableAttributes();
-            this._vertexIndexes.Bind();
+            _vertices.Bind();
+            _vertices.EnableAttributes();
+            _vertexIndexes.Bind();
 
             var modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
-            this._shader.Enable();
+            _shader.Enable();
 
             GL.BlendFunc(BlendingFactor.One, BlendingFactor.Zero);
 
             // Set the default line colour (a light gray)
-            this._shader.SetLineColour(new Color4(64, 64, 64, 255));
-            this._shader.SetMVPMatrix(modelViewProjection);
+            _shader.SetLineColour(new Color4(64, 64, 64, 255));
+            _shader.SetMVPMatrix(modelViewProjection);
 
             var lineCount = ((Quads * 2) + 2) * 2;
             GL.DrawElements
@@ -162,7 +162,7 @@ namespace Everlook.Viewport.Rendering.Core
                 IntPtr.Zero
             );
 
-            this._vertices.DisableAttributes();
+            _vertices.DisableAttributes();
         }
 
         /// <summary>
@@ -181,8 +181,8 @@ namespace Everlook.Viewport.Rendering.Core
         public void Dispose()
         {
             this.IsDisposed = true;
-            this._vertices.Dispose();
-            this._vertexIndexes.Dispose();
+            _vertices.Dispose();
+            _vertexIndexes.Dispose();
         }
     }
 }

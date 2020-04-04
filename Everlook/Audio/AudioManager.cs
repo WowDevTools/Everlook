@@ -48,8 +48,8 @@ namespace Everlook.Audio
         /// </summary>
         private AudioManager()
         {
-            this._context = new AudioContext();
-            this._context.MakeCurrent();
+            _context = new AudioContext();
+            _context.MakeCurrent();
         }
 
         /// <summary>
@@ -105,12 +105,12 @@ namespace Everlook.Audio
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (var source in this._sources)
+            foreach (var source in _sources)
             {
                 source.Dispose();
             }
 
-            this._context.Dispose();
+            _context.Dispose();
         }
     }
 }

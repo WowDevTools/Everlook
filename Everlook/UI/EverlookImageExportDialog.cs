@@ -86,14 +86,14 @@ namespace Everlook.UI
         {
             builder.Autoconnect(this);
 
-            this._exportTarget = inExportTarget;
+            _exportTarget = inExportTarget;
             /*
                  UI Setup
             */
-            this._exportMipToggleRenderer.Toggled += OnExportMipToggleClicked;
-            this._mipLevelListingTreeView.ButtonPressEvent += OnMipListingButtonPressed;
-            this._selectAllItem.Activated += OnSelectAllItemActivated;
-            this._selectNoneItem.Activated += OnSelectNoneItemActivated;
+            _exportMipToggleRenderer.Toggled += OnExportMipToggleClicked;
+            _mipLevelListingTreeView.ButtonPressEvent += OnMipListingButtonPressed;
+            _selectAllItem.Activated += OnSelectAllItemActivated;
+            _selectNoneItem.Activated += OnSelectNoneItemActivated;
 
             LoadInformation();
         }
@@ -103,21 +103,21 @@ namespace Everlook.UI
         /// </summary>
         private void LoadInformation()
         {
-            var imageFilename = IOPath.GetFileNameWithoutExtension(this._exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
+            var imageFilename = IOPath.GetFileNameWithoutExtension(_exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
             this.Title = $"Export Image | {imageFilename}";
 
-            var file = this._exportTarget.Extract();
-            this._image = new BLP(file);
+            var file = _exportTarget.Extract();
+            _image = new BLP(file);
 
-            this._exportFormatComboBox.Active = (int)this._config.DefaultImageExportFormat;
+            _exportFormatComboBox.Active = (int)_config.DefaultImageExportFormat;
 
-            this._mipLevelListStore.Clear();
-            foreach (var mipString in this._image.GetMipMapLevelStrings())
+            _mipLevelListStore.Clear();
+            foreach (var mipString in _image.GetMipMapLevelStrings())
             {
-                this._mipLevelListStore.AppendValues(true, mipString);
+                _mipLevelListStore.AppendValues(true, mipString);
             }
 
-            this._exportDirectoryFileChooserButton.SetFilename(this._config.DefaultExportDirectory);
+            _exportDirectoryFileChooserButton.SetFilename(_config.DefaultExportDirectory);
         }
 
         /// <summary>
@@ -125,46 +125,46 @@ namespace Everlook.UI
         /// </summary>
         public void RunExport()
         {
-            var imageFilename = IOPath.GetFileNameWithoutExtension(this._exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
+            var imageFilename = IOPath.GetFileNameWithoutExtension(_exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator());
 
             string exportPath;
-            if (this._config.KeepFileDirectoryStructure)
+            if (_config.KeepFileDirectoryStructure)
             {
                 exportPath = IOPath.Combine
                 (
-                    this._exportDirectoryFileChooserButton.Filename,
-                    this._exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator().Replace(".blp", string.Empty)
+                    _exportDirectoryFileChooserButton.Filename,
+                    _exportTarget.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator().Replace(".blp", string.Empty)
                 );
             }
             else
             {
                 exportPath = IOPath.Combine
                 (
-                    this._exportDirectoryFileChooserButton.Filename,
+                    _exportDirectoryFileChooserButton.Filename,
                     imageFilename
                 );
             }
 
             var i = 0;
-            this._mipLevelListStore.Foreach
+            _mipLevelListStore.Foreach
             (
                 (model, path, iter) =>
                 {
-                    var shouldExport = (bool)this._mipLevelListStore.GetValue(iter, 0);
+                    var shouldExport = (bool)_mipLevelListStore.GetValue(iter, 0);
 
                     if (shouldExport)
                     {
-                        var formatExtension = GetFileExtensionFromImageFormat((ImageFormat)this._exportFormatComboBox.Active);
+                        var formatExtension = GetFileExtensionFromImageFormat((ImageFormat)_exportFormatComboBox.Active);
                         Directory.CreateDirectory(Directory.GetParent(exportPath).FullName);
 
                         var fullExportPath = $"{exportPath}_{i}.{formatExtension}";
 
                         using (var fs = File.OpenWrite(fullExportPath))
                         {
-                            this._image.GetMipMap((uint)i).Save
+                            _image.GetMipMap((uint)i).Save
                             (
                                 fs,
-                                GetImageEncoderFromFormat((ImageFormat)this._exportFormatComboBox.Active)
+                                GetImageEncoderFromFormat((ImageFormat)_exportFormatComboBox.Active)
                             );
                         }
                     }
@@ -227,9 +227,9 @@ namespace Everlook.UI
         {
             if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
             {
-                this._exportPopupMenu.ShowAll();
+                _exportPopupMenu.ShowAll();
 
-                this._exportPopupMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
+                _exportPopupMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
                 //this.ExportPopupMenu.Popup();
             }
         }
@@ -241,11 +241,11 @@ namespace Everlook.UI
         /// <param name="e">E.</param>
         protected void OnSelectAllItemActivated(object sender, EventArgs e)
         {
-            this._mipLevelListStore.Foreach
+            _mipLevelListStore.Foreach
             (
                 (model, path, iter) =>
                 {
-                    this._mipLevelListStore.SetValue(iter, 0, true);
+                    _mipLevelListStore.SetValue(iter, 0, true);
                     return false;
                 }
             );
@@ -258,11 +258,11 @@ namespace Everlook.UI
         /// <param name="e">E.</param>
         protected void OnSelectNoneItemActivated(object sender, EventArgs e)
         {
-            this._mipLevelListStore.Foreach
+            _mipLevelListStore.Foreach
             (
                 (model, path, iter) =>
                 {
-                    this._mipLevelListStore.SetValue(iter, 0, false);
+                    _mipLevelListStore.SetValue(iter, 0, false);
                     return false;
                 }
             );
@@ -276,11 +276,11 @@ namespace Everlook.UI
         protected void OnExportMipToggleClicked(object sender, ToggledArgs e)
         {
             TreeIter iter;
-            this._mipLevelListStore.GetIterFromString(out iter, e.Path);
+            _mipLevelListStore.GetIterFromString(out iter, e.Path);
 
-            var currentValue = (bool)this._mipLevelListStore.GetValue(iter, 0);
+            var currentValue = (bool)_mipLevelListStore.GetValue(iter, 0);
 
-            this._mipLevelListStore.SetValue(iter, 0, !currentValue);
+            _mipLevelListStore.SetValue(iter, 0, !currentValue);
         }
 
         /// <summary>

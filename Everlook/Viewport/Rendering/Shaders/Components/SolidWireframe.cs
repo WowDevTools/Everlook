@@ -60,10 +60,10 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         /// </summary>
         public bool Enabled
         {
-            get => this._enabledInternal;
+            get => _enabledInternal;
             set
             {
-                this._enabledInternal = value;
+                _enabledInternal = value;
                 SetWireframeState(value);
             }
         }
@@ -74,7 +74,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         /// <param name="parentShaderID">The native ID of the parent shader.</param>
         public SolidWireframe(int parentShaderID)
         {
-            this._parentShaderNativeID = parentShaderID;
+            _parentShaderNativeID = parentShaderID;
             this.Enabled = false;
 
             SetWireframeLineWidth(2);
@@ -84,14 +84,14 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 
         private void EnableParent()
         {
-            GL.UseProgram(this._parentShaderNativeID);
+            GL.UseProgram(_parentShaderNativeID);
         }
 
         private void SetWireframeState(bool isEnabled)
         {
             EnableParent();
 
-            var enabledLoc = GL.GetUniformLocation(this._parentShaderNativeID, IsWireframeEnabled);
+            var enabledLoc = GL.GetUniformLocation(_parentShaderNativeID, IsWireframeEnabled);
             GL.Uniform1(enabledLoc, isEnabled ? 1 : 0);
         }
 
@@ -104,7 +104,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            var lineWidthLoc = GL.GetUniformLocation(this._parentShaderNativeID, WireframeLineWidth);
+            var lineWidthLoc = GL.GetUniformLocation(_parentShaderNativeID, WireframeLineWidth);
             GL.Uniform1(lineWidthLoc, lineWidth);
         }
 
@@ -133,7 +133,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            var colourLoc = GL.GetUniformLocation(this._parentShaderNativeID, WireframeColour);
+            var colourLoc = GL.GetUniformLocation(_parentShaderNativeID, WireframeColour);
             GL.Uniform4(colourLoc, wireframeColour);
         }
 
@@ -145,7 +145,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            var fadeWidthLoc = GL.GetUniformLocation(this._parentShaderNativeID, WireframeFadeWidth);
+            var fadeWidthLoc = GL.GetUniformLocation(_parentShaderNativeID, WireframeFadeWidth);
             GL.Uniform1(fadeWidthLoc, fadeWidth);
         }
 
@@ -157,7 +157,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            var viewportMatrixLoc = GL.GetUniformLocation(this._parentShaderNativeID, ViewportMatrix);
+            var viewportMatrixLoc = GL.GetUniformLocation(_parentShaderNativeID, ViewportMatrix);
             GL.UniformMatrix3(viewportMatrixLoc, false, ref viewportMatrix);
         }
     }

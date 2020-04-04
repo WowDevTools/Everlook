@@ -54,7 +54,7 @@ namespace Everlook.Audio
         /// <summary>
         /// Gets the current state of the sound source.
         /// </summary>
-        public ALSourceState State => AL.GetSourceState(this._soundSourceID);
+        public ALSourceState State => AL.GetSourceState(_soundSourceID);
 
         /// <summary>
         /// Gets or sets the offset of the audio source into the sound (in seconds).
@@ -63,10 +63,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSourcef.SecOffset, out var value);
+                AL.GetSource(_soundSourceID, ALSourcef.SecOffset, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSourcef.SecOffset, value);
+            set => AL.Source(_soundSourceID, ALSourcef.SecOffset, value);
         }
 
         /// <summary>
@@ -76,10 +76,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSourceb.Looping, out var value);
+                AL.GetSource(_soundSourceID, ALSourceb.Looping, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSourceb.Looping, value);
+            set => AL.Source(_soundSourceID, ALSourceb.Looping, value);
         }
 
         /// <summary>
@@ -89,10 +89,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSource3f.Position, out var value);
+                AL.GetSource(_soundSourceID, ALSource3f.Position, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSource3f.Position, ref value);
+            set => AL.Source(_soundSourceID, ALSource3f.Position, ref value);
         }
 
         /// <summary>
@@ -102,10 +102,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSource3f.Direction, out var value);
+                AL.GetSource(_soundSourceID, ALSource3f.Direction, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSource3f.Direction, ref value);
+            set => AL.Source(_soundSourceID, ALSource3f.Direction, ref value);
         }
 
         /// <summary>
@@ -115,10 +115,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSource3f.Direction, out var value);
+                AL.GetSource(_soundSourceID, ALSource3f.Direction, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSource3f.Direction, ref value);
+            set => AL.Source(_soundSourceID, ALSource3f.Direction, ref value);
         }
 
         /// <summary>
@@ -128,10 +128,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSourceb.SourceRelative, out var value);
+                AL.GetSource(_soundSourceID, ALSourceb.SourceRelative, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSourceb.SourceRelative, value);
+            set => AL.Source(_soundSourceID, ALSourceb.SourceRelative, value);
         }
 
         /// <summary>
@@ -142,10 +142,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSourcef.MaxDistance, out var value);
+                AL.GetSource(_soundSourceID, ALSourcef.MaxDistance, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSourcef.MaxDistance, value);
+            set => AL.Source(_soundSourceID, ALSourcef.MaxDistance, value);
         }
 
         /// <summary>
@@ -155,10 +155,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSourcef.MinGain, out var value);
+                AL.GetSource(_soundSourceID, ALSourcef.MinGain, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSourcef.MinGain, value);
+            set => AL.Source(_soundSourceID, ALSourcef.MinGain, value);
         }
 
         /// <summary>
@@ -168,10 +168,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSourcef.MaxGain, out var value);
+                AL.GetSource(_soundSourceID, ALSourcef.MaxGain, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSourcef.MaxGain, value);
+            set => AL.Source(_soundSourceID, ALSourcef.MaxGain, value);
         }
 
         /// <summary>
@@ -181,10 +181,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSourcef.ConeOuterGain, out var value);
+                AL.GetSource(_soundSourceID, ALSourcef.ConeOuterGain, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSourcef.ConeOuterGain, value);
+            set => AL.Source(_soundSourceID, ALSourcef.ConeOuterGain, value);
         }
 
         /// <summary>
@@ -194,10 +194,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSourcef.ConeInnerAngle, out var value);
+                AL.GetSource(_soundSourceID, ALSourcef.ConeInnerAngle, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSourcef.ConeInnerAngle, value);
+            set => AL.Source(_soundSourceID, ALSourcef.ConeInnerAngle, value);
         }
 
         /// <summary>
@@ -207,10 +207,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSourcef.ConeOuterAngle, out var value);
+                AL.GetSource(_soundSourceID, ALSourcef.ConeOuterAngle, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSourcef.ConeOuterAngle, value);
+            set => AL.Source(_soundSourceID, ALSourcef.ConeOuterAngle, value);
         }
 
         /// <summary>
@@ -220,10 +220,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSourcef.Pitch, out var value);
+                AL.GetSource(_soundSourceID, ALSourcef.Pitch, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSourcef.Pitch, value);
+            set => AL.Source(_soundSourceID, ALSourcef.Pitch, value);
         }
 
         /// <summary>
@@ -234,10 +234,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSourcef.Gain, out var value);
+                AL.GetSource(_soundSourceID, ALSourcef.Gain, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSourcef.Gain, value);
+            set => AL.Source(_soundSourceID, ALSourcef.Gain, value);
         }
 
         /// <summary>
@@ -247,10 +247,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSourcef.RolloffFactor, out var value);
+                AL.GetSource(_soundSourceID, ALSourcef.RolloffFactor, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSourcef.RolloffFactor, value);
+            set => AL.Source(_soundSourceID, ALSourcef.RolloffFactor, value);
         }
 
         /// <summary>
@@ -262,10 +262,10 @@ namespace Everlook.Audio
         {
             get
             {
-                AL.GetSource(this._soundSourceID, ALSourcef.ReferenceDistance, out var value);
+                AL.GetSource(_soundSourceID, ALSourcef.ReferenceDistance, out var value);
                 return value;
             }
-            set => AL.Source(this._soundSourceID, ALSourcef.ReferenceDistance, value);
+            set => AL.Source(_soundSourceID, ALSourcef.ReferenceDistance, value);
         }
 
         /// <summary>
@@ -313,8 +313,8 @@ namespace Everlook.Audio
         /// </summary>
         public void Play()
         {
-            AL.SourceRewind(this._soundSourceID);
-            AL.SourcePlay(this._soundSourceID);
+            AL.SourceRewind(_soundSourceID);
+            AL.SourcePlay(_soundSourceID);
         }
 
         /// <summary>
@@ -322,7 +322,7 @@ namespace Everlook.Audio
         /// </summary>
         public void Resume()
         {
-            AL.SourcePlay(this._soundSourceID);
+            AL.SourcePlay(_soundSourceID);
         }
 
         /// <summary>
@@ -330,7 +330,7 @@ namespace Everlook.Audio
         /// </summary>
         public void Pause()
         {
-            AL.SourcePause(this._soundSourceID);
+            AL.SourcePause(_soundSourceID);
         }
 
         /// <summary>
@@ -338,8 +338,8 @@ namespace Everlook.Audio
         /// </summary>
         public void Stop()
         {
-            AL.SourceStop(this._soundSourceID);
-            AL.SourceRewind(this._soundSourceID);
+            AL.SourceStop(_soundSourceID);
+            AL.SourceRewind(_soundSourceID);
         }
 
         /// <summary>
@@ -362,12 +362,12 @@ namespace Everlook.Audio
             {
                 case WarcraftFileType.WaveAudio:
                 {
-                    this._audioAsset = await WaveAudioAsset.LoadAsync(fileReference);
+                    _audioAsset = await WaveAudioAsset.LoadAsync(fileReference);
                     break;
                 }
                 case WarcraftFileType.MP3Audio:
                 {
-                    this._audioAsset = await MP3AudioAsset.LoadAsync(fileReference);
+                    _audioAsset = await MP3AudioAsset.LoadAsync(fileReference);
                     break;
                 }
                 default:
@@ -376,16 +376,16 @@ namespace Everlook.Audio
                 }
             }
 
-            var soundData = this._audioAsset.PCMData;
-            this.SoundFormat = this._audioAsset.Format;
-            this.SampleRate = this._audioAsset.SampleRate;
+            var soundData = _audioAsset.PCMData;
+            this.SoundFormat = _audioAsset.Format;
+            this.SampleRate = _audioAsset.SampleRate;
 
             // Create new AL data
-            this._soundBufferID = AL.GenBuffer();
-            this._soundSourceID = AL.GenSource();
+            _soundBufferID = AL.GenBuffer();
+            _soundSourceID = AL.GenSource();
 
-            AL.BufferData(this._soundBufferID, this.SoundFormat, soundData, soundData.Length, this.SampleRate);
-            AL.Source(this._soundSourceID, ALSourcei.Buffer, this._soundBufferID);
+            AL.BufferData(_soundBufferID, this.SoundFormat, soundData, soundData.Length, this.SampleRate);
+            AL.Source(_soundSourceID, ALSourcei.Buffer, _soundBufferID);
         }
 
         /// <summary>
@@ -393,13 +393,13 @@ namespace Everlook.Audio
         /// </summary>
         private void ClearAudio()
         {
-            AL.SourceStop(this._soundSourceID);
+            AL.SourceStop(_soundSourceID);
 
-            AL.DeleteSource(this._soundSourceID);
-            AL.DeleteBuffer(this._soundBufferID);
+            AL.DeleteSource(_soundSourceID);
+            AL.DeleteBuffer(_soundBufferID);
 
-            this._audioAsset?.Dispose();
-            this._audioAsset = null;
+            _audioAsset?.Dispose();
+            _audioAsset = null;
         }
 
         /// <inheritdoc />
@@ -415,8 +415,8 @@ namespace Everlook.Audio
             unchecked
             {
                 var hash = 17;
-                hash *= 23 + this._soundBufferID;
-                hash *= 23 + this._soundSourceID;
+                hash *= 23 + _soundBufferID;
+                hash *= 23 + _soundSourceID;
 
                 return hash;
             }
@@ -437,8 +437,8 @@ namespace Everlook.Audio
             }
 
             var other = (AudioSource)obj;
-            return other._soundSourceID == this._soundSourceID &&
-                   other._soundBufferID == this._soundBufferID;
+            return other._soundSourceID == _soundSourceID &&
+                   other._soundBufferID == _soundBufferID;
         }
     }
 }

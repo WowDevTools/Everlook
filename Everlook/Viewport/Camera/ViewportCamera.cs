@@ -55,10 +55,10 @@ namespace Everlook.Viewport.Camera
         /// </summary>
         public ProjectionType Projection
         {
-            get => this._projectionInternal;
+            get => _projectionInternal;
             set
             {
-                this._projectionInternal = value;
+                _projectionInternal = value;
                 RecalculateInternals();
             }
         }
@@ -80,10 +80,10 @@ namespace Everlook.Viewport.Camera
         /// </summary>
         public Vector3 Position
         {
-            get => this._positionInternal;
+            get => _positionInternal;
             set
             {
-                this._positionInternal = value;
+                _positionInternal = value;
                 RecalculateInternals();
             }
         }
@@ -124,10 +124,10 @@ namespace Everlook.Viewport.Camera
         /// </summary>
         public float HorizontalViewAngle
         {
-            get => this._horizontalViewAngleInternal;
+            get => _horizontalViewAngleInternal;
             set
             {
-                this._horizontalViewAngleInternal = value;
+                _horizontalViewAngleInternal = value;
                 RecalculateInternals();
             }
         }
@@ -140,10 +140,10 @@ namespace Everlook.Viewport.Camera
         /// </summary>
         public float VerticalViewAngle
         {
-            get => this._verticalViewAngleInternal;
+            get => _verticalViewAngleInternal;
             set
             {
-                this._verticalViewAngleInternal = value;
+                _verticalViewAngleInternal = value;
                 RecalculateInternals();
             }
         }

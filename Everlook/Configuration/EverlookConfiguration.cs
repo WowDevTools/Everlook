@@ -243,7 +243,7 @@ namespace Everlook.Configuration
 
         private EverlookConfiguration()
         {
-            lock (this._readLock)
+            lock (_readLock)
             {
                 if (!File.Exists(GetConfigurationFilePath()))
                 {
@@ -272,12 +272,12 @@ namespace Everlook.Configuration
                         Place any changes after this comment.
                     */
 
-                    AddNewConfigurationOption(this._configurationData, Viewport, nameof(this.RotationSpeed), "1.0");
-                    AddNewConfigurationOption(this._configurationData, Viewport, nameof(this.CameraFOV), "45.0");
+                    AddNewConfigurationOption(_configurationData, Viewport, nameof(this.RotationSpeed), "1.0");
+                    AddNewConfigurationOption(_configurationData, Viewport, nameof(this.CameraFOV), "45.0");
 
-                    MoveConfigurationOption(this._configurationData, "General", Viewport, nameof(this.ViewportBackgroundColour));
+                    MoveConfigurationOption(_configurationData, "General", Viewport, nameof(this.ViewportBackgroundColour));
 
-                    DeleteConfigurationSection(this._configurationData, "General");
+                    DeleteConfigurationSection(_configurationData, "General");
 
                     Commit();
                     Reload();
@@ -290,9 +290,9 @@ namespace Everlook.Configuration
         /// </summary>
         public void Reload()
         {
-            lock (this._readLock)
+            lock (_readLock)
             {
-                this._configurationData = this._defaultParser.ReadFile(GetConfigurationFilePath());
+                _configurationData = _defaultParser.ReadFile(GetConfigurationFilePath());
             }
         }
 
@@ -301,22 +301,22 @@ namespace Everlook.Configuration
         /// </summary>
         public void Commit()
         {
-            lock (this._writeLock)
+            lock (_writeLock)
             {
-                WriteConfig(this._defaultParser, this._configurationData);
+                WriteConfig(_defaultParser, _configurationData);
             }
         }
 
         private void WriteDefaults()
         {
-            this._configurationData.Sections.Clear();
+            _configurationData.Sections.Clear();
 
-            this._configurationData.Sections.AddSection(Export);
-            this._configurationData.Sections.AddSection(Privacy);
-            this._configurationData.Sections.AddSection(Viewport);
-            this._configurationData.Sections.AddSection(Explorer);
+            _configurationData.Sections.AddSection(Export);
+            _configurationData.Sections.AddSection(Privacy);
+            _configurationData.Sections.AddSection(Viewport);
+            _configurationData.Sections.AddSection(Explorer);
 
-            this._configurationData[Export].AddKey(nameof(this.DefaultExportDirectory), Export);
+            _configurationData[Export].AddKey(nameof(this.DefaultExportDirectory), Export);
 
             var modelExportKeyData = new KeyData(nameof(this.DefaultModelExportFormat))
             {
@@ -331,7 +331,7 @@ namespace Everlook.Configuration
             };
             modelExportKeyData.Comments = modelExportKeyComments;
 
-            this._configurationData[Export].AddKey(modelExportKeyData);
+            _configurationData[Export].AddKey(modelExportKeyData);
 
             var imageExportKeyData = new KeyData(nameof(this.DefaultImageExportFormat))
             {
@@ -349,7 +349,7 @@ namespace Everlook.Configuration
             };
             imageExportKeyData.Comments = imageExportKeyComments;
 
-            this._configurationData[Export].AddKey(imageExportKeyData);
+            _configurationData[Export].AddKey(imageExportKeyData);
 
             var audioExportKeyData = new KeyData(nameof(this.DefaultAudioExportFormat))
             {
@@ -366,27 +366,27 @@ namespace Everlook.Configuration
             };
             audioExportKeyData.Comments = audioExportKeyComments;
 
-            this._configurationData[Export].AddKey(audioExportKeyData);
+            _configurationData[Export].AddKey(audioExportKeyData);
 
-            this._configurationData[Export].AddKey(nameof(this.KeepFileDirectoryStructure), "false");
+            _configurationData[Export].AddKey(nameof(this.KeepFileDirectoryStructure), "false");
 
-            this._configurationData[Privacy].AddKey(nameof(this.AllowSendingStatistics), "false");
-            this._configurationData[Privacy].AddKey(nameof(this.SendMachineID), "true");
-            this._configurationData[Privacy].AddKey(nameof(this.SendInstallID), "true");
-            this._configurationData[Privacy].AddKey(nameof(this.SendOperatingSystem), "true");
-            this._configurationData[Privacy].AddKey(nameof(this.SendAppVersion), "true");
-            this._configurationData[Privacy].AddKey(nameof(this.SendRuntimeInformation), "true");
+            _configurationData[Privacy].AddKey(nameof(this.AllowSendingStatistics), "false");
+            _configurationData[Privacy].AddKey(nameof(this.SendMachineID), "true");
+            _configurationData[Privacy].AddKey(nameof(this.SendInstallID), "true");
+            _configurationData[Privacy].AddKey(nameof(this.SendOperatingSystem), "true");
+            _configurationData[Privacy].AddKey(nameof(this.SendAppVersion), "true");
+            _configurationData[Privacy].AddKey(nameof(this.SendRuntimeInformation), "true");
 
-            this._configurationData[Viewport].AddKey(nameof(this.ViewportBackgroundColour), "rgb(133, 146, 173)");
-            this._configurationData[Viewport].AddKey(nameof(this.WireframeColour), "rgb(234, 161, 0)");
-            this._configurationData[Viewport].AddKey(nameof(this.OccludeBoundingBoxes), "false");
-            this._configurationData[Viewport].AddKey(nameof(this.CameraSpeed), "1.0");
-            this._configurationData[Viewport].AddKey(nameof(this.RotationSpeed), "1.0");
-            this._configurationData[Viewport].AddKey(nameof(this.CameraFOV), "45.0");
-            this._configurationData[Viewport].AddKey(nameof(this.SprintMultiplier), "2.0");
+            _configurationData[Viewport].AddKey(nameof(this.ViewportBackgroundColour), "rgb(133, 146, 173)");
+            _configurationData[Viewport].AddKey(nameof(this.WireframeColour), "rgb(234, 161, 0)");
+            _configurationData[Viewport].AddKey(nameof(this.OccludeBoundingBoxes), "false");
+            _configurationData[Viewport].AddKey(nameof(this.CameraSpeed), "1.0");
+            _configurationData[Viewport].AddKey(nameof(this.RotationSpeed), "1.0");
+            _configurationData[Viewport].AddKey(nameof(this.CameraFOV), "45.0");
+            _configurationData[Viewport].AddKey(nameof(this.SprintMultiplier), "2.0");
 
-            this._configurationData[Explorer].AddKey(nameof(this.ShowUnknownFilesWhenFiltering), "true");
-            this._configurationData[Explorer].AddKey(nameof(this.AutoplayAudioFiles), "true");
+            _configurationData[Explorer].AddKey(nameof(this.ShowUnknownFilesWhenFiltering), "true");
+            _configurationData[Explorer].AddKey(nameof(this.AutoplayAudioFiles), "true");
         }
 
         private void AddNewConfigurationSection(IniData configData, string keySection)
@@ -464,7 +464,7 @@ namespace Everlook.Configuration
                 value = value.ToLowerInvariant();
             }
 
-            this._configurationData[section][keyName] = value;
+            _configurationData[section][keyName] = value;
         }
 
         /// <summary>
@@ -475,7 +475,7 @@ namespace Everlook.Configuration
         /// <returns>The string value of the option.</returns>
         private string GetOption(string section, string keyName)
         {
-            return this._configurationData[section][keyName];
+            return _configurationData[section][keyName];
         }
 
         /// <summary>
@@ -487,7 +487,7 @@ namespace Everlook.Configuration
         /// <returns>true or false, depending on what the option is set to.</returns>
         private bool GetBooleanOption(string section, string keyName, bool defaultValue = false)
         {
-            if (bool.TryParse(this._configurationData[section][keyName], out var optionValue))
+            if (bool.TryParse(_configurationData[section][keyName], out var optionValue))
             {
                 return optionValue;
             }
@@ -504,7 +504,7 @@ namespace Everlook.Configuration
         /// <returns>The value of the option.</returns>
         private int GetIntegerOption(string section, string keyName, int defaultValue = -1)
         {
-            if (int.TryParse(this._configurationData[section][keyName], out var optionValue))
+            if (int.TryParse(_configurationData[section][keyName], out var optionValue))
             {
                 return optionValue;
             }
@@ -521,7 +521,7 @@ namespace Everlook.Configuration
         /// <returns>The value of the option.</returns>
         private T GetEnumOption<T>(string section, string keyName, T defaultValue) where T : struct
         {
-            if (Enum.TryParse(this._configurationData[section][keyName], true, out T optionValue))
+            if (Enum.TryParse(_configurationData[section][keyName], true, out T optionValue))
             {
                 return optionValue;
             }
@@ -539,7 +539,7 @@ namespace Everlook.Configuration
         private RGBA GetColourOption(string section, string keyName, RGBA defaultValue = default(RGBA))
         {
             var value = default(RGBA);
-            if (value.Parse(this._configurationData[section][keyName]))
+            if (value.Parse(_configurationData[section][keyName]))
             {
                 return value;
             }
@@ -556,7 +556,7 @@ namespace Everlook.Configuration
         /// <returns>The value of the option.</returns>
         private double GetDoubleOption(string section, string keyName, double defaultValue = default(double))
         {
-            if (double.TryParse(this._configurationData[section][keyName], out var optionValue))
+            if (double.TryParse(_configurationData[section][keyName], out var optionValue))
             {
                 return optionValue;
             }

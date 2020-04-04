@@ -76,19 +76,19 @@ namespace Everlook.UI
         {
             builder.Autoconnect(this);
 
-            this._addPathButton.Clicked += OnAddPathButtonClicked;
-            this._removePathButton.Clicked += OnRemovePathButtonClicked;
+            _addPathButton.Clicked += OnAddPathButtonClicked;
+            _removePathButton.Clicked += OnRemovePathButtonClicked;
 
-            this._gamePathSelectionTreeView.KeyPressEvent += OnKeyPressedGamePathTreeView;
+            _gamePathSelectionTreeView.KeyPressEvent += OnKeyPressedGamePathTreeView;
 
-            this._aliasEntry.Changed += OnAliasEntryChanged;
+            _aliasEntry.Changed += OnAliasEntryChanged;
 
             // Handle enter key presses in the path dialog
-            this._newGamePathDialog.KeyPressEvent += OnKeyPressedNewPathDialog;
-            this._aliasEntry.KeyPressEvent += OnKeyPressedNewPathDialog;
+            _newGamePathDialog.KeyPressEvent += OnKeyPressedNewPathDialog;
+            _aliasEntry.KeyPressEvent += OnKeyPressedNewPathDialog;
 
-            this._allowStatsCheckButton.Toggled += OnAllowStatsToggled;
-            this._showUnknownFilesCheckButton.Toggled += OnShowUnknownFilesToggled;
+            _allowStatsCheckButton.Toggled += OnAllowStatsToggled;
+            _showUnknownFilesCheckButton.Toggled += OnShowUnknownFilesToggled;
 
             LoadPreferences();
         }
@@ -102,7 +102,7 @@ namespace Everlook.UI
         private void OnShowUnknownFilesToggled(object sender, EventArgs e)
         {
             // Refilter if the option has changed
-            if (this._showUnknownFilesCheckButton.Active != this._config.ShowUnknownFilesWhenFiltering)
+            if (_showUnknownFilesCheckButton.Active != _config.ShowUnknownFilesWhenFiltering)
             {
                 this.ShouldRefilterTree = true;
                 return;
@@ -119,13 +119,13 @@ namespace Everlook.UI
         [ConnectBefore]
         private void OnAllowStatsToggled(object sender, EventArgs e)
         {
-            var suboptionSensitivity = this._allowStatsCheckButton.Active;
+            var suboptionSensitivity = _allowStatsCheckButton.Active;
 
-            this._sendMachineIDCheckButton.Sensitive = suboptionSensitivity;
-            this._sendInstallIDCheckButton.Sensitive = suboptionSensitivity;
-            this._sendOSCheckButton.Sensitive = suboptionSensitivity;
-            this._sendAppVersionCheckButton.Sensitive = suboptionSensitivity;
-            this._sendRuntimeInfoCheckButton.Sensitive = suboptionSensitivity;
+            _sendMachineIDCheckButton.Sensitive = suboptionSensitivity;
+            _sendInstallIDCheckButton.Sensitive = suboptionSensitivity;
+            _sendOSCheckButton.Sensitive = suboptionSensitivity;
+            _sendAppVersionCheckButton.Sensitive = suboptionSensitivity;
+            _sendRuntimeInfoCheckButton.Sensitive = suboptionSensitivity;
         }
 
         /// <summary>
@@ -141,9 +141,9 @@ namespace Everlook.UI
                 return;
             }
 
-            if (this._aliasEntry.Text.Length > 0)
+            if (_aliasEntry.Text.Length > 0)
             {
-                this._newGamePathDialog.Respond(ResponseType.Ok);
+                _newGamePathDialog.Respond(ResponseType.Ok);
             }
         }
 
@@ -167,7 +167,7 @@ namespace Everlook.UI
         /// <param name="eventArgs">The event arguments.</param>
         private void OnAliasEntryChanged(object sender, EventArgs eventArgs)
         {
-            this._newGamePathDialog.SetResponseSensitive(ResponseType.Ok, !string.IsNullOrEmpty(this._aliasEntry.Text));
+            _newGamePathDialog.SetResponseSensitive(ResponseType.Ok, !string.IsNullOrEmpty(_aliasEntry.Text));
         }
 
         /// <summary>
@@ -178,28 +178,28 @@ namespace Everlook.UI
         private void OnAddPathButtonClicked(object sender, EventArgs eventArgs)
         {
             var defaultLocation = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-            this._pathChooser.SetCurrentFolderUri(defaultLocation.ToString());
+            _pathChooser.SetCurrentFolderUri(defaultLocation.ToString());
 
-            switch ((ResponseType)this._newGamePathDialog.Run())
+            switch ((ResponseType)_newGamePathDialog.Run())
             {
                 case ResponseType.Ok:
                 {
-                    var alias = this._aliasEntry.Text;
-                    var selectedVersion = (WarcraftVersion)this._gameVersionCombo.Active;
-                    var uriToStore = this._pathChooser.File.Uri;
+                    var alias = _aliasEntry.Text;
+                    var selectedVersion = (WarcraftVersion)_gameVersionCombo.Active;
+                    var uriToStore = _pathChooser.File.Uri;
 
                     if (Directory.Exists(uriToStore.LocalPath))
                     {
-                        this._gamePathListStore.AppendValues(alias, uriToStore.LocalPath, (uint)selectedVersion, selectedVersion.ToString());
+                        _gamePathListStore.AppendValues(alias, uriToStore.LocalPath, (uint)selectedVersion, selectedVersion.ToString());
                         this.DidGameListChange = true;
                     }
 
-                    this._newGamePathDialog.Hide();
+                    _newGamePathDialog.Hide();
                     break;
                 }
                 default:
                 {
-                    this._newGamePathDialog.Hide();
+                    _newGamePathDialog.Hide();
                     break;
                 }
             }
@@ -213,19 +213,19 @@ namespace Everlook.UI
         private void OnRemovePathButtonClicked(object sender, EventArgs e)
         {
             TreeIter selectedIter;
-            this._gamePathSelectionTreeView.Selection.GetSelected(out selectedIter);
+            _gamePathSelectionTreeView.Selection.GetSelected(out selectedIter);
 
-            if (!this._gamePathListStore.IterIsValid(selectedIter))
+            if (!_gamePathListStore.IterIsValid(selectedIter))
             {
                 return;
             }
 
-            var alias = (string)this._gamePathListStore.GetValue(selectedIter, 0);
-            var path = (string)this._gamePathListStore.GetValue(selectedIter, 1);
-            var version = (WarcraftVersion)this._gamePathListStore.GetValue(selectedIter, 2);
+            var alias = (string)_gamePathListStore.GetValue(selectedIter, 0);
+            var path = (string)_gamePathListStore.GetValue(selectedIter, 1);
+            var version = (WarcraftVersion)_gamePathListStore.GetValue(selectedIter, 2);
 
             GamePathStorage.Instance.RemoveStoredPath(alias, version, path);
-            this._gamePathListStore.Remove(ref selectedIter);
+            _gamePathListStore.Remove(ref selectedIter);
             this.DidGameListChange = true;
         }
 
@@ -238,12 +238,12 @@ namespace Everlook.UI
             {
                 if (Directory.Exists(gamePath))
                 {
-                    this._gamePathListStore.AppendValues(alias, gamePath, (uint)version, version.ToString());
+                    _gamePathListStore.AppendValues(alias, gamePath, (uint)version, version.ToString());
                 }
             }
 
             // Make sure we've got the latest from disk
-            this._config.Reload();
+            _config.Reload();
 
             LoadConfigurationValues();
         }
@@ -253,13 +253,13 @@ namespace Everlook.UI
         /// </summary>
         private void LoadConfigurationValues()
         {
-            if (!string.IsNullOrEmpty(this._config.DefaultExportDirectory))
+            if (!string.IsNullOrEmpty(_config.DefaultExportDirectory))
             {
-                if (!Directory.Exists(this._config.DefaultExportDirectory))
+                if (!Directory.Exists(_config.DefaultExportDirectory))
                 {
                     try
                     {
-                        Directory.CreateDirectory(this._config.DefaultExportDirectory);
+                        Directory.CreateDirectory(_config.DefaultExportDirectory);
                     }
                     catch (UnauthorizedAccessException uax)
                     {
@@ -269,31 +269,31 @@ namespace Everlook.UI
                 }
             }
 
-            var fullExportPath = System.IO.Path.GetFullPath(this._config.DefaultExportDirectory);
-            this._defaultExportDirectoryFileChooserButton.SetUri(new Uri(fullExportPath).AbsoluteUri);
+            var fullExportPath = System.IO.Path.GetFullPath(_config.DefaultExportDirectory);
+            _defaultExportDirectoryFileChooserButton.SetUri(new Uri(fullExportPath).AbsoluteUri);
 
-            this._defaultModelExportFormatComboBox.Active = (int)this._config.DefaultModelExportFormat;
-            this._defaultImageExportFormatComboBox.Active = (int)this._config.DefaultImageExportFormat;
-            this._defaultAudioExportFormatComboBox.Active = (int)this._config.DefaultAudioExportFormat;
-            this._keepDirectoryStructureSwitch.Active = this._config.KeepFileDirectoryStructure;
+            _defaultModelExportFormatComboBox.Active = (int)_config.DefaultModelExportFormat;
+            _defaultImageExportFormatComboBox.Active = (int)_config.DefaultImageExportFormat;
+            _defaultAudioExportFormatComboBox.Active = (int)_config.DefaultAudioExportFormat;
+            _keepDirectoryStructureSwitch.Active = _config.KeepFileDirectoryStructure;
 
-            this._allowStatsCheckButton.Active = this._config.AllowSendingStatistics;
-            this._sendMachineIDCheckButton.Active = this._config.SendMachineID;
-            this._sendInstallIDCheckButton.Active = this._config.SendInstallID;
-            this._sendOSCheckButton.Active = this._config.SendOperatingSystem;
-            this._sendAppVersionCheckButton.Active = this._config.SendAppVersion;
-            this._sendRuntimeInfoCheckButton.Active = this._config.SendRuntimeInformation;
+            _allowStatsCheckButton.Active = _config.AllowSendingStatistics;
+            _sendMachineIDCheckButton.Active = _config.SendMachineID;
+            _sendInstallIDCheckButton.Active = _config.SendInstallID;
+            _sendOSCheckButton.Active = _config.SendOperatingSystem;
+            _sendAppVersionCheckButton.Active = _config.SendAppVersion;
+            _sendRuntimeInfoCheckButton.Active = _config.SendRuntimeInformation;
 
-            this._viewportColourButton.Rgba = this._config.ViewportBackgroundColour;
-            this._wireframeColourButton.Rgba = this._config.WireframeColour;
-            this._occludeBoundingBoxesSwitch.Active = this._config.OccludeBoundingBoxes;
-            this._cameraSpeedAdjustment.Value = this._config.CameraSpeed;
-            this._rotationSpeedAdjustment.Value = this._config.RotationSpeed;
-            this._cameraFOVAdjustment.Value = this._config.CameraFOV;
-            this._sprintMultiplierAdjustment.Value = this._config.SprintMultiplier;
+            _viewportColourButton.Rgba = _config.ViewportBackgroundColour;
+            _wireframeColourButton.Rgba = _config.WireframeColour;
+            _occludeBoundingBoxesSwitch.Active = _config.OccludeBoundingBoxes;
+            _cameraSpeedAdjustment.Value = _config.CameraSpeed;
+            _rotationSpeedAdjustment.Value = _config.RotationSpeed;
+            _cameraFOVAdjustment.Value = _config.CameraFOV;
+            _sprintMultiplierAdjustment.Value = _config.SprintMultiplier;
 
-            this._showUnknownFilesCheckButton.Active = this._config.ShowUnknownFilesWhenFiltering;
-            this._autoplayAudioCheckButton.Active = this._config.AutoplayAudioFiles;
+            _showUnknownFilesCheckButton.Active = _config.ShowUnknownFilesWhenFiltering;
+            _autoplayAudioCheckButton.Active = _config.AutoplayAudioFiles;
         }
 
         /// <summary>
@@ -301,20 +301,20 @@ namespace Everlook.UI
         /// </summary>
         public void SavePreferences()
         {
-            this._gamePathListStore.Foreach
+            _gamePathListStore.Foreach
             (
                 (model, path, iter) =>
                 {
                     var alias = (string)model.GetValue(iter, 0);
                     var gamePath = (string)model.GetValue(iter, 1);
-                    var version = (WarcraftVersion)this._gamePathListStore.GetValue(iter, 2);
+                    var version = (WarcraftVersion)_gamePathListStore.GetValue(iter, 2);
                     GamePathStorage.Instance.StorePath(alias, version, gamePath);
 
                     return false;
                 }
             );
 
-            var selectedExportDirectory = new Uri(this._defaultExportDirectoryFileChooserButton.Uri).LocalPath;
+            var selectedExportDirectory = new Uri(_defaultExportDirectoryFileChooserButton.Uri).LocalPath;
             if (!Directory.Exists(selectedExportDirectory))
             {
                 try
@@ -328,32 +328,32 @@ namespace Everlook.UI
                 }
             }
 
-            this._config.DefaultExportDirectory = selectedExportDirectory;
+            _config.DefaultExportDirectory = selectedExportDirectory;
 
-            this._config.DefaultModelExportFormat = (ModelFormat)this._defaultModelExportFormatComboBox.Active;
-            this._config.DefaultImageExportFormat = (ImageFormat)this._defaultImageExportFormatComboBox.Active;
-            this._config.DefaultAudioExportFormat = (AudioFormat)this._defaultAudioExportFormatComboBox.Active;
-            this._config.KeepFileDirectoryStructure = this._keepDirectoryStructureSwitch.Active;
+            _config.DefaultModelExportFormat = (ModelFormat)_defaultModelExportFormatComboBox.Active;
+            _config.DefaultImageExportFormat = (ImageFormat)_defaultImageExportFormatComboBox.Active;
+            _config.DefaultAudioExportFormat = (AudioFormat)_defaultAudioExportFormatComboBox.Active;
+            _config.KeepFileDirectoryStructure = _keepDirectoryStructureSwitch.Active;
 
-            this._config.AllowSendingStatistics = this._allowStatsCheckButton.Active;
-            this._config.SendMachineID = this._sendMachineIDCheckButton.Active;
-            this._config.SendInstallID = this._sendInstallIDCheckButton.Active;
-            this._config.SendOperatingSystem = this._sendOSCheckButton.Active;
-            this._config.SendAppVersion = this._sendAppVersionCheckButton.Active;
-            this._config.SendRuntimeInformation = this._sendRuntimeInfoCheckButton.Active;
+            _config.AllowSendingStatistics = _allowStatsCheckButton.Active;
+            _config.SendMachineID = _sendMachineIDCheckButton.Active;
+            _config.SendInstallID = _sendInstallIDCheckButton.Active;
+            _config.SendOperatingSystem = _sendOSCheckButton.Active;
+            _config.SendAppVersion = _sendAppVersionCheckButton.Active;
+            _config.SendRuntimeInformation = _sendRuntimeInfoCheckButton.Active;
 
-            this._config.ViewportBackgroundColour = this._viewportColourButton.Rgba;
-            this._config.WireframeColour = this._wireframeColourButton.Rgba;
-            this._config.OccludeBoundingBoxes = this._occludeBoundingBoxesSwitch.Active;
-            this._config.CameraSpeed = this._cameraSpeedAdjustment.Value;
-            this._config.RotationSpeed = this._rotationSpeedAdjustment.Value;
-            this._config.CameraFOV = this._cameraFOVAdjustment.Value;
-            this._config.SprintMultiplier = this._sprintMultiplierAdjustment.Value;
+            _config.ViewportBackgroundColour = _viewportColourButton.Rgba;
+            _config.WireframeColour = _wireframeColourButton.Rgba;
+            _config.OccludeBoundingBoxes = _occludeBoundingBoxesSwitch.Active;
+            _config.CameraSpeed = _cameraSpeedAdjustment.Value;
+            _config.RotationSpeed = _rotationSpeedAdjustment.Value;
+            _config.CameraFOV = _cameraFOVAdjustment.Value;
+            _config.SprintMultiplier = _sprintMultiplierAdjustment.Value;
 
-            this._config.ShowUnknownFilesWhenFiltering = this._showUnknownFilesCheckButton.Active;
-            this._config.AutoplayAudioFiles = this._autoplayAudioCheckButton.Active;
+            _config.ShowUnknownFilesWhenFiltering = _showUnknownFilesCheckButton.Active;
+            _config.AutoplayAudioFiles = _autoplayAudioCheckButton.Active;
 
-            this._config.Commit();
+            _config.Commit();
         }
     }
 }

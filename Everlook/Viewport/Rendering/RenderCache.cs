@@ -74,12 +74,12 @@ namespace Everlook.Viewport.Rendering
             {
                 ThrowIfDisposed();
 
-                if (this._fallbackTextureInternal == null)
+                if (_fallbackTextureInternal == null)
                 {
-                    this._fallbackTextureInternal = new Texture2D(ResourceManager.GetFallbackImage());
+                    _fallbackTextureInternal = new Texture2D(ResourceManager.GetFallbackImage());
                 }
 
-                return this._fallbackTextureInternal;
+                return _fallbackTextureInternal;
             }
         }
 
@@ -131,7 +131,7 @@ namespace Everlook.Viewport.Rendering
                 throw new ArgumentNullException(nameof(texturePath));
             }
 
-            return this._textureCache.ContainsKey(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant());
+            return _textureCache.ContainsKey(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant());
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Everlook.Viewport.Rendering
                 throw new ArgumentException("An unknown shader was passed to the rendering cache.", nameof(shader));
             }
 
-            return this._shaderCache.ContainsKey(shader);
+            return _shaderCache.ContainsKey(shader);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Everlook.Viewport.Rendering
         {
             ThrowIfDisposed();
 
-            return this._textureCache[texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant()];
+            return _textureCache[texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant()];
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Everlook.Viewport.Rendering
         {
             ThrowIfDisposed();
 
-            return this._shaderCache[shader];
+            return _shaderCache[shader];
         }
 
         /// <summary>
@@ -278,7 +278,7 @@ namespace Everlook.Viewport.Rendering
 
             var texture = new Texture2D(imageData, wrappingModeS, wrappingModeT);
 
-            this._textureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), texture);
+            _textureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), texture);
             return texture;
         }
 
@@ -297,7 +297,7 @@ namespace Everlook.Viewport.Rendering
 
             var texture = new Texture2D(imageData);
 
-            this._textureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), texture);
+            _textureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), texture);
             return texture;
         }
 
@@ -348,7 +348,7 @@ namespace Everlook.Viewport.Rendering
                 }
             }
 
-            this._shaderCache.Add(shader, shaderProgram);
+            _shaderCache.Add(shader, shaderProgram);
             return shaderProgram;
         }
 
@@ -374,17 +374,17 @@ namespace Everlook.Viewport.Rendering
 
             this.IsDisposed = true;
 
-            foreach (var cachedTexture in this._textureCache)
+            foreach (var cachedTexture in _textureCache)
             {
                 cachedTexture.Value?.Dispose();
             }
-            this._textureCache.Clear();
+            _textureCache.Clear();
 
-            foreach (var cachedShader in this._shaderCache)
+            foreach (var cachedShader in _shaderCache)
             {
                 cachedShader.Value?.Dispose();
             }
-            this._shaderCache.Clear();
+            _shaderCache.Clear();
         }
     }
 }

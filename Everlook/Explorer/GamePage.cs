@@ -69,7 +69,7 @@ namespace Everlook.Explorer
         /// <summary>
         /// Gets the widget which is at the top level of the page.
         /// </summary>
-        public Widget PageWidget => this._treeAlignment;
+        public Widget PageWidget => _treeAlignment;
 
         /// <summary>
         /// Gets or sets the alias of this page, that is, its name.
@@ -122,28 +122,28 @@ namespace Everlook.Explorer
         /// <param name="version">The Warcraft version that the game page is contextually relevant for.</param>
         public GamePage(PackageGroup packageGroup, SerializedTree nodeTree, WarcraftVersion version)
         {
-            this._uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            _uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
-            this._treeModel = new FileTreeModel(nodeTree);
-            this.GameContext = new WarcraftGameContext(version, packageGroup, this._treeModel);
+            _treeModel = new FileTreeModel(nodeTree);
+            this.GameContext = new WarcraftGameContext(version, packageGroup, _treeModel);
 
-            this._treeAlignment = new Alignment(0.5f, 0.5f, 1.0f, 1.0f)
+            _treeAlignment = new Alignment(0.5f, 0.5f, 1.0f, 1.0f)
             {
                 TopPadding = 1,
                 BottomPadding = 1
             };
 
-            this._treeFilter = new TreeModelFilter(new TreeModelAdapter(this._treeModel), null)
+            _treeFilter = new TreeModelFilter(new TreeModelAdapter(_treeModel), null)
             {
                 VisibleFunc = TreeModelVisibilityFunc
             };
 
-            this._treeSorter = new TreeModelSort(this._treeFilter);
+            _treeSorter = new TreeModelSort(_treeFilter);
 
-            this._treeSorter.SetSortFunc(0, SortGameTreeRow);
-            this._treeSorter.SetSortColumnId(0, SortType.Descending);
+            _treeSorter.SetSortFunc(0, SortGameTreeRow);
+            _treeSorter.SetSortColumnId(0, SortType.Descending);
 
-            this.Tree = new TreeView(this._treeSorter)
+            this.Tree = new TreeView(_treeSorter)
             {
                 HeadersVisible = true,
                 EnableTreeLines = true
@@ -176,16 +176,16 @@ namespace Everlook.Explorer
                 this.Tree
             };
 
-            this._treeAlignment.Add(sw);
+            _treeAlignment.Add(sw);
 
             this.Tree.RowActivated += OnRowActivated;
             this.Tree.ButtonPressEvent += OnButtonPressed;
             this.Tree.Selection.Changed += OnSelectionChanged;
 
-            this._treeContextMenu = new Menu();
+            _treeContextMenu = new Menu();
 
             // Save item context button
-            this._saveItem = new ImageMenuItem
+            _saveItem = new ImageMenuItem
             {
                 UseStock = true,
                 Label = Stock.Save,
@@ -193,21 +193,21 @@ namespace Everlook.Explorer
                 TooltipText = "Save the currently selected item to disk.",
                 UseUnderline = true
             };
-            this._saveItem.Activated += OnSaveItem;
-            this._treeContextMenu.Add(this._saveItem);
+            _saveItem.Activated += OnSaveItem;
+            _treeContextMenu.Add(_saveItem);
 
             // Export item context button
-            this._exportItem = new ImageMenuItem("Export")
+            _exportItem = new ImageMenuItem("Export")
             {
                 Image = new Image(Stock.Convert, IconSize.Button),
                 CanFocus = false,
                 TooltipText = "Exports the currently selected item to another format.",
             };
-            this._exportItem.Activated += OnExportItemRequested;
-            this._treeContextMenu.Add(this._exportItem);
+            _exportItem.Activated += OnExportItemRequested;
+            _treeContextMenu.Add(_exportItem);
 
             // Open item context button
-            this._openItem = new ImageMenuItem
+            _openItem = new ImageMenuItem
             {
                 UseStock = true,
                 Label = Stock.Open,
@@ -215,34 +215,34 @@ namespace Everlook.Explorer
                 TooltipText = "Open the currently selected item.",
                 UseUnderline = true
             };
-            this._openItem.Activated += OnOpenItem;
-            this._treeContextMenu.Add(this._openItem);
+            _openItem.Activated += OnOpenItem;
+            _treeContextMenu.Add(_openItem);
 
             // Queue for export context button
-            this._queueForExportItem = new ImageMenuItem("Queue for export")
+            _queueForExportItem = new ImageMenuItem("Queue for export")
             {
                 Image = new Image(Stock.Convert, IconSize.Button),
                 CanFocus = false,
                 TooltipText = "Queues the currently selected item for batch export.",
             };
-            this._queueForExportItem.Activated += OnQueueForExportRequested;
-            this._treeContextMenu.Add(this._queueForExportItem);
+            _queueForExportItem.Activated += OnQueueForExportRequested;
+            _treeContextMenu.Add(_queueForExportItem);
 
             // Separator
             var separator = new SeparatorMenuItem();
-            this._treeContextMenu.Add(separator);
+            _treeContextMenu.Add(separator);
 
             // Copy path context button
-            this._copyPathItem = new ImageMenuItem("Copy path")
+            _copyPathItem = new ImageMenuItem("Copy path")
             {
                 Image = new Image(Stock.Copy, IconSize.Button),
                 CanFocus = false,
                 TooltipText = "Copy the path of the currently selected item.",
             };
-            this._copyPathItem.Activated += OnCopyPath;
-            this._treeContextMenu.Add(this._copyPathItem);
+            _copyPathItem.Activated += OnCopyPath;
+            _treeContextMenu.Add(_copyPathItem);
 
-            this._treeAlignment.ShowAll();
+            _treeAlignment.ShowAll();
         }
 
         /// <summary>
@@ -261,7 +261,7 @@ namespace Everlook.Explorer
         /// <param name="filteredFileTypes">The file types to filter out.</param>
         public void SetFilter(WarcraftFileType filteredFileTypes)
         {
-            this._filteredFileTypes = filteredFileTypes;
+            _filteredFileTypes = filteredFileTypes;
         }
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace Everlook.Explorer
         /// <param name="isFiltered">True if the tree should be filtered by the set file types, false otherwise.</param>
         public void SetFilterState(bool isFiltered)
         {
-            this._isFiltered = isFiltered;
+            _isFiltered = isFiltered;
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace Everlook.Explorer
         {
             return Task.Factory.StartNew
             (
-                this._treeFilter.Refilter,
+                _treeFilter.Refilter,
                 CancellationToken.None,
                 TaskCreationOptions.None,
                 TaskScheduler.FromCurrentSynchronizationContext()
@@ -296,7 +296,7 @@ namespace Everlook.Explorer
         /// <returns>true if the iter should be visible; false otherwise.</returns>
         private bool TreeModelVisibilityFunc(ITreeModel model, TreeIter iter)
         {
-            if (!this._isFiltered)
+            if (!_isFiltered)
             {
                 return true;
             }
@@ -315,7 +315,7 @@ namespace Everlook.Explorer
 
             // If the file types of the node and the filtered types overlap in any way, then it should
             // be displayed.
-            if ((nodeTypes & this._filteredFileTypes) != 0)
+            if ((nodeTypes & _filteredFileTypes) != 0)
             {
                 return true;
             }
@@ -352,7 +352,7 @@ namespace Everlook.Explorer
                 return;
             }
 
-            if (node.Type.HasFlag(NodeType.Meta) && this._treeModel.GetNodeName(node) == "Packages")
+            if (node.Type.HasFlag(NodeType.Meta) && _treeModel.GetNodeName(node) == "Packages")
             {
                 cellIcon.Pixbuf = IconManager.GetIcon("applications-other");
                 return;
@@ -384,7 +384,7 @@ namespace Everlook.Explorer
                 return;
             }
 
-            cellText.Text = this._treeModel.GetNodeName(node);
+            cellText.Text = _treeModel.GetNodeName(node);
 
             if (node.Type.HasFlag(NodeType.Deleted))
             {
@@ -453,7 +453,7 @@ namespace Everlook.Explorer
             {
                 this.Tree.Selection.GetSelected(out var selectedIter);
 
-                this.Tree.ExpandRow(this._treeModel.GetPath(selectedIter), false);
+                this.Tree.ExpandRow(_treeModel.GetPath(selectedIter), false);
             }
         }
 
@@ -492,7 +492,7 @@ namespace Everlook.Explorer
             var exportTargets = new List<FileReference>();
             if (fileReference.IsDirectory)
             {
-                foreach (var subfile in this._treeModel.EnumerateFilesOfReference(fileReference))
+                foreach (var subfile in _treeModel.EnumerateFilesOfReference(fileReference))
                 {
                     exportTargets.Add(subfile);
                 }
@@ -520,41 +520,41 @@ namespace Everlook.Explorer
             }
 
             this.Tree.GetPathAtPos((int)args.Event.X, (int)args.Event.Y, out var sorterPath);
-            var filterPath = this._treeSorter.ConvertPathToChildPath(sorterPath);
-            var modelPath = this._treeFilter.ConvertPathToChildPath(filterPath);
+            var filterPath = _treeSorter.ConvertPathToChildPath(sorterPath);
+            var modelPath = _treeFilter.ConvertPathToChildPath(filterPath);
 
             if (modelPath == null)
             {
-                this._saveItem.Sensitive = false;
-                this._exportItem.Sensitive = false;
-                this._openItem.Sensitive = false;
-                this._queueForExportItem.Sensitive = false;
-                this._copyPathItem.Sensitive = false;
+                _saveItem.Sensitive = false;
+                _exportItem.Sensitive = false;
+                _openItem.Sensitive = false;
+                _queueForExportItem.Sensitive = false;
+                _copyPathItem.Sensitive = false;
                 return;
             }
 
-            var currentFileReference = this._treeModel.GetReferenceByPath(this.GameContext, modelPath);
+            var currentFileReference = _treeModel.GetReferenceByPath(this.GameContext, modelPath);
             if (currentFileReference.IsFile || currentFileReference.IsDirectory)
             {
-                this._saveItem.Sensitive = true;
-                this._exportItem.Sensitive = true;
-                this._openItem.Sensitive = true;
-                this._queueForExportItem.Sensitive = true;
-                this._copyPathItem.Sensitive = true;
+                _saveItem.Sensitive = true;
+                _exportItem.Sensitive = true;
+                _openItem.Sensitive = true;
+                _queueForExportItem.Sensitive = true;
+                _copyPathItem.Sensitive = true;
             }
             else
             {
-                this._saveItem.Sensitive = false;
-                this._exportItem.Sensitive = false;
-                this._openItem.Sensitive = true;
-                this._queueForExportItem.Sensitive = false;
-                this._copyPathItem.Sensitive = false;
+                _saveItem.Sensitive = false;
+                _exportItem.Sensitive = false;
+                _openItem.Sensitive = true;
+                _queueForExportItem.Sensitive = false;
+                _copyPathItem.Sensitive = false;
             }
 
-            this._treeContextMenu.ShowAll();
+            _treeContextMenu.ShowAll();
 
             //this.TreeContextMenu.Popup(); // only available in GTK >= 3.22
-            this._treeContextMenu.PopupForDevice(args.Event.Device, null, null, null, null, args.Event.Button, args.Event.Time);
+            _treeContextMenu.PopupForDevice(args.Event.Device, null, null, null, null, args.Event.Button, args.Event.Time);
         }
 
         /// <summary>
@@ -615,10 +615,10 @@ namespace Everlook.Explorer
         {
             this.Tree.Selection.GetSelected(out var selectedIter);
 
-            var filterIter = this._treeSorter.ConvertIterToChildIter(selectedIter);
-            var modeliter = this._treeFilter.ConvertIterToChildIter(filterIter);
+            var filterIter = _treeSorter.ConvertIterToChildIter(selectedIter);
+            var modeliter = _treeFilter.ConvertIterToChildIter(filterIter);
 
-            return this._treeModel.GetReferenceByIter(this.GameContext, modeliter);
+            return _treeModel.GetReferenceByIter(this.GameContext, modeliter);
         }
 
         /// <summary>
@@ -720,9 +720,9 @@ namespace Everlook.Explorer
                 return sortABeforeB;
             }
 
-            var nodeAName = this._treeModel.GetNodeName(nodeA);
+            var nodeAName = _treeModel.GetNodeName(nodeA);
 
-            var nodeBName = this._treeModel.GetNodeName(nodeB);
+            var nodeBName = _treeModel.GetNodeName(nodeB);
 
             var result = string.CompareOrdinal(nodeAName, nodeBName);
 
@@ -755,7 +755,7 @@ namespace Everlook.Explorer
                 async () => await this.FileLoadRequested.Invoke(this, fileReference),
                 CancellationToken.None,
                 TaskCreationOptions.DenyChildAttach,
-                this._uiTaskScheduler
+                _uiTaskScheduler
             );
         }
 
@@ -775,7 +775,7 @@ namespace Everlook.Explorer
                 async () => await this.SaveRequested.Invoke(this, fileReferences),
                 CancellationToken.None,
                 TaskCreationOptions.DenyChildAttach,
-                this._uiTaskScheduler
+                _uiTaskScheduler
             );
         }
 
@@ -795,7 +795,7 @@ namespace Everlook.Explorer
                 async () => await this.ExportItemRequested.Invoke(this, fileReference),
                 CancellationToken.None,
                 TaskCreationOptions.DenyChildAttach,
-                this._uiTaskScheduler
+                _uiTaskScheduler
             );
         }
 
@@ -815,18 +815,18 @@ namespace Everlook.Explorer
                 async () => await this.EnqueueFileExportRequested.Invoke(this, fileReference),
                 CancellationToken.None,
                 TaskCreationOptions.DenyChildAttach,
-                this._uiTaskScheduler
+                _uiTaskScheduler
             );
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            this._treeAlignment?.Dispose();
+            _treeAlignment?.Dispose();
             this.GameContext.Assets?.Dispose();
-            this._treeModel?.Dispose();
-            this._treeSorter?.Dispose();
-            this._treeFilter?.Dispose();
+            _treeModel?.Dispose();
+            _treeSorter?.Dispose();
+            _treeFilter?.Dispose();
             this.Tree?.Dispose();
         }
     }

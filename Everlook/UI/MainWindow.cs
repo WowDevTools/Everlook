@@ -123,8 +123,8 @@ namespace Everlook.UI
             this.Shown += OnMainWindowShown;
             this.WindowStateEvent += OnWindowStateChanged;
 
-            this._uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            this._fileLoadingCancellationSource = new CancellationTokenSource();
+            _uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            _fileLoadingCancellationSource = new CancellationTokenSource();
 
             var graphicsMode = new GraphicsMode
             (
@@ -137,13 +137,13 @@ namespace Everlook.UI
                 false
             );
 
-            this._viewportWidget = new ViewportArea(graphicsMode, 3, 3, GraphicsContextFlags.Default)
+            _viewportWidget = new ViewportArea(graphicsMode, 3, 3, GraphicsContextFlags.Default)
             {
                 AutoRender = true,
                 CanFocus = true
             };
 
-            this._viewportWidget.Events |=
+            _viewportWidget.Events |=
                 EventMask.ButtonPressMask |
                 EventMask.ButtonReleaseMask |
                 EventMask.EnterNotifyMask |
@@ -151,70 +151,70 @@ namespace Everlook.UI
                 EventMask.KeyPressMask |
                 EventMask.KeyReleaseMask;
 
-            this._viewportWidget.Initialized += (sender, args) =>
+            _viewportWidget.Initialized += (sender, args) =>
             {
-                this._renderingEngine.Initialize();
+                _renderingEngine.Initialize();
             };
 
-            this._viewportWidget.Render += (sender, args) =>
+            _viewportWidget.Render += (sender, args) =>
             {
-                if (this._isShuttingDown)
+                if (_isShuttingDown)
                 {
                     return;
                 }
 
-                if (!this._renderingEngine.IsInitialized)
+                if (!_renderingEngine.IsInitialized)
                 {
                     return;
                 }
 
-                this._renderingEngine.RenderFrame();
+                _renderingEngine.RenderFrame();
 
-                this._viewportWidget.QueueRender();
+                _viewportWidget.QueueRender();
             };
 
-            this._viewportWidget.ButtonPressEvent += OnViewportButtonPressed;
-            this._viewportWidget.ButtonReleaseEvent += OnViewportButtonReleased;
-            this._viewportWidget.EnterNotifyEvent += OnViewportMouseEnter;
-            this._viewportWidget.LeaveNotifyEvent += OnViewportMouseLeave;
+            _viewportWidget.ButtonPressEvent += OnViewportButtonPressed;
+            _viewportWidget.ButtonReleaseEvent += OnViewportButtonReleased;
+            _viewportWidget.EnterNotifyEvent += OnViewportMouseEnter;
+            _viewportWidget.LeaveNotifyEvent += OnViewportMouseLeave;
 
-            this._renderingEngine = new ViewportRenderer(this._viewportWidget);
-            this._viewportAlignment.Add(this._viewportWidget);
-            this._viewportAlignment.ShowAll();
+            _renderingEngine = new ViewportRenderer(_viewportWidget);
+            _viewportAlignment.Add(_viewportWidget);
+            _viewportAlignment.ShowAll();
 
-            this._aboutButton.Clicked += OnAboutButtonClicked;
-            this._preferencesButton.Clicked += OnPreferencesButtonClicked;
+            _aboutButton.Clicked += OnAboutButtonClicked;
+            _preferencesButton.Clicked += OnPreferencesButtonClicked;
 
-            this._gameTabNotebook.ClearPages();
+            _gameTabNotebook.ClearPages();
 
-            this._exportQueueTreeView.ButtonPressEvent += OnExportQueueButtonPressed;
-            this._exportQueueTreeView.GetColumn(0).SetCellDataFunc
+            _exportQueueTreeView.ButtonPressEvent += OnExportQueueButtonPressed;
+            _exportQueueTreeView.GetColumn(0).SetCellDataFunc
             (
-                this._exportQueueTreeView.GetColumn(0).Cells[0],
+                _exportQueueTreeView.GetColumn(0).Cells[0],
                 CellRenderers.RenderExportQueueReferenceIcon
             );
 
-            this._exportQueueTreeView.GetColumn(0).Expand = true;
-            this._exportQueueTreeView.GetColumn(0).SetCellDataFunc
+            _exportQueueTreeView.GetColumn(0).Expand = true;
+            _exportQueueTreeView.GetColumn(0).SetCellDataFunc
             (
-                this._exportQueueTreeView.GetColumn(0).Cells[1],
+                _exportQueueTreeView.GetColumn(0).Cells[1],
                 CellRenderers.RenderExportQueueReferenceName
             );
 
-            this._modelVariationComboBox.SetCellDataFunc
+            _modelVariationComboBox.SetCellDataFunc
             (
-                this._modelVariationTextRenderer,
+                _modelVariationTextRenderer,
                 CellRenderers.RenderModelVariationName
             );
 
-            this._removeQueueItem.Activated += OnQueueRemoveContextItemActivated;
+            _removeQueueItem.Activated += OnQueueRemoveContextItemActivated;
 
-            this._clearExportQueueButton.Clicked += OnClearExportQueueButtonClicked;
-            this._runExportQueueButton.Clicked += OnRunExportQueueButtonClicked;
+            _clearExportQueueButton.Clicked += OnClearExportQueueButtonClicked;
+            _runExportQueueButton.Clicked += OnRunExportQueueButtonClicked;
 
-            this._fileFilterComboBox.Changed += OnFilterChanged;
+            _fileFilterComboBox.Changed += OnFilterChanged;
 
-            this._cancelCurrentActionButton.Clicked += OnCancelCurrentActionClicked;
+            _cancelCurrentActionButton.Clicked += OnCancelCurrentActionClicked;
 
             /*
                 Set up item control sections to default states
@@ -236,71 +236,71 @@ namespace Everlook.UI
         /// </summary>
         private void BindModelControlEvents()
         {
-            this._renderBoundsCheckButton.Toggled += (sender, args) =>
+            _renderBoundsCheckButton.Toggled += (sender, args) =>
             {
-                switch (this._renderingEngine.RenderTarget)
+                switch (_renderingEngine.RenderTarget)
                 {
                     case RenderableWorldModel wmo:
                     {
-                        wmo.ShouldRenderBounds = this._renderBoundsCheckButton.Active;
+                        wmo.ShouldRenderBounds = _renderBoundsCheckButton.Active;
                         break;
                     }
                     case RenderableGameModel mdx:
                     {
-                        mdx.ShouldRenderBounds = this._renderBoundsCheckButton.Active;
+                        mdx.ShouldRenderBounds = _renderBoundsCheckButton.Active;
                         break;
                     }
                 }
             };
 
-            this._renderWireframeCheckButton.Toggled += (sender, args) =>
+            _renderWireframeCheckButton.Toggled += (sender, args) =>
             {
-                switch (this._renderingEngine.RenderTarget)
+                switch (_renderingEngine.RenderTarget)
                 {
                     case RenderableWorldModel wmo:
                     {
-                        wmo.ShouldRenderWireframe = this._renderWireframeCheckButton.Active;
+                        wmo.ShouldRenderWireframe = _renderWireframeCheckButton.Active;
                         break;
                     }
                     case RenderableGameModel mdx:
                     {
-                        mdx.ShouldRenderWireframe = this._renderWireframeCheckButton.Active;
+                        mdx.ShouldRenderWireframe = _renderWireframeCheckButton.Active;
                         break;
                     }
                 }
             };
 
-            this._renderDoodadsCheckButton.Toggled += (sender, args) =>
+            _renderDoodadsCheckButton.Toggled += (sender, args) =>
             {
-                switch (this._renderingEngine.RenderTarget)
+                switch (_renderingEngine.RenderTarget)
                 {
                     case RenderableWorldModel wmo:
                     {
-                        wmo.ShouldRenderDoodads = this._renderDoodadsCheckButton.Active;
+                        wmo.ShouldRenderDoodads = _renderDoodadsCheckButton.Active;
                         break;
                     }
                 }
 
-                this._modelVariationComboBox.Sensitive = this._renderDoodadsCheckButton.Active;
+                _modelVariationComboBox.Sensitive = _renderDoodadsCheckButton.Active;
             };
 
-            this._modelVariationComboBox.Changed += (sender, args) =>
+            _modelVariationComboBox.Changed += (sender, args) =>
             {
-                switch (this._renderingEngine.RenderTarget)
+                switch (_renderingEngine.RenderTarget)
                 {
                     case RenderableWorldModel wmo:
                     {
-                        this._modelVariationComboBox.GetActiveIter(out var activeIter);
-                        var doodadSetName = (string)this._modelVariationListStore.GetValue(activeIter, 0);
+                        _modelVariationComboBox.GetActiveIter(out var activeIter);
+                        var doodadSetName = (string)_modelVariationListStore.GetValue(activeIter, 0);
 
                         wmo.DoodadSet = doodadSetName;
                         break;
                     }
                     case RenderableGameModel mdx:
                     {
-                        this._modelVariationComboBox.GetActiveIter(out var activeIter);
+                        _modelVariationComboBox.GetActiveIter(out var activeIter);
 
-                        var variationObject = this._modelVariationListStore.GetValue(activeIter, 1);
+                        var variationObject = _modelVariationListStore.GetValue(activeIter, 1);
                         if (variationObject != null)
                         {
                             var variationID = (int)variationObject;
@@ -318,48 +318,48 @@ namespace Everlook.UI
         /// </summary>
         private void BindImageControlEvents()
         {
-            this._renderAlphaCheckButton.Toggled += (sender, args) =>
+            _renderAlphaCheckButton.Toggled += (sender, args) =>
             {
-                var image = this._renderingEngine.RenderTarget as RenderableImage;
+                var image = _renderingEngine.RenderTarget as RenderableImage;
                 if (image == null)
                 {
                     return;
                 }
 
-                image.RenderAlphaChannel = this._renderAlphaCheckButton.Active;
+                image.RenderAlphaChannel = _renderAlphaCheckButton.Active;
             };
 
-            this._renderRedCheckButton.Toggled += (sender, args) =>
+            _renderRedCheckButton.Toggled += (sender, args) =>
             {
-                var image = this._renderingEngine.RenderTarget as RenderableImage;
+                var image = _renderingEngine.RenderTarget as RenderableImage;
                 if (image == null)
                 {
                     return;
                 }
 
-                image.RenderRedChannel = this._renderRedCheckButton.Active;
+                image.RenderRedChannel = _renderRedCheckButton.Active;
             };
 
-            this._renderGreenCheckButton.Toggled += (sender, args) =>
+            _renderGreenCheckButton.Toggled += (sender, args) =>
             {
-                var image = this._renderingEngine.RenderTarget as RenderableImage;
+                var image = _renderingEngine.RenderTarget as RenderableImage;
                 if (image == null)
                 {
                     return;
                 }
 
-                image.RenderGreenChannel = this._renderGreenCheckButton.Active;
+                image.RenderGreenChannel = _renderGreenCheckButton.Active;
             };
 
-            this._renderBlueCheckButton.Toggled += (sender, args) =>
+            _renderBlueCheckButton.Toggled += (sender, args) =>
             {
-                var image = this._renderingEngine.RenderTarget as RenderableImage;
+                var image = _renderingEngine.RenderTarget as RenderableImage;
                 if (image == null)
                 {
                     return;
                 }
 
-                image.RenderBlueChannel = this._renderBlueCheckButton.Active;
+                image.RenderBlueChannel = _renderBlueCheckButton.Active;
             };
         }
 
@@ -382,7 +382,7 @@ namespace Everlook.UI
         [ConnectBefore]
         private void OnClearExportQueueButtonClicked(object sender, EventArgs e)
         {
-            this._exportQueueListStore.Clear();
+            _exportQueueListStore.Clear();
         }
 
         /// <summary>
@@ -393,7 +393,7 @@ namespace Everlook.UI
         [ConnectBefore]
         private void OnCancelCurrentActionClicked(object sender, EventArgs e)
         {
-            this._fileLoadingCancellationSource.Cancel();
+            _fileLoadingCancellationSource.Cancel();
         }
 
         /// <summary>
@@ -406,11 +406,11 @@ namespace Everlook.UI
         {
             if (args.Event.NewWindowState.HasFlag(WindowState.Maximized))
             {
-                this._viewportPaned.Position =
-                    this._viewportPaned.AllocatedHeight +
-                    this._lowerBoxPaned.AllocatedHeight +
-                    (int)this._viewportAlignment.BottomPadding +
-                    (int)this._lowerBoxAlignment.TopPadding;
+                _viewportPaned.Position =
+                    _viewportPaned.AllocatedHeight +
+                    _lowerBoxPaned.AllocatedHeight +
+                    (int)_viewportAlignment.BottomPadding +
+                    (int)_lowerBoxAlignment.TopPadding;
             }
         }
 
@@ -433,7 +433,7 @@ namespace Everlook.UI
         [ConnectBefore]
         private void OnViewportMouseEnter(object o, EnterNotifyEventArgs args)
         {
-            if (this._renderingEngine.RenderTarget?.Projection == ProjectionType.Orthographic)
+            if (_renderingEngine.RenderTarget?.Projection == ProjectionType.Orthographic)
             {
                 this.Window.Cursor = new Cursor(CursorType.Hand2);
             }
@@ -455,26 +455,26 @@ namespace Everlook.UI
         /// <returns>A task wrapping the refiltering of the loaded game trees.</returns>
         private async Task RefilterTrees()
         {
-            var box = this._fileFilterComboBox;
+            var box = _fileFilterComboBox;
 
-            this._statusSpinner.Active = true;
-            var refilterStatusContextID = this._mainStatusBar.GetContextId("refreshFilter");
-            var refilterStatusMessageID = this._mainStatusBar.Push
+            _statusSpinner.Active = true;
+            var refilterStatusContextID = _mainStatusBar.GetContextId("refreshFilter");
+            var refilterStatusMessageID = _mainStatusBar.Push
             (
                 refilterStatusContextID,
                 "Refiltering node trees..."
             );
 
             // Disable the pages
-            foreach (var page in this._gamePages)
+            foreach (var page in _gamePages)
             {
                 page.SetTreeSensitivity(false);
             }
 
             var filterType = (FilterType)box.Active;
-            foreach (var page in this._gamePages)
+            foreach (var page in _gamePages)
             {
-                page.ShouldDisplayUnknownFiles = this._config.ShowUnknownFilesWhenFiltering;
+                page.ShouldDisplayUnknownFiles = _config.ShowUnknownFilesWhenFiltering;
 
                 if (filterType == FilterType.All)
                 {
@@ -491,13 +491,13 @@ namespace Everlook.UI
             }
 
             // Reenable the pages
-            foreach (var page in this._gamePages)
+            foreach (var page in _gamePages)
             {
                 page.SetTreeSensitivity(true);
             }
 
-            this._statusSpinner.Active = false;
-            this._mainStatusBar.Remove(refilterStatusContextID, refilterStatusMessageID);
+            _statusSpinner.Active = false;
+            _mainStatusBar.Remove(refilterStatusContextID, refilterStatusMessageID);
         }
 
         /// <summary>
@@ -570,11 +570,11 @@ namespace Everlook.UI
             page.ExportItemRequested += OnExportItemRequested;
             page.EnqueueFileExportRequested += OnEnqueueItemRequested;
 
-            this._gamePages.Add(page);
-            this._gameTabNotebook.AppendPage(page.PageWidget, new Label(page.Alias));
-            this._gameTabNotebook.SetTabReorderable(page.PageWidget, true);
+            _gamePages.Add(page);
+            _gameTabNotebook.AppendPage(page.PageWidget, new Label(page.Alias));
+            _gameTabNotebook.SetTabReorderable(page.PageWidget, true);
 
-            this._gameTabNotebook.ShowAll();
+            _gameTabNotebook.ShowAll();
         }
 
         /// <summary>
@@ -595,7 +595,7 @@ namespace Everlook.UI
             }
 
             // Set the page
-            this._itemControlNotebook.Page = (int)pageToEnable;
+            _itemControlNotebook.Page = (int)pageToEnable;
 
             // Disable the other pages
             foreach (ControlPage otherPage in Enum.GetValues(typeof(ControlPage)))
@@ -612,70 +612,70 @@ namespace Everlook.UI
             {
                 case ControlPage.Image:
                 {
-                    var image = this._renderingEngine.RenderTarget as RenderableImage;
+                    var image = _renderingEngine.RenderTarget as RenderableImage;
                     if (image == null)
                     {
                         return;
                     }
 
-                    this._mipCountLabel.Text = image.MipCount.ToString();
+                    _mipCountLabel.Text = image.MipCount.ToString();
 
-                    this._renderAlphaCheckButton.Sensitive = true;
-                    this._renderRedCheckButton.Sensitive = true;
-                    this._renderGreenCheckButton.Sensitive = true;
-                    this._renderBlueCheckButton.Sensitive = true;
+                    _renderAlphaCheckButton.Sensitive = true;
+                    _renderRedCheckButton.Sensitive = true;
+                    _renderGreenCheckButton.Sensitive = true;
+                    _renderBlueCheckButton.Sensitive = true;
 
-                    image.RenderAlphaChannel = this._renderAlphaCheckButton.Active;
-                    image.RenderRedChannel = this._renderRedCheckButton.Active;
-                    image.RenderGreenChannel = this._renderGreenCheckButton.Active;
-                    image.RenderBlueChannel = this._renderBlueCheckButton.Active;
+                    image.RenderAlphaChannel = _renderAlphaCheckButton.Active;
+                    image.RenderRedChannel = _renderRedCheckButton.Active;
+                    image.RenderGreenChannel = _renderGreenCheckButton.Active;
+                    image.RenderBlueChannel = _renderBlueCheckButton.Active;
                     break;
                 }
                 case ControlPage.Model:
                 {
-                    this._renderBoundsCheckButton.Sensitive = true;
-                    this._renderWireframeCheckButton.Sensitive = true;
-                    this._renderDoodadsCheckButton.Sensitive = true;
+                    _renderBoundsCheckButton.Sensitive = true;
+                    _renderWireframeCheckButton.Sensitive = true;
+                    _renderDoodadsCheckButton.Sensitive = true;
 
-                    this._modelVariationComboBox.Sensitive = true;
+                    _modelVariationComboBox.Sensitive = true;
 
-                    if (this._renderingEngine.RenderTarget is RenderableWorldModel wmo)
+                    if (_renderingEngine.RenderTarget is RenderableWorldModel wmo)
                     {
-                        wmo.ShouldRenderBounds = this._renderBoundsCheckButton.Active;
-                        wmo.ShouldRenderWireframe = this._renderWireframeCheckButton.Active;
-                        wmo.ShouldRenderDoodads = this._renderDoodadsCheckButton.Active;
+                        wmo.ShouldRenderBounds = _renderBoundsCheckButton.Active;
+                        wmo.ShouldRenderWireframe = _renderWireframeCheckButton.Active;
+                        wmo.ShouldRenderDoodads = _renderDoodadsCheckButton.Active;
 
                         var doodadSetNames = wmo.GetDoodadSetNames().ToList();
-                        this._modelVariationListStore.Clear();
+                        _modelVariationListStore.Clear();
                         for (var i = 0; i < doodadSetNames.Count; ++i)
                         {
-                            this._modelVariationListStore.AppendValues(doodadSetNames[i], i);
+                            _modelVariationListStore.AppendValues(doodadSetNames[i], i);
                         }
 
-                        this._modelVariationComboBox.Active = 0;
-                        this._modelVariationComboBox.Sensitive = this._renderDoodadsCheckButton.Active && doodadSetNames.Count > 1;
-                        this._renderDoodadsCheckButton.Sensitive = true;
+                        _modelVariationComboBox.Active = 0;
+                        _modelVariationComboBox.Sensitive = _renderDoodadsCheckButton.Active && doodadSetNames.Count > 1;
+                        _renderDoodadsCheckButton.Sensitive = true;
                     }
 
-                    if (this._renderingEngine.RenderTarget is RenderableGameModel mdx)
+                    if (_renderingEngine.RenderTarget is RenderableGameModel mdx)
                     {
-                        mdx.ShouldRenderBounds = this._renderBoundsCheckButton.Active;
-                        mdx.ShouldRenderWireframe = this._renderWireframeCheckButton.Active;
+                        mdx.ShouldRenderBounds = _renderBoundsCheckButton.Active;
+                        mdx.ShouldRenderWireframe = _renderWireframeCheckButton.Active;
 
                         var skinVariations = mdx.GetSkinVariations().ToList();
-                        this._modelVariationListStore.Clear();
+                        _modelVariationListStore.Clear();
                         foreach (var variation in skinVariations)
                         {
                             var firstTextureName = variation.TextureVariation1.Value;
                             if (!string.IsNullOrEmpty(firstTextureName))
                             {
-                                this._modelVariationListStore.AppendValues(variation.TextureVariation1.Value, variation.ID);
+                                _modelVariationListStore.AppendValues(variation.TextureVariation1.Value, variation.ID);
                             }
                         }
 
-                        this._modelVariationComboBox.Active = 0;
-                        this._modelVariationComboBox.Sensitive = skinVariations.Count > 1;
-                        this._renderDoodadsCheckButton.Sensitive = false;
+                        _modelVariationComboBox.Active = 0;
+                        _modelVariationComboBox.Sensitive = skinVariations.Count > 1;
+                        _renderDoodadsCheckButton.Sensitive = false;
                     }
 
                     break;
@@ -709,20 +709,20 @@ namespace Everlook.UI
             {
                 case ControlPage.Image:
                 {
-                    this._renderAlphaCheckButton.Sensitive = false;
-                    this._renderRedCheckButton.Sensitive = false;
-                    this._renderGreenCheckButton.Sensitive = false;
-                    this._renderBlueCheckButton.Sensitive = false;
+                    _renderAlphaCheckButton.Sensitive = false;
+                    _renderRedCheckButton.Sensitive = false;
+                    _renderGreenCheckButton.Sensitive = false;
+                    _renderBlueCheckButton.Sensitive = false;
                     break;
                 }
                 case ControlPage.Model:
                 {
-                    this._renderBoundsCheckButton.Sensitive = false;
-                    this._renderWireframeCheckButton.Sensitive = false;
-                    this._renderDoodadsCheckButton.Sensitive = false;
+                    _renderBoundsCheckButton.Sensitive = false;
+                    _renderWireframeCheckButton.Sensitive = false;
+                    _renderDoodadsCheckButton.Sensitive = false;
 
-                    this._modelVariationListStore.Clear();
-                    this._modelVariationComboBox.Sensitive = false;
+                    _modelVariationListStore.Clear();
+                    _modelVariationComboBox.Sensitive = false;
                     break;
                 }
                 case ControlPage.Animation:
@@ -750,8 +750,8 @@ namespace Everlook.UI
         /// <returns>A task wrapping the game reload operation.</returns>
         private Task ReloadGames()
         {
-            this._gamePages.Clear();
-            this._gameTabNotebook.ClearPages();
+            _gamePages.Clear();
+            _gameTabNotebook.ClearPages();
             return LoadGames();
         }
 
@@ -760,10 +760,10 @@ namespace Everlook.UI
         /// </summary>
         private void ReloadViewportBackground()
         {
-            this._viewportWidget.MakeCurrent();
+            _viewportWidget.MakeCurrent();
 
-            this._renderingEngine.SetClearColour(this._config.ViewportBackgroundColour);
-            this._viewportWidget.QueueRender();
+            _renderingEngine.SetClearColour(_config.ViewportBackgroundColour);
+            _viewportWidget.QueueRender();
         }
 
         /// <summary>
@@ -787,11 +787,11 @@ namespace Everlook.UI
 
             Log.Info($"Loading \"{fileReference.FilePath}\".");
 
-            this._statusSpinner.Active = true;
+            _statusSpinner.Active = true;
 
             var modelName = fileReference.Filename;
-            var modelStatusMessageContextID = this._mainStatusBar.GetContextId($"itemLoad_{modelName}");
-            var modelStatusMessageID = this._mainStatusBar.Push
+            var modelStatusMessageContextID = _mainStatusBar.GetContextId($"itemLoad_{modelName}");
+            var modelStatusMessageID = _mainStatusBar.Push
             (
                 modelStatusMessageContextID,
                 $"Loading \"{modelName}\"..."
@@ -815,18 +815,18 @@ namespace Everlook.UI
                 {
                     ct.ThrowIfCancellationRequested();
 
-                    this._viewportWidget.MakeCurrent();
-                    this._viewportWidget.AttachBuffers();
+                    _viewportWidget.MakeCurrent();
+                    _viewportWidget.AttachBuffers();
                     renderable.Initialize();
 
-                    this._renderingEngine.SetRenderTarget(renderable);
+                    _renderingEngine.SetRenderTarget(renderable);
 
                     EnableControlPage(associatedControlPage);
 
                     if (renderable is IModelInfoProvider infoProvider)
                     {
-                        this._polyCountLabel.Text = infoProvider.PolygonCount.ToString();
-                        this._vertexCountLabel.Text = infoProvider.VertexCount.ToString();
+                        _polyCountLabel.Text = infoProvider.PolygonCount.ToString();
+                        _vertexCountLabel.Text = infoProvider.VertexCount.ToString();
                     }
                 }
             }
@@ -836,8 +836,8 @@ namespace Everlook.UI
             }
             finally
             {
-                this._statusSpinner.Active = false;
-                this._mainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
+                _statusSpinner.Active = false;
+                _mainStatusBar.Remove(modelStatusMessageContextID, modelStatusMessageID);
             }
         }
 
@@ -849,7 +849,7 @@ namespace Everlook.UI
         [ConnectBefore]
         private void OnViewportButtonPressed(object o, ButtonPressEventArgs args)
         {
-            if (this._renderingEngine.IsMovementDisabled())
+            if (_renderingEngine.IsMovementDisabled())
             {
                 return;
             }
@@ -860,7 +860,7 @@ namespace Everlook.UI
             }
 
             var validButtonIsPressed = false;
-            if (this._renderingEngine.RenderTarget.Projection == ProjectionType.Perspective)
+            if (_renderingEngine.RenderTarget.Projection == ProjectionType.Perspective)
             {
                 // Exclusively check for right click
                 if (args.Event.Button == 3)
@@ -885,12 +885,12 @@ namespace Everlook.UI
                 return;
             }
 
-            this._viewportWidget.GrabFocus();
+            _viewportWidget.GrabFocus();
 
-            this._renderingEngine.InitialMouseX = Mouse.GetCursorState().X;
-            this._renderingEngine.InitialMouseY = Mouse.GetCursorState().Y;
+            _renderingEngine.InitialMouseX = Mouse.GetCursorState().X;
+            _renderingEngine.InitialMouseY = Mouse.GetCursorState().Y;
 
-            this._renderingEngine.WantsToMove = true;
+            _renderingEngine.WantsToMove = true;
         }
 
         /// <summary>
@@ -907,7 +907,7 @@ namespace Everlook.UI
             }
 
             var validButtonIsPressed = false;
-            if (this._renderingEngine.RenderTarget?.Projection == ProjectionType.Perspective)
+            if (_renderingEngine.RenderTarget?.Projection == ProjectionType.Perspective)
             {
                 // Exclusively check for right click
                 if (args.Event.Button == 3)
@@ -933,7 +933,7 @@ namespace Everlook.UI
             }
 
             GrabFocus();
-            this._renderingEngine.WantsToMove = false;
+            _renderingEngine.WantsToMove = false;
         }
 
         /// <summary>
@@ -985,7 +985,7 @@ namespace Everlook.UI
         /// <param name="fileReference">E.</param>
         private Task OnEnqueueItemRequested(GamePage page, FileReference fileReference)
         {
-            this._exportQueueListStore.AppendValues(fileReference, IconManager.GetIcon("package-downgrade"));
+            _exportQueueListStore.AppendValues(fileReference, IconManager.GetIcon("package-downgrade"));
 
             return Task.CompletedTask;
         }
@@ -997,8 +997,8 @@ namespace Everlook.UI
         /// <param name="e">E.</param>
         private void OnAboutButtonClicked(object sender, EventArgs e)
         {
-            this._aboutDialog.Run();
-            this._aboutDialog.Hide();
+            _aboutDialog.Run();
+            _aboutDialog.Hide();
         }
 
         /// <summary>
@@ -1040,13 +1040,13 @@ namespace Everlook.UI
         /// <param name="fileReferences">The file references to save.</param>
         private async Task OnSaveRequested(GamePage page, IEnumerable<FileReference> fileReferences)
         {
-            var statusMessageContextID = this._mainStatusBar.GetContextId($"itemLoad_{fileReferences.GetHashCode()}");
+            var statusMessageContextID = _mainStatusBar.GetContextId($"itemLoad_{fileReferences.GetHashCode()}");
 
             foreach (var fileReference in fileReferences)
             {
-                this._statusSpinner.Active = true;
+                _statusSpinner.Active = true;
 
-                var statusMessageID = this._mainStatusBar.Push
+                var statusMessageID = _mainStatusBar.Push
                 (
                     statusMessageContextID,
                     $"Saving \"{fileReference.Filename}\"..."
@@ -1055,15 +1055,15 @@ namespace Everlook.UI
                 var cleanFilepath = fileReference.FilePath.ConvertPathSeparatorsToCurrentNativeSeparator();
 
                 string exportpath;
-                if (this._config.KeepFileDirectoryStructure)
+                if (_config.KeepFileDirectoryStructure)
                 {
-                    exportpath = IOPath.Combine(this._config.DefaultExportDirectory, cleanFilepath);
+                    exportpath = IOPath.Combine(_config.DefaultExportDirectory, cleanFilepath);
                     Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
                 }
                 else
                 {
                     var filename = IOPath.GetFileName(cleanFilepath);
-                    exportpath = IOPath.Combine(this._config.DefaultExportDirectory, filename);
+                    exportpath = IOPath.Combine(_config.DefaultExportDirectory, filename);
                     Directory.CreateDirectory(Directory.GetParent(exportpath).FullName);
                 }
 
@@ -1096,10 +1096,10 @@ namespace Everlook.UI
                     Log.Warn($"Failed to save \"{fileReference.Filename}\": Could not extract any data from the archives.");
                 }
 
-                this._mainStatusBar.Remove(statusMessageContextID, statusMessageID);
+                _mainStatusBar.Remove(statusMessageContextID, statusMessageID);
             }
 
-            this._statusSpinner.Active = false;
+            _statusSpinner.Active = false;
         }
 
         /// <summary>
@@ -1116,8 +1116,8 @@ namespace Everlook.UI
             {
                 case WarcraftFileType.BinaryImage:
                 {
-                    this._fileLoadingCancellationSource.Cancel();
-                    this._fileLoadingCancellationSource = new CancellationTokenSource();
+                    _fileLoadingCancellationSource.Cancel();
+                    _fileLoadingCancellationSource = new CancellationTokenSource();
 
                     await DisplayRenderableFile
                     (
@@ -1125,15 +1125,15 @@ namespace Everlook.UI
                         DataLoadingRoutines.LoadBinaryImage,
                         DataLoadingRoutines.CreateRenderableBinaryImage,
                         ControlPage.Image,
-                        this._fileLoadingCancellationSource.Token
+                        _fileLoadingCancellationSource.Token
                     );
 
                     break;
                 }
                 case WarcraftFileType.WorldObjectModel:
                 {
-                    this._fileLoadingCancellationSource.Cancel();
-                    this._fileLoadingCancellationSource = new CancellationTokenSource();
+                    _fileLoadingCancellationSource.Cancel();
+                    _fileLoadingCancellationSource = new CancellationTokenSource();
 
                     await DisplayRenderableFile
                     (
@@ -1141,15 +1141,15 @@ namespace Everlook.UI
                         DataLoadingRoutines.LoadWorldModel,
                         DataLoadingRoutines.CreateRenderableWorldModel,
                         ControlPage.Model,
-                        this._fileLoadingCancellationSource.Token
+                        _fileLoadingCancellationSource.Token
                     );
 
                     break;
                 }
                 case WarcraftFileType.WorldObjectModelGroup:
                 {
-                    this._fileLoadingCancellationSource.Cancel();
-                    this._fileLoadingCancellationSource = new CancellationTokenSource();
+                    _fileLoadingCancellationSource.Cancel();
+                    _fileLoadingCancellationSource = new CancellationTokenSource();
 
                     await DisplayRenderableFile
                     (
@@ -1157,7 +1157,7 @@ namespace Everlook.UI
                         DataLoadingRoutines.LoadWorldModelGroup,
                         DataLoadingRoutines.CreateRenderableWorldModel,
                         ControlPage.Model,
-                        this._fileLoadingCancellationSource.Token
+                        _fileLoadingCancellationSource.Token
                     );
 
                     break;
@@ -1166,8 +1166,8 @@ namespace Everlook.UI
                 case WarcraftFileType.PNGImage:
                 case WarcraftFileType.JPGImage:
                 {
-                    this._fileLoadingCancellationSource.Cancel();
-                    this._fileLoadingCancellationSource = new CancellationTokenSource();
+                    _fileLoadingCancellationSource.Cancel();
+                    _fileLoadingCancellationSource = new CancellationTokenSource();
 
                     await DisplayRenderableFile
                     (
@@ -1175,7 +1175,7 @@ namespace Everlook.UI
                         DataLoadingRoutines.LoadBitmapImage,
                         DataLoadingRoutines.CreateRenderableBitmapImage,
                         ControlPage.Image,
-                        this._fileLoadingCancellationSource.Token
+                        _fileLoadingCancellationSource.Token
                     );
 
                     break;
@@ -1183,24 +1183,24 @@ namespace Everlook.UI
                 case WarcraftFileType.WaveAudio:
                 case WarcraftFileType.MP3Audio:
                 {
-                    AudioManager.UnregisterSource(this._globalAudio);
+                    AudioManager.UnregisterSource(_globalAudio);
 
-                    if (this._config.AutoplayAudioFiles)
+                    if (_config.AutoplayAudioFiles)
                     {
-                        this._globalAudio = AudioSource.CreateNew();
-                        await this._globalAudio.SetAudioAsync(fileReference);
+                        _globalAudio = AudioSource.CreateNew();
+                        await _globalAudio.SetAudioAsync(fileReference);
 
-                        AudioManager.RegisterSource(this._globalAudio);
+                        AudioManager.RegisterSource(_globalAudio);
 
-                        this._globalAudio.Play();
+                        _globalAudio.Play();
                     }
 
                     break;
                 }
                 case WarcraftFileType.GameObjectModel:
                 {
-                    this._fileLoadingCancellationSource.Cancel();
-                    this._fileLoadingCancellationSource = new CancellationTokenSource();
+                    _fileLoadingCancellationSource.Cancel();
+                    _fileLoadingCancellationSource = new CancellationTokenSource();
 
                     await DisplayRenderableFile
                     (
@@ -1208,7 +1208,7 @@ namespace Everlook.UI
                         DataLoadingRoutines.LoadGameModel,
                         DataLoadingRoutines.CreateRenderableGameModel,
                         ControlPage.Model,
-                        this._fileLoadingCancellationSource.Token
+                        _fileLoadingCancellationSource.Token
                     );
 
                     break;
@@ -1230,28 +1230,28 @@ namespace Everlook.UI
                 return;
             }
 
-            this._exportQueueTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out var path);
+            _exportQueueTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out var path);
 
             if (path == null)
             {
                 return;
             }
 
-            this._exportQueueListStore.GetIter(out var iter, path);
+            _exportQueueListStore.GetIter(out var iter, path);
 
-            var queuedReference = (FileReference)this._exportQueueListStore.GetValue(iter, 0);
+            var queuedReference = (FileReference)_exportQueueListStore.GetValue(iter, 0);
 
             if (string.IsNullOrEmpty(queuedReference?.FilePath))
             {
-                this._removeQueueItem.Sensitive = false;
+                _removeQueueItem.Sensitive = false;
             }
             else
             {
-                this._removeQueueItem.Sensitive = true;
+                _removeQueueItem.Sensitive = true;
             }
 
-            this._queueContextMenu.ShowAll();
-            this._queueContextMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
+            _queueContextMenu.ShowAll();
+            _queueContextMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
             //this.QueueContextMenu.Popup();
         }
 
@@ -1262,8 +1262,8 @@ namespace Everlook.UI
         /// <param name="e">E.</param>
         private void OnQueueRemoveContextItemActivated(object sender, EventArgs e)
         {
-            this._exportQueueTreeView.Selection.GetSelected(out var selectedIter);
-            this._exportQueueListStore.Remove(ref selectedIter);
+            _exportQueueTreeView.Selection.GetSelected(out var selectedIter);
+            _exportQueueListStore.Remove(ref selectedIter);
         }
 
         /// <summary>
@@ -1274,18 +1274,18 @@ namespace Everlook.UI
         /// <param name="a">The alpha component.</param>
         private void OnDeleteEvent(object sender, DeleteEventArgs a)
         {
-            this._isShuttingDown = true;
+            _isShuttingDown = true;
 
-            this._fileLoadingCancellationSource?.Cancel();
+            _fileLoadingCancellationSource?.Cancel();
 
-            this._viewportWidget.MakeCurrent();
+            _viewportWidget.MakeCurrent();
 
-            this._renderingEngine.SetRenderTarget(null);
-            this._renderingEngine.Dispose();
+            _renderingEngine.SetRenderTarget(null);
+            _renderingEngine.Dispose();
 
             RenderCache.Instance?.Dispose();
 
-            this._viewportWidget.Dispose();
+            _viewportWidget.Dispose();
 
             Application.Quit();
             a.RetVal = true;
