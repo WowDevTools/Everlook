@@ -57,10 +57,11 @@
     </AdditionalFiles>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AssimpNet" Version="4.1.0" />
     <PackageReference Include="gtk-sharp-3" Version="3.22.6.4" />
     <PackageReference Include="ini-parser" Version="2.5.2" />
     <PackageReference Include="libfiletree" Version="1.0.0-rc7" />
-    <PackageReference Include="libwarcraft" Version="3.0.0-rc3" />
+    <PackageReference Include="libwarcraft" Version="3.0.0-alpha1" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="MP3Sharp" Version="1.0.4" />
     <PackageReference Include="NETStandard.Library.NETFramework" Version="2.0.0-preview2-25405-01" />

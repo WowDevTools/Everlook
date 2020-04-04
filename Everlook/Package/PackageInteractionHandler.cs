@@ -204,17 +204,15 @@ namespace Everlook.Package
 		}
 
 		/// <inheritdoc />
+		public bool TryGetFileInfo(string filePath, out MPQFileInfo fileInfo)
+		{
+			return this.Package.TryGetFileInfo(filePath, out fileInfo);
+		}
+
+		/// <inheritdoc />
 		public MPQFileInfo GetFileInfo(string filePath)
 		{
-			try
-			{
-				return this.Package.GetFileInfo(filePath);
-			}
-			catch
-			{
-				// HACK: This is so bad. Don't keep it.
-				return null;
-			}
+			return this.Package.GetFileInfo(filePath);
 		}
 
 		/// <inheritdoc />

@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
+    <e p="$USER_HOME$/.cache/JetBrains/Rider2020.1/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/.cache/JetBrains/Rider2020.1/resharper-host/local/Transient/ReSharperHost/v201/SolutionCaches/_Everlook.1551027795.00" t="ExcludeRecursive" />
     <e p="$APPLICATION_CONFIG_DIR$/consoles/db" t="IncludeRecursive" />
     <e p="$APPLICATION_CONFIG_DIR$/extensions" t="IncludeRecursive" />
     <e p="$APPLICATION_CONFIG_DIR$/scratches" t="IncludeRecursive" />
-    <e p="$USER_HOME$/.Rider2018.3/system/extResources" t="IncludeRecursive" />
-    <e p="$USER_HOME$/.Rider2018.3/system/resharper-host/local/Transient/ReSharperHost/v183/SolutionCaches/_Everlook.-848944586.00" t="ExcludeRecursive" />
     <e p="$USER_HOME$/.nuget/packages/libfiletree/1.0.0-rc7/contentFiles/any/netstandard2.0/dictionary.dic" t="Include" />
     <e p="$PROJECT_DIR$" t="IncludeFlat">
-      <e p=".git/info/exclude" t="IncludeRecursive" />
-      <e p=".git/modules/lib/SlimTK/info/exclude" t="IncludeRecursive" />
-      <e p=".git/modules/lib/liblistfile/info/exclude" t="IncludeRecursive" />
-      <e p=".git/modules/lib/liblistfile/modules/lib/libwarcraft/info/exclude" t="IncludeRecursive" />
       <e p="Everlook" t="IncludeRecursive">
         <e p="Audio" t="Include">
           <e p="AudioGroup.cs" t="Include" />
@@ -213,6 +209,7 @@
             <e p="ImageFormat.cs" t="Include" />
           </e>
           <e p="Model" t="Include">
+            <e p="AssimpConverter.cs" t="Include" />
             <e p="ModelFormat.cs" t="Include" />
           </e>
         </e>

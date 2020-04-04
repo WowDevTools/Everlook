@@ -367,17 +367,31 @@ namespace Everlook.Package
 		}
 
 		/// <inheritdoc />
-		public MPQFileInfo GetFileInfo(string filePath)
+		public bool TryGetFileInfo(string filePath, out MPQFileInfo fileInfo)
 		{
+			fileInfo = null;
+
 			for (int i = this.Packages.Count - 1; i >= 0; --i)
 			{
 				if (this.Packages[i].ContainsFile(filePath))
 				{
-					return this.Packages[i].GetFileInfo(filePath);
+					fileInfo = this.Packages[i].GetFileInfo(filePath);
+					return true;
 				}
 			}
 
-			throw new FileNotFoundException("The specified file was not found in this package group.", filePath);
+			return false;
+		}
+
+		/// <inheritdoc />
+		public MPQFileInfo GetFileInfo(string filePath)
+		{
+			if (!TryGetFileInfo(filePath, out var fileInfo))
+			{
+				throw new FileNotFoundException("The specified file was not found in this package group.", filePath);
+			}
+
+			return fileInfo;
 		}
 
 		/// <inheritdoc />
