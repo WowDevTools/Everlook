@@ -151,7 +151,8 @@ namespace Everlook.UI
                 EventMask.EnterNotifyMask |
                 EventMask.LeaveNotifyMask |
                 EventMask.KeyPressMask |
-                EventMask.KeyReleaseMask;
+                EventMask.KeyReleaseMask |
+                EventMask.PointerMotionMask;
 
             _viewportWidget.Initialized += (sender, args) =>
             {
@@ -969,8 +970,8 @@ namespace Everlook.UI
 
             _viewportWidget.GrabFocus();
 
-            _renderingEngine.InitialMouseX = args.Event.XRoot;
-            _renderingEngine.InitialMouseY = args.Event.YRoot;
+            _renderingEngine.InitialMouseX = args.Event.X;
+            _renderingEngine.InitialMouseY = args.Event.Y;
 
             _renderingEngine.WantsToMove = true;
         }

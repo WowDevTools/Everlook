@@ -122,7 +122,7 @@ namespace Everlook.Viewport.Rendering.Core
             var variableHandle = this.GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
             unsafe
             {
-                this.GL.UniformMatrix4(variableHandle, 4 * 4, shouldTranspose, &matrix.M11);
+                this.GL.UniformMatrix4(variableHandle, 1, shouldTranspose, &matrix.M11);
             }
         }
 

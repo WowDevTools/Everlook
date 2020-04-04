@@ -163,7 +163,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
             var viewportMatrixLoc = this.GL.GetUniformLocation(_parentShaderNativeID, ViewportMatrix);
             unsafe
             {
-                this.GL.UniformMatrix4(viewportMatrixLoc, 4 * 4, false, &viewportMatrix.M11);
+                this.GL.UniformMatrix4(viewportMatrixLoc, 1, false, &viewportMatrix.M11);
             }
         }
     }

@@ -105,14 +105,28 @@ namespace Everlook.Viewport
         public bool WantsToMove { get; set; }
 
         /// <summary>
-        /// Gets or sets the X position of the mouse during the last frame, relative to the <see cref="_viewportWidget"/>.
+        /// Gets or sets the X position of the mouse during the last frame, relative to the
+        /// <see cref="_viewportWidget"/>.
         /// </summary>
         public double InitialMouseX { get; set; }
 
         /// <summary>
-        /// Gets or sets the Y position of the mouse during the last frame, relative to the <see cref="_viewportWidget"/>.
+        /// Gets or sets the Y position of the mouse during the last frame, relative to the
+        /// <see cref="_viewportWidget"/>.
         /// </summary>
         public double InitialMouseY { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Y position of the mouse at the last event time, relative to the
+        /// <see cref="_viewportWidget"/>.
+        /// </summary>
+        public double CurrentMouseX { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Y position of the mouse at the last event time, relative to the
+        /// <see cref="_viewportWidget"/>.
+        /// </summary>
+        public double CurrentMouseY { get; set; }
 
         /*
             Runtime transitional OpenGL data.
@@ -161,6 +175,22 @@ namespace Everlook.Viewport
             _movement = new CameraMovement(_camera);
             _renderCache = renderCache;
 
+            _viewportWidget.MotionNotifyEvent += (o, args) =>
+            {
+                if (!this.WantsToMove)
+                {
+                    return;
+                }
+
+                if (!this.HasRenderTarget || this.RenderTarget is null)
+                {
+                    return;
+                }
+
+                this.CurrentMouseX = args.Event.X;
+                this.CurrentMouseY = args.Event.Y;
+            };
+
             _viewportWidget.KeyPressEvent += (o, args) =>
             {
                 switch (args.Event.Key)
@@ -171,31 +201,37 @@ namespace Everlook.Viewport
                         break;
                     }
                     case Key.W:
+                    case Key.w:
                     {
                         _movement.WantsToMoveForward = true;
                         break;
                     }
                     case Key.S:
+                    case Key.s:
                     {
                         _movement.WantsToMoveBackward = true;
                         break;
                     }
                     case Key.A:
+                    case Key.a:
                     {
                         _movement.WantsToMoveLeft = true;
                         break;
                     }
                     case Key.D:
+                    case Key.d:
                     {
                         _movement.WantsToMoveRight = true;
                         break;
                     }
                     case Key.Q:
+                    case Key.q:
                     {
                         _movement.WantsToMoveUp = true;
                         break;
                     }
                     case Key.E:
+                    case Key.e:
                     {
                         _movement.WantsToMoveDown = true;
                         break;
@@ -213,31 +249,37 @@ namespace Everlook.Viewport
                         break;
                     }
                     case Key.W:
+                    case Key.w:
                     {
                         _movement.WantsToMoveForward = false;
                         break;
                     }
                     case Key.S:
+                    case Key.s:
                     {
                         _movement.WantsToMoveBackward = false;
                         break;
                     }
                     case Key.A:
+                    case Key.a:
                     {
                         _movement.WantsToMoveLeft = false;
                         break;
                     }
                     case Key.D:
+                    case Key.d:
                     {
                         _movement.WantsToMoveRight = false;
                         break;
                     }
                     case Key.Q:
+                    case Key.q:
                     {
                         _movement.WantsToMoveUp = false;
                         break;
                     }
                     case Key.E:
+                    case Key.e:
                     {
                         _movement.WantsToMoveDown = false;
                         break;
@@ -376,7 +418,7 @@ namespace Everlook.Viewport
                     return;
                 }
 
-                // Calculate the current relative movement of the camera
+                // Update camera orientation
                 if (this.WantsToMove)
                 {
                     switch (this.RenderTarget.Projection)
@@ -421,22 +463,14 @@ namespace Everlook.Viewport
         /// </summary>
         private void Calculate2DMovement()
         {
-            var mouse = Display.Default.ListDevices().FirstOrDefault(d => d.HasCursor);
-            if (mouse is null)
-            {
-                return;
-            }
-
-            mouse.GetPosition(Screen.Default, out var mouseX, out var mouseY);
-
-            var deltaMouseX = this.InitialMouseX - mouseX;
-            var deltaMouseY = this.InitialMouseY - mouseY;
+            var deltaMouseX = this.InitialMouseX - this.CurrentMouseX;
+            var deltaMouseY = this.InitialMouseY - this.CurrentMouseY;
 
             _movement.Calculate2DMovement(deltaMouseX, deltaMouseY, this.DeltaTime);
 
             // Update the initial location for the next frame
-            this.InitialMouseX = mouseX;
-            this.InitialMouseY = mouseY;
+            this.InitialMouseX = this.CurrentMouseX;
+            this.InitialMouseY = this.CurrentMouseY;
         }
 
         /// <summary>
@@ -444,21 +478,23 @@ namespace Everlook.Viewport
         /// </summary>
         private void Calculate3DMovement()
         {
-            var mouse = Display.Default.ListDevices().FirstOrDefault(d => d.HasCursor);
-            if (mouse is null)
-            {
-                return;
-            }
-
-            mouse.GetPosition(Screen.Default, out var mouseX, out var mouseY);
-
-            var deltaMouseX = this.InitialMouseX - mouseX;
-            var deltaMouseY = this.InitialMouseY - mouseY;
+            var deltaMouseX = this.InitialMouseX - this.CurrentMouseX;
+            var deltaMouseY = this.InitialMouseY - this.CurrentMouseY;
 
             _movement.Calculate3DMovement(deltaMouseX, deltaMouseY, this.DeltaTime);
 
             // Return the mouse to its original position
-            mouse.Warp(Screen.Default, (int)this.InitialMouseX, (int)this.InitialMouseY);
+            /*motionEvent.Device.Warp
+            (
+                motionEvent.Window.Screen,
+                (int)(motionEvent.XRoot - deltaMouseX),
+                (int)(motionEvent.YRoot - deltaMouseY)
+            );
+            */
+
+            // Update the initial location for the next frame
+            this.InitialMouseX = this.CurrentMouseX;
+            this.InitialMouseY = this.CurrentMouseY;
         }
 
         /// <summary>
