@@ -39,7 +39,13 @@ namespace Everlook.Utility
         {
             var codeBaseURI = new UriBuilder(Assembly.GetExecutingAssembly().Location).Uri;
 
-            return Path.GetDirectoryName(Uri.UnescapeDataString(codeBaseURI.AbsolutePath));
+            var directory = Path.GetDirectoryName(Uri.UnescapeDataString(codeBaseURI.AbsolutePath));
+            if (directory is null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return directory;
         }
     }
 }

@@ -37,7 +37,13 @@ namespace Everlook.Database
         /// <returns>The type mapping to the database name.</returns>
         public static Type GetRecordTypeFromDatabaseName(DatabaseName databaseName)
         {
-            return Type.GetType($"Warcraft.DBC.Definitions.{databaseName}Record, libwarcraft");
+            var type = Type.GetType($"Warcraft.DBC.Definitions.{databaseName}Record, libwarcraft");
+            if (type is null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return type;
         }
 
         /// <summary>

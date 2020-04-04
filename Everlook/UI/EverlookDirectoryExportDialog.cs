@@ -155,7 +155,7 @@ namespace Everlook.UI
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
         [GLib.ConnectBefore]
-        private void OnItemListingButtonPressed(object sender, ButtonPressEventArgs e)
+        private void OnItemListingButtonPressed(object? sender, ButtonPressEventArgs e)
         {
             if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
             {
@@ -171,7 +171,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnSelectAllItemActivated(object sender, EventArgs e)
+        private void OnSelectAllItemActivated(object? sender, EventArgs e)
         {
             _itemExportListStore.Foreach
             (
@@ -188,7 +188,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnSelectNoneItemActivated(object sender, EventArgs e)
+        private void OnSelectNoneItemActivated(object? sender, EventArgs e)
         {
             _itemExportListStore.Foreach
             (
@@ -205,7 +205,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnExportItemToggleClicked(object sender, ToggledArgs e)
+        private void OnExportItemToggleClicked(object? sender, ToggledArgs e)
         {
             TreeIter iter;
             _itemExportListStore.GetIterFromString(out iter, e.Path);
@@ -220,7 +220,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnOkButtonClicked(object sender, EventArgs e)
+        private void OnOkButtonClicked(object? sender, EventArgs e)
         {
             RunExport();
         }

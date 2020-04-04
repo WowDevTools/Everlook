@@ -216,7 +216,6 @@
         <e p="Native" t="Include">
           <e p="IGTKGLExt.cs" t="Include" />
         </e>
-        <e p="OpenTK.dll.config" t="Include" />
         <e p="Package" t="Include">
           <e p="PackageGroup.cs" t="Include" />
           <e p="PackageInteractionHandler.cs" t="Include" />
@@ -225,6 +224,7 @@
         <e p="Silk" t="Include">
           <e p="GDKGLSymbolLoader.cs" t="Include" />
         </e>
+        <e p="Startup.cs" t="Include" />
         <e p="UI" t="Include">
           <e p="ControlPage.cs" t="Include" />
           <e p="EverlookDirectoryExportDialog.cs" t="Include" />
@@ -321,8 +321,10 @@
           </e>
           <e p="ViewportRenderer.cs" t="Include" />
         </e>
-        <e p="app.config" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
+        <e p="config" t="Include">
+          <e p="appsettings.json" t="Include" />
+        </e>
         <e p="interfaces" t="Include">
           <e p="Everlook.glade" t="Include" />
           <e p="EverlookDirectoryExport.glade" t="Include" />
@@ -330,12 +332,11 @@
           <e p="EverlookImageExport.glade" t="Include" />
           <e p="EverlookPreferences.glade" t="Include" />
         </e>
+        <e p="log4net.config" t="Include" />
         <e p="obj" t="ExcludeRecursive">
-          <e p="x86" t="Include">
-            <e p="Debug" t="Include">
-              <e p="netcoreapp3.1" t="Include">
-                <e p="Everlook.AssemblyInfo.cs" t="Include" />
-              </e>
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Everlook.AssemblyInfo.cs" t="Include" />
             </e>
           </e>
         </e>

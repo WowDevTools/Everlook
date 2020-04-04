@@ -37,7 +37,7 @@ namespace Everlook.Audio
     /// Represents a single audio source in 3D space.
     /// </summary>
     [PublicAPI]
-    public sealed class AudioSource : IDisposable, IEquatable<AudioSource>
+    public sealed class AudioSource : IDisposable
     {
         private AL _al = AL.GetApi();
         private IAudioAsset? _audioAsset;
@@ -86,8 +86,13 @@ namespace Everlook.Audio
         {
             get
             {
-                _al.GetSourceProperty(_soundSourceID, SourceBoolean.Looping, out var temp);
-                return temp > 0;
+                // TODO: Restore
+                /*
+                 * al.GetSourceProperty(_soundSourceID, SourceBoolean.Looping, out var temp);
+                 * return temp > 0;
+                 */
+
+                return false;
             }
             set => _al.SetSourceProperty(_soundSourceID, SourceBoolean.Looping, value ? 1 : 0);
         }
@@ -138,8 +143,13 @@ namespace Everlook.Audio
         {
             get
             {
-                _al.GetSourceProperty(_soundSourceID, SourceBoolean.SourceRelative, out var value);
-                return value > 0;
+                // TODO: Restore
+                /*
+                 * _al.GetSourceProperty(_soundSourceID, SourceBoolean.SourceRelative, out var value);
+                 * return value > 0;
+                 */
+
+                return false;
             }
             set => _al.SetSourceProperty(_soundSourceID, SourceBoolean.SourceRelative, value ? 1 : 0);
         }
@@ -424,38 +434,6 @@ namespace Everlook.Audio
         {
             Stop();
             ClearAudio();
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                long hash = 17;
-                hash *= 23 + _soundBufferID;
-                hash *= 23 + _soundSourceID;
-
-                return (int)hash;
-            }
-        }
-
-        /// <inheritdoc />
-        public bool Equals(AudioSource other)
-        {
-            return Equals((object)other);
-        }
-
-        /// <inheritdoc />
-        public override bool Equals(object? obj)
-        {
-            if (!(obj is AudioSource))
-            {
-                return false;
-            }
-
-            var other = (AudioSource)obj;
-            return other._soundSourceID == _soundSourceID &&
-                   other._soundBufferID == _soundBufferID;
         }
     }
 }

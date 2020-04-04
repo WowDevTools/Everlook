@@ -89,6 +89,41 @@ namespace Everlook.Viewport.Camera
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the user wants to move left.
+        /// </summary>
+        public bool WantsToMoveLeft { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the user wants to move right.
+        /// </summary>
+        public bool WantsToMoveRight { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the user wants to move forward.
+        /// </summary>
+        public bool WantsToMoveForward { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the user wants to move backward.
+        /// </summary>
+        public bool WantsToMoveBackward { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the user wants to move up.
+        /// </summary>
+        public bool WantsToMoveUp { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the user wants to move down.
+        /// </summary>
+        public bool WantsToMoveDown { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the user wants to move faster.
+        /// </summary>
+        public bool WantsToSprint { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CameraMovement"/> class, bound to the input camera.
         /// </summary>
         /// <param name="inCamera">The camera which the movement component should control.</param>
@@ -162,7 +197,7 @@ namespace Everlook.Viewport.Camera
 
             var speedMultiplier = (float)(DefaultMovementSpeed * EverlookConfiguration.Instance.CameraSpeed);
 
-            if (Keyboard.GetState().IsKeyDown(Key.ShiftLeft))
+            if (this.WantsToSprint)
             {
                 speedMultiplier *= (float)EverlookConfiguration.Instance.SprintMultiplier;
             }
@@ -170,32 +205,32 @@ namespace Everlook.Viewport.Camera
             var moveDistance = deltaTime * speedMultiplier;
 
             // Perform axial movement
-            if (Keyboard.GetState().IsKeyDown(Key.W))
+            if (this.WantsToMoveForward)
             {
                 MoveForward(moveDistance);
             }
 
-            if (Keyboard.GetState().IsKeyDown(Key.S))
+            if (this.WantsToMoveBackward)
             {
                 MoveBackward(moveDistance);
             }
 
-            if (Keyboard.GetState().IsKeyDown(Key.A))
+            if (this.WantsToMoveLeft)
             {
                 MoveLeft(moveDistance);
             }
 
-            if (Keyboard.GetState().IsKeyDown(Key.D))
+            if (this.WantsToMoveRight)
             {
                 MoveRight(moveDistance);
             }
 
-            if (Keyboard.GetState().IsKeyDown(Key.Q))
+            if (this.WantsToMoveUp)
             {
                 MoveUp(moveDistance);
             }
 
-            if (Keyboard.GetState().IsKeyDown(Key.E))
+            if (this.WantsToMoveDown)
             {
                 MoveDown(moveDistance);
             }

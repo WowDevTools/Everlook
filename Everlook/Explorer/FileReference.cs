@@ -64,7 +64,19 @@ namespace Everlook.Explorer
         /// <summary>
         /// Gets the directory that the file resides in.
         /// </summary>
-        public string FileDirectory => Path.GetDirectoryName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar));
+        public string FileDirectory
+        {
+            get
+            {
+                var directory = Path.GetDirectoryName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar));
+                if (directory is null)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return directory;
+            }
+        }
 
         /// <summary>
         /// Gets the file info of this reference.
@@ -115,9 +127,22 @@ namespace Everlook.Explorer
         /// <summary>
         /// Gets the name of the file or directory.
         /// </summary>
-        public string Filename => this.IsDirectory ?
-            Path.GetDirectoryName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar)) :
-            Path.GetFileName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar));
+        public string Filename
+        {
+            get
+            {
+                var filename = this.IsDirectory
+                    ? Path.GetDirectoryName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar))
+                    : Path.GetFileName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar));
+
+                if (filename is null)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return filename;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileReference"/> class.

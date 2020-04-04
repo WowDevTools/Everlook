@@ -150,14 +150,100 @@ namespace Everlook.Viewport
         /// <summary>
         /// Initializes a new instance of the <see cref="Everlook.Viewport.ViewportRenderer"/> class.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        /// <param name="renderCache">The rendering cache.</param>
         /// <param name="viewportWidget">The widget which the viewport should be rendered to.</param>
-        public ViewportRenderer(ViewportArea viewportWidget)
-            : base(viewportWidget.GetAPI())
+        public ViewportRenderer(GL gl, RenderCache renderCache, ViewportArea viewportWidget)
+            : base(gl)
         {
             _viewportWidget = viewportWidget;
             _camera = new ViewportCamera();
             _movement = new CameraMovement(_camera);
-            _renderCache = new RenderCache(this.GL);
+            _renderCache = renderCache;
+
+            _viewportWidget.KeyPressEvent += (o, args) =>
+            {
+                switch (args.Event.Key)
+                {
+                    case Key.Shift_L:
+                    {
+                        _movement.WantsToSprint = true;
+                        break;
+                    }
+                    case Key.W:
+                    {
+                        _movement.WantsToMoveForward = true;
+                        break;
+                    }
+                    case Key.S:
+                    {
+                        _movement.WantsToMoveBackward = true;
+                        break;
+                    }
+                    case Key.A:
+                    {
+                        _movement.WantsToMoveLeft = true;
+                        break;
+                    }
+                    case Key.D:
+                    {
+                        _movement.WantsToMoveRight = true;
+                        break;
+                    }
+                    case Key.Q:
+                    {
+                        _movement.WantsToMoveUp = true;
+                        break;
+                    }
+                    case Key.E:
+                    {
+                        _movement.WantsToMoveDown = true;
+                        break;
+                    }
+                }
+            };
+
+            _viewportWidget.KeyReleaseEvent += (o, args) =>
+            {
+                switch (args.Event.Key)
+                {
+                    case Key.Shift_L:
+                    {
+                        _movement.WantsToSprint = false;
+                        break;
+                    }
+                    case Key.W:
+                    {
+                        _movement.WantsToMoveForward = false;
+                        break;
+                    }
+                    case Key.S:
+                    {
+                        _movement.WantsToMoveBackward = false;
+                        break;
+                    }
+                    case Key.A:
+                    {
+                        _movement.WantsToMoveLeft = false;
+                        break;
+                    }
+                    case Key.D:
+                    {
+                        _movement.WantsToMoveRight = false;
+                        break;
+                    }
+                    case Key.Q:
+                    {
+                        _movement.WantsToMoveUp = false;
+                        break;
+                    }
+                    case Key.E:
+                    {
+                        _movement.WantsToMoveDown = false;
+                        break;
+                    }
+                }
+            };
 
             this.IsInitialized = false;
         }

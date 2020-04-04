@@ -22,11 +22,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Everlook.Audio;
 using Everlook.Configuration;
 using Everlook.Explorer;
@@ -42,12 +42,14 @@ using FileTree.Tree.Serialized;
 using Gdk;
 using GLib;
 using Gtk;
-using log4net;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Silk.NET.OpenGL;
 using Warcraft.Core;
 
 using static Everlook.Utility.DataLoadingDelegates;
 
-using Application = Gtk.Application;
 using EventArgs = System.EventArgs;
 using IOPath = System.IO.Path;
 using Task = System.Threading.Tasks.Task;
@@ -62,9 +64,9 @@ namespace Everlook.UI
     public sealed partial class MainWindow : Gtk.Window
     {
         /// <summary>
-        /// Logger instance for this class.
+        /// Holds the logging instance for this class.
         /// </summary>
-        private static readonly ILog Log = LogManager.GetLogger(typeof(MainWindow));
+        private readonly ILogger<MainWindow> _log;
 
         /// <summary>
         /// Static reference to the configuration handler.
@@ -74,12 +76,12 @@ namespace Everlook.UI
         /// <summary>
         /// Background viewport renderer. Handles all rendering in the viewport.
         /// </summary>
-        private readonly ViewportRenderer _renderingEngine;
+        private ViewportRenderer? _renderingEngine;
 
         /// <summary>
-        /// Task scheduler for the UI thread. This allows task-based code to have very simple UI callbacks.
+        /// Holds the available services.
         /// </summary>
-        private readonly TaskScheduler _uiTaskScheduler;
+        private IServiceProvider? _services;
 
         /// <summary>
         /// Whether or not the program is shutting down. This is used to remove callbacks and events.
@@ -99,13 +101,17 @@ namespace Everlook.UI
         /// <summary>
         /// Creates an instance of the <see cref="MainWindow"/> class, loading the glade XML UI as needed.
         /// </summary>
+        /// <param name="provider">The application services.</param>
         /// <returns>An initialized instance of the MainWindow class.</returns>
-        public static MainWindow Create()
+        public static MainWindow Create(IServiceProvider provider)
         {
-            using (var builder = new Builder(null, "Everlook.interfaces.Everlook.glade", null))
-            {
-                return new MainWindow(builder, builder.GetObject("_mainWindow").Handle);
-            }
+            using var builder = new Builder(null, "Everlook.interfaces.Everlook.glade", null);
+            return ActivatorUtilities.CreateInstance<MainWindow>
+            (
+                provider,
+                builder,
+                builder.GetObject("_mainWindow").Handle
+            );
         }
 
         /// <summary>
@@ -113,15 +119,25 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="builder">Builder.</param>
         /// <param name="handle">Handle.</param>
-        private MainWindow(Builder builder, IntPtr handle)
+        /// <param name="services">The application services.</param>
+        /// <param name="log">The logging instance.</param>
+        public MainWindow
+        (
+            Builder builder,
+            IntPtr handle,
+            IServiceProvider services,
+            ILogger<MainWindow> log
+        )
             : base(handle)
         {
+            _log = log;
+
             builder.Autoconnect(this);
+
             this.DeleteEvent += OnDeleteEvent;
             this.Shown += OnMainWindowShown;
             this.WindowStateEvent += OnWindowStateChanged;
 
-            _uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             _fileLoadingCancellationSource = new CancellationTokenSource();
 
             _viewportWidget = new ViewportArea(3, 3)
@@ -140,12 +156,28 @@ namespace Everlook.UI
 
             _viewportWidget.Initialized += (sender, args) =>
             {
+                var wrappedServices = new ServiceContainer(services);
+                wrappedServices.AddService(typeof(GL), _viewportWidget.GetAPI());
+                wrappedServices.AddService
+                (
+                    typeof(RenderCache),
+                    new RenderCache(wrappedServices.GetRequiredService<GL>())
+                );
+
+                _services = wrappedServices;
+
+                _renderingEngine = ActivatorUtilities.CreateInstance<ViewportRenderer>(_services, _viewportWidget);
                 _renderingEngine.Initialize();
             };
 
             _viewportWidget.Render += (sender, args) =>
             {
                 if (_isShuttingDown)
+                {
+                    return;
+                }
+
+                if (_renderingEngine is null)
                 {
                     return;
                 }
@@ -165,7 +197,6 @@ namespace Everlook.UI
             _viewportWidget.EnterNotifyEvent += OnViewportMouseEnter;
             _viewportWidget.LeaveNotifyEvent += OnViewportMouseLeave;
 
-            _renderingEngine = new ViewportRenderer(_viewportWidget);
             _viewportAlignment.Add(_viewportWidget);
             _viewportAlignment.ShowAll();
 
@@ -225,6 +256,11 @@ namespace Everlook.UI
         {
             _renderBoundsCheckButton.Toggled += (sender, args) =>
             {
+                if (_renderingEngine is null)
+                {
+                    return;
+                }
+
                 switch (_renderingEngine.RenderTarget)
                 {
                     case RenderableWorldModel wmo:
@@ -242,6 +278,11 @@ namespace Everlook.UI
 
             _renderWireframeCheckButton.Toggled += (sender, args) =>
             {
+                if (_renderingEngine is null)
+                {
+                    return;
+                }
+
                 switch (_renderingEngine.RenderTarget)
                 {
                     case RenderableWorldModel wmo:
@@ -259,6 +300,11 @@ namespace Everlook.UI
 
             _renderDoodadsCheckButton.Toggled += (sender, args) =>
             {
+                if (_renderingEngine is null)
+                {
+                    return;
+                }
+
                 switch (_renderingEngine.RenderTarget)
                 {
                     case RenderableWorldModel wmo:
@@ -273,6 +319,11 @@ namespace Everlook.UI
 
             _modelVariationComboBox.Changed += (sender, args) =>
             {
+                if (_renderingEngine is null)
+                {
+                    return;
+                }
+
                 switch (_renderingEngine.RenderTarget)
                 {
                     case RenderableWorldModel wmo:
@@ -307,8 +358,7 @@ namespace Everlook.UI
         {
             _renderAlphaCheckButton.Toggled += (sender, args) =>
             {
-                var image = _renderingEngine.RenderTarget as RenderableImage;
-                if (image == null)
+                if (!(_renderingEngine?.RenderTarget is RenderableImage image))
                 {
                     return;
                 }
@@ -318,8 +368,7 @@ namespace Everlook.UI
 
             _renderRedCheckButton.Toggled += (sender, args) =>
             {
-                var image = _renderingEngine.RenderTarget as RenderableImage;
-                if (image == null)
+                if (!(_renderingEngine?.RenderTarget is RenderableImage image))
                 {
                     return;
                 }
@@ -329,8 +378,7 @@ namespace Everlook.UI
 
             _renderGreenCheckButton.Toggled += (sender, args) =>
             {
-                var image = _renderingEngine.RenderTarget as RenderableImage;
-                if (image == null)
+                if (!(_renderingEngine?.RenderTarget is RenderableImage image))
                 {
                     return;
                 }
@@ -340,8 +388,7 @@ namespace Everlook.UI
 
             _renderBlueCheckButton.Toggled += (sender, args) =>
             {
-                var image = _renderingEngine.RenderTarget as RenderableImage;
-                if (image == null)
+                if (!(_renderingEngine?.RenderTarget is RenderableImage image))
                 {
                     return;
                 }
@@ -356,7 +403,7 @@ namespace Everlook.UI
         /// <param name="sender">The sending object.</param>
         /// <param name="e">The event arguments.</param>
         [ConnectBefore]
-        private void OnRunExportQueueButtonClicked(object sender, EventArgs e)
+        private void OnRunExportQueueButtonClicked(object? sender, EventArgs e)
         {
             throw new NotImplementedException();
         }
@@ -367,7 +414,7 @@ namespace Everlook.UI
         /// <param name="sender">The sending object.</param>
         /// <param name="e">The event arguments.</param>
         [ConnectBefore]
-        private void OnClearExportQueueButtonClicked(object sender, EventArgs e)
+        private void OnClearExportQueueButtonClicked(object? sender, EventArgs e)
         {
             _exportQueueListStore.Clear();
         }
@@ -378,7 +425,7 @@ namespace Everlook.UI
         /// <param name="sender">The sending object.</param>
         /// <param name="e">The event arguments.</param>
         [ConnectBefore]
-        private void OnCancelCurrentActionClicked(object sender, EventArgs e)
+        private void OnCancelCurrentActionClicked(object? sender, EventArgs e)
         {
             _fileLoadingCancellationSource.Cancel();
         }
@@ -420,6 +467,11 @@ namespace Everlook.UI
         [ConnectBefore]
         private void OnViewportMouseEnter(object o, EnterNotifyEventArgs args)
         {
+            if (_renderingEngine is null)
+            {
+                return;
+            }
+
             if (_renderingEngine.RenderTarget?.Projection == ProjectionType.Orthographic)
             {
                 this.Window.Cursor = new Cursor(CursorType.Hand2);
@@ -431,7 +483,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="e">The event arguments.</param>
-        private async void OnFilterChanged(object sender, EventArgs e)
+        private async void OnFilterChanged(object? sender, EventArgs e)
         {
             await RefilterTrees();
         }
@@ -492,10 +544,9 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">The event arguments.</param>
-        private async void OnMainWindowShown(object sender, EventArgs eventArgs)
+        private async void OnMainWindowShown(object? sender, EventArgs eventArgs)
         {
             await LoadGames();
-            //OnDeleteEvent(sender, null); // DEBUG
         }
 
         /// <summary>
@@ -522,7 +573,7 @@ namespace Everlook.UI
 
                 if (!Directory.Exists(gameTarget.Path))
                 {
-                    Log.Warn($"Could not find game folder for {gameTarget.Alias}. Has the directory moved?");
+                    _log.LogWarning($"Could not find game folder for {gameTarget.Alias}. Has the directory moved?");
                     continue;
                 }
 
@@ -545,7 +596,7 @@ namespace Everlook.UI
                 }
                 catch (OperationCanceledException)
                 {
-                    Log.Info("Cancelled game loading operation.");
+                    _log.LogInformation("Cancelled game loading operation.");
                     break;
                 }
             }
@@ -554,7 +605,7 @@ namespace Everlook.UI
             dialog.Destroy();
 
             sw.Stop();
-            Log.Debug($"Game loading took {sw.Elapsed.TotalMilliseconds}ms ({sw.Elapsed.TotalSeconds}s)");
+            _log.LogDebug($"Game loading took {sw.Elapsed.TotalMilliseconds}ms ({sw.Elapsed.TotalSeconds}s)");
         }
 
         private void AddGamePage(string alias, WarcraftVersion version, PackageGroup group, SerializedTree nodeTree)
@@ -608,8 +659,7 @@ namespace Everlook.UI
             {
                 case ControlPage.Image:
                 {
-                    var image = _renderingEngine.RenderTarget as RenderableImage;
-                    if (image == null)
+                    if (!(_renderingEngine?.RenderTarget is RenderableImage image))
                     {
                         return;
                     }
@@ -635,44 +685,53 @@ namespace Everlook.UI
 
                     _modelVariationComboBox.Sensitive = true;
 
-                    if (_renderingEngine.RenderTarget is RenderableWorldModel wmo)
+                    if (_renderingEngine is null)
                     {
-                        wmo.ShouldRenderBounds = _renderBoundsCheckButton.Active;
-                        wmo.ShouldRenderWireframe = _renderWireframeCheckButton.Active;
-                        wmo.ShouldRenderDoodads = _renderDoodadsCheckButton.Active;
-
-                        var doodadSetNames = wmo.GetDoodadSetNames().ToList();
-                        _modelVariationListStore.Clear();
-                        for (var i = 0; i < doodadSetNames.Count; ++i)
-                        {
-                            _modelVariationListStore.AppendValues(doodadSetNames[i], i);
-                        }
-
-                        _modelVariationComboBox.Active = 0;
-                        _modelVariationComboBox.Sensitive = _renderDoodadsCheckButton.Active &&
-                                                            doodadSetNames.Count > 1;
-                        _renderDoodadsCheckButton.Sensitive = true;
+                        return;
                     }
 
-                    if (_renderingEngine.RenderTarget is RenderableGameModel mdx)
+                    switch (_renderingEngine.RenderTarget)
                     {
-                        mdx.ShouldRenderBounds = _renderBoundsCheckButton.Active;
-                        mdx.ShouldRenderWireframe = _renderWireframeCheckButton.Active;
-
-                        var skinVariations = mdx.GetSkinVariations().ToList();
-                        _modelVariationListStore.Clear();
-                        foreach (var variation in skinVariations)
+                        case RenderableWorldModel wmo:
                         {
-                            var firstTextureName = variation.TextureVariation1.Value;
-                            if (!string.IsNullOrEmpty(firstTextureName))
-                            {
-                                _modelVariationListStore.AppendValues(variation.TextureVariation1.Value, variation.ID);
-                            }
-                        }
+                            wmo.ShouldRenderBounds = _renderBoundsCheckButton.Active;
+                            wmo.ShouldRenderWireframe = _renderWireframeCheckButton.Active;
+                            wmo.ShouldRenderDoodads = _renderDoodadsCheckButton.Active;
 
-                        _modelVariationComboBox.Active = 0;
-                        _modelVariationComboBox.Sensitive = skinVariations.Count > 1;
-                        _renderDoodadsCheckButton.Sensitive = false;
+                            var doodadSetNames = wmo.GetDoodadSetNames().ToList();
+                            _modelVariationListStore.Clear();
+                            for (var i = 0; i < doodadSetNames.Count; ++i)
+                            {
+                                _modelVariationListStore.AppendValues(doodadSetNames[i], i);
+                            }
+
+                            _modelVariationComboBox.Active = 0;
+                            _modelVariationComboBox.Sensitive = _renderDoodadsCheckButton.Active &&
+                                                                doodadSetNames.Count > 1;
+                            _renderDoodadsCheckButton.Sensitive = true;
+                            break;
+                        }
+                        case RenderableGameModel mdx:
+                        {
+                            mdx.ShouldRenderBounds = _renderBoundsCheckButton.Active;
+                            mdx.ShouldRenderWireframe = _renderWireframeCheckButton.Active;
+
+                            var skinVariations = mdx.GetSkinVariations().ToList();
+                            _modelVariationListStore.Clear();
+                            foreach (var variation in skinVariations)
+                            {
+                                var firstTextureName = variation.TextureVariation1.Value;
+                                if (!string.IsNullOrEmpty(firstTextureName))
+                                {
+                                    _modelVariationListStore.AppendValues(variation.TextureVariation1.Value, variation.ID);
+                                }
+                            }
+
+                            _modelVariationComboBox.Active = 0;
+                            _modelVariationComboBox.Sensitive = skinVariations.Count > 1;
+                            _renderDoodadsCheckButton.Sensitive = false;
+                            break;
+                        }
                     }
 
                     break;
@@ -757,6 +816,11 @@ namespace Everlook.UI
         /// </summary>
         private void ReloadViewportBackground()
         {
+            if (_renderingEngine is null)
+            {
+                return;
+            }
+
             _viewportWidget.MakeCurrent();
 
             _renderingEngine.SetClearColour(_config.ViewportBackgroundColour);
@@ -789,7 +853,12 @@ namespace Everlook.UI
                 throw new ArgumentNullException(nameof(fileReference));
             }
 
-            Log.Info($"Loading \"{fileReference.FilePath}\".");
+            if (_renderingEngine is null)
+            {
+                return;
+            }
+
+            _log.LogInformation($"Loading \"{fileReference.FilePath}\".");
 
             _statusSpinner.Active = true;
 
@@ -811,7 +880,13 @@ namespace Everlook.UI
 
                 var renderable = await Task.Run
                 (
-                    () => createRenderable(item, fileReference),
+                    () => createRenderable
+                    (
+                        _services.GetRequiredService<GL>(),
+                        _services.GetRequiredService<RenderCache>(),
+                        item,
+                        fileReference
+                    ),
                     ct
                 );
 
@@ -836,7 +911,7 @@ namespace Everlook.UI
             }
             catch (OperationCanceledException)
             {
-                Log.Info($"Cancelled loading of {fileReference.Filename}");
+                _log.LogInformation($"Cancelled loading of {fileReference.Filename}");
             }
             finally
             {
@@ -853,6 +928,11 @@ namespace Everlook.UI
         [ConnectBefore]
         private void OnViewportButtonPressed(object o, ButtonPressEventArgs args)
         {
+            if (_renderingEngine is null)
+            {
+                return;
+            }
+
             if (_renderingEngine.IsMovementDisabled())
             {
                 return;
@@ -905,6 +985,11 @@ namespace Everlook.UI
         [ConnectBefore]
         private void OnViewportButtonReleased(object o, ButtonReleaseEventArgs args)
         {
+            if (_renderingEngine is null)
+            {
+                return;
+            }
+
             if (args.Event.Type != EventType.ButtonRelease)
             {
                 return;
@@ -972,7 +1057,8 @@ namespace Everlook.UI
                         {
                             exportDialog.RunExport();
                         }
-                        exportDialog.Destroy();
+
+                        exportDialog.Hide();
                     }
                     break;
                 }
@@ -999,7 +1085,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnAboutButtonClicked(object sender, EventArgs e)
+        private void OnAboutButtonClicked(object? sender, EventArgs e)
         {
             _aboutDialog.Run();
             _aboutDialog.Hide();
@@ -1010,7 +1096,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private async void OnPreferencesButtonClicked(object sender, EventArgs e)
+        private async void OnPreferencesButtonClicked(object? sender, EventArgs e)
         {
             using (var preferencesDialog = EverlookPreferences.Create())
             {
@@ -1020,7 +1106,7 @@ namespace Everlook.UI
                     preferencesDialog.SavePreferences();
                 }
 
-                preferencesDialog.Destroy();
+                preferencesDialog.Hide();
 
                 // Commit the changes
                 ReloadViewportBackground();
@@ -1091,16 +1177,16 @@ namespace Everlook.UI
                     }
                     catch (UnauthorizedAccessException unex)
                     {
-                        Log.Warn($"Failed to save \"{fileReference.Filename}\": {unex}");
+                        _log.LogWarning($"Failed to save \"{fileReference.Filename}\": {unex}");
                     }
                     catch (IOException iex)
                     {
-                        Log.Warn($"Failed to save \"{fileReference.Filename}\": {iex}");
+                        _log.LogWarning($"Failed to save \"{fileReference.Filename}\": {iex}");
                     }
                 }
                 else
                 {
-                    Log.Warn
+                    _log.LogWarning
                     (
                         $"Failed to save \"{fileReference.Filename}\": Could not extract any data from the archives."
                     );
@@ -1237,7 +1323,7 @@ namespace Everlook.UI
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
         [ConnectBefore]
-        private void OnExportQueueButtonPressed(object sender, ButtonPressEventArgs e)
+        private void OnExportQueueButtonPressed(object? sender, ButtonPressEventArgs e)
         {
             if (e.Event.Type != EventType.ButtonPress || e.Event.Button != 3)
             {
@@ -1266,8 +1352,7 @@ namespace Everlook.UI
             }
 
             _queueContextMenu.ShowAll();
-            _queueContextMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
-            //this.QueueContextMenu.Popup();
+            _queueContextMenu.PopupAtPointer(e.Event);
         }
 
         /// <summary>
@@ -1275,7 +1360,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnQueueRemoveContextItemActivated(object sender, EventArgs e)
+        private void OnQueueRemoveContextItemActivated(object? sender, EventArgs e)
         {
             _exportQueueTreeView.Selection.GetSelected(out var selectedIter);
             _exportQueueListStore.Remove(ref selectedIter);
@@ -1287,20 +1372,14 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="a">The alpha component.</param>
-        private void OnDeleteEvent(object sender, DeleteEventArgs a)
+        private void OnDeleteEvent(object? sender, DeleteEventArgs a)
         {
             _isShuttingDown = true;
 
             _fileLoadingCancellationSource?.Cancel();
-
-            _viewportWidget.MakeCurrent();
-
-            _renderingEngine.SetRenderTarget(null);
-            _renderingEngine.Dispose();
-
+            _renderingEngine?.Dispose();
             _viewportWidget.Dispose();
 
-            Application.Quit();
             a.RetVal = true;
         }
     }

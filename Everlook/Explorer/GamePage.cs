@@ -405,7 +405,7 @@ namespace Everlook.Explorer
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">Arguments describing the row that was activated.</param>
-        private void OnQueueForExportRequested(object sender, EventArgs eventArgs)
+        private void OnQueueForExportRequested(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
             if (fileReference == null)
@@ -421,7 +421,7 @@ namespace Everlook.Explorer
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">Arguments describing the row that was activated.</param>
-        private void OnExportItemRequested(object sender, EventArgs eventArgs)
+        private void OnExportItemRequested(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
             if (fileReference == null)
@@ -439,7 +439,7 @@ namespace Everlook.Explorer
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">Arguments describing the row that was activated.</param>
-        private void OnOpenItem(object sender, EventArgs eventArgs)
+        private void OnOpenItem(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
             if (fileReference == null)
@@ -465,7 +465,7 @@ namespace Everlook.Explorer
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">Arguments describing the row that was activated.</param>
-        private void OnCopyPath(object sender, EventArgs eventArgs)
+        private void OnCopyPath(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
             if (fileReference == null)
@@ -483,7 +483,7 @@ namespace Everlook.Explorer
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">Arguments describing the row that was activated.</param>
-        private void OnSaveItem(object sender, EventArgs eventArgs)
+        private void OnSaveItem(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
             if (fileReference == null)
@@ -565,7 +565,7 @@ namespace Everlook.Explorer
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">Arguments describing the row that was activated.</param>
-        private void OnSelectionChanged(object sender, EventArgs eventArgs)
+        private void OnSelectionChanged(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
             if (fileReference == null)

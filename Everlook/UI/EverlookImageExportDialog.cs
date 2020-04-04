@@ -234,7 +234,7 @@ namespace Everlook.UI
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
         [GLib.ConnectBefore]
-        protected void OnMipListingButtonPressed(object sender, ButtonPressEventArgs e)
+        protected void OnMipListingButtonPressed(object? sender, ButtonPressEventArgs e)
         {
             if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
             {
@@ -250,7 +250,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        protected void OnSelectAllItemActivated(object sender, EventArgs e)
+        protected void OnSelectAllItemActivated(object? sender, EventArgs e)
         {
             _mipLevelListStore.Foreach
             (
@@ -267,7 +267,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        protected void OnSelectNoneItemActivated(object sender, EventArgs e)
+        protected void OnSelectNoneItemActivated(object? sender, EventArgs e)
         {
             _mipLevelListStore.Foreach
             (
@@ -284,7 +284,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        protected void OnExportMipToggleClicked(object sender, ToggledArgs e)
+        protected void OnExportMipToggleClicked(object? sender, ToggledArgs e)
         {
             TreeIter iter;
             _mipLevelListStore.GetIterFromString(out iter, e.Path);
@@ -299,7 +299,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        protected void OnOkButtonClicked(object sender, EventArgs e)
+        protected void OnOkButtonClicked(object? sender, EventArgs e)
         {
             RunExport();
         }

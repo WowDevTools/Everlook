@@ -58,7 +58,19 @@ namespace Everlook.Package
         /// Gets the name of the package.
         /// </summary>
         /// <value>The name of the package.</value>
-        public string PackageName => Path.GetFileNameWithoutExtension(this.PackagePath);
+        public string PackageName
+        {
+            get
+            {
+                var filename = Path.GetFileNameWithoutExtension(this.PackagePath);
+                if (filename is null)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return filename;
+            }
+        }
 
         private MPQ? _package;
 

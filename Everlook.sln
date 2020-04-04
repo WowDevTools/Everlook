@@ -5,13 +5,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Everlook", "Everlook\Everlo
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x86 = Debug|x86
-		Release|x86 = Release|x86
+		Release|Any CPU = Release|Any CPU
+		Debug|Any CPU = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{64BD763C-024D-477A-B05C-57152FD612DF}.Debug|x86.ActiveCfg = Debug|x86
-		{64BD763C-024D-477A-B05C-57152FD612DF}.Debug|x86.Build.0 = Debug|x86
-		{64BD763C-024D-477A-B05C-57152FD612DF}.Release|x86.ActiveCfg = Release|x86
-		{64BD763C-024D-477A-B05C-57152FD612DF}.Release|x86.Build.0 = Release|x86
+		{64BD763C-024D-477A-B05C-57152FD612DF}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{64BD763C-024D-477A-B05C-57152FD612DF}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{64BD763C-024D-477A-B05C-57152FD612DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64BD763C-024D-477A-B05C-57152FD612DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
