@@ -30,7 +30,6 @@ using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Gdk;
 using log4net;
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 

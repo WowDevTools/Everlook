@@ -34,7 +34,6 @@ using log4net;
 using OpenTK;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
-using Warcraft.WMO.GroupFile.Chunks;
 using Warcraft.WMO.RootFile.Chunks;
 using BufferTarget = OpenTK.Graphics.OpenGL.BufferTarget;
 using BufferUsageHint = OpenTK.Graphics.OpenGL.BufferUsageHint;

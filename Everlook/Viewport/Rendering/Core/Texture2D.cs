@@ -23,8 +23,6 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-
 using log4net;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -32,7 +30,6 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 using Warcraft.BLP;
-using Warcraft.Core.Structures;
 using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 using Image = System.Drawing.Image;
 using Rectangle = System.Drawing.Rectangle;

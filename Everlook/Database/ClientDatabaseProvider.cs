@@ -22,7 +22,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Warcraft.Core;
 using Warcraft.DBC;
 using Warcraft.DBC.Definitions;

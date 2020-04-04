@@ -25,7 +25,6 @@ using System.Diagnostics.CodeAnalysis;
 using Everlook.Configuration;
 using Everlook.Viewport.Rendering.Core;
 using OpenTK;
-using OpenTK.Graphics.ES10;
 
 namespace Everlook.Viewport.Camera
 {
