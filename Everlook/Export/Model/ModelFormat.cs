@@ -22,21 +22,21 @@
 
 namespace Everlook.Export.Model
 {
-	/// <summary>
-	/// Supported model formats for the model exporter.
-	/// </summary>
-	public enum ModelFormat
-	{
-		/// <summary>
-		/// Collada (ISO/PAS 17506)
-		/// <a href="https://en.wikipedia.org/wiki/COLLADA"/>
-		/// </summary>
-		Collada = 0,
+    /// <summary>
+    /// Supported model formats for the model exporter.
+    /// </summary>
+    public enum ModelFormat
+    {
+        /// <summary>
+        /// Collada (ISO/PAS 17506)
+        /// <a href="https://en.wikipedia.org/wiki/COLLADA"/>
+        /// </summary>
+        Collada = 0,
 
-		/// <summary>
-		/// Wavefront OBJ
-		/// <a href="https://en.wikipedia.org/wiki/Wavefront_.obj_file"/>
-		/// </summary>
-		WavefrontObj = 1
-	}
+        /// <summary>
+        /// Wavefront OBJ
+        /// <a href="https://en.wikipedia.org/wiki/Wavefront_.obj_file"/>
+        /// </summary>
+        WavefrontObj = 1
+    }
 }

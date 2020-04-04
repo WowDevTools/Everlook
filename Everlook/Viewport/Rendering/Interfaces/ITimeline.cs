@@ -24,43 +24,43 @@ using Warcraft.Core.Interpolation;
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {
-	/// <summary>
-	/// Representation of a timeline with interpolated values.
-	/// </summary>
-	/// <typeparam name="T">The output value type of the timeline.</typeparam>
-	public interface ITimeline<out T>
-	{
-		/// <summary>
-		/// Gets or sets a value indicating whether the track loops. A looping track will overflow into itself instead
-		/// of returning the end value when advanced beyond its end.
-		/// </summary>
-		bool Looping { get; set; }
+    /// <summary>
+    /// Representation of a timeline with interpolated values.
+    /// </summary>
+    /// <typeparam name="T">The output value type of the timeline.</typeparam>
+    public interface ITimeline<out T>
+    {
+        /// <summary>
+        /// Gets or sets a value indicating whether the track loops. A looping track will overflow into itself instead
+        /// of returning the end value when advanced beyond its end.
+        /// </summary>
+        bool Looping { get; set; }
 
-		/// <summary>
-		/// Gets or sets the position (in milliseconds) of the track.
-		/// </summary>
-		float Position { get; set; }
+        /// <summary>
+        /// Gets or sets the position (in milliseconds) of the track.
+        /// </summary>
+        float Position { get; set; }
 
-		/// <summary>
-		/// Gets the duration (in milliseconds) of the track.
-		/// </summary>
-		float Duration { get; }
+        /// <summary>
+        /// Gets the duration (in milliseconds) of the track.
+        /// </summary>
+        float Duration { get; }
 
-		/// <summary>
-		/// Gets the interpolation type of the timeline.
-		/// </summary>
-		InterpolationType Interpolation { get; }
+        /// <summary>
+        /// Gets the interpolation type of the timeline.
+        /// </summary>
+        InterpolationType Interpolation { get; }
 
-		/// <summary>
-		/// Gets the value at the current position in the timeline.
-		/// </summary>
-		T Value { get; }
+        /// <summary>
+        /// Gets the value at the current position in the timeline.
+        /// </summary>
+        T Value { get; }
 
-		/// <summary>
-		/// Advances the position of the track by the specified distance. If the track is looping, and the distance
-		/// would advance the track beyond its end timestamp, then it instead overflows onto itself.
-		/// </summary>
-		/// <param name="time">The time to advance the timeline by.</param>
-		void Advance(float time);
-	}
+        /// <summary>
+        /// Advances the position of the track by the specified distance. If the track is looping, and the distance
+        /// would advance the track beyond its end timestamp, then it instead overflows onto itself.
+        /// </summary>
+        /// <param name="time">The time to advance the timeline by.</param>
+        void Advance(float time);
+    }
 }

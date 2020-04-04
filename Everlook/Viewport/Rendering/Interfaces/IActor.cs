@@ -24,19 +24,19 @@ using Everlook.Viewport.Rendering.Core;
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {
-	/// <summary>
-	/// Interface defining functionality for a renderable object with a position,
-	/// rotation and scale in the world.
-	/// </summary>
-	public interface IActor
-	{
-		/// <summary>
-		/// Gets or sets the transform of the actor.
-		/// </summary>
-		Transform ActorTransform
-		{
-			get;
-			set;
-		}
-	}
+    /// <summary>
+    /// Interface defining functionality for a renderable object with a position,
+    /// rotation and scale in the world.
+    /// </summary>
+    public interface IActor
+    {
+        /// <summary>
+        /// Gets or sets the transform of the actor.
+        /// </summary>
+        Transform ActorTransform
+        {
+            get;
+            set;
+        }
+    }
 }

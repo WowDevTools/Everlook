@@ -26,60 +26,60 @@ using Warcraft.DBC.SpecialFields;
 
 namespace Everlook.Utility
 {
-	/// <summary>
-	/// Utility class for determining equality between lists of string references.
-	/// </summary>
-	public class StringReferenceListComparer : IEqualityComparer<IReadOnlyList<StringReference>>
-	{
-		/// <inheritdoc />
-		public bool Equals(IReadOnlyList<StringReference> x, IReadOnlyList<StringReference> y)
-		{
-			if (x == null && y == null)
-			{
-				return true;
-			}
+    /// <summary>
+    /// Utility class for determining equality between lists of string references.
+    /// </summary>
+    public class StringReferenceListComparer : IEqualityComparer<IReadOnlyList<StringReference>>
+    {
+        /// <inheritdoc />
+        public bool Equals(IReadOnlyList<StringReference> x, IReadOnlyList<StringReference> y)
+        {
+            if (x == null && y == null)
+            {
+                return true;
+            }
 
-			if (x == null || y == null)
-			{
-				return false;
-			}
+            if (x == null || y == null)
+            {
+                return false;
+            }
 
-			if (x.Count != y.Count)
-			{
-				return false;
-			}
+            if (x.Count != y.Count)
+            {
+                return false;
+            }
 
-			for (int i = 0; i < x.Count; i++)
-			{
-				var leftReference = x[i];
-				var rightReference = y[i];
+            for (int i = 0; i < x.Count; i++)
+            {
+                var leftReference = x[i];
+                var rightReference = y[i];
 
-				bool areValuesEqual = string.Equals(leftReference.Value, rightReference.Value, StringComparison.OrdinalIgnoreCase);
-				bool areOffsetsEqual = leftReference.Offset == rightReference.Offset;
-				if (!(areValuesEqual && areOffsetsEqual))
-				{
-					return false;
-				}
-			}
+                bool areValuesEqual = string.Equals(leftReference.Value, rightReference.Value, StringComparison.OrdinalIgnoreCase);
+                bool areOffsetsEqual = leftReference.Offset == rightReference.Offset;
+                if (!(areValuesEqual && areOffsetsEqual))
+                {
+                    return false;
+                }
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		/// <inheritdoc />
-		public int GetHashCode(IReadOnlyList<StringReference> obj)
-		{
-			unchecked
-			{
-				int hash = 17;
+        /// <inheritdoc />
+        public int GetHashCode(IReadOnlyList<StringReference> obj)
+        {
+            unchecked
+            {
+                int hash = 17;
 
-				foreach (var reference in obj)
-				{
-					hash *= 23 + reference.Value.GetHashCode();
-					hash *= 23 + reference.Offset.GetHashCode();
-				}
+                foreach (var reference in obj)
+                {
+                    hash *= 23 + reference.Value.GetHashCode();
+                    hash *= 23 + reference.Offset.GetHashCode();
+                }
 
-				return hash;
-			}
-		}
-	}
+                return hash;
+            }
+        }
+    }
 }

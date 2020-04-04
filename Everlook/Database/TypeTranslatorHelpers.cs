@@ -25,36 +25,36 @@ using Warcraft.DBC;
 
 namespace Everlook.Database
 {
-	/// <summary>
-	/// Helper methods for translating types to database names and back.
-	/// </summary>
-	public static class TypeTranslatorHelpers
-	{
-		/// <summary>
-		/// Converts a database name into a qualified type.
-		/// </summary>
-		/// <param name="databaseName">The enumerated name of the database.</param>
-		/// <returns>The type mapping to the database name.</returns>
-		public static Type GetRecordTypeFromDatabaseName(DatabaseName databaseName)
-		{
-			return Type.GetType($"Warcraft.DBC.Definitions.{databaseName}Record, libwarcraft");
-		}
+    /// <summary>
+    /// Helper methods for translating types to database names and back.
+    /// </summary>
+    public static class TypeTranslatorHelpers
+    {
+        /// <summary>
+        /// Converts a database name into a qualified type.
+        /// </summary>
+        /// <param name="databaseName">The enumerated name of the database.</param>
+        /// <returns>The type mapping to the database name.</returns>
+        public static Type GetRecordTypeFromDatabaseName(DatabaseName databaseName)
+        {
+            return Type.GetType($"Warcraft.DBC.Definitions.{databaseName}Record, libwarcraft");
+        }
 
-		/// <summary>
-		/// Gets the database name from a type.
-		/// </summary>
-		/// <param name="recordType">The type of the record.</param>
-		/// <returns>The enumerated database name.</returns>
-		/// <exception cref="ArgumentException">Thrown if the given type can't be resolved to a database name.</exception>
-		public static DatabaseName GetDatabaseNameFromRecordType(Type recordType)
-		{
-			string recordName = recordType.Name.Replace("Record", string.Empty);
-			if (Enum.TryParse(recordName, true, out DatabaseName databaseName))
-			{
-				return databaseName;
-			}
+        /// <summary>
+        /// Gets the database name from a type.
+        /// </summary>
+        /// <param name="recordType">The type of the record.</param>
+        /// <returns>The enumerated database name.</returns>
+        /// <exception cref="ArgumentException">Thrown if the given type can't be resolved to a database name.</exception>
+        public static DatabaseName GetDatabaseNameFromRecordType(Type recordType)
+        {
+            string recordName = recordType.Name.Replace("Record", string.Empty);
+            if (Enum.TryParse(recordName, true, out DatabaseName databaseName))
+            {
+                return databaseName;
+            }
 
-			throw new ArgumentException("The given type could not be resolved to a database name.", nameof(recordType));
-		}
-	}
+            throw new ArgumentException("The given type could not be resolved to a database name.", nameof(recordType));
+        }
+    }
 }

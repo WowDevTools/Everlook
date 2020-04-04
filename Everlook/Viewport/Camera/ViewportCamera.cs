@@ -29,233 +29,233 @@ using OpenTK.Graphics.ES10;
 
 namespace Everlook.Viewport.Camera
 {
-	/// <summary>
-	/// A camera in the world, represented by a position and a set of viewing angles.
-	/// </summary>
-	public class ViewportCamera
-	{
-		/*
-			Default camera and movement speeds.
-		*/
+    /// <summary>
+    /// A camera in the world, represented by a position and a set of viewing angles.
+    /// </summary>
+    public class ViewportCamera
+    {
+        /*
+            Default camera and movement speeds.
+        */
 
-		/// <summary>
-		/// The default near clipping distance.
-		/// </summary>
-		private const float DefaultNearClippingDistance = 0.1f;
+        /// <summary>
+        /// The default near clipping distance.
+        /// </summary>
+        private const float DefaultNearClippingDistance = 0.1f;
 
-		/// <summary>
-		/// The default far clipping distance.
-		/// </summary>
-		private const float DefaultFarClippingDistance = 1000.0f;
+        /// <summary>
+        /// The default far clipping distance.
+        /// </summary>
+        private const float DefaultFarClippingDistance = 1000.0f;
 
-		private ProjectionType ProjectionInternal;
+        private ProjectionType ProjectionInternal;
 
-		/// <summary>
-		/// Gets or sets the projection type of the camera.
-		/// </summary>
-		public ProjectionType Projection
-		{
-			get => this.ProjectionInternal;
-			set
-			{
-				this.ProjectionInternal = value;
-				RecalculateInternals();
-			}
-		}
+        /// <summary>
+        /// Gets or sets the projection type of the camera.
+        /// </summary>
+        public ProjectionType Projection
+        {
+            get => this.ProjectionInternal;
+            set
+            {
+                this.ProjectionInternal = value;
+                RecalculateInternals();
+            }
+        }
 
-		/// <summary>
-		/// Gets or sets the width of the camera viewport in pixels.
-		/// </summary>
-		public int ViewportWidth { get; set; }
+        /// <summary>
+        /// Gets or sets the width of the camera viewport in pixels.
+        /// </summary>
+        public int ViewportWidth { get; set; }
 
-		/// <summary>
-		/// Gets or sets the height of the camera viewport in pixels.
-		/// </summary>
-		public int ViewportHeight { get; set; }
+        /// <summary>
+        /// Gets or sets the height of the camera viewport in pixels.
+        /// </summary>
+        public int ViewportHeight { get; set; }
 
-		private Vector3 PositionInternal;
+        private Vector3 PositionInternal;
 
-		/// <summary>
-		/// Gets or sets the current position of the observer in world space.
-		/// </summary>
-		public Vector3 Position
-		{
-			get => this.PositionInternal;
-			set
-			{
-				this.PositionInternal = value;
-				RecalculateInternals();
-			}
-		}
+        /// <summary>
+        /// Gets or sets the current position of the observer in world space.
+        /// </summary>
+        public Vector3 Position
+        {
+            get => this.PositionInternal;
+            set
+            {
+                this.PositionInternal = value;
+                RecalculateInternals();
+            }
+        }
 
-		/// <summary>
-		/// Gets a vector pointing in the direction the observer is currently looking.
-		/// </summary>
-		public Vector3 LookDirectionVector
-		{
-			get;
-			private set;
-		}
+        /// <summary>
+        /// Gets a vector pointing in the direction the observer is currently looking.
+        /// </summary>
+        public Vector3 LookDirectionVector
+        {
+            get;
+            private set;
+        }
 
-		/// <summary>
-		/// Gets the current vector that points directly to the right, relative to the
-		/// current orientation of the observer.
-		/// </summary>
-		public Vector3 RightVector
-		{
-			get;
-			private set;
-		}
+        /// <summary>
+        /// Gets the current vector that points directly to the right, relative to the
+        /// current orientation of the observer.
+        /// </summary>
+        public Vector3 RightVector
+        {
+            get;
+            private set;
+        }
 
-		/// <summary>
-		/// Gets the current vector that points directly upwards, relative to the current
-		/// orientation of the observer.
-		/// </summary>
-		public Vector3 UpVector
-		{
-			get;
-			private set;
-		}
+        /// <summary>
+        /// Gets the current vector that points directly upwards, relative to the current
+        /// orientation of the observer.
+        /// </summary>
+        public Vector3 UpVector
+        {
+            get;
+            private set;
+        }
 
-		private float HorizontalViewAngleInternal;
+        private float HorizontalViewAngleInternal;
 
-		/// <summary>
-		/// Gets or sets the current horizontal view angle of the observer.
-		/// </summary>
-		public float HorizontalViewAngle
-		{
-			get => this.HorizontalViewAngleInternal;
-			set
-			{
-				this.HorizontalViewAngleInternal = value;
-				RecalculateInternals();
-			}
-		}
+        /// <summary>
+        /// Gets or sets the current horizontal view angle of the observer.
+        /// </summary>
+        public float HorizontalViewAngle
+        {
+            get => this.HorizontalViewAngleInternal;
+            set
+            {
+                this.HorizontalViewAngleInternal = value;
+                RecalculateInternals();
+            }
+        }
 
-		private float VerticalViewAngleInternal;
+        private float VerticalViewAngleInternal;
 
-		/// <summary>
-		/// Gets or sets the current vertical view angle of the observer. This angle is
-		/// limited to -90 and 90 (straight down and straight up, respectively).
-		/// </summary>
-		public float VerticalViewAngle
-		{
-			get => this.VerticalViewAngleInternal;
-			set
-			{
-				this.VerticalViewAngleInternal = value;
-				RecalculateInternals();
-			}
-		}
+        /// <summary>
+        /// Gets or sets the current vertical view angle of the observer. This angle is
+        /// limited to -90 and 90 (straight down and straight up, respectively).
+        /// </summary>
+        public float VerticalViewAngle
+        {
+            get => this.VerticalViewAngleInternal;
+            set
+            {
+                this.VerticalViewAngleInternal = value;
+                RecalculateInternals();
+            }
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ViewportCamera"/> class, and sets its position
-		/// to the default values.
-		/// </summary>
-		public ViewportCamera()
-		{
-			ResetPosition();
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ViewportCamera"/> class, and sets its position
+        /// to the default values.
+        /// </summary>
+        public ViewportCamera()
+        {
+            ResetPosition();
+        }
 
-		/// <summary>
-		/// Resets the camera to the default position.
-		/// </summary>
-		public void ResetPosition()
-		{
-			this.Position = new Vector3(0.0f, 0.0f, 1.0f);
-		}
+        /// <summary>
+        /// Resets the camera to the default position.
+        /// </summary>
+        public void ResetPosition()
+        {
+            this.Position = new Vector3(0.0f, 0.0f, 1.0f);
+        }
 
-		/// <summary>
-		/// Resets the camera to its default rotation.
-		/// </summary>
-		public void ResetRotation()
-		{
-			this.HorizontalViewAngle = MathHelper.DegreesToRadians(180.0f);
-			this.VerticalViewAngle = MathHelper.DegreesToRadians(0.0f);
-		}
+        /// <summary>
+        /// Resets the camera to its default rotation.
+        /// </summary>
+        public void ResetRotation()
+        {
+            this.HorizontalViewAngle = MathHelper.DegreesToRadians(180.0f);
+            this.VerticalViewAngle = MathHelper.DegreesToRadians(0.0f);
+        }
 
-		private void RecalculateInternals()
-		{
-			// Recalculate the directional vectors
-			this.LookDirectionVector = new Vector3
-			(
-				(float)(Math.Cos(this.VerticalViewAngle) * Math.Sin(this.HorizontalViewAngle)),
-				(float)Math.Sin(this.VerticalViewAngle),
-				(float)(Math.Cos(this.VerticalViewAngle) * Math.Cos(this.HorizontalViewAngle))
-			);
+        private void RecalculateInternals()
+        {
+            // Recalculate the directional vectors
+            this.LookDirectionVector = new Vector3
+            (
+                (float)(Math.Cos(this.VerticalViewAngle) * Math.Sin(this.HorizontalViewAngle)),
+                (float)Math.Sin(this.VerticalViewAngle),
+                (float)(Math.Cos(this.VerticalViewAngle) * Math.Cos(this.HorizontalViewAngle))
+            );
 
-			this.RightVector = new Vector3
-			(
-				(float)Math.Sin(this.HorizontalViewAngle - MathHelper.PiOver2),
-				0,
-				(float)Math.Cos(this.HorizontalViewAngle - MathHelper.PiOver2)
-			);
+            this.RightVector = new Vector3
+            (
+                (float)Math.Sin(this.HorizontalViewAngle - MathHelper.PiOver2),
+                0,
+                (float)Math.Cos(this.HorizontalViewAngle - MathHelper.PiOver2)
+            );
 
-			this.UpVector = Vector3.Cross(this.RightVector, this.LookDirectionVector);
-		}
+            this.UpVector = Vector3.Cross(this.RightVector, this.LookDirectionVector);
+        }
 
-		/// <summary>
-		/// Gets the calculated projection matrix for this camera, using the values contained inside it.
-		/// </summary>
-		/// <returns>A <see cref="Matrix4"/> projection matrix.</returns>
-		public Matrix4 GetProjectionMatrix()
-		{
-			Matrix4 projectionMatrix;
-			if (this.Projection == ProjectionType.Orthographic)
-			{
-				projectionMatrix = Matrix4.CreateOrthographic
-				(
-					this.ViewportWidth,
-					this.ViewportHeight,
-					DefaultNearClippingDistance,
-					DefaultFarClippingDistance
-				);
-			}
-			else
-			{
-				float aspectRatio = (float)this.ViewportWidth / this.ViewportHeight;
-				projectionMatrix = Matrix4.CreatePerspectiveFieldOfView
-				(
-					MathHelper.DegreesToRadians((float)EverlookConfiguration.Instance.CameraFOV),
-					aspectRatio,
-					DefaultNearClippingDistance,
-					DefaultFarClippingDistance
-				);
-			}
+        /// <summary>
+        /// Gets the calculated projection matrix for this camera, using the values contained inside it.
+        /// </summary>
+        /// <returns>A <see cref="Matrix4"/> projection matrix.</returns>
+        public Matrix4 GetProjectionMatrix()
+        {
+            Matrix4 projectionMatrix;
+            if (this.Projection == ProjectionType.Orthographic)
+            {
+                projectionMatrix = Matrix4.CreateOrthographic
+                (
+                    this.ViewportWidth,
+                    this.ViewportHeight,
+                    DefaultNearClippingDistance,
+                    DefaultFarClippingDistance
+                );
+            }
+            else
+            {
+                float aspectRatio = (float)this.ViewportWidth / this.ViewportHeight;
+                projectionMatrix = Matrix4.CreatePerspectiveFieldOfView
+                (
+                    MathHelper.DegreesToRadians((float)EverlookConfiguration.Instance.CameraFOV),
+                    aspectRatio,
+                    DefaultNearClippingDistance,
+                    DefaultFarClippingDistance
+                );
+            }
 
-			return projectionMatrix;
-		}
+            return projectionMatrix;
+        }
 
-		/// <summary>
-		/// Gets the view matrix of this camera (i.e, where it is looking).
-		/// </summary>
-		/// <returns>A <see cref="Matrix4"/> view matrix.</returns>
-		public Matrix4 GetViewMatrix()
-		{
-			return Matrix4.LookAt
-			(
-				this.Position,
-				this.Position + this.LookDirectionVector,
-				this.UpVector
-			);
-		}
+        /// <summary>
+        /// Gets the view matrix of this camera (i.e, where it is looking).
+        /// </summary>
+        /// <returns>A <see cref="Matrix4"/> view matrix.</returns>
+        public Matrix4 GetViewMatrix()
+        {
+            return Matrix4.LookAt
+            (
+                this.Position,
+                this.Position + this.LookDirectionVector,
+                this.UpVector
+            );
+        }
 
-		/// <summary>
-		/// Gets the NDC to screen transformation matrix.
-		/// </summary>
-		/// <returns>The viewport matrix.</returns>
-		[SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1117:ParametersMustBeOnSameLineOrSeparateLines", Justification = "Used for matrix parameter alignment.")]
-		public Matrix3 GetViewportMatrix()
-		{
-			float widthOver2 = this.ViewportWidth / 2.0f;
-			float heightOver2 = this.ViewportHeight / 2.0f;
+        /// <summary>
+        /// Gets the NDC to screen transformation matrix.
+        /// </summary>
+        /// <returns>The viewport matrix.</returns>
+        [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1117:ParametersMustBeOnSameLineOrSeparateLines", Justification = "Used for matrix parameter alignment.")]
+        public Matrix3 GetViewportMatrix()
+        {
+            float widthOver2 = this.ViewportWidth / 2.0f;
+            float heightOver2 = this.ViewportHeight / 2.0f;
 
-			return new Matrix3
-			(
-				widthOver2, 0,           widthOver2,
-				0,          heightOver2, heightOver2,
-				0,          0,           1
-			);
-		}
-	}
+            return new Matrix3
+            (
+                widthOver2, 0,           widthOver2,
+                0,          heightOver2, heightOver2,
+                0,          0,           1
+            );
+        }
+    }
 }

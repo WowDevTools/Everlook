@@ -22,15 +22,15 @@
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {
-	/// <summary>
-	/// Interface defining a ticking actor, such as an animated mesh.
-	/// </summary>
-	public interface ITickingActor : IActor
-	{
-		/// <summary>
-		/// Ticks this actor, advancing or performing any time-based actions.
-		/// </summary>
-		/// <param name="deltaTime">The time delta, in seconds.</param>
-		void Tick(float deltaTime);
-	}
+    /// <summary>
+    /// Interface defining a ticking actor, such as an animated mesh.
+    /// </summary>
+    public interface ITickingActor : IActor
+    {
+        /// <summary>
+        /// Ticks this actor, advancing or performing any time-based actions.
+        /// </summary>
+        /// <param name="deltaTime">The time delta, in seconds.</param>
+        void Tick(float deltaTime);
+    }
 }

@@ -24,39 +24,39 @@ using FileTree.ProgressReporters;
 
 namespace Everlook.Explorer
 {
-	/// <summary>
-	/// Container for progress reporting of a load operation for a game.
-	/// </summary>
-	public struct GameLoadingProgress
-	{
-		/// <summary>
-		/// Gets or sets the overall completion percentage.
-		/// </summary>
-		public double CompletionPercentage { get; set; }
+    /// <summary>
+    /// Container for progress reporting of a load operation for a game.
+    /// </summary>
+    public struct GameLoadingProgress
+    {
+        /// <summary>
+        /// Gets or sets the overall completion percentage.
+        /// </summary>
+        public double CompletionPercentage { get; set; }
 
-		/// <summary>
-		/// Gets or sets the state of the load operation at the time of reporting.
-		/// </summary>
-		public GameLoadingState State { get; set; }
+        /// <summary>
+        /// Gets or sets the state of the load operation at the time of reporting.
+        /// </summary>
+        public GameLoadingState State { get; set; }
 
-		/// <summary>
-		/// Gets or sets the alias of the game which is being loaded.
-		/// </summary>
-		public string Alias { get; set; }
+        /// <summary>
+        /// Gets or sets the alias of the game which is being loaded.
+        /// </summary>
+        public string Alias { get; set; }
 
-		/// <summary>
-		/// Gets or sets the name of the package that's currently being loaded.
-		/// </summary>
-		public string CurrentPackage { get; set; }
+        /// <summary>
+        /// Gets or sets the name of the package that's currently being loaded.
+        /// </summary>
+        public string CurrentPackage { get; set; }
 
-		/// <summary>
-		/// Gets or sets the progress reporter for node creation.
-		/// </summary>
-		public PackageNodesCreationProgress NodesCreationProgress { get; set; }
+        /// <summary>
+        /// Gets or sets the progress reporter for node creation.
+        /// </summary>
+        public PackageNodesCreationProgress NodesCreationProgress { get; set; }
 
-		/// <summary>
-		/// Gets or sets the progress reporter for tree optimization.
-		/// </summary>
-		public TreeOptimizationProgress OptimizationProgress { get; set; }
-	}
+        /// <summary>
+        /// Gets or sets the progress reporter for tree optimization.
+        /// </summary>
+        public TreeOptimizationProgress OptimizationProgress { get; set; }
+    }
 }

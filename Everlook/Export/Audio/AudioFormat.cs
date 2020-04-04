@@ -22,39 +22,39 @@
 
 namespace Everlook.Export.Audio
 {
-	/// <summary>
-	/// Supported audio formats for the audio exporter.
-	/// </summary>
-	public enum AudioFormat
-	{
-		/// <summary>
-		/// Original file format that was stored in the archive.
-		/// Usually Waveform or MPEG-2 Audio Layer III.
-		/// </summary>
-		Original = 0,
+    /// <summary>
+    /// Supported audio formats for the audio exporter.
+    /// </summary>
+    public enum AudioFormat
+    {
+        /// <summary>
+        /// Original file format that was stored in the archive.
+        /// Usually Waveform or MPEG-2 Audio Layer III.
+        /// </summary>
+        Original = 0,
 
-		/// <summary>
-		/// Waveform Audio Reference Format
-		/// <a href="https://en.wikipedia.org/wiki/WAV"/>
-		/// </summary>
-		WAV = 1,
+        /// <summary>
+        /// Waveform Audio Reference Format
+        /// <a href="https://en.wikipedia.org/wiki/WAV"/>
+        /// </summary>
+        WAV = 1,
 
-		/// <summary>
-		/// MPEG-2 Audio Layer III
-		/// <a href="https://en.wikipedia.org/wiki/MP3"/>
-		/// </summary>
-		MP3 = 2,
+        /// <summary>
+        /// MPEG-2 Audio Layer III
+        /// <a href="https://en.wikipedia.org/wiki/MP3"/>
+        /// </summary>
+        MP3 = 2,
 
-		/// <summary>
-		/// Xiph OGG Audio Format
-		/// <a href="https://en.wikipedia.org/wiki/Ogg"/>
-		/// </summary>
-		OGG = 3,
+        /// <summary>
+        /// Xiph OGG Audio Format
+        /// <a href="https://en.wikipedia.org/wiki/Ogg"/>
+        /// </summary>
+        OGG = 3,
 
-		/// <summary>
-		/// Free Lossless Audio Codec
-		/// <a href="https://en.wikipedia.org/wiki/FLAC"/>
-		/// </summary>
-		FLAC = 4
-	}
+        /// <summary>
+        /// Free Lossless Audio Codec
+        /// <a href="https://en.wikipedia.org/wiki/FLAC"/>
+        /// </summary>
+        FLAC = 4
+    }
 }

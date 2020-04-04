@@ -28,121 +28,121 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Core
 {
-	/// <summary>
-	/// Represents a native OpenGL data buffer.
-	/// </summary>
-	/// <typeparam name="T">Any structure.</typeparam>
-	public sealed class Buffer<T> : IDisposable, IBuffer where T : struct
-	{
-		private readonly int NativeBufferID;
+    /// <summary>
+    /// Represents a native OpenGL data buffer.
+    /// </summary>
+    /// <typeparam name="T">Any structure.</typeparam>
+    public sealed class Buffer<T> : IDisposable, IBuffer where T : struct
+    {
+        private readonly int NativeBufferID;
 
-		/// <inheritdoc />
-		public BufferTarget Target { get; }
+        /// <inheritdoc />
+        public BufferTarget Target { get; }
 
-		/// <inheritdoc />
-		public BufferUsageHint Usage { get; }
+        /// <inheritdoc />
+        public BufferUsageHint Usage { get; }
 
-		/// <inheritdoc />
-		public int Length { get; private set; }
+        /// <inheritdoc />
+        public int Length { get; private set; }
 
-		/// <summary>
-		/// Gets the attribute pointers of the buffer.
-		/// </summary>
-		private ICollection<VertexAttributePointer> Attributes { get; }
+        /// <summary>
+        /// Gets the attribute pointers of the buffer.
+        /// </summary>
+        private ICollection<VertexAttributePointer> Attributes { get; }
 
-		/// <summary>
-		/// Gets or sets the data contained in the buffer. This is an expensive operation.
-		/// </summary>
-		public T[] Data
-		{
-			get
-			{
-				Bind();
+        /// <summary>
+        /// Gets or sets the data contained in the buffer. This is an expensive operation.
+        /// </summary>
+        public T[] Data
+        {
+            get
+            {
+                Bind();
 
-				T[] bufferData = new T[this.Length / Marshal.SizeOf<T>()];
-				GL.GetBufferSubData(this.Target, IntPtr.Zero, this.Length, bufferData);
+                T[] bufferData = new T[this.Length / Marshal.SizeOf<T>()];
+                GL.GetBufferSubData(this.Target, IntPtr.Zero, this.Length, bufferData);
 
-				return bufferData;
-			}
+                return bufferData;
+            }
 
-			set
-			{
-				Bind();
+            set
+            {
+                Bind();
 
-				this.Length = value.Length * Marshal.SizeOf<T>();
-				GL.BufferData(this.Target, this.Length, value, this.Usage);
-			}
-		}
+                this.Length = value.Length * Marshal.SizeOf<T>();
+                GL.BufferData(this.Target, this.Length, value, this.Usage);
+            }
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Buffer{T}"/> class.
-		/// </summary>
-		/// <param name="target">The intended use of the buffer.</param>
-		/// <param name="usage">A hint as to how the buffer's data might be read or written.</param>
-		public Buffer(BufferTarget target, BufferUsageHint usage)
-		{
-			this.Target = target;
-			this.Usage = usage;
-			this.Attributes = new List<VertexAttributePointer>();
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Buffer{T}"/> class.
+        /// </summary>
+        /// <param name="target">The intended use of the buffer.</param>
+        /// <param name="usage">A hint as to how the buffer's data might be read or written.</param>
+        public Buffer(BufferTarget target, BufferUsageHint usage)
+        {
+            this.Target = target;
+            this.Usage = usage;
+            this.Attributes = new List<VertexAttributePointer>();
 
-			this.NativeBufferID = GL.GenBuffer();
-		}
+            this.NativeBufferID = GL.GenBuffer();
+        }
 
-		/// <inheritdoc />
-		public void AttachAttributePointer(VertexAttributePointer attributePointer)
-		{
-			if (attributePointer == null)
-			{
-				throw new ArgumentNullException(nameof(attributePointer));
-			}
+        /// <inheritdoc />
+        public void AttachAttributePointer(VertexAttributePointer attributePointer)
+        {
+            if (attributePointer == null)
+            {
+                throw new ArgumentNullException(nameof(attributePointer));
+            }
 
-			Bind();
-			this.Attributes.Add(attributePointer);
-		}
+            Bind();
+            this.Attributes.Add(attributePointer);
+        }
 
-		/// <inheritdoc />
-		public void AttachAttributePointers(IEnumerable<VertexAttributePointer> attributePointers)
-		{
-			if (attributePointers == null)
-			{
-				throw new ArgumentNullException(nameof(attributePointers));
-			}
+        /// <inheritdoc />
+        public void AttachAttributePointers(IEnumerable<VertexAttributePointer> attributePointers)
+        {
+            if (attributePointers == null)
+            {
+                throw new ArgumentNullException(nameof(attributePointers));
+            }
 
-			Bind();
-			foreach (var attributePointer in attributePointers)
-			{
-				this.Attributes.Add(attributePointer);
-			}
-		}
+            Bind();
+            foreach (var attributePointer in attributePointers)
+            {
+                this.Attributes.Add(attributePointer);
+            }
+        }
 
-		/// <inheritdoc />
-		public void EnableAttributes()
-		{
-			foreach (var attribute in this.Attributes)
-			{
-				attribute.Enable();
-			}
-		}
+        /// <inheritdoc />
+        public void EnableAttributes()
+        {
+            foreach (var attribute in this.Attributes)
+            {
+                attribute.Enable();
+            }
+        }
 
-		/// <inheritdoc />
-		public void DisableAttributes()
-		{
-			foreach (var attribute in this.Attributes)
-			{
-				attribute.Disable();
-			}
-		}
+        /// <inheritdoc />
+        public void DisableAttributes()
+        {
+            foreach (var attribute in this.Attributes)
+            {
+                attribute.Disable();
+            }
+        }
 
-		/// <inheritdoc />
-		public void Bind()
-		{
-			GL.BindBuffer(this.Target, this.NativeBufferID);
-		}
+        /// <inheritdoc />
+        public void Bind()
+        {
+            GL.BindBuffer(this.Target, this.NativeBufferID);
+        }
 
-		/// <inheritdoc />
-		public void Dispose()
-		{
-			GL.DeleteBuffer(this.NativeBufferID);
-		}
-	}
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            GL.DeleteBuffer(this.NativeBufferID);
+        }
+    }
 }

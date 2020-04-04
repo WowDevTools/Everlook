@@ -25,29 +25,29 @@ using OpenTK.Graphics;
 
 namespace Everlook.Viewport.Rendering.Shaders
 {
-	/// <summary>
-	/// The shader for the base grid.
-	/// </summary>
-	public class BaseGridShader : ShaderProgram
-	{
-		/// <inheritdoc />
-		protected override string VertexShaderResourceName => "BaseGrid.BaseGridVertex";
+    /// <summary>
+    /// The shader for the base grid.
+    /// </summary>
+    public class BaseGridShader : ShaderProgram
+    {
+        /// <inheritdoc />
+        protected override string VertexShaderResourceName => "BaseGrid.BaseGridVertex";
 
-		/// <inheritdoc />
-		protected override string GeometryShaderResourceName => null;
+        /// <inheritdoc />
+        protected override string GeometryShaderResourceName => null;
 
-		/// <inheritdoc />
-		protected override string FragmentShaderResourceName => "BaseGrid.BaseGridFragment";
+        /// <inheritdoc />
+        protected override string FragmentShaderResourceName => "BaseGrid.BaseGridFragment";
 
-		private const string ColourIdentifier = "lineColour";
+        private const string ColourIdentifier = "lineColour";
 
-		/// <summary>
-		/// Sets the line colour of the bounding box.
-		/// </summary>
-		/// <param name="colour">The colour to set the lines to.</param>
-		public void SetLineColour(Color4 colour)
-		{
-			SetColor4(colour, ColourIdentifier);
-		}
-	}
+        /// <summary>
+        /// Sets the line colour of the bounding box.
+        /// </summary>
+        /// <param name="colour">The colour to set the lines to.</param>
+        public void SetLineColour(Color4 colour)
+        {
+            SetColor4(colour, ColourIdentifier);
+        }
+    }
 }

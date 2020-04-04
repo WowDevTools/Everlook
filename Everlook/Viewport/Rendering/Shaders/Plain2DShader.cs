@@ -26,41 +26,41 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Shaders
 {
-	/// <summary>
-	/// A 2D object shader (billboards, textures, etc).
-	/// </summary>
-	public class Plain2DShader : ShaderProgram
-	{
-		private const string ChannelMaskIdentifier = "channelMask";
+    /// <summary>
+    /// A 2D object shader (billboards, textures, etc).
+    /// </summary>
+    public class Plain2DShader : ShaderProgram
+    {
+        private const string ChannelMaskIdentifier = "channelMask";
 
-		/// <inheritdoc />
-		protected override string VertexShaderResourceName => "Plain2D.Plain2DVertex";
+        /// <inheritdoc />
+        protected override string VertexShaderResourceName => "Plain2D.Plain2DVertex";
 
-		/// <inheritdoc />
-		protected override string FragmentShaderResourceName => "Plain2D.Plain2DFragment";
+        /// <inheritdoc />
+        protected override string FragmentShaderResourceName => "Plain2D.Plain2DFragment";
 
-		/// <inheritdoc />
-		protected override string GeometryShaderResourceName => null;
+        /// <inheritdoc />
+        protected override string GeometryShaderResourceName => null;
 
-		/// <summary>
-		/// Sets the channel mask of the shader.
-		/// </summary>
-		/// <param name="channelMask">
-		/// A four-component vector. This is multiplied with the final colour of the texture, and its components
-		/// should typically be set to 1 or 0.
-		/// </param>
-		public void SetChannelMask(Vector4 channelMask)
-		{
-			SetVector4(channelMask, ChannelMaskIdentifier);
-		}
+        /// <summary>
+        /// Sets the channel mask of the shader.
+        /// </summary>
+        /// <param name="channelMask">
+        /// A four-component vector. This is multiplied with the final colour of the texture, and its components
+        /// should typically be set to 1 or 0.
+        /// </param>
+        public void SetChannelMask(Vector4 channelMask)
+        {
+            SetVector4(channelMask, ChannelMaskIdentifier);
+        }
 
-		/// <summary>
-		/// Sets the texture of the shader.
-		/// </summary>
-		/// <param name="texture">The texture.</param>
-		public void SetTexture(Texture2D texture)
-		{
-			BindTexture2D(TextureUnit.Texture0, TextureUniform.Texture0, texture);
-		}
-	}
+        /// <summary>
+        /// Sets the texture of the shader.
+        /// </summary>
+        /// <param name="texture">The texture.</param>
+        public void SetTexture(Texture2D texture)
+        {
+            BindTexture2D(TextureUnit.Texture0, TextureUniform.Texture0, texture);
+        }
+    }
 }

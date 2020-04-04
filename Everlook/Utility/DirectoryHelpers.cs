@@ -26,20 +26,20 @@ using System.Reflection;
 
 namespace Everlook.Utility
 {
-	/// <summary>
-	/// Contains helper functions for directory manipulation.
-	/// </summary>
-	public static class DirectoryHelpers
-	{
-		/// <summary>
-		/// Gets the assembly-local directory, that is, the directory where the executing assembly resides.
-		/// </summary>
-		/// <returns>The local dir, terminated by a directory separator.</returns>
-		public static string GetLocalDir()
-		{
-			Uri codeBaseURI = new UriBuilder(Assembly.GetExecutingAssembly().Location).Uri;
+    /// <summary>
+    /// Contains helper functions for directory manipulation.
+    /// </summary>
+    public static class DirectoryHelpers
+    {
+        /// <summary>
+        /// Gets the assembly-local directory, that is, the directory where the executing assembly resides.
+        /// </summary>
+        /// <returns>The local dir, terminated by a directory separator.</returns>
+        public static string GetLocalDir()
+        {
+            Uri codeBaseURI = new UriBuilder(Assembly.GetExecutingAssembly().Location).Uri;
 
-			return Path.GetDirectoryName(Uri.UnescapeDataString(codeBaseURI.AbsolutePath));
-		}
-	}
+            return Path.GetDirectoryName(Uri.UnescapeDataString(codeBaseURI.AbsolutePath));
+        }
+    }
 }

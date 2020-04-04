@@ -22,33 +22,33 @@
 
 namespace Everlook.Export.Image
 {
-	/// <summary>
-	/// Supported image formats for the image exporter.
-	/// </summary>
-	public enum ImageFormat
-	{
-		/// <summary>
-		/// Portable Network Graphics (ISO 15948)
-		/// <a href="https://en.wikipedia.org/wiki/Portable_Network_Graphics"/>
-		/// </summary>
-		PNG = 0,
+    /// <summary>
+    /// Supported image formats for the image exporter.
+    /// </summary>
+    public enum ImageFormat
+    {
+        /// <summary>
+        /// Portable Network Graphics (ISO 15948)
+        /// <a href="https://en.wikipedia.org/wiki/Portable_Network_Graphics"/>
+        /// </summary>
+        PNG = 0,
 
-		/// <summary>
-		/// Joint Photographics Export Format (ISO 10918)
-		/// <a href="https://en.wikipedia.org/wiki/JPEG"/>
-		/// </summary>
-		JPG = 1,
+        /// <summary>
+        /// Joint Photographics Export Format (ISO 10918)
+        /// <a href="https://en.wikipedia.org/wiki/JPEG"/>
+        /// </summary>
+        JPG = 1,
 
-		/// <summary>
-		/// Tagged Image Reference Format
-		/// <a href="https://en.wikipedia.org/wiki/Tagged_Image_File_Format"/>
-		/// </summary>
-		TIF = 2,
+        /// <summary>
+        /// Tagged Image Reference Format
+        /// <a href="https://en.wikipedia.org/wiki/Tagged_Image_File_Format"/>
+        /// </summary>
+        TIF = 2,
 
-		/// <summary>
-		/// Bitmap Image
-		/// <a href="https://en.wikipedia.org/wiki/BMP_file_format"/>
-		/// </summary>
-		BMP = 3
-	}
+        /// <summary>
+        /// Bitmap Image
+        /// <a href="https://en.wikipedia.org/wiki/BMP_file_format"/>
+        /// </summary>
+        BMP = 3
+    }
 }

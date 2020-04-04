@@ -24,107 +24,107 @@ using Warcraft.Core;
 
 namespace Everlook.Explorer
 {
-	/// <summary>
-	/// Static container and accessor class for sets of filetype extensions, sorted by category.
-	/// </summary>
-	public static class FilterTypeExtensions
-	{
-		/// <summary>
-		/// Gets the type of the extension list for the provided filter category.
-		/// </summary>
-		/// <returns>The extension list for the provided filter category.</returns>
-		/// <param name="filterCategory">The category to get.</param>
-		public static WarcraftFileType GetFileTypeSet(this FilterType filterCategory)
-		{
-			switch (filterCategory)
-			{
-				case FilterType.Models:
-				{
-					return ModelTypes;
-				}
-				case FilterType.Textures:
-				{
-					return TextureTypes;
-				}
-				case FilterType.Audio:
-				{
-					return AudioTypes;
-				}
-				case FilterType.Data:
-				{
-					return DataTypes;
-				}
-				case FilterType.Terrain:
-				{
-					return TerrainTypes;
-				}
-				default:
-				{
-					return WarcraftFileType.Unknown;
-				}
-			}
-		}
+    /// <summary>
+    /// Static container and accessor class for sets of filetype extensions, sorted by category.
+    /// </summary>
+    public static class FilterTypeExtensions
+    {
+        /// <summary>
+        /// Gets the type of the extension list for the provided filter category.
+        /// </summary>
+        /// <returns>The extension list for the provided filter category.</returns>
+        /// <param name="filterCategory">The category to get.</param>
+        public static WarcraftFileType GetFileTypeSet(this FilterType filterCategory)
+        {
+            switch (filterCategory)
+            {
+                case FilterType.Models:
+                {
+                    return ModelTypes;
+                }
+                case FilterType.Textures:
+                {
+                    return TextureTypes;
+                }
+                case FilterType.Audio:
+                {
+                    return AudioTypes;
+                }
+                case FilterType.Data:
+                {
+                    return DataTypes;
+                }
+                case FilterType.Terrain:
+                {
+                    return TerrainTypes;
+                }
+                default:
+                {
+                    return WarcraftFileType.Unknown;
+                }
+            }
+        }
 
-		/// <summary>
-		/// Reference extensions for model-related file types.
-		/// </summary>
-		public const WarcraftFileType ModelTypes =
-			WarcraftFileType.GameObjectModel |
-			WarcraftFileType.WorldObjectModel |
-			WarcraftFileType.WorldObjectModelGroup |
-			WarcraftFileType.Shader |
-			WarcraftFileType.Animation |
-			WarcraftFileType.Physics |
-			WarcraftFileType.Skeleton;
+        /// <summary>
+        /// Reference extensions for model-related file types.
+        /// </summary>
+        public const WarcraftFileType ModelTypes =
+            WarcraftFileType.GameObjectModel |
+            WarcraftFileType.WorldObjectModel |
+            WarcraftFileType.WorldObjectModelGroup |
+            WarcraftFileType.Shader |
+            WarcraftFileType.Animation |
+            WarcraftFileType.Physics |
+            WarcraftFileType.Skeleton;
 
-		/// <summary>
-		/// Reference extensions for texture and image file types.
-		/// </summary>
-		public const WarcraftFileType TextureTypes =
-			WarcraftFileType.BinaryImage |
-			WarcraftFileType.TargaImage |
-			WarcraftFileType.GIFImage |
-			WarcraftFileType.PNGImage |
-			WarcraftFileType.BitmapImage |
-			WarcraftFileType.IconImage |
-			WarcraftFileType.Shader |
-			WarcraftFileType.Hashmap;
+        /// <summary>
+        /// Reference extensions for texture and image file types.
+        /// </summary>
+        public const WarcraftFileType TextureTypes =
+            WarcraftFileType.BinaryImage |
+            WarcraftFileType.TargaImage |
+            WarcraftFileType.GIFImage |
+            WarcraftFileType.PNGImage |
+            WarcraftFileType.BitmapImage |
+            WarcraftFileType.IconImage |
+            WarcraftFileType.Shader |
+            WarcraftFileType.Hashmap;
 
-		/// <summary>
-		/// Reference extensions for audio filetypes.
-		/// </summary>
-		public const WarcraftFileType AudioTypes =
-			WarcraftFileType.MP3Audio |
-			WarcraftFileType.WMAAudio |
-			WarcraftFileType.WaveAudio |
-			WarcraftFileType.VorbisAudio;
+        /// <summary>
+        /// Reference extensions for audio filetypes.
+        /// </summary>
+        public const WarcraftFileType AudioTypes =
+            WarcraftFileType.MP3Audio |
+            WarcraftFileType.WMAAudio |
+            WarcraftFileType.WaveAudio |
+            WarcraftFileType.VorbisAudio;
 
-		/// <summary>
-		/// Reference extensions for data storage filetypes.
-		/// </summary>
-		public const WarcraftFileType DataTypes =
-			WarcraftFileType.DatabaseContainer |
-			WarcraftFileType.DataCache |
-			WarcraftFileType.ConfigurationFile |
-			WarcraftFileType.AddonManifest |
-			WarcraftFileType.AddonManifestSignature |
-			WarcraftFileType.Assembly |
-			WarcraftFileType.Hashmap |
-			WarcraftFileType.Web |
-			WarcraftFileType.PDF |
-			WarcraftFileType.INI |
-			WarcraftFileType.XML |
-			WarcraftFileType.Script;
+        /// <summary>
+        /// Reference extensions for data storage filetypes.
+        /// </summary>
+        public const WarcraftFileType DataTypes =
+            WarcraftFileType.DatabaseContainer |
+            WarcraftFileType.DataCache |
+            WarcraftFileType.ConfigurationFile |
+            WarcraftFileType.AddonManifest |
+            WarcraftFileType.AddonManifestSignature |
+            WarcraftFileType.Assembly |
+            WarcraftFileType.Hashmap |
+            WarcraftFileType.Web |
+            WarcraftFileType.PDF |
+            WarcraftFileType.INI |
+            WarcraftFileType.XML |
+            WarcraftFileType.Script;
 
-		/// <summary>
-		/// Reference extensions for terrain-related file types.
-		/// </summary>
-		public const WarcraftFileType TerrainTypes =
-			WarcraftFileType.TerrainData |
-			WarcraftFileType.TerrainLevel |
-			WarcraftFileType.TerrainLiquid |
-			WarcraftFileType.TerrainTable |
-			WarcraftFileType.TerrainWater |
-			WarcraftFileType.Lighting;
-	}
+        /// <summary>
+        /// Reference extensions for terrain-related file types.
+        /// </summary>
+        public const WarcraftFileType TerrainTypes =
+            WarcraftFileType.TerrainData |
+            WarcraftFileType.TerrainLevel |
+            WarcraftFileType.TerrainLiquid |
+            WarcraftFileType.TerrainTable |
+            WarcraftFileType.TerrainWater |
+            WarcraftFileType.Lighting;
+    }
 }

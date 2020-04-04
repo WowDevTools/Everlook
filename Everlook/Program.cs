@@ -35,161 +35,161 @@ using Application = Gtk.Application;
 
 namespace Everlook
 {
-	/// <summary>
-	/// The main entry class, containing the entry point and some top-level diagnostics.
-	/// </summary>
-	internal static class Program
-	{
-		/// <summary>
-		/// Logger instance for this class.
-		/// </summary>
-		private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
+    /// <summary>
+    /// The main entry class, containing the entry point and some top-level diagnostics.
+    /// </summary>
+    internal static class Program
+    {
+        /// <summary>
+        /// Logger instance for this class.
+        /// </summary>
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
 
-		/// <summary>
-		/// The entry point.
-		/// </summary>
-		public static void Main()
-		{
-			// Bind any unhandled exceptions in the main thread so that they are logged.
-			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+        /// <summary>
+        /// The entry point.
+        /// </summary>
+        public static void Main()
+        {
+            // Bind any unhandled exceptions in the main thread so that they are logged.
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
-			// Set correct working directory for compatibility with double-clicking
-			Directory.SetCurrentDirectory(DirectoryHelpers.GetLocalDir());
+            // Set correct working directory for compatibility with double-clicking
+            Directory.SetCurrentDirectory(DirectoryHelpers.GetLocalDir());
 
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-			{
-				Environment.SetEnvironmentVariable("GSETTINGS_SCHEMA_DIR", "share\\glib-2.0\\schemas\\");
-			}
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Environment.SetEnvironmentVariable("GSETTINGS_SCHEMA_DIR", "share\\glib-2.0\\schemas\\");
+            }
 
-			log4net.Config.XmlConfigurator.Configure();
+            log4net.Config.XmlConfigurator.Configure();
 
-			Log.Info("----------------");
-			Log.Info("Initializing Everlook...");
+            Log.Info("----------------");
+            Log.Info("Initializing Everlook...");
 
-			Log.Info("Initializing OpenTK...");
+            Log.Info("Initializing OpenTK...");
 
-			// OpenGL
-			var toolkitOptions = new ToolkitOptions
-			{
-				Backend = PlatformBackend.PreferNative,
-				EnableHighResolution = true
-			};
+            // OpenGL
+            var toolkitOptions = new ToolkitOptions
+            {
+                Backend = PlatformBackend.PreferNative,
+                EnableHighResolution = true
+            };
 
-			using (Toolkit.Init(toolkitOptions))
-			{
-				Log.Info($"OpenTK initialized using the {GetOpenTKBackend()} backend.");
+            using (Toolkit.Init(toolkitOptions))
+            {
+                Log.Info($"OpenTK initialized using the {GetOpenTKBackend()} backend.");
 
-				Log.Info("Initializing GTK...");
+                Log.Info("Initializing GTK...");
 
-				// Bind any unhandled exceptions in the GTK UI so that they are logged.
-				ExceptionManager.UnhandledException += OnGLibUnhandledException;
+                // Bind any unhandled exceptions in the GTK UI so that they are logged.
+                ExceptionManager.UnhandledException += OnGLibUnhandledException;
 
-				Log.Info("Registering treeview types with the native backend...");
-				GType nodeType = (GType)typeof(SerializedNode);
-				GType.Register(nodeType, typeof(SerializedNode));
+                Log.Info("Registering treeview types with the native backend...");
+                GType nodeType = (GType)typeof(SerializedNode);
+                GType.Register(nodeType, typeof(SerializedNode));
 
-				GType referenceType = (GType)typeof(FileReference);
-				GType.Register(referenceType, typeof(FileReference));
+                GType referenceType = (GType)typeof(FileReference);
+                GType.Register(referenceType, typeof(FileReference));
 
-				// GTK
-				IconManager.LoadEmbeddedIcons();
-				Application.Init();
-				MainWindow win = MainWindow.Create();
-				win.Show();
-				Application.Run();
-			}
-		}
+                // GTK
+                IconManager.LoadEmbeddedIcons();
+                Application.Init();
+                MainWindow win = MainWindow.Create();
+                win.Show();
+                Application.Run();
+            }
+        }
 
-		/// <summary>
-		/// Gets the backend used by OpenTK.
-		/// </summary>
-		/// <returns>The name of the backend.</returns>
-		private static string GetOpenTKBackend()
-		{
-			if (OpenTK.Configuration.RunningOnSdl2)
-			{
-				return "SDL2";
-			}
+        /// <summary>
+        /// Gets the backend used by OpenTK.
+        /// </summary>
+        /// <returns>The name of the backend.</returns>
+        private static string GetOpenTKBackend()
+        {
+            if (OpenTK.Configuration.RunningOnSdl2)
+            {
+                return "SDL2";
+            }
 
-			if (OpenTK.Configuration.RunningOnX11)
-			{
-				return "X11";
-			}
+            if (OpenTK.Configuration.RunningOnX11)
+            {
+                return "X11";
+            }
 
-			return "native";
-		}
+            return "native";
+        }
 
-		/// <summary>
-		/// Passes any unhandled exceptions from the GTK UI to the generic handler.
-		/// </summary>
-		/// <param name="args">The event object containing the information about the exception.</param>
-		private static void OnGLibUnhandledException(UnhandledExceptionArgs args)
-		{
-			OnUnhandledException(null, args);
-		}
+        /// <summary>
+        /// Passes any unhandled exceptions from the GTK UI to the generic handler.
+        /// </summary>
+        /// <param name="args">The event object containing the information about the exception.</param>
+        private static void OnGLibUnhandledException(UnhandledExceptionArgs args)
+        {
+            OnUnhandledException(null, args);
+        }
 
-		/// <summary>
-		/// Event handler for all unhandled exceptions that may be encountered during runtime. While there should never
-		/// be any unhandled exceptions in an ideal program, unexpected issues can and will arise. This handler logs
-		/// the exception and all relevant information to a logfile and prints it to the console for debugging purposes.
-		/// </summary>
-		/// <param name="sender">The sending object.</param>
-		/// <param name="unhandledExceptionEventArgs">The event object containing the information about the exception.</param>
-		private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
-		{
-			// Force english exception output
-			System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-			System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+        /// <summary>
+        /// Event handler for all unhandled exceptions that may be encountered during runtime. While there should never
+        /// be any unhandled exceptions in an ideal program, unexpected issues can and will arise. This handler logs
+        /// the exception and all relevant information to a logfile and prints it to the console for debugging purposes.
+        /// </summary>
+        /// <param name="sender">The sending object.</param>
+        /// <param name="unhandledExceptionEventArgs">The event object containing the information about the exception.</param>
+        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
+        {
+            // Force english exception output
+            System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
-			Log.Fatal("----------------");
-			Log.Fatal("FATAL UNHANDLED EXCEPTION!");
-			Log.Fatal("Something has gone terribly, terribly wrong during runtime.");
-			Log.Fatal("The following is what information could be gathered by the program before crashing.");
-			Log.Fatal("Please report this to <jarl.gullberg@gmail.com> or via GitHub. Include the full log and a " +
-					  "description of what you were doing when it happened.");
+            Log.Fatal("----------------");
+            Log.Fatal("FATAL UNHANDLED EXCEPTION!");
+            Log.Fatal("Something has gone terribly, terribly wrong during runtime.");
+            Log.Fatal("The following is what information could be gathered by the program before crashing.");
+            Log.Fatal("Please report this to <jarl.gullberg@gmail.com> or via GitHub. Include the full log and a " +
+                      "description of what you were doing when it happened.");
 
-			var unhandledException = unhandledExceptionEventArgs.ExceptionObject as Exception;
-			switch (unhandledException)
-			{
-				case null:
-				{
-					return;
-				}
-				case DllNotFoundException _:
-				{
-					Log.Fatal
-					(
-						"This exception is typical of instances where the GTK runtime has not been properly copied to the working directory or is not available on your system.\n" +
-						"If you're on Windows, make sure that the bundled GTK libraries are present.\n" +
-						"If you're on macOS, try installing GTK through Homebrew.\n" +
-						"If you're on Linux, check with your package maintainer that all dependencies are properly listed."
-					);
-					break;
-				}
-				case GraphicsException _:
-				{
-					Log.Fatal
-					(
-						"Some type of graphics error occurred. On macOS, this is usally indicative of an OpenGL context " +
-						"which doesn't meet Everlook's requirements. Please note that Everlook requires at least OpenGL 3.3.\n" +
-						"If you're running via XQuartz, please note that XQuartz does not provide contexts above OpenGL 2.1."
-					);
-					break;
-				}
-			}
+            var unhandledException = unhandledExceptionEventArgs.ExceptionObject as Exception;
+            switch (unhandledException)
+            {
+                case null:
+                {
+                    return;
+                }
+                case DllNotFoundException _:
+                {
+                    Log.Fatal
+                    (
+                        "This exception is typical of instances where the GTK runtime has not been properly copied to the working directory or is not available on your system.\n" +
+                        "If you're on Windows, make sure that the bundled GTK libraries are present.\n" +
+                        "If you're on macOS, try installing GTK through Homebrew.\n" +
+                        "If you're on Linux, check with your package maintainer that all dependencies are properly listed."
+                    );
+                    break;
+                }
+                case GraphicsException _:
+                {
+                    Log.Fatal
+                    (
+                        "Some type of graphics error occurred. On macOS, this is usally indicative of an OpenGL context " +
+                        "which doesn't meet Everlook's requirements. Please note that Everlook requires at least OpenGL 3.3.\n" +
+                        "If you're running via XQuartz, please note that XQuartz does not provide contexts above OpenGL 2.1."
+                    );
+                    break;
+                }
+            }
 
-			Log.Fatal($"Exception type: {unhandledException.GetType().FullName}");
-			Log.Fatal($"Exception Message: {unhandledException.Message}");
-			Log.Fatal($"Exception Stacktrace: {unhandledException.StackTrace}");
+            Log.Fatal($"Exception type: {unhandledException.GetType().FullName}");
+            Log.Fatal($"Exception Message: {unhandledException.Message}");
+            Log.Fatal($"Exception Stacktrace: {unhandledException.StackTrace}");
 
-			if (unhandledException.InnerException == null)
-			{
-				return;
-			}
+            if (unhandledException.InnerException == null)
+            {
+                return;
+            }
 
-			Log.Fatal($"Inner exception type: {unhandledException.InnerException.GetType().FullName}");
-			Log.Fatal($"Inner exception Message: {unhandledException.InnerException.Message}");
-			Log.Fatal($"Inner exception Stacktrace: {unhandledException.InnerException.StackTrace}");
-		}
-	}
+            Log.Fatal($"Inner exception type: {unhandledException.InnerException.GetType().FullName}");
+            Log.Fatal($"Inner exception Message: {unhandledException.InnerException.Message}");
+            Log.Fatal($"Inner exception Stacktrace: {unhandledException.InnerException.StackTrace}");
+        }
+    }
 }

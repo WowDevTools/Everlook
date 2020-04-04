@@ -27,51 +27,51 @@ using OpenTK;
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {
-	/// <summary>
-	/// Interface representing a renderable object that can be passed to the viewport renderer.
-	/// Specific implementations of the rendering is implemented in the viewport renderer.
-	/// </summary>
-	public interface IRenderable : IDisposable
-	{
-		/// <summary>
-		/// Gets a value indicating whether this instance uses static rendering; that is,
-		/// a single frame is rendered and then reused. Useful as an optimization for images.
-		/// </summary>
-		/// <value><c>true</c> if this instance is static; otherwise, <c>false</c>.</value>
-		bool IsStatic
-		{
-			get;
-		}
+    /// <summary>
+    /// Interface representing a renderable object that can be passed to the viewport renderer.
+    /// Specific implementations of the rendering is implemented in the viewport renderer.
+    /// </summary>
+    public interface IRenderable : IDisposable
+    {
+        /// <summary>
+        /// Gets a value indicating whether this instance uses static rendering; that is,
+        /// a single frame is rendered and then reused. Useful as an optimization for images.
+        /// </summary>
+        /// <value><c>true</c> if this instance is static; otherwise, <c>false</c>.</value>
+        bool IsStatic
+        {
+            get;
+        }
 
-		/// <summary>
-		/// Gets or sets a value indicating whether the current renderable has been initialized.
-		/// </summary>
-		bool IsInitialized
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// Gets or sets a value indicating whether the current renderable has been initialized.
+        /// </summary>
+        bool IsInitialized
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// Gets the projection method to use for this renderable object. Typically, this is Orthographic
-		/// or Perspective.
-		/// </summary>
-		ProjectionType Projection
-		{
-			get;
-		}
+        /// <summary>
+        /// Gets the projection method to use for this renderable object. Typically, this is Orthographic
+        /// or Perspective.
+        /// </summary>
+        ProjectionType Projection
+        {
+            get;
+        }
 
-		/// <summary>
-		/// Initializes the required data for rendering.
-		/// </summary>
-		void Initialize();
+        /// <summary>
+        /// Initializes the required data for rendering.
+        /// </summary>
+        void Initialize();
 
-		/// <summary>
-		/// Renders the current object in the current OpenGL context.
-		/// </summary>
-		/// <param name="viewMatrix">The view matrix.</param>
-		/// <param name="projectionMatrix">The projection matrix.</param>
-		/// <param name="camera">The user camera.</param>
-		void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera);
-	}
+        /// <summary>
+        /// Renders the current object in the current OpenGL context.
+        /// </summary>
+        /// <param name="viewMatrix">The view matrix.</param>
+        /// <param name="projectionMatrix">The projection matrix.</param>
+        /// <param name="camera">The user camera.</param>
+        void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera);
+    }
 }

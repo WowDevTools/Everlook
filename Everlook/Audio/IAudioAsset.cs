@@ -26,44 +26,44 @@ using OpenTK.Audio.OpenAL;
 
 namespace Everlook.Audio
 {
-	/// <summary>
-	/// Exposes data common to audio assets.
-	/// </summary>
-	public interface IAudioAsset : IDisposable
-	{
-		/// <summary>
-		/// Gets the <see cref="ALFormat"/> that the PCM data is in.
-		/// </summary>
-		ALFormat Format { get; }
+    /// <summary>
+    /// Exposes data common to audio assets.
+    /// </summary>
+    public interface IAudioAsset : IDisposable
+    {
+        /// <summary>
+        /// Gets the <see cref="ALFormat"/> that the PCM data is in.
+        /// </summary>
+        ALFormat Format { get; }
 
-		/// <summary>
-		/// Gets the raw PCM data of the audio asset.
-		/// </summary>
-		byte[] PCMData { get; }
+        /// <summary>
+        /// Gets the raw PCM data of the audio asset.
+        /// </summary>
+        byte[] PCMData { get; }
 
-		/// <summary>
-		/// Gets a stream containing the PCM data.
-		/// </summary>
-		Stream PCMStream { get; }
+        /// <summary>
+        /// Gets a stream containing the PCM data.
+        /// </summary>
+        Stream PCMStream { get; }
 
-		/// <summary>
-		/// Gets the number of channels that the audio has.
-		/// </summary>
-		int Channels { get; }
+        /// <summary>
+        /// Gets the number of channels that the audio has.
+        /// </summary>
+        int Channels { get; }
 
-		/// <summary>
-		/// Gets the number of bits per PCM sample.
-		/// </summary>
-		int BitsPerSample { get; }
+        /// <summary>
+        /// Gets the number of bits per PCM sample.
+        /// </summary>
+        int BitsPerSample { get; }
 
-		/// <summary>
-		/// Gets the sample rate or frequency of the PCM data.
-		/// </summary>
-		int SampleRate { get; }
+        /// <summary>
+        /// Gets the sample rate or frequency of the PCM data.
+        /// </summary>
+        int SampleRate { get; }
 
-		/// <summary>
-		/// Throws an <see cref="ObjectDisposedException"/> if the object has been disposed.
-		/// </summary>
-		void ThrowIfDisposed();
-	}
+        /// <summary>
+        /// Throws an <see cref="ObjectDisposedException"/> if the object has been disposed.
+        /// </summary>
+        void ThrowIfDisposed();
+    }
 }

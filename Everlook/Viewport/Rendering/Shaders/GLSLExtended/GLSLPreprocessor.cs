@@ -27,67 +27,67 @@ using System.Text.RegularExpressions;
 
 namespace Everlook.Viewport.Rendering.Shaders.GLSLExtended
 {
-	/// <summary>
-	/// Holds a set of GLSL preprocessor extensions, such as #include statements. A better solution should be
-	/// written as a separate library.
-	/// </summary>
-	public static class GLSLPreprocessor
-	{
-		/// <summary>
-		/// Processes include statements in the provided source code, replacing them with their file contents.
-		/// </summary>
-		/// <param name="source">The unmodified GLSL source.</param>
-		/// <param name="baseResourceDirectory">The base resource directory to search.</param>
-		/// <returns>GLSL source with #include statements replaced by the pointed-to source code.</returns>
-		public static string ProcessIncludes(string source, string baseResourceDirectory)
-		{
-			// Find a list of includes
-			var includeRegex = new Regex("#include\\s+?\"(?<includeFile>.+)\"", RegexOptions.Multiline);
-			var matches = includeRegex.Matches(source).Cast<Match>().Reverse();
+    /// <summary>
+    /// Holds a set of GLSL preprocessor extensions, such as #include statements. A better solution should be
+    /// written as a separate library.
+    /// </summary>
+    public static class GLSLPreprocessor
+    {
+        /// <summary>
+        /// Processes include statements in the provided source code, replacing them with their file contents.
+        /// </summary>
+        /// <param name="source">The unmodified GLSL source.</param>
+        /// <param name="baseResourceDirectory">The base resource directory to search.</param>
+        /// <returns>GLSL source with #include statements replaced by the pointed-to source code.</returns>
+        public static string ProcessIncludes(string source, string baseResourceDirectory)
+        {
+            // Find a list of includes
+            var includeRegex = new Regex("#include\\s+?\"(?<includeFile>.+)\"", RegexOptions.Multiline);
+            var matches = includeRegex.Matches(source).Cast<Match>().Reverse();
 
-			// Remove any trailing dot separators from the resource directory.
-			baseResourceDirectory = baseResourceDirectory.TrimEnd('.');
+            // Remove any trailing dot separators from the resource directory.
+            baseResourceDirectory = baseResourceDirectory.TrimEnd('.');
 
-			StringBuilder sourceBuilder = new StringBuilder(source);
+            StringBuilder sourceBuilder = new StringBuilder(source);
 
-			// Resolve their files in reverse order
-			foreach (var match in matches)
-			{
-				var resourceName = match.Groups["includeFile"].Value.Replace('\\', '.').Replace('/', '.');
+            // Resolve their files in reverse order
+            foreach (var match in matches)
+            {
+                var resourceName = match.Groups["includeFile"].Value.Replace('\\', '.').Replace('/', '.');
 
-				// Try loading it from the resource manifest
-				var fileContents = Utility.ResourceManager.LoadStringResource($"{baseResourceDirectory}.{resourceName}");
-				if (fileContents == null)
-				{
-					throw new FileNotFoundException($"No embedded resource found at the given resource path: {resourceName}", resourceName);
-				}
+                // Try loading it from the resource manifest
+                var fileContents = Utility.ResourceManager.LoadStringResource($"{baseResourceDirectory}.{resourceName}");
+                if (fileContents == null)
+                {
+                    throw new FileNotFoundException($"No embedded resource found at the given resource path: {resourceName}", resourceName);
+                }
 
-				if (includeRegex.IsMatch(fileContents))
-				{
-					fileContents = ProcessIncludes(fileContents, baseResourceDirectory);
-				}
+                if (includeRegex.IsMatch(fileContents))
+                {
+                    fileContents = ProcessIncludes(fileContents, baseResourceDirectory);
+                }
 
-				// Insert the file contents at the include locations
-				sourceBuilder.Replace(match.Value, fileContents);
-			}
+                // Insert the file contents at the include locations
+                sourceBuilder.Replace(match.Value, fileContents);
+            }
 
-			return sourceBuilder.ToString();
-		}
+            return sourceBuilder.ToString();
+        }
 
-		/// <summary>
-		/// Processes GLSL source code, finding all function declarations and creating forward declarations for all of
-		/// them.
-		/// </summary>
-		/// <param name="source">The unmodifed GLSL source.</param>
-		/// <returns>GLSL source code with all functions forward declared.</returns>
-		public static string ProcessForwardDeclarations(string source)
-		{
-			// Find a list of functions
+        /// <summary>
+        /// Processes GLSL source code, finding all function declarations and creating forward declarations for all of
+        /// them.
+        /// </summary>
+        /// <param name="source">The unmodifed GLSL source.</param>
+        /// <returns>GLSL source code with all functions forward declared.</returns>
+        public static string ProcessForwardDeclarations(string source)
+        {
+            // Find a list of functions
 
-			// Create their forward declaration statements
+            // Create their forward declaration statements
 
-			// Append the forward declarations at the top of the file
-			return null;
-		}
-	}
+            // Append the forward declarations at the top of the file
+            return null;
+        }
+    }
 }

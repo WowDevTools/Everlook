@@ -22,21 +22,21 @@
 
 namespace Everlook.Viewport.Rendering.Core
 {
-	/// <summary>
-	/// The type of projection used in OpenGL rendering.
-	/// </summary>
-	public enum ProjectionType
-	{
-		/// <summary>
-		/// Perspective rendering, or a 3D view with proper relational
-		/// scale and perspective.
-		/// </summary>
-		Perspective,
+    /// <summary>
+    /// The type of projection used in OpenGL rendering.
+    /// </summary>
+    public enum ProjectionType
+    {
+        /// <summary>
+        /// Perspective rendering, or a 3D view with proper relational
+        /// scale and perspective.
+        /// </summary>
+        Perspective,
 
-		/// <summary>
-		/// Orthographic rendering, or a "flat" view with no relational
-		/// scale or perspective.
-		/// </summary>
-		Orthographic
-	}
+        /// <summary>
+        /// Orthographic rendering, or a "flat" view with no relational
+        /// scale or perspective.
+        /// </summary>
+        Orthographic
+    }
 }

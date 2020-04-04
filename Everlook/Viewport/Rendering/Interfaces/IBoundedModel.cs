@@ -22,14 +22,14 @@
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {
-	/// <summary>
-	/// Interface for models with bounds.
-	/// </summary>
-	public interface IBoundedModel
-	{
-		/// <summary>
-		/// Gets or sets a value indicating whether or not the model's bounding box should be rendered.
-		/// </summary>
-		bool ShouldRenderBounds { get; set; }
-	}
+    /// <summary>
+    /// Interface for models with bounds.
+    /// </summary>
+    public interface IBoundedModel
+    {
+        /// <summary>
+        /// Gets or sets a value indicating whether or not the model's bounding box should be rendered.
+        /// </summary>
+        bool ShouldRenderBounds { get; set; }
+    }
 }

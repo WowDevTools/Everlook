@@ -25,18 +25,18 @@ using OpenTK;
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {
-	/// <summary>
-	/// Describes the functionality of an object that can be rendered as a set of instances instead of a single object.
-	/// </summary>
-	public interface IInstancedRenderable : IRenderable
-	{
-		/// <summary>
-		/// Renders a set of instances of the object.
-		/// </summary>
-		/// <param name="viewMatrix">The view matrix.</param>
-		/// <param name="projectionMatrix">The projection matrix.</param>
-		/// <param name="camera">The user camera.</param>
-		/// <param name="count">The number of instances to render.</param>
-		void RenderInstances(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera, int count);
-	}
+    /// <summary>
+    /// Describes the functionality of an object that can be rendered as a set of instances instead of a single object.
+    /// </summary>
+    public interface IInstancedRenderable : IRenderable
+    {
+        /// <summary>
+        /// Renders a set of instances of the object.
+        /// </summary>
+        /// <param name="viewMatrix">The view matrix.</param>
+        /// <param name="projectionMatrix">The projection matrix.</param>
+        /// <param name="camera">The user camera.</param>
+        /// <param name="count">The number of instances to render.</param>
+        void RenderInstances(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera, int count);
+    }
 }

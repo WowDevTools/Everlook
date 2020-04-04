@@ -30,87 +30,87 @@ using Warcraft.WMO.RootFile.Chunks;
 
 namespace Everlook.Utility
 {
-	/// <summary>
-	/// Represnts a context for a World of Warcraft version.
-	/// </summary>
-	public sealed class WarcraftGameContext : IGameContext
-	{
-		/// <inheritdoc />
-		public WarcraftVersion Version { get; }
+    /// <summary>
+    /// Represnts a context for a World of Warcraft version.
+    /// </summary>
+    public sealed class WarcraftGameContext : IGameContext
+    {
+        /// <inheritdoc />
+        public WarcraftVersion Version { get; }
 
-		/// <inheritdoc />
-		public ClientDatabaseProvider Database { get; }
+        /// <inheritdoc />
+        public ClientDatabaseProvider Database { get; }
 
-		/// <inheritdoc />
-		public PackageGroup Assets { get; }
+        /// <inheritdoc />
+        public PackageGroup Assets { get; }
 
-		/// <inheritdoc />
-		public FileTreeModel FileTree { get; }
+        /// <inheritdoc />
+        public FileTreeModel FileTree { get; }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="WarcraftGameContext"/> class.
-		/// </summary>
-		/// <param name="version">The game version of the context.</param>
-		/// <param name="assets">The location of the assets relevant to the context.</param>
-		/// <param name="fileTree">The file tree relevant to the context.</param>
-		/// <exception cref="ArgumentNullException">Thrown if the assets or the file tree are null.</exception>
-		public WarcraftGameContext(WarcraftVersion version, PackageGroup assets, FileTreeModel fileTree)
-		{
-			if (assets == null)
-			{
-				throw new ArgumentNullException(nameof(assets));
-			}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WarcraftGameContext"/> class.
+        /// </summary>
+        /// <param name="version">The game version of the context.</param>
+        /// <param name="assets">The location of the assets relevant to the context.</param>
+        /// <param name="fileTree">The file tree relevant to the context.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the assets or the file tree are null.</exception>
+        public WarcraftGameContext(WarcraftVersion version, PackageGroup assets, FileTreeModel fileTree)
+        {
+            if (assets == null)
+            {
+                throw new ArgumentNullException(nameof(assets));
+            }
 
-			if (fileTree == null)
-			{
-				throw new ArgumentNullException(nameof(fileTree));
-			}
+            if (fileTree == null)
+            {
+                throw new ArgumentNullException(nameof(fileTree));
+            }
 
-			this.Version = version;
-			this.Assets = assets;
-			this.FileTree = fileTree;
+            this.Version = version;
+            this.Assets = assets;
+            this.FileTree = fileTree;
 
-			this.Database = new ClientDatabaseProvider(this.Version, this.Assets);
-		}
+            this.Database = new ClientDatabaseProvider(this.Version, this.Assets);
+        }
 
-		/// <summary>
-		/// Gets the file reference pointing to the model of a doodad instance.
-		/// </summary>
-		/// <param name="doodadInstance">The doodad instance to locate.</param>
-		/// <returns>A file reference pointing to the instance.</returns>
-		public FileReference GetReferenceForDoodad(DoodadInstance doodadInstance)
-		{
-			var doodadReference = GetReferenceForPath(doodadInstance.Name);
-			if (doodadReference != null)
-			{
-				return doodadReference;
-			}
+        /// <summary>
+        /// Gets the file reference pointing to the model of a doodad instance.
+        /// </summary>
+        /// <param name="doodadInstance">The doodad instance to locate.</param>
+        /// <returns>A file reference pointing to the instance.</returns>
+        public FileReference GetReferenceForDoodad(DoodadInstance doodadInstance)
+        {
+            var doodadReference = GetReferenceForPath(doodadInstance.Name);
+            if (doodadReference != null)
+            {
+                return doodadReference;
+            }
 
-			// Doodads may have the *.mdx extension instead of *.m2. Try with that as well.
-			doodadReference = GetReferenceForPath(Path.ChangeExtension(doodadInstance.Name, "m2"));
-			if (doodadReference == null)
-			{
-				throw new ArgumentException($"Failed to retrieve doodad reference for {doodadInstance.Name}", nameof(doodadInstance));
-			}
+            // Doodads may have the *.mdx extension instead of *.m2. Try with that as well.
+            doodadReference = GetReferenceForPath(Path.ChangeExtension(doodadInstance.Name, "m2"));
+            if (doodadReference == null)
+            {
+                throw new ArgumentException($"Failed to retrieve doodad reference for {doodadInstance.Name}", nameof(doodadInstance));
+            }
 
-			return doodadReference;
-		}
+            return doodadReference;
+        }
 
-		/// <inheritdoc />
-		public FileReference GetReferenceForPath(string path)
-		{
-			if (string.IsNullOrEmpty(path))
-			{
-				throw new ArgumentNullException(nameof(path));
-			}
+        /// <inheritdoc />
+        public FileReference GetReferenceForPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
 
-			var treePath = this.FileTree.GetPath(path);
-			if (treePath == null)
-			{
-				return null;
-			}
+            var treePath = this.FileTree.GetPath(path);
+            if (treePath == null)
+            {
+                return null;
+            }
 
-			return this.FileTree.GetReferenceByPath(this, treePath);
-		}
-	}
+            return this.FileTree.GetReferenceByPath(this, treePath);
+        }
+    }
 }

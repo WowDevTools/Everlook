@@ -30,138 +30,138 @@ using Warcraft.Core;
 
 namespace Everlook.Audio.MP3
 {
-	/// <summary>
-	/// Represents a loaded MP3 audio asset.
-	/// </summary>
-	public sealed class MP3AudioAsset : IAudioAsset
-	{
-		/// <summary>
-		/// Whether or not this instance has been disposed.
-		/// </summary>
-		private bool IsDisposed;
+    /// <summary>
+    /// Represents a loaded MP3 audio asset.
+    /// </summary>
+    public sealed class MP3AudioAsset : IAudioAsset
+    {
+        /// <summary>
+        /// Whether or not this instance has been disposed.
+        /// </summary>
+        private bool IsDisposed;
 
-		/// <inheritdoc />
-		public ALFormat Format
-		{
-			get
-			{
-				switch (this.Channels)
-				{
-					case 1:
-					{
-						return ALFormat.Mono16;
-					}
-					case 2:
-					{
-						return ALFormat.Stereo16;
-					}
-					default:
-					{
-						throw new NotSupportedException("The specified sound format is not supported.");
-					}
-				}
-			}
-		}
+        /// <inheritdoc />
+        public ALFormat Format
+        {
+            get
+            {
+                switch (this.Channels)
+                {
+                    case 1:
+                    {
+                        return ALFormat.Mono16;
+                    }
+                    case 2:
+                    {
+                        return ALFormat.Stereo16;
+                    }
+                    default:
+                    {
+                        throw new NotSupportedException("The specified sound format is not supported.");
+                    }
+                }
+            }
+        }
 
-		private byte[] PCMDataInternal;
+        private byte[] PCMDataInternal;
 
-		/// <inheritdoc />
-		public byte[] PCMData
-		{
-			get
-			{
-				ThrowIfDisposed();
+        /// <inheritdoc />
+        public byte[] PCMData
+        {
+            get
+            {
+                ThrowIfDisposed();
 
-				if (this.PCMDataInternal != null)
-				{
-					return this.PCMDataInternal;
-				}
+                if (this.PCMDataInternal != null)
+                {
+                    return this.PCMDataInternal;
+                }
 
-				// Decode the whole stream
-				using (MemoryStream pcm = new MemoryStream())
-				{
-					// Quick note: this is inside the actual MP3 stream, not the PCM stream
-					this.PCMStream.Seek(0, SeekOrigin.Begin);
+                // Decode the whole stream
+                using (MemoryStream pcm = new MemoryStream())
+                {
+                    // Quick note: this is inside the actual MP3 stream, not the PCM stream
+                    this.PCMStream.Seek(0, SeekOrigin.Begin);
 
-					this.PCMStream.CopyTo(pcm);
-					this.PCMDataInternal = pcm.ToArray();
-				}
+                    this.PCMStream.CopyTo(pcm);
+                    this.PCMDataInternal = pcm.ToArray();
+                }
 
-				return this.PCMDataInternal;
-			}
-			private set => this.PCMDataInternal = value;
-		}
+                return this.PCMDataInternal;
+            }
+            private set => this.PCMDataInternal = value;
+        }
 
-		/// <inheritdoc />
-		public Stream PCMStream { get; private set; }
+        /// <inheritdoc />
+        public Stream PCMStream { get; private set; }
 
-		/// <inheritdoc />
-		public int Channels { get; }
+        /// <inheritdoc />
+        public int Channels { get; }
 
-		/// <inheritdoc />
-		public int BitsPerSample { get; }
+        /// <inheritdoc />
+        public int BitsPerSample { get; }
 
-		/// <inheritdoc />
-		public int SampleRate { get; }
+        /// <inheritdoc />
+        public int SampleRate { get; }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="MP3AudioAsset"/> class.
-		/// </summary>
-		/// <param name="fileReference">The reference to create the asset from.</param>
-		/// <exception cref="ArgumentException">Thrown if the reference is not an MP3 audio file.</exception>
-		/// <exception cref="ArgumentNullException">Thrown if the file data can't be extracted.</exception>
-		public MP3AudioAsset(FileReference fileReference)
-		{
-			if (fileReference == null)
-			{
-				throw new ArgumentNullException(nameof(fileReference));
-			}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MP3AudioAsset"/> class.
+        /// </summary>
+        /// <param name="fileReference">The reference to create the asset from.</param>
+        /// <exception cref="ArgumentException">Thrown if the reference is not an MP3 audio file.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the file data can't be extracted.</exception>
+        public MP3AudioAsset(FileReference fileReference)
+        {
+            if (fileReference == null)
+            {
+                throw new ArgumentNullException(nameof(fileReference));
+            }
 
-			if (fileReference.GetReferencedFileType() != WarcraftFileType.MP3Audio)
-			{
-				throw new ArgumentException("The provided file reference was not an MP3 audio file.", nameof(fileReference));
-			}
+            if (fileReference.GetReferencedFileType() != WarcraftFileType.MP3Audio)
+            {
+                throw new ArgumentException("The provided file reference was not an MP3 audio file.", nameof(fileReference));
+            }
 
-			byte[] fileBytes = fileReference.Extract();
-			if (fileBytes == null)
-			{
-				throw new ArgumentException("The file data could not be extracted.", nameof(fileReference));
-			}
+            byte[] fileBytes = fileReference.Extract();
+            if (fileBytes == null)
+            {
+                throw new ArgumentException("The file data could not be extracted.", nameof(fileReference));
+            }
 
-			this.PCMStream = new MP3Stream(new MemoryStream(fileBytes));
-			this.Channels = ((MP3Stream)this.PCMStream).ChannelCount;
-			this.BitsPerSample = 16;
-			this.SampleRate = ((MP3Stream)this.PCMStream).Frequency;
-		}
+            this.PCMStream = new MP3Stream(new MemoryStream(fileBytes));
+            this.Channels = ((MP3Stream)this.PCMStream).ChannelCount;
+            this.BitsPerSample = 16;
+            this.SampleRate = ((MP3Stream)this.PCMStream).Frequency;
+        }
 
-		/// <summary>
-		/// Loads a <see cref="MP3AudioAsset"/> asynchronously.
-		/// </summary>
-		/// <param name="fileReference">The reference to load.</param>
-		/// <returns>An MP3AudioAsset.</returns>
-		public static Task<MP3AudioAsset> LoadAsync(FileReference fileReference)
-		{
-			return Task.Run(() => new MP3AudioAsset(fileReference));
-		}
+        /// <summary>
+        /// Loads a <see cref="MP3AudioAsset"/> asynchronously.
+        /// </summary>
+        /// <param name="fileReference">The reference to load.</param>
+        /// <returns>An MP3AudioAsset.</returns>
+        public static Task<MP3AudioAsset> LoadAsync(FileReference fileReference)
+        {
+            return Task.Run(() => new MP3AudioAsset(fileReference));
+        }
 
-		/// <inheritdoc />
-		public void ThrowIfDisposed()
-		{
-			if (this.IsDisposed)
-			{
-				throw new ObjectDisposedException(ToString());
-			}
-		}
+        /// <inheritdoc />
+        public void ThrowIfDisposed()
+        {
+            if (this.IsDisposed)
+            {
+                throw new ObjectDisposedException(ToString());
+            }
+        }
 
-		/// <inheritdoc />
-		public void Dispose()
-		{
-			this.IsDisposed = true;
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            this.IsDisposed = true;
 
-			this.PCMStream?.Dispose();
+            this.PCMStream?.Dispose();
 
-			this.PCMStream = null;
-			this.PCMData = null;
-		}
-	}
+            this.PCMStream = null;
+            this.PCMData = null;
+        }
+    }
 }

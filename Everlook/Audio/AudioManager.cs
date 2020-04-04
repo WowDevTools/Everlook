@@ -26,91 +26,91 @@ using OpenTK.Audio;
 
 namespace Everlook.Audio
 {
-	/// <summary>
-	/// Manages the audio context of the application, and handles audio sources within it.
-	/// </summary>
-	public sealed class AudioManager : IDisposable
-	{
-		/// <summary>
-		/// Gets the singleton instance of the <see cref="AudioManager"/>.
-		/// </summary>
-		private static readonly AudioManager Instance = new AudioManager();
+    /// <summary>
+    /// Manages the audio context of the application, and handles audio sources within it.
+    /// </summary>
+    public sealed class AudioManager : IDisposable
+    {
+        /// <summary>
+        /// Gets the singleton instance of the <see cref="AudioManager"/>.
+        /// </summary>
+        private static readonly AudioManager Instance = new AudioManager();
 
-		/// <summary>
-		/// All registered sources in the manager.
-		/// </summary>
-		private readonly List<AudioSource> Sources = new List<AudioSource>();
+        /// <summary>
+        /// All registered sources in the manager.
+        /// </summary>
+        private readonly List<AudioSource> Sources = new List<AudioSource>();
 
-		private readonly AudioContext Context;
+        private readonly AudioContext Context;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AudioManager"/> class.
-		/// </summary>
-		private AudioManager()
-		{
-			this.Context = new AudioContext();
-			this.Context.MakeCurrent();
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AudioManager"/> class.
+        /// </summary>
+        private AudioManager()
+        {
+            this.Context = new AudioContext();
+            this.Context.MakeCurrent();
+        }
 
-		/// <summary>
-		/// Finalizes an instance of the <see cref="AudioManager"/> class.
-		/// </summary>
-		~AudioManager()
-		{
-			Dispose();
-		}
+        /// <summary>
+        /// Finalizes an instance of the <see cref="AudioManager"/> class.
+        /// </summary>
+        ~AudioManager()
+        {
+            Dispose();
+        }
 
-		/// <summary>
-		/// Registers an <see cref="AudioSource"/> with the manager. Registering a source will offload the resource
-		/// management of the source to the manager.
-		/// </summary>
-		/// <param name="audioSource">The audio source to register.</param>
-		public static void RegisterSource(AudioSource audioSource)
-		{
-			if (!IsRegistered(audioSource))
-			{
-				Instance.Sources.Add(audioSource);
-			}
-		}
+        /// <summary>
+        /// Registers an <see cref="AudioSource"/> with the manager. Registering a source will offload the resource
+        /// management of the source to the manager.
+        /// </summary>
+        /// <param name="audioSource">The audio source to register.</param>
+        public static void RegisterSource(AudioSource audioSource)
+        {
+            if (!IsRegistered(audioSource))
+            {
+                Instance.Sources.Add(audioSource);
+            }
+        }
 
-		/// <summary>
-		/// Unregisters an <see cref="AudioSource"/> with the manager. Unregistering a source will stop and dispose it.
-		/// </summary>
-		/// <param name="audioSource">The audio source to unregister.</param>
-		public static void UnregisterSource(AudioSource audioSource)
-		{
-			if (audioSource == null)
-			{
-				return;
-			}
+        /// <summary>
+        /// Unregisters an <see cref="AudioSource"/> with the manager. Unregistering a source will stop and dispose it.
+        /// </summary>
+        /// <param name="audioSource">The audio source to unregister.</param>
+        public static void UnregisterSource(AudioSource audioSource)
+        {
+            if (audioSource == null)
+            {
+                return;
+            }
 
-			if (IsRegistered(audioSource))
-			{
-				Instance.Sources.Remove(audioSource);
-			}
+            if (IsRegistered(audioSource))
+            {
+                Instance.Sources.Remove(audioSource);
+            }
 
-			audioSource.Dispose();
-		}
+            audioSource.Dispose();
+        }
 
-		/// <summary>
-		/// Determines whether or not an <see cref="AudioSource"/> is registered with the manager.
-		/// </summary>
-		/// <param name="audioSource">The audio source to check.</param>
-		/// <returns>true if the source is registered; false otherwise.</returns>
-		public static bool IsRegistered(AudioSource audioSource)
-		{
-			return Instance.Sources.Contains(audioSource);
-		}
+        /// <summary>
+        /// Determines whether or not an <see cref="AudioSource"/> is registered with the manager.
+        /// </summary>
+        /// <param name="audioSource">The audio source to check.</param>
+        /// <returns>true if the source is registered; false otherwise.</returns>
+        public static bool IsRegistered(AudioSource audioSource)
+        {
+            return Instance.Sources.Contains(audioSource);
+        }
 
-		/// <inheritdoc />
-		public void Dispose()
-		{
-			foreach (var source in this.Sources)
-			{
-				source.Dispose();
-			}
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            foreach (var source in this.Sources)
+            {
+                source.Dispose();
+            }
 
-			this.Context.Dispose();
-		}
-	}
+            this.Context.Dispose();
+        }
+    }
 }

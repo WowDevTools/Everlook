@@ -30,16 +30,16 @@ using UIElement = Gtk.Builder.ObjectAttribute;
 
 namespace Everlook.UI
 {
-	public sealed partial class EverlookDirectoryExportDialog
-	{
-		[UIElement] private readonly ListStore ItemExportListStore;
-		[UIElement] private readonly TreeView ItemListingTreeView;
-		[UIElement] private readonly CellRendererToggle ExportItemToggleRenderer;
+    public sealed partial class EverlookDirectoryExportDialog
+    {
+        [UIElement] private readonly ListStore ItemExportListStore;
+        [UIElement] private readonly TreeView ItemListingTreeView;
+        [UIElement] private readonly CellRendererToggle ExportItemToggleRenderer;
 
-		[UIElement] private readonly Menu ExportPopupMenu;
-		[UIElement] private readonly ImageMenuItem SelectAllItem;
-		[UIElement] private readonly ImageMenuItem SelectNoneItem;
+        [UIElement] private readonly Menu ExportPopupMenu;
+        [UIElement] private readonly ImageMenuItem SelectAllItem;
+        [UIElement] private readonly ImageMenuItem SelectNoneItem;
 
-		[UIElement] private readonly FileChooserButton ExportDirectoryFileChooserButton;
-	}
+        [UIElement] private readonly FileChooserButton ExportDirectoryFileChooserButton;
+    }
 }

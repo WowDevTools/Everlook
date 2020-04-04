@@ -22,39 +22,39 @@
 
 namespace Everlook.Explorer
 {
-	/// <summary>
-	/// Defines the different types of filter categories the game explorer can filter on.
-	/// </summary>
-	public enum FilterType
-	{
-		/// <summary>
-		/// Shows all files, regardless of extension.
-		/// </summary>
-		All = 0,
+    /// <summary>
+    /// Defines the different types of filter categories the game explorer can filter on.
+    /// </summary>
+    public enum FilterType
+    {
+        /// <summary>
+        /// Shows all files, regardless of extension.
+        /// </summary>
+        All = 0,
 
-		/// <summary>
-		/// Shows models and model-related files.
-		/// </summary>
-		Models = 1,
+        /// <summary>
+        /// Shows models and model-related files.
+        /// </summary>
+        Models = 1,
 
-		/// <summary>
-		/// Shows textures and images.
-		/// </summary>
-		Textures = 2,
+        /// <summary>
+        /// Shows textures and images.
+        /// </summary>
+        Textures = 2,
 
-		/// <summary>
-		/// Shows audio files, such as music and sound effects.
-		/// </summary>
-		Audio = 3,
+        /// <summary>
+        /// Shows audio files, such as music and sound effects.
+        /// </summary>
+        Audio = 3,
 
-		/// <summary>
-		/// Shows data files, such as configuration files and clientside databases.
-		/// </summary>
-		Data = 4,
+        /// <summary>
+        /// Shows data files, such as configuration files and clientside databases.
+        /// </summary>
+        Data = 4,
 
-		/// <summary>
-		/// Shows terrain and terrain-related files.
-		/// </summary>
-		Terrain = 5
-	}
+        /// <summary>
+        /// Shows terrain and terrain-related files.
+        /// </summary>
+        Terrain = 5
+    }
 }

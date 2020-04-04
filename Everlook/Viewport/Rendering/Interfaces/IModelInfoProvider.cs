@@ -22,19 +22,19 @@
 
 namespace Everlook.Viewport.Rendering.Interfaces
 {
-	/// <summary>
-	/// Interface for classes which can provide information about a model.
-	/// </summary>
-	public interface IModelInfoProvider
-	{
-		/// <summary>
-		/// Gets the number of polygons in the model.
-		/// </summary>
-		int PolygonCount { get; }
+    /// <summary>
+    /// Interface for classes which can provide information about a model.
+    /// </summary>
+    public interface IModelInfoProvider
+    {
+        /// <summary>
+        /// Gets the number of polygons in the model.
+        /// </summary>
+        int PolygonCount { get; }
 
-		/// <summary>
-		/// Gets the number of vertices in the model.
-		/// </summary>
-		int VertexCount { get; }
-	}
+        /// <summary>
+        /// Gets the number of vertices in the model.
+        /// </summary>
+        int VertexCount { get; }
+    }
 }

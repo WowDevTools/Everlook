@@ -24,29 +24,29 @@
 
 namespace Everlook.Viewport.Rendering.Core
 {
-	/// <summary>
-	/// Uniform slots for textures, used for identifying the corresponding variables and slots in the shader.
-	/// </summary>
-	public enum TextureUniform
-	{
-		/// <summary>
-		/// The first texture.
-		/// </summary>
-		Texture0 = 0,
+    /// <summary>
+    /// Uniform slots for textures, used for identifying the corresponding variables and slots in the shader.
+    /// </summary>
+    public enum TextureUniform
+    {
+        /// <summary>
+        /// The first texture.
+        /// </summary>
+        Texture0 = 0,
 
-		/// <summary>
-		/// The second texture.
-		/// </summary>
-		Texture1 = 1,
+        /// <summary>
+        /// The second texture.
+        /// </summary>
+        Texture1 = 1,
 
-		/// <summary>
-		/// The third texture.
-		/// </summary>
-		Texture2 = 2,
+        /// <summary>
+        /// The third texture.
+        /// </summary>
+        Texture2 = 2,
 
-		/// <summary>
-		/// The fourth texture.
-		/// </summary>
-		Texture3 = 3,
-	}
+        /// <summary>
+        /// The fourth texture.
+        /// </summary>
+        Texture3 = 3,
+    }
 }

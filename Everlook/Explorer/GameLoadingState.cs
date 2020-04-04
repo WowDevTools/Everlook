@@ -22,39 +22,39 @@
 
 namespace Everlook.Explorer
 {
-	/// <summary>
-	/// The current state a game loading progress is in.
-	/// </summary>
-	public enum GameLoadingState
-	{
-		/// <summary>
-		/// Still setting up. Nothing has been loaded yet.
-		/// </summary>
-		SettingUp,
+    /// <summary>
+    /// The current state a game loading progress is in.
+    /// </summary>
+    public enum GameLoadingState
+    {
+        /// <summary>
+        /// Still setting up. Nothing has been loaded yet.
+        /// </summary>
+        SettingUp,
 
-		/// <summary>
-		/// Loading in general.
-		/// </summary>
-		Loading,
+        /// <summary>
+        /// Loading in general.
+        /// </summary>
+        Loading,
 
-		/// <summary>
-		/// Loading package references into memory.
-		/// </summary>
-		LoadingPackages,
+        /// <summary>
+        /// Loading package references into memory.
+        /// </summary>
+        LoadingPackages,
 
-		/// <summary>
-		/// Loading a node tree into memory.
-		/// </summary>
-		LoadingNodeTree,
+        /// <summary>
+        /// Loading a node tree into memory.
+        /// </summary>
+        LoadingNodeTree,
 
-		/// <summary>
-		/// Loading a dictionary into memory.
-		/// </summary>
-		LoadingDictionary,
+        /// <summary>
+        /// Loading a dictionary into memory.
+        /// </summary>
+        LoadingDictionary,
 
-		/// <summary>
-		/// Building a new node tree.
-		/// </summary>
-		BuildingNodeTree
-	}
+        /// <summary>
+        /// Building a new node tree.
+        /// </summary>
+        BuildingNodeTree
+    }
 }

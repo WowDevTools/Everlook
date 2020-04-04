@@ -30,12 +30,12 @@ using UIElement = Gtk.Builder.ObjectAttribute;
 
 namespace Everlook.UI
 {
-	public partial class EverlookGameLoadingDialog
-	{
-		[UIElement] private readonly Label GameLoadingDialogLabel;
-		[UIElement] private readonly Label AdditionalInfoLabel;
-		[UIElement] private readonly Button CancelGameLoadingButton;
-		[UIElement] private readonly ProgressBar GameLoadingProgressBar;
-		[UIElement] private readonly ProgressBar TreeBuildingProgressBar;
-	}
+    public partial class EverlookGameLoadingDialog
+    {
+        [UIElement] private readonly Label GameLoadingDialogLabel;
+        [UIElement] private readonly Label AdditionalInfoLabel;
+        [UIElement] private readonly Button CancelGameLoadingButton;
+        [UIElement] private readonly ProgressBar GameLoadingProgressBar;
+        [UIElement] private readonly ProgressBar TreeBuildingProgressBar;
+    }
 }

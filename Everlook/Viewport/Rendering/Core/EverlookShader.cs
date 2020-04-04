@@ -22,46 +22,46 @@
 
 namespace Everlook.Viewport.Rendering.Core
 {
-	/// <summary>
-	/// A set of shaders available to Everlook at runtime.
-	/// </summary>
-	public enum EverlookShader
-	{
-		/// <summary>
-		/// A plain shader used for 2D images. This shader simply takes vertices, a single texture sampler
-		/// and UV coordinates for these vertices.
-		/// </summary>
-		Plain2D,
+    /// <summary>
+    /// A set of shaders available to Everlook at runtime.
+    /// </summary>
+    public enum EverlookShader
+    {
+        /// <summary>
+        /// A plain shader used for 2D images. This shader simply takes vertices, a single texture sampler
+        /// and UV coordinates for these vertices.
+        /// </summary>
+        Plain2D,
 
-		/// <summary>
-		/// A shader capable of rendering a group inside a World Model. This shader does not support
-		/// any animation.
-		/// </summary>
-		WorldModel,
+        /// <summary>
+        /// A shader capable of rendering a group inside a World Model. This shader does not support
+        /// any animation.
+        /// </summary>
+        WorldModel,
 
-		/// <summary>
-		/// A shader capable of rendering a simple game model. This shader does not support any animation.
-		/// </summary>
-		GameModel,
+        /// <summary>
+        /// A shader capable of rendering a simple game model. This shader does not support any animation.
+        /// </summary>
+        GameModel,
 
-		/// <summary>
-		/// A shader capable of rendering an animated model.
-		/// </summary>
-		Model,
+        /// <summary>
+        /// A shader capable of rendering an animated model.
+        /// </summary>
+        Model,
 
-		/// <summary>
-		/// A shader capable of rendering a particle system.
-		/// </summary>
-		ParticleSystem,
+        /// <summary>
+        /// A shader capable of rendering a particle system.
+        /// </summary>
+        ParticleSystem,
 
-		/// <summary>
-		/// A shader capable of rendering a bounding box.
-		/// </summary>
-		BoundingBox,
+        /// <summary>
+        /// A shader capable of rendering a bounding box.
+        /// </summary>
+        BoundingBox,
 
-		/// <summary>
-		/// A shader capable of rendering the base grid.
-		/// </summary>
-		BaseGrid
-	}
+        /// <summary>
+        /// A shader capable of rendering the base grid.
+        /// </summary>
+        BaseGrid
+    }
 }

@@ -22,35 +22,35 @@
 
 namespace Everlook.UI
 {
-	/// <summary>
-	/// Available control pages in the Everlook UI.
-	/// </summary>
-	public enum ControlPage
-	{
-		/// <summary>
-		/// No pages. If this page is enabled, it will instead disable all pages.
-		/// </summary>
-		None = -1,
+    /// <summary>
+    /// Available control pages in the Everlook UI.
+    /// </summary>
+    public enum ControlPage
+    {
+        /// <summary>
+        /// No pages. If this page is enabled, it will instead disable all pages.
+        /// </summary>
+        None = -1,
 
-		/// <summary>
-		/// Image control page. Handles mip levels and rendered channels.
-		/// </summary>
-		Image = 0,
+        /// <summary>
+        /// Image control page. Handles mip levels and rendered channels.
+        /// </summary>
+        Image = 0,
 
-		/// <summary>
-		/// Model control page. Handles vertex joining, geoset rendering and other model
-		/// settings.
-		/// </summary>
-		Model = 1,
+        /// <summary>
+        /// Model control page. Handles vertex joining, geoset rendering and other model
+        /// settings.
+        /// </summary>
+        Model = 1,
 
-		/// <summary>
-		/// Animation control page. Handles active animations and their settings.
-		/// </summary>
-		Animation = 2,
+        /// <summary>
+        /// Animation control page. Handles active animations and their settings.
+        /// </summary>
+        Animation = 2,
 
-		/// <summary>
-		/// Audio control page. Handles playback of audio.
-		/// </summary>
-		Audio = 3
-	}
+        /// <summary>
+        /// Audio control page. Handles playback of audio.
+        /// </summary>
+        Audio = 3
+    }
 }

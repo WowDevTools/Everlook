@@ -25,46 +25,46 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Everlook.Exceptions.Shader
 {
-	/// <summary>
-	/// An exception thrown when a shader fails to compile.
-	/// </summary>
-	public class ShaderCompilationException : Exception
-	{
-		/// <summary>
-		/// Gets the type of shader which was being compiled.
-		/// </summary>
-		public ShaderType Type { get; }
+    /// <summary>
+    /// An exception thrown when a shader fails to compile.
+    /// </summary>
+    public class ShaderCompilationException : Exception
+    {
+        /// <summary>
+        /// Gets the type of shader which was being compiled.
+        /// </summary>
+        public ShaderType Type { get; }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ShaderCompilationException"/> class.
-		/// </summary>
-		/// <param name="type">The shader type.</param>
-		public ShaderCompilationException(ShaderType type)
-		{
-			this.Type = type;
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShaderCompilationException"/> class.
+        /// </summary>
+        /// <param name="type">The shader type.</param>
+        public ShaderCompilationException(ShaderType type)
+        {
+            this.Type = type;
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ShaderCompilationException"/> class.
-		/// </summary>
-		/// <param name="type">The shader type.</param>
-		/// <param name="message">The message to include with the exception.</param>
-		public ShaderCompilationException(ShaderType type, string message)
-			: base(message)
-		{
-			this.Type = type;
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShaderCompilationException"/> class.
+        /// </summary>
+        /// <param name="type">The shader type.</param>
+        /// <param name="message">The message to include with the exception.</param>
+        public ShaderCompilationException(ShaderType type, string message)
+            : base(message)
+        {
+            this.Type = type;
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ShaderCompilationException"/> class.
-		/// </summary>
-		/// <param name="type">The shader type.</param>
-		/// <param name="message">The message to include with the exception.</param>
-		/// <param name="inner">The exception which caused this exception.</param>
-		public ShaderCompilationException(ShaderType type, string message, Exception inner)
-			: base(message, inner)
-		{
-			this.Type = type;
-		}
-	}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShaderCompilationException"/> class.
+        /// </summary>
+        /// <param name="type">The shader type.</param>
+        /// <param name="message">The message to include with the exception.</param>
+        /// <param name="inner">The exception which caused this exception.</param>
+        public ShaderCompilationException(ShaderType type, string message, Exception inner)
+            : base(message, inner)
+        {
+            this.Type = type;
+        }
+    }
 }

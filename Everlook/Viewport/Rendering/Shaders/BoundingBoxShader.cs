@@ -26,61 +26,61 @@ using OpenTK.Graphics;
 
 namespace Everlook.Viewport.Rendering.Shaders
 {
-	/// <summary>
-	/// A bounding box shader.
-	/// </summary>
-	public class BoundingBoxShader : ShaderProgram
-	{
-		private const string IsInstance = nameof(IsInstance);
+    /// <summary>
+    /// A bounding box shader.
+    /// </summary>
+    public class BoundingBoxShader : ShaderProgram
+    {
+        private const string IsInstance = nameof(IsInstance);
 
-		private const string ViewMatrix = nameof(ViewMatrix);
-		private const string ProjectionMatrix = nameof(ProjectionMatrix);
+        private const string ViewMatrix = nameof(ViewMatrix);
+        private const string ProjectionMatrix = nameof(ProjectionMatrix);
 
-		private const string ColourIdentifier = "boxColour";
+        private const string ColourIdentifier = "boxColour";
 
-		/// <inheritdoc />
-		protected override string VertexShaderResourceName => "BoundingBox.BoundingBoxVertex";
+        /// <inheritdoc />
+        protected override string VertexShaderResourceName => "BoundingBox.BoundingBoxVertex";
 
-		/// <inheritdoc />
-		protected override string FragmentShaderResourceName => "BoundingBox.BoundingBoxFragment";
+        /// <inheritdoc />
+        protected override string FragmentShaderResourceName => "BoundingBox.BoundingBoxFragment";
 
-		/// <inheritdoc />
-		protected override string GeometryShaderResourceName => null;
+        /// <inheritdoc />
+        protected override string GeometryShaderResourceName => null;
 
-		/// <summary>
-		/// Sets the instancing flag.
-		/// </summary>
-		/// <param name="isInstanced">Whether or not the shader should render instances.</param>
-		public void SetIsInstance(bool isInstanced)
-		{
-			SetBoolean(isInstanced, IsInstance);
-		}
+        /// <summary>
+        /// Sets the instancing flag.
+        /// </summary>
+        /// <param name="isInstanced">Whether or not the shader should render instances.</param>
+        public void SetIsInstance(bool isInstanced)
+        {
+            SetBoolean(isInstanced, IsInstance);
+        }
 
-		/// <summary>
-		/// Sets the current view matrix of the shader.
-		/// </summary>
-		/// <param name="viewMatrix">The model-view matrix.</param>
-		public void SetViewMatrix(Matrix4 viewMatrix)
-		{
-			SetMatrix(viewMatrix, ViewMatrix);
-		}
+        /// <summary>
+        /// Sets the current view matrix of the shader.
+        /// </summary>
+        /// <param name="viewMatrix">The model-view matrix.</param>
+        public void SetViewMatrix(Matrix4 viewMatrix)
+        {
+            SetMatrix(viewMatrix, ViewMatrix);
+        }
 
-		/// <summary>
-		/// Sets the current projection matrix of the shader.
-		/// </summary>
-		/// <param name="projectionMatrix">The projection matrix.</param>
-		public void SetProjectionMatrix(Matrix4 projectionMatrix)
-		{
-			SetMatrix(projectionMatrix, ProjectionMatrix);
-		}
+        /// <summary>
+        /// Sets the current projection matrix of the shader.
+        /// </summary>
+        /// <param name="projectionMatrix">The projection matrix.</param>
+        public void SetProjectionMatrix(Matrix4 projectionMatrix)
+        {
+            SetMatrix(projectionMatrix, ProjectionMatrix);
+        }
 
-		/// <summary>
-		/// Sets the line colour of the bounding box.
-		/// </summary>
-		/// <param name="colour">The colour to set the lines to.</param>
-		public void SetLineColour(Color4 colour)
-		{
-			SetColor4(colour, ColourIdentifier);
-		}
-	}
+        /// <summary>
+        /// Sets the line colour of the bounding box.
+        /// </summary>
+        /// <param name="colour">The colour to set the lines to.</param>
+        public void SetLineColour(Color4 colour)
+        {
+            SetColor4(colour, ColourIdentifier);
+        }
+    }
 }

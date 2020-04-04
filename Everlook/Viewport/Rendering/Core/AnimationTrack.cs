@@ -26,23 +26,23 @@ using Warcraft.MDX.Animation;
 
 namespace Everlook.Viewport.Rendering.Core
 {
-	/// <summary>
-	/// Represents a set of animation timelines.
-	/// </summary>
-	/// <typeparam name="T">The value type contained in the track.</typeparam>
-	public class AnimationTrack<T> where T : struct
-	{
-		/// <summary>
-		/// Gets the timelines in this animation.
-		/// </summary>
-		public IReadOnlyCollection<ITimeline<T>> Timelines { get; }
+    /// <summary>
+    /// Represents a set of animation timelines.
+    /// </summary>
+    /// <typeparam name="T">The value type contained in the track.</typeparam>
+    public class AnimationTrack<T> where T : struct
+    {
+        /// <summary>
+        /// Gets the timelines in this animation.
+        /// </summary>
+        public IReadOnlyCollection<ITimeline<T>> Timelines { get; }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AnimationTrack{T}"/> class.
-		/// </summary>
-		/// <param name="tracks">The tracks to wrap around.</param>
-		public AnimationTrack(MDXTrack<T> tracks)
-		{
-		}
-	}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AnimationTrack{T}"/> class.
+        /// </summary>
+        /// <param name="tracks">The tracks to wrap around.</param>
+        public AnimationTrack(MDXTrack<T> tracks)
+        {
+        }
+    }
 }

@@ -31,87 +31,87 @@ using Warcraft.Core;
 
 namespace Everlook.UI.Helpers
 {
-	/// <summary>
-	/// Container class for different cell renderer functions.
-	/// </summary>
-	public static class CellRenderers
-	{
-		/// <summary>
-		/// Renders the name of a model variation in the variation dropdown.
-		/// </summary>
-		/// <param name="cellLayout">The layout of the cell.</param>
-		/// <param name="cell">The cell.</param>
-		/// <param name="model">The model of the combobox.</param>
-		/// <param name="iter">The iter pointing to the rendered row.</param>
-		public static void RenderModelVariationName(ICellLayout cellLayout, CellRenderer cell, ITreeModel model, TreeIter iter)
-		{
-			CellRendererText cellText = cell as CellRendererText;
-			if (cellText == null)
-			{
-				return;
-			}
+    /// <summary>
+    /// Container class for different cell renderer functions.
+    /// </summary>
+    public static class CellRenderers
+    {
+        /// <summary>
+        /// Renders the name of a model variation in the variation dropdown.
+        /// </summary>
+        /// <param name="cellLayout">The layout of the cell.</param>
+        /// <param name="cell">The cell.</param>
+        /// <param name="model">The model of the combobox.</param>
+        /// <param name="iter">The iter pointing to the rendered row.</param>
+        public static void RenderModelVariationName(ICellLayout cellLayout, CellRenderer cell, ITreeModel model, TreeIter iter)
+        {
+            CellRendererText cellText = cell as CellRendererText;
+            if (cellText == null)
+            {
+                return;
+            }
 
-			string storedText = (string)model.GetValue(iter, 0);
+            string storedText = (string)model.GetValue(iter, 0);
 
-			// Builtin override for the standard set name
-			if (storedText.ToLowerInvariant().Contains("set_$defaultglobal"))
-			{
-				cellText.Text = "Default";
-				return;
-			}
+            // Builtin override for the standard set name
+            if (storedText.ToLowerInvariant().Contains("set_$defaultglobal"))
+            {
+                cellText.Text = "Default";
+                return;
+            }
 
-			string transientText = storedText.FastReplaceCaseInsensitive("set_", string.Empty);
+            string transientText = storedText.FastReplaceCaseInsensitive("set_", string.Empty);
 
-			// Insert spaces between words and abbreviations
-			transientText = Regex.Replace(transientText, @"(\B[A-Z0-9]+?(?=[A-Z][^A-Z])|\B[A-Z0-9]+?(?=[^A-Z]))", " $1");
+            // Insert spaces between words and abbreviations
+            transientText = Regex.Replace(transientText, @"(\B[A-Z0-9]+?(?=[A-Z][^A-Z])|\B[A-Z0-9]+?(?=[^A-Z]))", " $1");
 
-			cellText.Text = transientText;
-		}
+            cellText.Text = transientText;
+        }
 
-		/// <summary>
-		/// Renders the name of a file reference in the export queue.
-		/// </summary>
-		/// <param name="column">The column which the cell is in.</param>
-		/// <param name="cell">The cell which the reference is in.</param>
-		/// <param name="model">The model of the treeview.</param>
-		/// <param name="iter">The <see cref="TreeIter"/> pointing to the row the reference is in.</param>
-		public static void RenderExportQueueReferenceName(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
-		{
-			CellRendererText cellText = cell as CellRendererText;
-			FileReference reference = (FileReference)model.GetValue(iter, 0);
+        /// <summary>
+        /// Renders the name of a file reference in the export queue.
+        /// </summary>
+        /// <param name="column">The column which the cell is in.</param>
+        /// <param name="cell">The cell which the reference is in.</param>
+        /// <param name="model">The model of the treeview.</param>
+        /// <param name="iter">The <see cref="TreeIter"/> pointing to the row the reference is in.</param>
+        public static void RenderExportQueueReferenceName(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
+        {
+            CellRendererText cellText = cell as CellRendererText;
+            FileReference reference = (FileReference)model.GetValue(iter, 0);
 
-			if (reference == null || cellText == null)
-			{
-				return;
-			}
+            if (reference == null || cellText == null)
+            {
+                return;
+            }
 
-			cellText.Text = reference.FilePath.Replace('\\', Path.DirectorySeparatorChar);
-		}
+            cellText.Text = reference.FilePath.Replace('\\', Path.DirectorySeparatorChar);
+        }
 
-		/// <summary>
-		/// Renders the icon of a file reference in the export queue.
-		/// </summary>
-		/// <param name="column">The column which the cell is in.</param>
-		/// <param name="cell">The cell which the icon is in.</param>
-		/// <param name="model">The model of the treeview.</param>
-		/// <param name="iter">The <see cref="TreeIter"/> pointing to the row the icon is in.</param>
-		public static void RenderExportQueueReferenceIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
-		{
-			CellRendererPixbuf cellIcon = cell as CellRendererPixbuf;
-			FileReference reference = (FileReference)model.GetValue(iter, 0);
+        /// <summary>
+        /// Renders the icon of a file reference in the export queue.
+        /// </summary>
+        /// <param name="column">The column which the cell is in.</param>
+        /// <param name="cell">The cell which the icon is in.</param>
+        /// <param name="model">The model of the treeview.</param>
+        /// <param name="iter">The <see cref="TreeIter"/> pointing to the row the icon is in.</param>
+        public static void RenderExportQueueReferenceIcon(TreeViewColumn column, CellRenderer cell, ITreeModel model, TreeIter iter)
+        {
+            CellRendererPixbuf cellIcon = cell as CellRendererPixbuf;
+            FileReference reference = (FileReference)model.GetValue(iter, 0);
 
-			if (reference == null || cellIcon == null)
-			{
-				return;
-			}
+            if (reference == null || cellIcon == null)
+            {
+                return;
+            }
 
-			if (reference.Node.Type.HasFlag(NodeType.Directory))
-			{
-				cellIcon.Pixbuf = IconManager.GetIconForFiletype(WarcraftFileType.Directory);
-				return;
-			}
+            if (reference.Node.Type.HasFlag(NodeType.Directory))
+            {
+                cellIcon.Pixbuf = IconManager.GetIconForFiletype(WarcraftFileType.Directory);
+                return;
+            }
 
-			cellIcon.Pixbuf = IconManager.GetIconForFiletype(reference.Node.FileType);
-		}
-	}
+            cellIcon.Pixbuf = IconManager.GetIconForFiletype(reference.Node.FileType);
+        }
+    }
 }

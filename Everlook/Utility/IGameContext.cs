@@ -28,38 +28,38 @@ using Warcraft.Core;
 
 namespace Everlook.Utility
 {
-	/// <summary>
-	/// Represents a context object for a given game which can provide access to the file system, the database, and
-	/// other relevant functions.
-	/// </summary>
-	public interface IGameContext
-	{
-		/// <summary>
-		/// Gets the game version that the context is relevant for.
-		/// </summary>
-		WarcraftVersion Version { get; }
+    /// <summary>
+    /// Represents a context object for a given game which can provide access to the file system, the database, and
+    /// other relevant functions.
+    /// </summary>
+    public interface IGameContext
+    {
+        /// <summary>
+        /// Gets the game version that the context is relevant for.
+        /// </summary>
+        WarcraftVersion Version { get; }
 
-		/// <summary>
-		/// Gets the database accessor for the context.
-		/// </summary>
-		ClientDatabaseProvider Database { get; }
+        /// <summary>
+        /// Gets the database accessor for the context.
+        /// </summary>
+        ClientDatabaseProvider Database { get; }
 
-		/// <summary>
-		/// Gets the asset accessor for the context.
-		/// </summary>
-		PackageGroup Assets { get; }
+        /// <summary>
+        /// Gets the asset accessor for the context.
+        /// </summary>
+        PackageGroup Assets { get; }
 
-		/// <summary>
-		/// Gets the UI file tree for the context.
-		/// </summary>
-		FileTreeModel FileTree { get; }
+        /// <summary>
+        /// Gets the UI file tree for the context.
+        /// </summary>
+        FileTreeModel FileTree { get; }
 
-		/// <summary>
-		/// Gets the file reference pointing to a given path.
-		/// </summary>
-		/// <param name="path">The path to the file.</param>
-		/// <returns>A file reference pointing to the path.</returns>
-		/// <exception cref="ArgumentNullException">Thrown if the path is null or empty.</exception>
-		FileReference GetReferenceForPath(string path);
-	}
+        /// <summary>
+        /// Gets the file reference pointing to a given path.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <returns>A file reference pointing to the path.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the path is null or empty.</exception>
+        FileReference GetReferenceForPath(string path);
+    }
 }

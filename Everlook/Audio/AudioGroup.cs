@@ -26,99 +26,99 @@ using OpenTK;
 
 namespace Everlook.Audio
 {
-	/// <summary>
-	/// Represents a group of concurrently playing and linked audio sources, such as music collections or
-	/// doodad sounds which should be considered as a unit. Each audio source in a collection must be unique.
-	/// </summary>
-	public sealed class AudioGroup : IDisposable
-	{
-		private readonly List<AudioSource> AudioSources = new List<AudioSource>();
+    /// <summary>
+    /// Represents a group of concurrently playing and linked audio sources, such as music collections or
+    /// doodad sounds which should be considered as a unit. Each audio source in a collection must be unique.
+    /// </summary>
+    public sealed class AudioGroup : IDisposable
+    {
+        private readonly List<AudioSource> AudioSources = new List<AudioSource>();
 
-		private Vector3 PositionInternal;
+        private Vector3 PositionInternal;
 
-		/// <summary>
-		/// Gets or sets the location at which the audio collection is. The locations of any sources
-		/// added to this collection are placed at the same point.
-		/// </summary>
-		public Vector3 Position
-		{
-			get => this.PositionInternal;
-			set
-			{
-				this.PositionInternal = value;
-				foreach (var audioSource in this.AudioSources)
-				{
-					audioSource.Position = value;
-				}
-			}
-		}
+        /// <summary>
+        /// Gets or sets the location at which the audio collection is. The locations of any sources
+        /// added to this collection are placed at the same point.
+        /// </summary>
+        public Vector3 Position
+        {
+            get => this.PositionInternal;
+            set
+            {
+                this.PositionInternal = value;
+                foreach (var audioSource in this.AudioSources)
+                {
+                    audioSource.Position = value;
+                }
+            }
+        }
 
-		/// <summary>
-		/// Adds a source to the audio collection.
-		/// </summary>
-		/// <param name="audioSource">The audio source to add to the collection.</param>
-		public void AddSource(AudioSource audioSource)
-		{
-			if (!this.AudioSources.Contains(audioSource))
-			{
-				this.AudioSources.Add(audioSource);
-			}
-		}
+        /// <summary>
+        /// Adds a source to the audio collection.
+        /// </summary>
+        /// <param name="audioSource">The audio source to add to the collection.</param>
+        public void AddSource(AudioSource audioSource)
+        {
+            if (!this.AudioSources.Contains(audioSource))
+            {
+                this.AudioSources.Add(audioSource);
+            }
+        }
 
-		/// <summary>
-		/// Removes a source from the audio collection.
-		/// </summary>
-		/// <param name="audioSource">The audio source to add to the collection.</param>
-		public void RemoveSource(AudioSource audioSource)
-		{
-			if (this.AudioSources.Contains(audioSource))
-			{
-				this.AudioSources.Remove(audioSource);
-			}
-		}
+        /// <summary>
+        /// Removes a source from the audio collection.
+        /// </summary>
+        /// <param name="audioSource">The audio source to add to the collection.</param>
+        public void RemoveSource(AudioSource audioSource)
+        {
+            if (this.AudioSources.Contains(audioSource))
+            {
+                this.AudioSources.Remove(audioSource);
+            }
+        }
 
-		/// <summary>
-		/// Plays all sources in the collection.
-		/// </summary>
-		public void PlayAll()
-		{
-			foreach (var audioSource in this.AudioSources)
-			{
-				audioSource.Play();
-			}
-		}
+        /// <summary>
+        /// Plays all sources in the collection.
+        /// </summary>
+        public void PlayAll()
+        {
+            foreach (var audioSource in this.AudioSources)
+            {
+                audioSource.Play();
+            }
+        }
 
-		/// <summary>
-		/// Pauses all sources in the collection.
-		/// </summary>
-		public void PauseAll()
-		{
-			foreach (var audioSource in this.AudioSources)
-			{
-				audioSource.Pause();
-			}
-		}
+        /// <summary>
+        /// Pauses all sources in the collection.
+        /// </summary>
+        public void PauseAll()
+        {
+            foreach (var audioSource in this.AudioSources)
+            {
+                audioSource.Pause();
+            }
+        }
 
-		/// <summary>
-		/// Stops all sources in the collection.
-		/// </summary>
-		public void StopAll()
-		{
-			foreach (var audioSource in this.AudioSources)
-			{
-				audioSource.Stop();
-			}
-		}
+        /// <summary>
+        /// Stops all sources in the collection.
+        /// </summary>
+        public void StopAll()
+        {
+            foreach (var audioSource in this.AudioSources)
+            {
+                audioSource.Stop();
+            }
+        }
 
-		/// <inheritdoc />
-		public void Dispose()
-		{
-			foreach (var audioSource in this.AudioSources)
-			{
-				audioSource.Dispose();
-			}
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            foreach (var audioSource in this.AudioSources)
+            {
+                audioSource.Dispose();
+            }
 
-			this.AudioSources.Clear();
-		}
-	}
+            this.AudioSources.Clear();
+        }
+    }
 }

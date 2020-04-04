@@ -26,41 +26,41 @@ using OpenTK.Graphics;
 
 namespace Everlook.Viewport.Rendering.Core.Lights
 {
-	/// <summary>
-	/// Represents a global direction light, much like a sun. The light does not contain any attenuation modelling, and
-	/// is considered as a universal collimated source.
-	/// </summary>
-	public class DirectionalLight
-	{
-		/// <summary>
-		/// Gets or sets the horizontal angle, in degrees, of the light.
-		/// </summary>
-		public float HorizontalAngle { get; set; }
+    /// <summary>
+    /// Represents a global direction light, much like a sun. The light does not contain any attenuation modelling, and
+    /// is considered as a universal collimated source.
+    /// </summary>
+    public class DirectionalLight
+    {
+        /// <summary>
+        /// Gets or sets the horizontal angle, in degrees, of the light.
+        /// </summary>
+        public float HorizontalAngle { get; set; }
 
-		/// <summary>
-		/// Gets or sets the vertical angle, in degrees, of the light.
-		/// </summary>
-		public float VerticalAngle { get; set; }
+        /// <summary>
+        /// Gets or sets the vertical angle, in degrees, of the light.
+        /// </summary>
+        public float VerticalAngle { get; set; }
 
-		/// <summary>
-		/// Gets the vector along which the light shines.
-		/// </summary>
-		public Vector3 LightVector => new Vector3
-		(
-			(float)Math.Cos(this.HorizontalAngle) * (float)Math.Cos(this.VerticalAngle),
-			(float)Math.Sin(this.VerticalAngle),
-			(float)Math.Sin(this.HorizontalAngle) * (float)Math.Cos(this.VerticalAngle)
-		)
-		.Normalized();
+        /// <summary>
+        /// Gets the vector along which the light shines.
+        /// </summary>
+        public Vector3 LightVector => new Vector3
+        (
+            (float)Math.Cos(this.HorizontalAngle) * (float)Math.Cos(this.VerticalAngle),
+            (float)Math.Sin(this.VerticalAngle),
+            (float)Math.Sin(this.HorizontalAngle) * (float)Math.Cos(this.VerticalAngle)
+        )
+        .Normalized();
 
-		/// <summary>
-		/// Gets or sets the colour of the light.
-		/// </summary>
-		public Color4 LightColour { get; set; }
+        /// <summary>
+        /// Gets or sets the colour of the light.
+        /// </summary>
+        public Color4 LightColour { get; set; }
 
-		/// <summary>
-		/// Gets or sets the intensity, in lux, of the light.
-		/// </summary>
-		public float Intensity { get; set; }
-	}
+        /// <summary>
+        /// Gets or sets the intensity, in lux, of the light.
+        /// </summary>
+        public float Intensity { get; set; }
+    }
 }

@@ -22,19 +22,19 @@
 
 namespace Everlook.Explorer
 {
-	/// <summary>
-	/// Container for reporting the overall progress of a loading operation.
-	/// </summary>
-	public struct OverallLoadingProgress
-	{
-		/// <summary>
-		/// Gets or sets the total number of operations in this loading operation.
-		/// </summary>
-		public int OperationCount { get; set; }
+    /// <summary>
+    /// Container for reporting the overall progress of a loading operation.
+    /// </summary>
+    public struct OverallLoadingProgress
+    {
+        /// <summary>
+        /// Gets or sets the total number of operations in this loading operation.
+        /// </summary>
+        public int OperationCount { get; set; }
 
-		/// <summary>
-		/// Gets or sets the number of finished operations.
-		/// </summary>
-		public int FinishedOperations { get; set; }
-	}
+        /// <summary>
+        /// Gets or sets the number of finished operations.
+        /// </summary>
+        public int FinishedOperations { get; set; }
+    }
 }

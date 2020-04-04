@@ -32,193 +32,193 @@ using Warcraft.MPQ.FileInfo;
 
 namespace Everlook.Package
 {
-	/// <summary>
-	/// Package interaction handler. This class is responsible for loading a package and performing file operations
-	/// on it.
-	/// </summary>
-	public sealed class PackageInteractionHandler : IDisposable, IPackage
-	{
-		/// <summary>
-		/// Logger instance for this class.
-		/// </summary>
-		private static readonly ILog Log = LogManager.GetLogger(typeof(PackageInteractionHandler));
+    /// <summary>
+    /// Package interaction handler. This class is responsible for loading a package and performing file operations
+    /// on it.
+    /// </summary>
+    public sealed class PackageInteractionHandler : IDisposable, IPackage
+    {
+        /// <summary>
+        /// Logger instance for this class.
+        /// </summary>
+        private static readonly ILog Log = LogManager.GetLogger(typeof(PackageInteractionHandler));
 
-		/// <summary>
-		/// Gets the package path.
-		/// </summary>
-		/// <value>The package path.</value>
-		public string PackagePath
-		{
-			get;
-			private set;
-		}
+        /// <summary>
+        /// Gets the package path.
+        /// </summary>
+        /// <value>The package path.</value>
+        public string PackagePath
+        {
+            get;
+            private set;
+        }
 
-		/// <summary>
-		/// Gets the name of the package.
-		/// </summary>
-		/// <value>The name of the package.</value>
-		public string PackageName => Path.GetFileNameWithoutExtension(this.PackagePath);
+        /// <summary>
+        /// Gets the name of the package.
+        /// </summary>
+        /// <value>The name of the package.</value>
+        public string PackageName => Path.GetFileNameWithoutExtension(this.PackagePath);
 
-		private MPQ Package;
+        private MPQ Package;
 
-		/// <summary>
-		/// Asynchronously loads a package at the given path.
-		/// </summary>
-		/// <param name="packagePath">The path on disk where the package is.</param>
-		/// <returns>A loaded PackageInteractionHandler.</returns>
-		public static Task<PackageInteractionHandler> LoadAsync(string packagePath)
-		{
-			return Task.Run
-			(
-				() =>
-				{
-					PackageInteractionHandler handler = new PackageInteractionHandler();
-					handler.Load(packagePath);
+        /// <summary>
+        /// Asynchronously loads a package at the given path.
+        /// </summary>
+        /// <param name="packagePath">The path on disk where the package is.</param>
+        /// <returns>A loaded PackageInteractionHandler.</returns>
+        public static Task<PackageInteractionHandler> LoadAsync(string packagePath)
+        {
+            return Task.Run
+            (
+                () =>
+                {
+                    PackageInteractionHandler handler = new PackageInteractionHandler();
+                    handler.Load(packagePath);
 
-					return handler;
-				}
-			);
-		}
+                    return handler;
+                }
+            );
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Package.PackageInteractionHandler"/> class. This
-		/// does not initialize or load any package information. Use <see cref="Load"/> to fill the handler, or
-		/// <see cref="LoadAsync"/> to create it asynchronously.
-		/// </summary>
-		public PackageInteractionHandler()
-		{
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Everlook.Package.PackageInteractionHandler"/> class. This
+        /// does not initialize or load any package information. Use <see cref="Load"/> to fill the handler, or
+        /// <see cref="LoadAsync"/> to create it asynchronously.
+        /// </summary>
+        public PackageInteractionHandler()
+        {
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Everlook.Package.PackageInteractionHandler"/> class and loads
-		/// the package at the provided path.
-		/// </summary>
-		/// <param name="inPackagePath">The path on disk where the package is.</param>
-		public PackageInteractionHandler(string inPackagePath)
-		{
-			Load(inPackagePath);
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Everlook.Package.PackageInteractionHandler"/> class and loads
+        /// the package at the provided path.
+        /// </summary>
+        /// <param name="inPackagePath">The path on disk where the package is.</param>
+        public PackageInteractionHandler(string inPackagePath)
+        {
+            Load(inPackagePath);
+        }
 
-		/// <summary>
-		/// Loads the package at the specified path, binding it to the handler.
-		/// </summary>
-		/// <param name="inPackagePath">The path on disk where the package is.</param>
-		/// <exception cref="FileNotFoundException">Thrown if no file exists at the given path.</exception>
-		public void Load(string inPackagePath)
-		{
-			if (File.Exists(inPackagePath))
-			{
-				this.Package = new MPQ(new FileStream(inPackagePath, FileMode.Open, FileAccess.Read, FileShare.Read));
-			}
-			else
-			{
-				throw new FileNotFoundException("No package could be found at the specified path.");
-			}
+        /// <summary>
+        /// Loads the package at the specified path, binding it to the handler.
+        /// </summary>
+        /// <param name="inPackagePath">The path on disk where the package is.</param>
+        /// <exception cref="FileNotFoundException">Thrown if no file exists at the given path.</exception>
+        public void Load(string inPackagePath)
+        {
+            if (File.Exists(inPackagePath))
+            {
+                this.Package = new MPQ(new FileStream(inPackagePath, FileMode.Open, FileAccess.Read, FileShare.Read));
+            }
+            else
+            {
+                throw new FileNotFoundException("No package could be found at the specified path.");
+            }
 
-			this.PackagePath = inPackagePath;
-		}
+            this.PackagePath = inPackagePath;
+        }
 
-		/// <summary>
-		/// Checks if the package contains the specified file. This method only checks the file path.
-		/// </summary>
-		/// <returns><c>true</c>, if the package contains the file, <c>false</c> otherwise.</returns>
-		/// <param name="fileReference">Reference reference.</param>
-		public bool ContainsFile(FileReference fileReference)
-		{
-			if (!fileReference.IsFile)
-			{
-				return false;
-			}
+        /// <summary>
+        /// Checks if the package contains the specified file. This method only checks the file path.
+        /// </summary>
+        /// <returns><c>true</c>, if the package contains the file, <c>false</c> otherwise.</returns>
+        /// <param name="fileReference">Reference reference.</param>
+        public bool ContainsFile(FileReference fileReference)
+        {
+            if (!fileReference.IsFile)
+            {
+                return false;
+            }
 
-			return ContainsFile(fileReference.FilePath);
-		}
+            return ContainsFile(fileReference.FilePath);
+        }
 
-		/// <summary>
-		/// Extracts the specified reference from its associated package. This method only operates on the file path.
-		/// </summary>
-		/// <param name="fileReference">Reference reference.</param>
-		/// <returns>The raw data of the file pointed to by the reference.</returns>
-		public byte[] ExtractReference(FileReference fileReference)
-		{
-			if (!fileReference.IsFile)
-			{
-				throw new ArgumentException("The specified reference can't be extracted.", nameof(fileReference));
-			}
+        /// <summary>
+        /// Extracts the specified reference from its associated package. This method only operates on the file path.
+        /// </summary>
+        /// <param name="fileReference">Reference reference.</param>
+        /// <returns>The raw data of the file pointed to by the reference.</returns>
+        public byte[] ExtractReference(FileReference fileReference)
+        {
+            if (!fileReference.IsFile)
+            {
+                throw new ArgumentException("The specified reference can't be extracted.", nameof(fileReference));
+            }
 
-			try
-			{
-				return ExtractFile(fileReference.FilePath);
-			}
-			catch (InvalidFileSectorTableException fex)
-			{
-				Log.Warn(
-					$"Failed to extract the file \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
-				throw;
-			}
-		}
+            try
+            {
+                return ExtractFile(fileReference.FilePath);
+            }
+            catch (InvalidFileSectorTableException fex)
+            {
+                Log.Warn(
+                    $"Failed to extract the file \"{fileReference.FilePath}\" due to an invalid sector table (\"{fex.Message}\").");
+                throw;
+            }
+        }
 
-		/// <summary>
-		/// Gets a set of information about the specified package file, such as stored size, disk size
-		/// and storage flags.
-		/// </summary>
-		/// <returns>The reference info.</returns>
-		/// <param name="fileReference">Reference reference.</param>
-		public MPQFileInfo GetReferenceInfo(FileReference fileReference)
-		{
-			if (!fileReference.IsFile)
-			{
-				throw new ArgumentException("The specified reference is not a file.", nameof(fileReference));
-			}
+        /// <summary>
+        /// Gets a set of information about the specified package file, such as stored size, disk size
+        /// and storage flags.
+        /// </summary>
+        /// <returns>The reference info.</returns>
+        /// <param name="fileReference">Reference reference.</param>
+        public MPQFileInfo GetReferenceInfo(FileReference fileReference)
+        {
+            if (!fileReference.IsFile)
+            {
+                throw new ArgumentException("The specified reference is not a file.", nameof(fileReference));
+            }
 
-			return GetFileInfo(fileReference.FilePath);
-		}
+            return GetFileInfo(fileReference.FilePath);
+        }
 
-		/// <inheritdoc />
-		public bool TryExtractFile(string filePath, out byte[] data)
-		{
-			return this.Package.TryExtractFile(filePath, out data);
-		}
+        /// <inheritdoc />
+        public bool TryExtractFile(string filePath, out byte[] data)
+        {
+            return this.Package.TryExtractFile(filePath, out data);
+        }
 
-		/// <inheritdoc />
-		public byte[] ExtractFile(string filePath)
-		{
-			return this.Package.ExtractFile(filePath);
-		}
+        /// <inheritdoc />
+        public byte[] ExtractFile(string filePath)
+        {
+            return this.Package.ExtractFile(filePath);
+        }
 
-		/// <inheritdoc />
-		public bool HasFileList()
-		{
-			return this.Package.HasFileList();
-		}
+        /// <inheritdoc />
+        public bool HasFileList()
+        {
+            return this.Package.HasFileList();
+        }
 
-		/// <inheritdoc />
-		public IEnumerable<string> GetFileList()
-		{
-			return this.Package.GetFileList();
-		}
+        /// <inheritdoc />
+        public IEnumerable<string> GetFileList()
+        {
+            return this.Package.GetFileList();
+        }
 
-		/// <inheritdoc />
-		public bool ContainsFile(string filePath)
-		{
-			return this.Package.ContainsFile(filePath);
-		}
+        /// <inheritdoc />
+        public bool ContainsFile(string filePath)
+        {
+            return this.Package.ContainsFile(filePath);
+        }
 
-		/// <inheritdoc />
-		public bool TryGetFileInfo(string filePath, out MPQFileInfo fileInfo)
-		{
-			return this.Package.TryGetFileInfo(filePath, out fileInfo);
-		}
+        /// <inheritdoc />
+        public bool TryGetFileInfo(string filePath, out MPQFileInfo fileInfo)
+        {
+            return this.Package.TryGetFileInfo(filePath, out fileInfo);
+        }
 
-		/// <inheritdoc />
-		public MPQFileInfo GetFileInfo(string filePath)
-		{
-			return this.Package.GetFileInfo(filePath);
-		}
+        /// <inheritdoc />
+        public MPQFileInfo GetFileInfo(string filePath)
+        {
+            return this.Package.GetFileInfo(filePath);
+        }
 
-		/// <inheritdoc />
-		public void Dispose()
-		{
-			this.Package.Dispose();
-		}
-	}
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            this.Package.Dispose();
+        }
+    }
 }

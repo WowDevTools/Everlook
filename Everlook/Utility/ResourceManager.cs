@@ -26,56 +26,56 @@ using System.Reflection;
 
 namespace Everlook.Utility
 {
-	/// <summary>
-	/// Manages embedded resources in the application.
-	/// </summary>
-	public static class ResourceManager
-	{
-		/// <summary>
-		/// Loads the source code of a stored shader from the specified resource path.
-		/// </summary>
-		/// <param name="resourcePath">The resource path of the shader.</param>
-		/// <returns>The source code of a shader.</returns>
-		public static string LoadStringResource(string resourcePath)
-		{
-			string resourceString;
-			using (Stream resourceStream =
-				Assembly.GetExecutingAssembly().GetManifestResourceStream(resourcePath))
-			{
-				if (resourceStream == null)
-				{
-					return null;
-				}
+    /// <summary>
+    /// Manages embedded resources in the application.
+    /// </summary>
+    public static class ResourceManager
+    {
+        /// <summary>
+        /// Loads the source code of a stored shader from the specified resource path.
+        /// </summary>
+        /// <param name="resourcePath">The resource path of the shader.</param>
+        /// <returns>The source code of a shader.</returns>
+        public static string LoadStringResource(string resourcePath)
+        {
+            string resourceString;
+            using (Stream resourceStream =
+                Assembly.GetExecutingAssembly().GetManifestResourceStream(resourcePath))
+            {
+                if (resourceStream == null)
+                {
+                    return null;
+                }
 
-				using (StreamReader sr = new StreamReader(resourceStream))
-				{
-					resourceString = sr.ReadToEnd();
-				}
-			}
+                using (StreamReader sr = new StreamReader(resourceStream))
+                {
+                    resourceString = sr.ReadToEnd();
+                }
+            }
 
-			return resourceString;
-		}
+            return resourceString;
+        }
 
-		/// <summary>
-		/// Gets a fallback image which can be used for textures that fail to load.
-		/// </summary>
-		/// <returns>A bitmap containing a fallback texture.</returns>
-		public static Bitmap GetFallbackImage()
-		{
-			// Load the fallback texture
-			Assembly executingAssembly = Assembly.GetExecutingAssembly();
-			const string fallbackTextureName = "Everlook.Content.Textures.FallbackTexture.png";
+        /// <summary>
+        /// Gets a fallback image which can be used for textures that fail to load.
+        /// </summary>
+        /// <returns>A bitmap containing a fallback texture.</returns>
+        public static Bitmap GetFallbackImage()
+        {
+            // Load the fallback texture
+            Assembly executingAssembly = Assembly.GetExecutingAssembly();
+            const string fallbackTextureName = "Everlook.Content.Textures.FallbackTexture.png";
 
-			using (Stream imageStream =
-				executingAssembly.GetManifestResourceStream(fallbackTextureName))
-			{
-				if (imageStream == null)
-				{
-					return null;
-				}
+            using (Stream imageStream =
+                executingAssembly.GetManifestResourceStream(fallbackTextureName))
+            {
+                if (imageStream == null)
+                {
+                    return null;
+                }
 
-				return new Bitmap(imageStream);
-			}
-		}
-	}
+                return new Bitmap(imageStream);
+            }
+        }
+    }
 }

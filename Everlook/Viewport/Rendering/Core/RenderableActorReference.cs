@@ -27,80 +27,80 @@ using OpenTK;
 
 namespace Everlook.Viewport.Rendering.Core
 {
-	/// <summary>
-	/// Represents a reference to a renderable. This class acts as a proxied instance of a given actor with its own
-	/// transform, but does not utilize any OpenGL instancing functions.
-	/// </summary>
-	/// <typeparam name="T">The renderable type that is encapsulated.</typeparam>
-	public class RenderableActorReference<T> : IRenderable, IActor where T : class, IRenderable, IActor
-	{
-		/// <inheritdoc />
-		public bool IsStatic => this.Target.IsStatic;
+    /// <summary>
+    /// Represents a reference to a renderable. This class acts as a proxied instance of a given actor with its own
+    /// transform, but does not utilize any OpenGL instancing functions.
+    /// </summary>
+    /// <typeparam name="T">The renderable type that is encapsulated.</typeparam>
+    public class RenderableActorReference<T> : IRenderable, IActor where T : class, IRenderable, IActor
+    {
+        /// <inheritdoc />
+        public bool IsStatic => this.Target.IsStatic;
 
-		/// <inheritdoc />
-		public bool IsInitialized { get; set; }
+        /// <inheritdoc />
+        public bool IsInitialized { get; set; }
 
-		/// <inheritdoc />
-		public ProjectionType Projection => this.Target.Projection;
+        /// <inheritdoc />
+        public ProjectionType Projection => this.Target.Projection;
 
-		/// <inheritdoc />
-		public Transform ActorTransform { get; set; }
+        /// <inheritdoc />
+        public Transform ActorTransform { get; set; }
 
-		private readonly T Target;
-		private readonly Transform DefaultTransform;
+        private readonly T Target;
+        private readonly Transform DefaultTransform;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="RenderableActorReference{T}"/> class.
-		/// </summary>
-		/// <param name="target">The target actor to act as an instance of.</param>
-		public RenderableActorReference(T target)
-			: this(target, target.ActorTransform)
-		{
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RenderableActorReference{T}"/> class.
+        /// </summary>
+        /// <param name="target">The target actor to act as an instance of.</param>
+        public RenderableActorReference(T target)
+            : this(target, target.ActorTransform)
+        {
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="RenderableActorReference{T}"/> class.
-		/// </summary>
-		/// <param name="target">The target actor to act as an instance of.</param>
-		/// <param name="transform">The transform of the instance.</param>
-		public RenderableActorReference(T target, Transform transform)
-		{
-			if (target == null)
-			{
-				throw new ArgumentNullException(nameof(target));
-			}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RenderableActorReference{T}"/> class.
+        /// </summary>
+        /// <param name="target">The target actor to act as an instance of.</param>
+        /// <param name="transform">The transform of the instance.</param>
+        public RenderableActorReference(T target, Transform transform)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
 
-			if (transform == null)
-			{
-				throw new ArgumentNullException(nameof(transform));
-			}
+            if (transform == null)
+            {
+                throw new ArgumentNullException(nameof(transform));
+            }
 
-			this.Target = target;
-			this.DefaultTransform = target.ActorTransform;
+            this.Target = target;
+            this.DefaultTransform = target.ActorTransform;
 
-			this.ActorTransform = transform;
-		}
+            this.ActorTransform = transform;
+        }
 
-		/// <inheritdoc />
-		public void Initialize()
-		{
-			this.IsInitialized = true;
-		}
+        /// <inheritdoc />
+        public void Initialize()
+        {
+            this.IsInitialized = true;
+        }
 
-		/// <inheritdoc />
-		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
-		{
-			this.Target.ActorTransform = this.ActorTransform;
-			this.Target.Render(viewMatrix, projectionMatrix, camera);
-			this.Target.ActorTransform = this.DefaultTransform;
-		}
+        /// <inheritdoc />
+        public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+        {
+            this.Target.ActorTransform = this.ActorTransform;
+            this.Target.Render(viewMatrix, projectionMatrix, camera);
+            this.Target.ActorTransform = this.DefaultTransform;
+        }
 
-		/// <summary>
-		/// This method does nothing, and should not be called. The source actor should be disposed instead.
-		/// </summary>
-		public void Dispose()
-		{
-			throw new NotSupportedException("A renderable instance should not be disposed. Dispose the source actor instead.");
-		}
-	}
+        /// <summary>
+        /// This method does nothing, and should not be called. The source actor should be disposed instead.
+        /// </summary>
+        public void Dispose()
+        {
+            throw new NotSupportedException("A renderable instance should not be disposed. Dispose the source actor instead.");
+        }
+    }
 }

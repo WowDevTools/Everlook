@@ -35,192 +35,192 @@ using Warcraft.Core.Structures;
 
 namespace Everlook.Viewport.Rendering
 {
-	/// <summary>
-	/// Wraps a <see cref="Box"/> as a renderable in-world actor.
-	/// </summary>
-	public sealed class RenderableBoundingBox : IInstancedRenderable, IActor
-	{
-		private readonly BoundingBoxShader BoxShader;
+    /// <summary>
+    /// Wraps a <see cref="Box"/> as a renderable in-world actor.
+    /// </summary>
+    public sealed class RenderableBoundingBox : IInstancedRenderable, IActor
+    {
+        private readonly BoundingBoxShader BoxShader;
 
-		/// <inheritdoc />
-		public Transform ActorTransform { get; set; }
+        /// <inheritdoc />
+        public Transform ActorTransform { get; set; }
 
-		/// <inheritdoc />
-		public bool IsStatic => false;
+        /// <inheritdoc />
+        public bool IsStatic => false;
 
-		/// <inheritdoc />
-		public bool IsInitialized { get; set; }
+        /// <inheritdoc />
+        public bool IsInitialized { get; set; }
 
-		/// <inheritdoc />
-		public ProjectionType Projection => ProjectionType.Perspective;
+        /// <inheritdoc />
+        public ProjectionType Projection => ProjectionType.Perspective;
 
-		/// <summary>
-		/// Gets or sets the colour of the bounding box's lines.
-		/// </summary>
-		public Color4 LineColour { get; set; }
+        /// <summary>
+        /// Gets or sets the colour of the bounding box's lines.
+        /// </summary>
+        public Color4 LineColour { get; set; }
 
-		/// <summary>
-		/// Gets or sets a value indicating whether this object has been disposed.
-		/// </summary>
-		private bool IsDisposed { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether this object has been disposed.
+        /// </summary>
+        private bool IsDisposed { get; set; }
 
-		private Box BoundingBoxData;
-		private Buffer<Vector3> VertexBuffer;
-		private Buffer<byte> VertexIndexesBuffer;
+        private Box BoundingBoxData;
+        private Buffer<Vector3> VertexBuffer;
+        private Buffer<byte> VertexIndexesBuffer;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="RenderableBoundingBox"/> class. The bounds data is taken from
-		/// the given <see cref="Box"/>, and the world translation is set to <paramref name="transform"/>.
-		/// </summary>
-		/// <param name="boundingBox">The BoundingBox to get data from.</param>
-		/// <param name="transform">The world transform of the box.</param>
-		public RenderableBoundingBox(Box boundingBox, Transform transform)
-		{
-			this.BoundingBoxData = boundingBox;
-			this.LineColour = Color4.LimeGreen;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RenderableBoundingBox"/> class. The bounds data is taken from
+        /// the given <see cref="Box"/>, and the world translation is set to <paramref name="transform"/>.
+        /// </summary>
+        /// <param name="boundingBox">The BoundingBox to get data from.</param>
+        /// <param name="transform">The world transform of the box.</param>
+        public RenderableBoundingBox(Box boundingBox, Transform transform)
+        {
+            this.BoundingBoxData = boundingBox;
+            this.LineColour = Color4.LimeGreen;
 
-			this.ActorTransform = transform;
-			this.BoxShader = RenderCache.Instance.GetShader(EverlookShader.BoundingBox) as BoundingBoxShader;
+            this.ActorTransform = transform;
+            this.BoxShader = RenderCache.Instance.GetShader(EverlookShader.BoundingBox) as BoundingBoxShader;
 
-			this.IsInitialized = false;
-		}
+            this.IsInitialized = false;
+        }
 
-		/// <inheritdoc />
-		public void Initialize()
-		{
-			ThrowIfDisposed();
+        /// <inheritdoc />
+        public void Initialize()
+        {
+            ThrowIfDisposed();
 
-			if (this.IsInitialized)
-			{
-				return;
-			}
+            if (this.IsInitialized)
+            {
+                return;
+            }
 
-			if (this.BoxShader == null)
-			{
-				throw new ShaderNullException(typeof(BoundingBoxShader));
-			}
+            if (this.BoxShader == null)
+            {
+                throw new ShaderNullException(typeof(BoundingBoxShader));
+            }
 
-			this.VertexBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
-			{
-				Data = this.BoundingBoxData.GetCorners().ToArray()
-			};
+            this.VertexBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+            {
+                Data = this.BoundingBoxData.GetCorners().ToArray()
+            };
 
-			this.VertexBuffer.AttachAttributePointer(new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0));
+            this.VertexBuffer.AttachAttributePointer(new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0));
 
-			byte[] boundingBoxIndexValues =
-			{
-				0, 1,
-				1, 2,
-				2, 3,
-				3, 0,
+            byte[] boundingBoxIndexValues =
+            {
+                0, 1,
+                1, 2,
+                2, 3,
+                3, 0,
 
-				0, 6,
-				6, 7,
-				7, 1,
+                0, 6,
+                6, 7,
+                7, 1,
 
-				2, 4,
-				4, 7,
+                2, 4,
+                4, 7,
 
-				4, 5,
-				5, 6,
-				5, 3
-			};
+                4, 5,
+                5, 6,
+                5, 3
+            };
 
-			this.VertexIndexesBuffer = new Buffer<byte>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
-			{
-				Data = boundingBoxIndexValues
-			};
+            this.VertexIndexesBuffer = new Buffer<byte>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
+            {
+                Data = boundingBoxIndexValues
+            };
 
-			this.IsInitialized = true;
-		}
+            this.IsInitialized = true;
+        }
 
-		/// <inheritdoc />
-		public void RenderInstances(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera, int count)
-		{
-			ThrowIfDisposed();
+        /// <inheritdoc />
+        public void RenderInstances(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera, int count)
+        {
+            ThrowIfDisposed();
 
-			GL.Disable(EnableCap.CullFace);
-			GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.CullFace);
+            GL.Disable(EnableCap.DepthTest);
 
-			// Send the vertices to the shader
-			this.VertexBuffer.Bind();
-			this.VertexBuffer.EnableAttributes();
+            // Send the vertices to the shader
+            this.VertexBuffer.Bind();
+            this.VertexBuffer.EnableAttributes();
 
-			this.VertexIndexesBuffer.Bind();
+            this.VertexIndexesBuffer.Bind();
 
-			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
+            Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
-			this.BoxShader.Enable();
-			this.BoxShader.SetIsInstance(true);
-			this.BoxShader.SetMVPMatrix(modelViewProjection);
-			this.BoxShader.SetLineColour(this.LineColour);
-			this.BoxShader.SetViewMatrix(viewMatrix);
-			this.BoxShader.SetProjectionMatrix(projectionMatrix);
+            this.BoxShader.Enable();
+            this.BoxShader.SetIsInstance(true);
+            this.BoxShader.SetMVPMatrix(modelViewProjection);
+            this.BoxShader.SetLineColour(this.LineColour);
+            this.BoxShader.SetViewMatrix(viewMatrix);
+            this.BoxShader.SetProjectionMatrix(projectionMatrix);
 
-			// Now draw the box
-			GL.DrawElementsInstanced
-			(
-				PrimitiveType.LineLoop,
-				24,
-				DrawElementsType.UnsignedByte,
-				new IntPtr(0),
-				count
-			);
+            // Now draw the box
+            GL.DrawElementsInstanced
+            (
+                PrimitiveType.LineLoop,
+                24,
+                DrawElementsType.UnsignedByte,
+                new IntPtr(0),
+                count
+            );
 
-			this.VertexBuffer.DisableAttributes();
-		}
+            this.VertexBuffer.DisableAttributes();
+        }
 
-		/// <inheritdoc />
-		public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
-		{
-			ThrowIfDisposed();
+        /// <inheritdoc />
+        public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+        {
+            ThrowIfDisposed();
 
-			GL.Disable(EnableCap.CullFace);
-			GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.CullFace);
+            GL.Disable(EnableCap.DepthTest);
 
-			// Send the vertices to the shader
-			this.VertexBuffer.Bind();
-			this.VertexBuffer.EnableAttributes();
+            // Send the vertices to the shader
+            this.VertexBuffer.Bind();
+            this.VertexBuffer.EnableAttributes();
 
-			this.VertexIndexesBuffer.Bind();
+            this.VertexIndexesBuffer.Bind();
 
-			Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
+            Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
-			this.BoxShader.Enable();
-			this.BoxShader.SetMVPMatrix(modelViewProjection);
-			this.BoxShader.SetLineColour(this.LineColour);
+            this.BoxShader.Enable();
+            this.BoxShader.SetMVPMatrix(modelViewProjection);
+            this.BoxShader.SetLineColour(this.LineColour);
 
-			// Now draw the box
-			GL.DrawElements
-			(
-				PrimitiveType.LineLoop,
-				24,
-				DrawElementsType.UnsignedByte,
-				new IntPtr(0)
-			);
+            // Now draw the box
+            GL.DrawElements
+            (
+                PrimitiveType.LineLoop,
+                24,
+                DrawElementsType.UnsignedByte,
+                new IntPtr(0)
+            );
 
-			this.VertexBuffer.DisableAttributes();
-		}
+            this.VertexBuffer.DisableAttributes();
+        }
 
-		/// <summary>
-		/// Throws an <see cref="ObjectDisposedException"/> if the object has been disposed.
-		/// </summary>
-		/// <exception cref="ObjectDisposedException">Thrown if the object is disposed.</exception>
-		private void ThrowIfDisposed()
-		{
-			if (this.IsDisposed)
-			{
-				throw new ObjectDisposedException(ToString());
-			}
-		}
+        /// <summary>
+        /// Throws an <see cref="ObjectDisposedException"/> if the object has been disposed.
+        /// </summary>
+        /// <exception cref="ObjectDisposedException">Thrown if the object is disposed.</exception>
+        private void ThrowIfDisposed()
+        {
+            if (this.IsDisposed)
+            {
+                throw new ObjectDisposedException(ToString());
+            }
+        }
 
-		/// <inheritdoc />
-		public void Dispose()
-		{
-			this.IsDisposed = true;
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            this.IsDisposed = true;
 
-			this.VertexBuffer.Dispose();
-			this.VertexIndexesBuffer.Dispose();
-		}
-	}
+            this.VertexBuffer.Dispose();
+            this.VertexIndexesBuffer.Dispose();
+        }
+    }
 }

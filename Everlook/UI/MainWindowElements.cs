@@ -34,92 +34,92 @@ using UIElement = Gtk.Builder.ObjectAttribute;
 
 namespace Everlook.UI
 {
-	public sealed partial class MainWindow
-	{
-		/*
-			Main UI elements
-		*/
-		[UIElement] private readonly ToolButton AboutButton;
-		[UIElement] private readonly AboutDialog AboutDialog;
-		[UIElement] private readonly ToolButton PreferencesButton;
+    public sealed partial class MainWindow
+    {
+        /*
+            Main UI elements
+        */
+        [UIElement] private readonly ToolButton AboutButton;
+        [UIElement] private readonly AboutDialog AboutDialog;
+        [UIElement] private readonly ToolButton PreferencesButton;
 
-		[UIElement] private readonly Paned ViewportPaned;
-		[UIElement] private readonly Paned LowerBoxPaned;
-		[UIElement] private readonly Alignment LowerBoxAlignment;
+        [UIElement] private readonly Paned ViewportPaned;
+        [UIElement] private readonly Paned LowerBoxPaned;
+        [UIElement] private readonly Alignment LowerBoxAlignment;
 
-		[UIElement] private readonly Alignment ViewportAlignment;
-		private readonly ViewportArea ViewportWidget;
+        [UIElement] private readonly Alignment ViewportAlignment;
+        private readonly ViewportArea ViewportWidget;
 
-		[UIElement] private readonly ComboBox FileFilterComboBox;
+        [UIElement] private readonly ComboBox FileFilterComboBox;
 
-		[UIElement] private readonly Button CancelCurrentActionButton;
+        [UIElement] private readonly Button CancelCurrentActionButton;
 
-		/*
-			Export queue elements
-		*/
-		[UIElement] private readonly TreeView ExportQueueTreeView;
-		[UIElement] private readonly ListStore ExportQueueListStore;
+        /*
+            Export queue elements
+        */
+        [UIElement] private readonly TreeView ExportQueueTreeView;
+        [UIElement] private readonly ListStore ExportQueueListStore;
 
-		[UIElement] private readonly Menu QueueContextMenu;
-		[UIElement] private readonly ImageMenuItem RemoveQueueItem;
+        [UIElement] private readonly Menu QueueContextMenu;
+        [UIElement] private readonly ImageMenuItem RemoveQueueItem;
 
-		[UIElement] private readonly Button ClearExportQueueButton;
-		[UIElement] private readonly Button RunExportQueueButton;
+        [UIElement] private readonly Button ClearExportQueueButton;
+        [UIElement] private readonly Button RunExportQueueButton;
 
-		/*
-			Game explorer elements
-		*/
-		[UIElement] private readonly Notebook GameTabNotebook;
-		private readonly List<GamePage> GamePages = new List<GamePage>();
+        /*
+            Game explorer elements
+        */
+        [UIElement] private readonly Notebook GameTabNotebook;
+        private readonly List<GamePage> GamePages = new List<GamePage>();
 
-		/*
-			General item control elements
-		*/
+        /*
+            General item control elements
+        */
 
-		[UIElement] private readonly Notebook ItemControlNotebook;
+        [UIElement] private readonly Notebook ItemControlNotebook;
 
-		/*
-			Image control elements
-		*/
-		[UIElement] private readonly CheckButton RenderAlphaCheckButton;
-		[UIElement] private readonly CheckButton RenderRedCheckButton;
-		[UIElement] private readonly CheckButton RenderGreenCheckButton;
-		[UIElement] private readonly CheckButton RenderBlueCheckButton;
+        /*
+            Image control elements
+        */
+        [UIElement] private readonly CheckButton RenderAlphaCheckButton;
+        [UIElement] private readonly CheckButton RenderRedCheckButton;
+        [UIElement] private readonly CheckButton RenderGreenCheckButton;
+        [UIElement] private readonly CheckButton RenderBlueCheckButton;
 
-		[UIElement] private readonly Label MipCountLabel;
+        [UIElement] private readonly Label MipCountLabel;
 
-		/*
-			Status bar elements
-		*/
-		[UIElement] private readonly Statusbar MainStatusBar;
-		[UIElement] private readonly Spinner StatusSpinner;
+        /*
+            Status bar elements
+        */
+        [UIElement] private readonly Statusbar MainStatusBar;
+        [UIElement] private readonly Spinner StatusSpinner;
 
-		/*
-			Model control elements
-		*/
+        /*
+            Model control elements
+        */
 
-		[UIElement] private readonly CheckButton RenderBoundsCheckButton;
-		[UIElement] private readonly CheckButton RenderWireframeCheckButton;
-		[UIElement] private readonly CheckButton RenderDoodadsCheckButton;
+        [UIElement] private readonly CheckButton RenderBoundsCheckButton;
+        [UIElement] private readonly CheckButton RenderWireframeCheckButton;
+        [UIElement] private readonly CheckButton RenderDoodadsCheckButton;
 
-		[UIElement] private readonly ComboBox ModelVariationComboBox;
-		[UIElement] private readonly ListStore ModelVariationListStore;
-		[UIElement] private readonly CellRendererText ModelVariationTextRenderer;
+        [UIElement] private readonly ComboBox ModelVariationComboBox;
+        [UIElement] private readonly ListStore ModelVariationListStore;
+        [UIElement] private readonly CellRendererText ModelVariationTextRenderer;
 
-		/*
-			Animation control elements
-		*/
+        /*
+            Animation control elements
+        */
 
-		/*
-			Audio control elements
-		*/
+        /*
+            Audio control elements
+        */
 
-		/*
-			Object info elements
-		*/
+        /*
+            Object info elements
+        */
 
-		[UIElement] private readonly Label PolyCountLabel;
-		[UIElement] private readonly Label VertexCountLabel;
-		[UIElement] private readonly Label SkinCountLabel;
-	}
+        [UIElement] private readonly Label PolyCountLabel;
+        [UIElement] private readonly Label VertexCountLabel;
+        [UIElement] private readonly Label SkinCountLabel;
+    }
 }

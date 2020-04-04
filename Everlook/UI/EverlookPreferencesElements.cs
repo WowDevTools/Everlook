@@ -30,65 +30,65 @@ using UIElement = Gtk.Builder.ObjectAttribute;
 
 namespace Everlook.UI
 {
-	public sealed partial class EverlookPreferences
-	{
-		/*
-			New game dialog
-		*/
+    public sealed partial class EverlookPreferences
+    {
+        /*
+            New game dialog
+        */
 
-		[UIElement] private readonly Dialog NewGamePathDialog;
-		[UIElement] private readonly Entry AliasEntry;
-		[UIElement] private readonly ComboBox GameVersionCombo;
-		[UIElement] private readonly FileChooserButton PathChooser;
+        [UIElement] private readonly Dialog NewGamePathDialog;
+        [UIElement] private readonly Entry AliasEntry;
+        [UIElement] private readonly ComboBox GameVersionCombo;
+        [UIElement] private readonly FileChooserButton PathChooser;
 
-		/*
-			General settings
-		*/
+        /*
+            General settings
+        */
 
-		[UIElement] private readonly TreeView GamePathSelectionTreeView;
-		[UIElement] private readonly ListStore GamePathListStore;
-		[UIElement] private readonly Button AddPathButton;
-		[UIElement] private readonly Button RemovePathButton;
+        [UIElement] private readonly TreeView GamePathSelectionTreeView;
+        [UIElement] private readonly ListStore GamePathListStore;
+        [UIElement] private readonly Button AddPathButton;
+        [UIElement] private readonly Button RemovePathButton;
 
-		/*
-			Export settings
-		*/
+        /*
+            Export settings
+        */
 
-		[UIElement] private readonly FileChooserButton DefaultExportDirectoryFileChooserButton;
-		[UIElement] private readonly ComboBox DefaultModelExportFormatComboBox;
-		[UIElement] private readonly ComboBox DefaultImageExportFormatComboBox;
-		[UIElement] private readonly ComboBox DefaultAudioExportFormatComboBox;
-		[UIElement] private readonly Switch KeepDirectoryStructureSwitch;
+        [UIElement] private readonly FileChooserButton DefaultExportDirectoryFileChooserButton;
+        [UIElement] private readonly ComboBox DefaultModelExportFormatComboBox;
+        [UIElement] private readonly ComboBox DefaultImageExportFormatComboBox;
+        [UIElement] private readonly ComboBox DefaultAudioExportFormatComboBox;
+        [UIElement] private readonly Switch KeepDirectoryStructureSwitch;
 
-		/*
-			Privacy settings
-		*/
+        /*
+            Privacy settings
+        */
 
-		[UIElement] private readonly CheckButton AllowStatsCheckButton;
+        [UIElement] private readonly CheckButton AllowStatsCheckButton;
 
-		[UIElement] private readonly CheckButton SendMachineIDCheckButton;
-		[UIElement] private readonly CheckButton SendInstallIDCheckButton;
-		[UIElement] private readonly CheckButton SendOSCheckButton;
-		[UIElement] private readonly CheckButton SendAppVersionCheckButton;
-		[UIElement] private readonly CheckButton SendRuntimeInfoCheckButton;
+        [UIElement] private readonly CheckButton SendMachineIDCheckButton;
+        [UIElement] private readonly CheckButton SendInstallIDCheckButton;
+        [UIElement] private readonly CheckButton SendOSCheckButton;
+        [UIElement] private readonly CheckButton SendAppVersionCheckButton;
+        [UIElement] private readonly CheckButton SendRuntimeInfoCheckButton;
 
-		/*
-			Viewport settings
-		*/
+        /*
+            Viewport settings
+        */
 
-		[UIElement] private readonly ColorButton ViewportColourButton;
-		[UIElement] private readonly ColorButton WireframeColourButton;
-		[UIElement] private readonly Switch OccludeBoundingBoxesSwitch;
-		[UIElement] private readonly Adjustment CameraSpeedAdjustment;
-		[UIElement] private readonly Adjustment RotationSpeedAdjustment;
-		[UIElement] private readonly Adjustment CameraFOVAdjustment;
-		[UIElement] private readonly Adjustment SprintMultiplierAdjustment;
+        [UIElement] private readonly ColorButton ViewportColourButton;
+        [UIElement] private readonly ColorButton WireframeColourButton;
+        [UIElement] private readonly Switch OccludeBoundingBoxesSwitch;
+        [UIElement] private readonly Adjustment CameraSpeedAdjustment;
+        [UIElement] private readonly Adjustment RotationSpeedAdjustment;
+        [UIElement] private readonly Adjustment CameraFOVAdjustment;
+        [UIElement] private readonly Adjustment SprintMultiplierAdjustment;
 
-		/*
-			Explorer settings
-		*/
+        /*
+            Explorer settings
+        */
 
-		[UIElement] private readonly CheckButton ShowUnknownFilesCheckButton;
-		[UIElement] private readonly CheckButton AutoplayAudioCheckButton;
-	}
+        [UIElement] private readonly CheckButton ShowUnknownFilesCheckButton;
+        [UIElement] private readonly CheckButton AutoplayAudioCheckButton;
+    }
 }
