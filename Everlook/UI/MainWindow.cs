@@ -563,6 +563,7 @@ namespace Everlook.UI
                 }
             }
 
+            dialog.Hide();
             dialog.Destroy();
 
             sw.Stop();
