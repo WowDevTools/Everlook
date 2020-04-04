@@ -59,7 +59,7 @@ namespace Everlook.Package
         /// <value>The name of the package.</value>
         public string PackageName => Path.GetFileNameWithoutExtension(this.PackagePath);
 
-        private MPQ Package;
+        private MPQ _package;
 
         /// <summary>
         /// Asynchronously loads a package at the given path.
@@ -108,7 +108,7 @@ namespace Everlook.Package
         {
             if (File.Exists(inPackagePath))
             {
-                this.Package = new MPQ(new FileStream(inPackagePath, FileMode.Open, FileAccess.Read, FileShare.Read));
+                this._package = new MPQ(new FileStream(inPackagePath, FileMode.Open, FileAccess.Read, FileShare.Read));
             }
             else
             {
@@ -176,49 +176,49 @@ namespace Everlook.Package
         /// <inheritdoc />
         public bool TryExtractFile(string filePath, out byte[] data)
         {
-            return this.Package.TryExtractFile(filePath, out data);
+            return this._package.TryExtractFile(filePath, out data);
         }
 
         /// <inheritdoc />
         public byte[] ExtractFile(string filePath)
         {
-            return this.Package.ExtractFile(filePath);
+            return this._package.ExtractFile(filePath);
         }
 
         /// <inheritdoc />
         public bool HasFileList()
         {
-            return this.Package.HasFileList();
+            return this._package.HasFileList();
         }
 
         /// <inheritdoc />
         public IEnumerable<string> GetFileList()
         {
-            return this.Package.GetFileList();
+            return this._package.GetFileList();
         }
 
         /// <inheritdoc />
         public bool ContainsFile(string filePath)
         {
-            return this.Package.ContainsFile(filePath);
+            return this._package.ContainsFile(filePath);
         }
 
         /// <inheritdoc />
         public bool TryGetFileInfo(string filePath, out MPQFileInfo fileInfo)
         {
-            return this.Package.TryGetFileInfo(filePath, out fileInfo);
+            return this._package.TryGetFileInfo(filePath, out fileInfo);
         }
 
         /// <inheritdoc />
         public MPQFileInfo GetFileInfo(string filePath)
         {
-            return this.Package.GetFileInfo(filePath);
+            return this._package.GetFileInfo(filePath);
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            this.Package.Dispose();
+            this._package.Dispose();
         }
     }
 }

@@ -32,9 +32,9 @@ namespace Everlook.Audio
     /// </summary>
     public sealed class AudioGroup : IDisposable
     {
-        private readonly List<AudioSource> AudioSources = new List<AudioSource>();
+        private readonly List<AudioSource> _audioSources = new List<AudioSource>();
 
-        private Vector3 PositionInternal;
+        private Vector3 _positionInternal;
 
         /// <summary>
         /// Gets or sets the location at which the audio collection is. The locations of any sources
@@ -42,11 +42,11 @@ namespace Everlook.Audio
         /// </summary>
         public Vector3 Position
         {
-            get => this.PositionInternal;
+            get => this._positionInternal;
             set
             {
-                this.PositionInternal = value;
-                foreach (var audioSource in this.AudioSources)
+                this._positionInternal = value;
+                foreach (var audioSource in this._audioSources)
                 {
                     audioSource.Position = value;
                 }
@@ -59,9 +59,9 @@ namespace Everlook.Audio
         /// <param name="audioSource">The audio source to add to the collection.</param>
         public void AddSource(AudioSource audioSource)
         {
-            if (!this.AudioSources.Contains(audioSource))
+            if (!this._audioSources.Contains(audioSource))
             {
-                this.AudioSources.Add(audioSource);
+                this._audioSources.Add(audioSource);
             }
         }
 
@@ -71,9 +71,9 @@ namespace Everlook.Audio
         /// <param name="audioSource">The audio source to add to the collection.</param>
         public void RemoveSource(AudioSource audioSource)
         {
-            if (this.AudioSources.Contains(audioSource))
+            if (this._audioSources.Contains(audioSource))
             {
-                this.AudioSources.Remove(audioSource);
+                this._audioSources.Remove(audioSource);
             }
         }
 
@@ -82,7 +82,7 @@ namespace Everlook.Audio
         /// </summary>
         public void PlayAll()
         {
-            foreach (var audioSource in this.AudioSources)
+            foreach (var audioSource in this._audioSources)
             {
                 audioSource.Play();
             }
@@ -93,7 +93,7 @@ namespace Everlook.Audio
         /// </summary>
         public void PauseAll()
         {
-            foreach (var audioSource in this.AudioSources)
+            foreach (var audioSource in this._audioSources)
             {
                 audioSource.Pause();
             }
@@ -104,7 +104,7 @@ namespace Everlook.Audio
         /// </summary>
         public void StopAll()
         {
-            foreach (var audioSource in this.AudioSources)
+            foreach (var audioSource in this._audioSources)
             {
                 audioSource.Stop();
             }
@@ -113,12 +113,12 @@ namespace Everlook.Audio
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (var audioSource in this.AudioSources)
+            foreach (var audioSource in this._audioSources)
             {
                 audioSource.Dispose();
             }
 
-            this.AudioSources.Clear();
+            this._audioSources.Clear();
         }
     }
 }

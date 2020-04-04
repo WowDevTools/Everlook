@@ -52,7 +52,7 @@ namespace Everlook.Explorer
         /// <summary>
         /// A dictionary used for generating node trees.
         /// </summary>
-        private ListfileDictionary Dictionary;
+        private ListfileDictionary _dictionary;
 
         /// <summary>
         /// Loads the bundled dictionary from disk.
@@ -182,7 +182,7 @@ namespace Everlook.Explorer
                 }
 
                 // Load dictionary if neccesary
-                if (this.Dictionary == null)
+                if (this._dictionary == null)
                 {
                     progress?.Report(new GameLoadingProgress
                     {
@@ -191,7 +191,7 @@ namespace Everlook.Explorer
                         Alias = gameAlias
                     });
 
-                    this.Dictionary = await LoadDictionaryAsync(ct);
+                    this._dictionary = await LoadDictionaryAsync(ct);
                 }
 
                 // Generate node tree
@@ -252,7 +252,7 @@ namespace Everlook.Explorer
                     }
                 );
 
-                var optimizer = new TreeOptimizer(this.Dictionary);
+                var optimizer = new TreeOptimizer(this._dictionary);
 
                 var treeClosureCopy = tree;
                 tree = await Task.Run(() => optimizer.OptimizeTree(treeClosureCopy, optimizeTreeProgress, ct), ct);

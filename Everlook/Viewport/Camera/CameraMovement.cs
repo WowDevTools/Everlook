@@ -44,7 +44,7 @@ namespace Everlook.Viewport.Camera
         /// </summary>
         private const float DefaultTurningSpeed = 5.0f;
 
-        private readonly ViewportCamera Camera;
+        private readonly ViewportCamera _camera;
 
         /// <summary>
         /// Gets or sets the current orientation of the bound camera.
@@ -55,16 +55,16 @@ namespace Everlook.Viewport.Camera
             {
                 return new Vector3
                 (
-                    MathHelper.RadiansToDegrees(this.Camera.VerticalViewAngle),
-                    MathHelper.RadiansToDegrees(this.Camera.HorizontalViewAngle),
+                    MathHelper.RadiansToDegrees(this._camera.VerticalViewAngle),
+                    MathHelper.RadiansToDegrees(this._camera.HorizontalViewAngle),
                     0
                 );
             }
 
             set
             {
-                this.Camera.VerticalViewAngle = MathHelper.DegreesToRadians(value.X);
-                this.Camera.HorizontalViewAngle = MathHelper.DegreesToRadians(value.Y);
+                this._camera.VerticalViewAngle = MathHelper.DegreesToRadians(value.X);
+                this._camera.HorizontalViewAngle = MathHelper.DegreesToRadians(value.Y);
             }
         }
 
@@ -73,8 +73,8 @@ namespace Everlook.Viewport.Camera
         /// </summary>
         public Vector3 Position
         {
-            get => this.Camera.Position;
-            set => this.Camera.Position = value;
+            get => this._camera.Position;
+            set => this._camera.Position = value;
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace Everlook.Viewport.Camera
         /// <param name="inCamera">The camera which the movement component should control.</param>
         public CameraMovement(ViewportCamera inCamera)
         {
-            this.Camera = inCamera;
+            this._camera = inCamera;
             this.ConstrainVerticalView = true;
         }
 
@@ -142,13 +142,13 @@ namespace Everlook.Viewport.Camera
             // Constrain the viewing angles to no more than 90 degrees in any direction
             if (this.ConstrainVerticalView)
             {
-                if (this.Camera.VerticalViewAngle > MathHelper.DegreesToRadians(90.0f))
+                if (this._camera.VerticalViewAngle > MathHelper.DegreesToRadians(90.0f))
                 {
-                    this.Camera.VerticalViewAngle = MathHelper.DegreesToRadians(90.0f);
+                    this._camera.VerticalViewAngle = MathHelper.DegreesToRadians(90.0f);
                 }
-                else if (this.Camera.VerticalViewAngle < MathHelper.DegreesToRadians(-90.0f))
+                else if (this._camera.VerticalViewAngle < MathHelper.DegreesToRadians(-90.0f))
                 {
-                    this.Camera.VerticalViewAngle = MathHelper.DegreesToRadians(-90.0f);
+                    this._camera.VerticalViewAngle = MathHelper.DegreesToRadians(-90.0f);
                 }
             }
 
@@ -199,7 +199,7 @@ namespace Everlook.Viewport.Camera
         /// <param name="degrees">The number of degrees to rotate.</param>
         public void RotateHorizontal(float degrees)
         {
-            this.Camera.HorizontalViewAngle += degrees;
+            this._camera.HorizontalViewAngle += degrees;
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace Everlook.Viewport.Camera
         /// <param name="degrees">The number of degrees to rotate.</param>
         public void RotateVertical(float degrees)
         {
-            this.Camera.VerticalViewAngle += degrees;
+            this._camera.VerticalViewAngle += degrees;
         }
 
         /// <summary>
@@ -217,7 +217,7 @@ namespace Everlook.Viewport.Camera
         /// <param name="distance">The distance to move.</param>
         public void MoveUp(float distance)
         {
-            this.Camera.Position += this.Camera.UpVector * Math.Abs(distance);
+            this._camera.Position += this._camera.UpVector * Math.Abs(distance);
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace Everlook.Viewport.Camera
         /// <param name="distance">The distance to move.</param>
         public void MoveDown(float distance)
         {
-            this.Camera.Position -= this.Camera.UpVector * Math.Abs(distance);
+            this._camera.Position -= this._camera.UpVector * Math.Abs(distance);
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Everlook.Viewport.Camera
         /// <param name="distance">The distance to move.</param>
         public void MoveForward(float distance)
         {
-            this.Camera.Position += this.Camera.LookDirectionVector * Math.Abs(distance);
+            this._camera.Position += this._camera.LookDirectionVector * Math.Abs(distance);
         }
 
         /// <summary>
@@ -244,7 +244,7 @@ namespace Everlook.Viewport.Camera
         /// <param name="distance">The distance to move.</param>
         public void MoveBackward(float distance)
         {
-            this.Camera.Position -= this.Camera.LookDirectionVector * Math.Abs(distance);
+            this._camera.Position -= this._camera.LookDirectionVector * Math.Abs(distance);
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace Everlook.Viewport.Camera
         /// <param name="distance">The distance to move.</param>
         public void MoveLeft(float distance)
         {
-            this.Camera.Position -= this.Camera.RightVector * Math.Abs(distance);
+            this._camera.Position -= this._camera.RightVector * Math.Abs(distance);
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace Everlook.Viewport.Camera
         /// <param name="distance">The distance to move.</param>
         public void MoveRight(float distance)
         {
-            this.Camera.Position += this.Camera.RightVector * Math.Abs(distance);
+            this._camera.Position += this._camera.RightVector * Math.Abs(distance);
         }
     }
 }

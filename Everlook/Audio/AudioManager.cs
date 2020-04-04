@@ -39,17 +39,17 @@ namespace Everlook.Audio
         /// <summary>
         /// All registered sources in the manager.
         /// </summary>
-        private readonly List<AudioSource> Sources = new List<AudioSource>();
+        private readonly List<AudioSource> _sources = new List<AudioSource>();
 
-        private readonly AudioContext Context;
+        private readonly AudioContext _context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AudioManager"/> class.
         /// </summary>
         private AudioManager()
         {
-            this.Context = new AudioContext();
-            this.Context.MakeCurrent();
+            this._context = new AudioContext();
+            this._context.MakeCurrent();
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Everlook.Audio
         {
             if (!IsRegistered(audioSource))
             {
-                Instance.Sources.Add(audioSource);
+                Instance._sources.Add(audioSource);
             }
         }
 
@@ -86,7 +86,7 @@ namespace Everlook.Audio
 
             if (IsRegistered(audioSource))
             {
-                Instance.Sources.Remove(audioSource);
+                Instance._sources.Remove(audioSource);
             }
 
             audioSource.Dispose();
@@ -99,18 +99,18 @@ namespace Everlook.Audio
         /// <returns>true if the source is registered; false otherwise.</returns>
         public static bool IsRegistered(AudioSource audioSource)
         {
-            return Instance.Sources.Contains(audioSource);
+            return Instance._sources.Contains(audioSource);
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (var source in this.Sources)
+            foreach (var source in this._sources)
             {
                 source.Dispose();
             }
 
-            this.Context.Dispose();
+            this._context.Dispose();
         }
     }
 }

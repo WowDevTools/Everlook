@@ -38,7 +38,7 @@ namespace Everlook.Audio.MP3
         /// <summary>
         /// Whether or not this instance has been disposed.
         /// </summary>
-        private bool IsDisposed;
+        private bool _isDisposed;
 
         /// <inheritdoc />
         public ALFormat Format
@@ -63,7 +63,7 @@ namespace Everlook.Audio.MP3
             }
         }
 
-        private byte[] PCMDataInternal;
+        private byte[] _pcmDataInternal;
 
         /// <inheritdoc />
         public byte[] PCMData
@@ -72,9 +72,9 @@ namespace Everlook.Audio.MP3
             {
                 ThrowIfDisposed();
 
-                if (this.PCMDataInternal != null)
+                if (this._pcmDataInternal != null)
                 {
-                    return this.PCMDataInternal;
+                    return this._pcmDataInternal;
                 }
 
                 // Decode the whole stream
@@ -84,12 +84,12 @@ namespace Everlook.Audio.MP3
                     this.PCMStream.Seek(0, SeekOrigin.Begin);
 
                     this.PCMStream.CopyTo(pcm);
-                    this.PCMDataInternal = pcm.ToArray();
+                    this._pcmDataInternal = pcm.ToArray();
                 }
 
-                return this.PCMDataInternal;
+                return this._pcmDataInternal;
             }
-            private set => this.PCMDataInternal = value;
+            private set => this._pcmDataInternal = value;
         }
 
         /// <inheritdoc />
@@ -147,7 +147,7 @@ namespace Everlook.Audio.MP3
         /// <inheritdoc />
         public void ThrowIfDisposed()
         {
-            if (this.IsDisposed)
+            if (this._isDisposed)
             {
                 throw new ObjectDisposedException(ToString());
             }
@@ -156,7 +156,7 @@ namespace Everlook.Audio.MP3
         /// <inheritdoc />
         public void Dispose()
         {
-            this.IsDisposed = true;
+            this._isDisposed = true;
 
             this.PCMStream?.Dispose();
 

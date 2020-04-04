@@ -49,7 +49,7 @@ namespace Everlook.Configuration
         /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(typeof(GamePathStorage));
 
-        private readonly object StorageLock = new object();
+        private readonly object _storageLock = new object();
 
         /// <summary>
         /// A static instance of the path storage class.
@@ -106,7 +106,7 @@ namespace Everlook.Configuration
         {
             if (!this.GamePaths.Contains((alias, version, pathToStore)))
             {
-                lock (this.StorageLock)
+                lock (this._storageLock)
                 {
                     using (FileStream fs = File.Open(GetPathStoragePath(), FileMode.Append, FileAccess.Write))
                     {
@@ -134,7 +134,7 @@ namespace Everlook.Configuration
             if (storedPaths.Contains((alias, version, pathToRemove)))
             {
                 ClearPaths();
-                lock (this.StorageLock)
+                lock (this._storageLock)
                 {
                     storedPaths.Remove((alias, version, pathToRemove));
 
@@ -158,7 +158,7 @@ namespace Everlook.Configuration
         private ICollection<(string Alias, WarcraftVersion Version, string Path)> ReadStoredPaths()
         {
             ICollection<(string, WarcraftVersion, string)> storedPaths = new List<(string, WarcraftVersion, string)>();
-            lock (this.StorageLock)
+            lock (this._storageLock)
             {
                 try
                 {
@@ -196,7 +196,7 @@ namespace Everlook.Configuration
 
         private void ClearPaths()
         {
-            lock (this.StorageLock)
+            lock (this._storageLock)
             {
                 File.Delete(GetPathStoragePath());
 

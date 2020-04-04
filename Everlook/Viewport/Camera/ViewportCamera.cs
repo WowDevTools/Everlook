@@ -48,17 +48,17 @@ namespace Everlook.Viewport.Camera
         /// </summary>
         private const float DefaultFarClippingDistance = 1000.0f;
 
-        private ProjectionType ProjectionInternal;
+        private ProjectionType _projectionInternal;
 
         /// <summary>
         /// Gets or sets the projection type of the camera.
         /// </summary>
         public ProjectionType Projection
         {
-            get => this.ProjectionInternal;
+            get => this._projectionInternal;
             set
             {
-                this.ProjectionInternal = value;
+                this._projectionInternal = value;
                 RecalculateInternals();
             }
         }
@@ -73,17 +73,17 @@ namespace Everlook.Viewport.Camera
         /// </summary>
         public int ViewportHeight { get; set; }
 
-        private Vector3 PositionInternal;
+        private Vector3 _positionInternal;
 
         /// <summary>
         /// Gets or sets the current position of the observer in world space.
         /// </summary>
         public Vector3 Position
         {
-            get => this.PositionInternal;
+            get => this._positionInternal;
             set
             {
-                this.PositionInternal = value;
+                this._positionInternal = value;
                 RecalculateInternals();
             }
         }
@@ -117,22 +117,22 @@ namespace Everlook.Viewport.Camera
             private set;
         }
 
-        private float HorizontalViewAngleInternal;
+        private float _horizontalViewAngleInternal;
 
         /// <summary>
         /// Gets or sets the current horizontal view angle of the observer.
         /// </summary>
         public float HorizontalViewAngle
         {
-            get => this.HorizontalViewAngleInternal;
+            get => this._horizontalViewAngleInternal;
             set
             {
-                this.HorizontalViewAngleInternal = value;
+                this._horizontalViewAngleInternal = value;
                 RecalculateInternals();
             }
         }
 
-        private float VerticalViewAngleInternal;
+        private float _verticalViewAngleInternal;
 
         /// <summary>
         /// Gets or sets the current vertical view angle of the observer. This angle is
@@ -140,10 +140,10 @@ namespace Everlook.Viewport.Camera
         /// </summary>
         public float VerticalViewAngle
         {
-            get => this.VerticalViewAngleInternal;
+            get => this._verticalViewAngleInternal;
             set
             {
-                this.VerticalViewAngleInternal = value;
+                this._verticalViewAngleInternal = value;
                 RecalculateInternals();
             }
         }

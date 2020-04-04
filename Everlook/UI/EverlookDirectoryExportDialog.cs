@@ -37,11 +37,11 @@ namespace Everlook.UI
         /// <summary>
         /// The reference to the file in the package that is to be exported.
         /// </summary>
-        private readonly FileReference ExportTarget;
+        private readonly FileReference _exportTarget;
 
-        private readonly EverlookConfiguration Config = EverlookConfiguration.Instance;
+        private readonly EverlookConfiguration _config = EverlookConfiguration.Instance;
 
-        private readonly Dictionary<string, FileReference> ReferenceMapping = new Dictionary<string, FileReference>();
+        private readonly Dictionary<string, FileReference> _referenceMapping = new Dictionary<string, FileReference>();
 
         /// <summary>
         /// Creates an instance of the Image Export dialog, using the glade XML UI file.
@@ -72,23 +72,23 @@ namespace Everlook.UI
         {
             builder.Autoconnect(this);
 
-            this.ExportTarget = inExportTarget;
+            this._exportTarget = inExportTarget;
 
             /*
                  UI Setup
             */
-            this.ExportItemToggleRenderer.Toggled += OnExportItemToggleClicked;
-            this.ItemListingTreeView.ButtonPressEvent += OnItemListingButtonPressed;
-            this.SelectAllItem.Activated += OnSelectAllItemActivated;
-            this.SelectNoneItem.Activated += OnSelectNoneItemActivated;
+            this._exportItemToggleRenderer.Toggled += OnExportItemToggleClicked;
+            this._itemListingTreeView.ButtonPressEvent += OnItemListingButtonPressed;
+            this._selectAllItem.Activated += OnSelectAllItemActivated;
+            this._selectNoneItem.Activated += OnSelectNoneItemActivated;
 
             LoadInformation();
         }
 
         private void LoadInformation()
         {
-            this.Title = $"Export Directory | {this.ExportTarget.Filename}";
-            this.ExportDirectoryFileChooserButton.SetFilename(this.Config.DefaultExportDirectory);
+            this.Title = $"Export Directory | {this._exportTarget.Filename}";
+            this._exportDirectoryFileChooserButton.SetFilename(this._config.DefaultExportDirectory);
 
             // Load all references
             /*
@@ -159,9 +159,9 @@ namespace Everlook.UI
         {
             if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
             {
-                this.ExportPopupMenu.ShowAll();
+                this._exportPopupMenu.ShowAll();
 
-                this.ExportPopupMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
+                this._exportPopupMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
                 //this.ExportPopupMenu.Popup();
             }
         }
@@ -173,11 +173,11 @@ namespace Everlook.UI
         /// <param name="e">E.</param>
         private void OnSelectAllItemActivated(object sender, EventArgs e)
         {
-            this.ItemExportListStore.Foreach
+            this._itemExportListStore.Foreach
             (
                 (model, path, iter) =>
                 {
-                    this.ItemExportListStore.SetValue(iter, 0, true);
+                    this._itemExportListStore.SetValue(iter, 0, true);
                     return false;
                 }
             );
@@ -190,11 +190,11 @@ namespace Everlook.UI
         /// <param name="e">E.</param>
         private void OnSelectNoneItemActivated(object sender, EventArgs e)
         {
-            this.ItemExportListStore.Foreach
+            this._itemExportListStore.Foreach
             (
                 (model, path, iter) =>
                 {
-                    this.ItemExportListStore.SetValue(iter, 0, false);
+                    this._itemExportListStore.SetValue(iter, 0, false);
                     return false;
                 }
             );
@@ -208,11 +208,11 @@ namespace Everlook.UI
         private void OnExportItemToggleClicked(object sender, ToggledArgs e)
         {
             TreeIter iter;
-            this.ItemExportListStore.GetIterFromString(out iter, e.Path);
+            this._itemExportListStore.GetIterFromString(out iter, e.Path);
 
-            bool currentValue = (bool)this.ItemExportListStore.GetValue(iter, 0);
+            bool currentValue = (bool)this._itemExportListStore.GetValue(iter, 0);
 
-            this.ItemExportListStore.SetValue(iter, 0, !currentValue);
+            this._itemExportListStore.SetValue(iter, 0, !currentValue);
         }
 
         /// <summary>

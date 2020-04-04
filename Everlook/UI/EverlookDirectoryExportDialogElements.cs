@@ -32,14 +32,14 @@ namespace Everlook.UI
 {
     public sealed partial class EverlookDirectoryExportDialog
     {
-        [UIElement] private readonly ListStore ItemExportListStore;
-        [UIElement] private readonly TreeView ItemListingTreeView;
-        [UIElement] private readonly CellRendererToggle ExportItemToggleRenderer;
+        [UIElement] private readonly ListStore _itemExportListStore;
+        [UIElement] private readonly TreeView _itemListingTreeView;
+        [UIElement] private readonly CellRendererToggle _exportItemToggleRenderer;
 
-        [UIElement] private readonly Menu ExportPopupMenu;
-        [UIElement] private readonly ImageMenuItem SelectAllItem;
-        [UIElement] private readonly ImageMenuItem SelectNoneItem;
+        [UIElement] private readonly Menu _exportPopupMenu;
+        [UIElement] private readonly ImageMenuItem _selectAllItem;
+        [UIElement] private readonly ImageMenuItem _selectNoneItem;
 
-        [UIElement] private readonly FileChooserButton ExportDirectoryFileChooserButton;
+        [UIElement] private readonly FileChooserButton _exportDirectoryFileChooserButton;
     }
 }

@@ -34,7 +34,7 @@ namespace Everlook.Viewport.Rendering.Core
     /// <typeparam name="T">Any structure.</typeparam>
     public sealed class Buffer<T> : IDisposable, IBuffer where T : struct
     {
-        private readonly int NativeBufferID;
+        private readonly int _nativeBufferID;
 
         /// <inheritdoc />
         public BufferTarget Target { get; }
@@ -85,7 +85,7 @@ namespace Everlook.Viewport.Rendering.Core
             this.Usage = usage;
             this.Attributes = new List<VertexAttributePointer>();
 
-            this.NativeBufferID = GL.GenBuffer();
+            this._nativeBufferID = GL.GenBuffer();
         }
 
         /// <inheritdoc />
@@ -136,13 +136,13 @@ namespace Everlook.Viewport.Rendering.Core
         /// <inheritdoc />
         public void Bind()
         {
-            GL.BindBuffer(this.Target, this.NativeBufferID);
+            GL.BindBuffer(this.Target, this._nativeBufferID);
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            GL.DeleteBuffer(this.NativeBufferID);
+            GL.DeleteBuffer(this._nativeBufferID);
         }
     }
 }

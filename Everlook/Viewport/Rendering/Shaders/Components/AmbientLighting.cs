@@ -33,7 +33,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         private const string AmbientColourIdentifier = "AmbientColour";
         private const string AmbientIntensityIdentifier = "AmbientIntensity";
 
-        private readonly int ParentShaderNativeID;
+        private readonly int _parentShaderNativeID;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AmbientLighting"/> class, and attaches it to the given parent shader.
@@ -41,7 +41,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         /// <param name="parentShaderID">The native ID of the parent shader.</param>
         public AmbientLighting(int parentShaderID)
         {
-            this.ParentShaderNativeID = parentShaderID;
+            this._parentShaderNativeID = parentShaderID;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         /// <param name="lightColour">The colour of the light.</param>
         public void SetAmbientColour(Color4 lightColour)
         {
-            int colourLoc = GL.GetUniformLocation(this.ParentShaderNativeID, AmbientColourIdentifier);
+            int colourLoc = GL.GetUniformLocation(this._parentShaderNativeID, AmbientColourIdentifier);
             GL.Uniform4(colourLoc, lightColour);
         }
 
@@ -60,7 +60,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         /// <param name="lightIntensity">The intensity, in lux.</param>
         public void SetAmbientIntensity(float lightIntensity)
         {
-            int intensityLoc = GL.GetUniformLocation(this.ParentShaderNativeID, AmbientIntensityIdentifier);
+            int intensityLoc = GL.GetUniformLocation(this._parentShaderNativeID, AmbientIntensityIdentifier);
             GL.Uniform1(intensityLoc, lightIntensity);
         }
     }

@@ -61,11 +61,11 @@ namespace Everlook.Viewport.Rendering.Core
         /// <summary>
         /// Gets the number of instances in the set.
         /// </summary>
-        public int Count => this.InstanceTransforms.Count;
+        public int Count => this._instanceTransforms.Count;
 
-        private Buffer<Matrix4> InstanceModelMatrices;
+        private Buffer<Matrix4> _instanceModelMatrices;
 
-        private List<Transform> InstanceTransforms;
+        private List<Transform> _instanceTransforms;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActorInstanceSet{T}"/> class.
@@ -74,7 +74,7 @@ namespace Everlook.Viewport.Rendering.Core
         public ActorInstanceSet(T target)
         {
             this.Target = target;
-            this.InstanceTransforms = new List<Transform>();
+            this._instanceTransforms = new List<Transform>();
 
             this.IsInitialized = false;
         }
@@ -85,26 +85,26 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="instanceTransforms">The transforms of the instances.</param>
         public void SetInstances(IEnumerable<Transform> instanceTransforms)
         {
-            this.InstanceTransforms = instanceTransforms.ToList();
+            this._instanceTransforms = instanceTransforms.ToList();
         }
 
         /// <inheritdoc />
         public void Initialize()
         {
-            this.InstanceModelMatrices = new Buffer<Matrix4>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
-            this.InstanceModelMatrices.AttachAttributePointer(new VertexAttributePointer(6, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 0));
-            this.InstanceModelMatrices.AttachAttributePointer(new VertexAttributePointer(7, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 16));
-            this.InstanceModelMatrices.AttachAttributePointer(new VertexAttributePointer(8, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 32));
-            this.InstanceModelMatrices.AttachAttributePointer(new VertexAttributePointer(9, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 48));
+            this._instanceModelMatrices = new Buffer<Matrix4>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
+            this._instanceModelMatrices.AttachAttributePointer(new VertexAttributePointer(6, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 0));
+            this._instanceModelMatrices.AttachAttributePointer(new VertexAttributePointer(7, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 16));
+            this._instanceModelMatrices.AttachAttributePointer(new VertexAttributePointer(8, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 32));
+            this._instanceModelMatrices.AttachAttributePointer(new VertexAttributePointer(9, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 48));
 
-            this.InstanceModelMatrices.Bind();
-            this.InstanceModelMatrices.EnableAttributes();
+            this._instanceModelMatrices.Bind();
+            this._instanceModelMatrices.EnableAttributes();
             GL.VertexAttribDivisor(6, 1);
             GL.VertexAttribDivisor(7, 1);
             GL.VertexAttribDivisor(8, 1);
             GL.VertexAttribDivisor(9, 1);
 
-            this.InstanceModelMatrices.Data = this.InstanceTransforms.Select(t => t.GetModelMatrix()).ToArray();
+            this._instanceModelMatrices.Data = this._instanceTransforms.Select(t => t.GetModelMatrix()).ToArray();
 
             this.IsInitialized = true;
         }
@@ -117,12 +117,12 @@ namespace Everlook.Viewport.Rendering.Core
                 return;
             }
 
-            this.InstanceModelMatrices.Bind();
-            this.InstanceModelMatrices.EnableAttributes();
+            this._instanceModelMatrices.Bind();
+            this._instanceModelMatrices.EnableAttributes();
 
             this.Target.RenderInstances(viewMatrix, projectionMatrix, camera, this.Count);
 
-            this.InstanceModelMatrices.DisableAttributes();
+            this._instanceModelMatrices.DisableAttributes();
         }
 
         /// <summary>

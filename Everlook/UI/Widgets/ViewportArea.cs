@@ -37,16 +37,16 @@ namespace Everlook.UI.Widgets
     [ToolboxItem(true)]
     public class ViewportArea : GLArea
     {
-        private static int GraphicsContextCount;
-        private static bool IsSharedContextInitialized;
+        private static int _graphicsContextCount;
+        private static bool _isSharedContextInitialized;
 
-        private IGraphicsContext TKGraphicsContext;
-        private bool IsInitialized;
+        private IGraphicsContext _tkGraphicsContext;
+        private bool _isInitialized;
 
         /// <summary>
         /// The previous frame time reported by GTK.
         /// </summary>
-        private double? PreviousFrameTime;
+        private double? _previousFrameTime;
 
         /// <summary>
         /// Gets the time taken to render the last frame (in seconds).
@@ -119,17 +119,17 @@ namespace Everlook.UI.Widgets
         {
             var frameTimeµSeconds = frameClock.FrameTime;
 
-            if (!this.PreviousFrameTime.HasValue)
+            if (!this._previousFrameTime.HasValue)
             {
-                this.PreviousFrameTime = frameTimeµSeconds;
+                this._previousFrameTime = frameTimeµSeconds;
 
                 return true;
             }
 
-            var frameTimeSeconds = (frameTimeµSeconds - this.PreviousFrameTime) / 10e6;
+            var frameTimeSeconds = (frameTimeµSeconds - this._previousFrameTime) / 10e6;
 
             this.DeltaTime = (float)frameTimeSeconds;
-            this.PreviousFrameTime = frameTimeµSeconds;
+            this._previousFrameTime = frameTimeµSeconds;
 
             return true;
         }
@@ -170,13 +170,13 @@ namespace Everlook.UI.Widgets
 
             MakeCurrent();
             OnShuttingDown();
-            if (!GraphicsContext.ShareContexts || (Interlocked.Decrement(ref GraphicsContextCount) != 0))
+            if (!GraphicsContext.ShareContexts || (Interlocked.Decrement(ref _graphicsContextCount) != 0))
             {
                 return;
             }
 
             OnGraphicsContextShuttingDown();
-            IsSharedContextInitialized = false;
+            _isSharedContextInitialized = false;
         }
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace Everlook.UI.Widgets
         /// <inheritdoc />
         protected override bool OnDrawn(Cairo.Context cr)
         {
-            if (!this.IsInitialized)
+            if (!this._isInitialized)
             {
                 Initialize();
             }
@@ -251,33 +251,33 @@ namespace Everlook.UI.Widgets
         /// </summary>
         private void Initialize()
         {
-            this.IsInitialized = true;
+            this._isInitialized = true;
 
             // Make the GDK GL context current
             MakeCurrent();
 
             // Create a dummy context that will grab the GdkGLContext that is current on the thread
-            this.TKGraphicsContext = new GraphicsContext(ContextHandle.Zero, null);
+            this._tkGraphicsContext = new GraphicsContext(ContextHandle.Zero, null);
 
             if (this.ContextFlags.HasFlag(GraphicsContextFlags.Debug))
             {
-                this.TKGraphicsContext.ErrorChecking = true;
+                this._tkGraphicsContext.ErrorChecking = true;
             }
 
             if (GraphicsContext.ShareContexts)
             {
-                Interlocked.Increment(ref GraphicsContextCount);
+                Interlocked.Increment(ref _graphicsContextCount);
 
-                if (!IsSharedContextInitialized)
+                if (!_isSharedContextInitialized)
                 {
-                    IsSharedContextInitialized = true;
-                    ((IGraphicsContextInternal)this.TKGraphicsContext).LoadAll();
+                    _isSharedContextInitialized = true;
+                    ((IGraphicsContextInternal)this._tkGraphicsContext).LoadAll();
                     OnGraphicsContextInitialized();
                 }
             }
             else
             {
-                ((IGraphicsContextInternal)this.TKGraphicsContext).LoadAll();
+                ((IGraphicsContextInternal)this._tkGraphicsContext).LoadAll();
                 OnGraphicsContextInitialized();
             }
 

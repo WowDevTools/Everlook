@@ -34,7 +34,7 @@ namespace Everlook.Viewport.Rendering
         /// <summary>
         /// The image contained by this instance.
         /// </summary>
-        private readonly BLP Image;
+        private readonly BLP _image;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Everlook.Viewport.Rendering.RenderableBLP"/> class.
@@ -43,7 +43,7 @@ namespace Everlook.Viewport.Rendering
         /// <param name="inTexturePath">The path under which this renderable texture is stored in the archives.</param>
         public RenderableBLP(BLP inImage, string inTexturePath)
         {
-            this.Image = inImage;
+            this._image = inImage;
             this.TexturePath = inTexturePath;
 
             this.IsInitialized = false;
@@ -57,13 +57,13 @@ namespace Everlook.Viewport.Rendering
                 return Cache.GetCachedTexture(this.TexturePath);
             }
 
-            return Cache.CreateCachedTexture(this.Image, this.TexturePath);
+            return Cache.CreateCachedTexture(this._image, this.TexturePath);
         }
 
         /// <inheritdoc />
         protected override Resolution GetResolution()
         {
-            return this.Image.GetResolution();
+            return this._image.GetResolution();
         }
 
         /// <inheritdoc />
@@ -75,13 +75,13 @@ namespace Everlook.Viewport.Rendering
                 return false;
             }
 
-            return otherImage.Image == this.Image;
+            return otherImage._image == this._image;
         }
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return (this.IsStatic.GetHashCode() + this.Image.GetHashCode()).GetHashCode();
+            return (this.IsStatic.GetHashCode() + this._image.GetHashCode()).GetHashCode();
         }
     }
 }

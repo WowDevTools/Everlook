@@ -55,7 +55,7 @@ namespace Everlook.Package
         /// <summary>
         /// The packages handled by this package group.
         /// </summary>
-        private readonly List<PackageInteractionHandler> Packages = new List<PackageInteractionHandler>();
+        private readonly List<PackageInteractionHandler> _packages = new List<PackageInteractionHandler>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Everlook.Package.PackageGroup"/> class.
@@ -190,12 +190,12 @@ namespace Everlook.Package
                 throw new ArgumentNullException(nameof(package));
             }
 
-            if (this.Packages.Contains(package))
+            if (this._packages.Contains(package))
             {
                 return;
             }
 
-            this.Packages.Add(package);
+            this._packages.Add(package);
         }
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace Everlook.Package
                 throw new ArgumentException("Cannot find a package with an empty name.", nameof(packageName));
             }
 
-            foreach (PackageInteractionHandler package in this.Packages)
+            foreach (PackageInteractionHandler package in this._packages)
             {
                 if (package.PackageName == packageName)
                 {
@@ -315,9 +315,9 @@ namespace Everlook.Package
         {
             data = null;
 
-            for (int i = this.Packages.Count - 1; i >= 0; --i)
+            for (int i = this._packages.Count - 1; i >= 0; --i)
             {
-                if (this.Packages[i].TryExtractFile(filePath, out data))
+                if (this._packages[i].TryExtractFile(filePath, out data))
                 {
                     return true;
                 }
@@ -329,9 +329,9 @@ namespace Everlook.Package
         /// <inheritdoc />
         public byte[] ExtractFile(string filePath)
         {
-            for (int i = this.Packages.Count - 1; i >= 0; --i)
+            for (int i = this._packages.Count - 1; i >= 0; --i)
             {
-                if (this.Packages[i].TryExtractFile(filePath, out var data))
+                if (this._packages[i].TryExtractFile(filePath, out var data))
                 {
                     return data;
                 }
@@ -355,9 +355,9 @@ namespace Everlook.Package
         /// <inheritdoc />
         public bool ContainsFile(string filePath)
         {
-            for (int i = this.Packages.Count - 1; i >= 0; --i)
+            for (int i = this._packages.Count - 1; i >= 0; --i)
             {
-                if (this.Packages[i].ContainsFile(filePath))
+                if (this._packages[i].ContainsFile(filePath))
                 {
                     return true;
                 }
@@ -371,11 +371,11 @@ namespace Everlook.Package
         {
             fileInfo = null;
 
-            for (int i = this.Packages.Count - 1; i >= 0; --i)
+            for (int i = this._packages.Count - 1; i >= 0; --i)
             {
-                if (this.Packages[i].ContainsFile(filePath))
+                if (this._packages[i].ContainsFile(filePath))
                 {
-                    fileInfo = this.Packages[i].GetFileInfo(filePath);
+                    fileInfo = this._packages[i].GetFileInfo(filePath);
                     return true;
                 }
             }
@@ -401,7 +401,7 @@ namespace Everlook.Package
             if (other != null)
             {
                 return this.GroupName.Equals(other.GroupName) &&
-                this.Packages.Equals(other.Packages);
+                this._packages.Equals(other._packages);
             }
 
             return false;
@@ -416,13 +416,13 @@ namespace Everlook.Package
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return (this.GroupName.GetHashCode() + this.Packages.GetHashCode()).GetHashCode();
+            return (this.GroupName.GetHashCode() + this._packages.GetHashCode()).GetHashCode();
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (var package in this.Packages)
+            foreach (var package in this._packages)
             {
                 package.Dispose();
             }

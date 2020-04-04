@@ -39,72 +39,72 @@ namespace Everlook.UI
         /*
             Main UI elements
         */
-        [UIElement] private readonly ToolButton AboutButton;
-        [UIElement] private readonly AboutDialog AboutDialog;
-        [UIElement] private readonly ToolButton PreferencesButton;
+        [UIElement] private readonly ToolButton _aboutButton;
+        [UIElement] private readonly AboutDialog _aboutDialog;
+        [UIElement] private readonly ToolButton _preferencesButton;
 
-        [UIElement] private readonly Paned ViewportPaned;
-        [UIElement] private readonly Paned LowerBoxPaned;
-        [UIElement] private readonly Alignment LowerBoxAlignment;
+        [UIElement] private readonly Paned _viewportPaned;
+        [UIElement] private readonly Paned _lowerBoxPaned;
+        [UIElement] private readonly Alignment _lowerBoxAlignment;
 
-        [UIElement] private readonly Alignment ViewportAlignment;
-        private readonly ViewportArea ViewportWidget;
+        [UIElement] private readonly Alignment _viewportAlignment;
+        private readonly ViewportArea _viewportWidget;
 
-        [UIElement] private readonly ComboBox FileFilterComboBox;
+        [UIElement] private readonly ComboBox _fileFilterComboBox;
 
-        [UIElement] private readonly Button CancelCurrentActionButton;
+        [UIElement] private readonly Button _cancelCurrentActionButton;
 
         /*
             Export queue elements
         */
-        [UIElement] private readonly TreeView ExportQueueTreeView;
-        [UIElement] private readonly ListStore ExportQueueListStore;
+        [UIElement] private readonly TreeView _exportQueueTreeView;
+        [UIElement] private readonly ListStore _exportQueueListStore;
 
-        [UIElement] private readonly Menu QueueContextMenu;
-        [UIElement] private readonly ImageMenuItem RemoveQueueItem;
+        [UIElement] private readonly Menu _queueContextMenu;
+        [UIElement] private readonly ImageMenuItem _removeQueueItem;
 
-        [UIElement] private readonly Button ClearExportQueueButton;
-        [UIElement] private readonly Button RunExportQueueButton;
+        [UIElement] private readonly Button _clearExportQueueButton;
+        [UIElement] private readonly Button _runExportQueueButton;
 
         /*
             Game explorer elements
         */
-        [UIElement] private readonly Notebook GameTabNotebook;
-        private readonly List<GamePage> GamePages = new List<GamePage>();
+        [UIElement] private readonly Notebook _gameTabNotebook;
+        private readonly List<GamePage> _gamePages = new List<GamePage>();
 
         /*
             General item control elements
         */
 
-        [UIElement] private readonly Notebook ItemControlNotebook;
+        [UIElement] private readonly Notebook _itemControlNotebook;
 
         /*
             Image control elements
         */
-        [UIElement] private readonly CheckButton RenderAlphaCheckButton;
-        [UIElement] private readonly CheckButton RenderRedCheckButton;
-        [UIElement] private readonly CheckButton RenderGreenCheckButton;
-        [UIElement] private readonly CheckButton RenderBlueCheckButton;
+        [UIElement] private readonly CheckButton _renderAlphaCheckButton;
+        [UIElement] private readonly CheckButton _renderRedCheckButton;
+        [UIElement] private readonly CheckButton _renderGreenCheckButton;
+        [UIElement] private readonly CheckButton _renderBlueCheckButton;
 
-        [UIElement] private readonly Label MipCountLabel;
+        [UIElement] private readonly Label _mipCountLabel;
 
         /*
             Status bar elements
         */
-        [UIElement] private readonly Statusbar MainStatusBar;
-        [UIElement] private readonly Spinner StatusSpinner;
+        [UIElement] private readonly Statusbar _mainStatusBar;
+        [UIElement] private readonly Spinner _statusSpinner;
 
         /*
             Model control elements
         */
 
-        [UIElement] private readonly CheckButton RenderBoundsCheckButton;
-        [UIElement] private readonly CheckButton RenderWireframeCheckButton;
-        [UIElement] private readonly CheckButton RenderDoodadsCheckButton;
+        [UIElement] private readonly CheckButton _renderBoundsCheckButton;
+        [UIElement] private readonly CheckButton _renderWireframeCheckButton;
+        [UIElement] private readonly CheckButton _renderDoodadsCheckButton;
 
-        [UIElement] private readonly ComboBox ModelVariationComboBox;
-        [UIElement] private readonly ListStore ModelVariationListStore;
-        [UIElement] private readonly CellRendererText ModelVariationTextRenderer;
+        [UIElement] private readonly ComboBox _modelVariationComboBox;
+        [UIElement] private readonly ListStore _modelVariationListStore;
+        [UIElement] private readonly CellRendererText _modelVariationTextRenderer;
 
         /*
             Animation control elements
@@ -118,8 +118,8 @@ namespace Everlook.UI
             Object info elements
         */
 
-        [UIElement] private readonly Label PolyCountLabel;
-        [UIElement] private readonly Label VertexCountLabel;
-        [UIElement] private readonly Label SkinCountLabel;
+        [UIElement] private readonly Label _polyCountLabel;
+        [UIElement] private readonly Label _vertexCountLabel;
+        [UIElement] private readonly Label _skinCountLabel;
     }
 }

@@ -52,11 +52,11 @@ namespace Everlook.Configuration
         /// </summary>
         public static readonly EverlookConfiguration Instance = new EverlookConfiguration();
 
-        private readonly object ReadLock = new object();
-        private readonly object WriteLock = new object();
+        private readonly object _readLock = new object();
+        private readonly object _writeLock = new object();
 
-        private readonly FileIniDataParser DefaultParser = new FileIniDataParser();
-        private IniData ConfigurationData;
+        private readonly FileIniDataParser _defaultParser = new FileIniDataParser();
+        private IniData _configurationData;
 
         /// <summary>
         /// Gets or sets the sprinting speed multiplier.
@@ -243,7 +243,7 @@ namespace Everlook.Configuration
 
         private EverlookConfiguration()
         {
-            lock (this.ReadLock)
+            lock (this._readLock)
             {
                 if (!File.Exists(GetConfigurationFilePath()))
                 {
@@ -272,12 +272,12 @@ namespace Everlook.Configuration
                         Place any changes after this comment.
                     */
 
-                    AddNewConfigurationOption(this.ConfigurationData, Viewport, nameof(this.RotationSpeed), "1.0");
-                    AddNewConfigurationOption(this.ConfigurationData, Viewport, nameof(this.CameraFOV), "45.0");
+                    AddNewConfigurationOption(this._configurationData, Viewport, nameof(this.RotationSpeed), "1.0");
+                    AddNewConfigurationOption(this._configurationData, Viewport, nameof(this.CameraFOV), "45.0");
 
-                    MoveConfigurationOption(this.ConfigurationData, "General", Viewport, nameof(this.ViewportBackgroundColour));
+                    MoveConfigurationOption(this._configurationData, "General", Viewport, nameof(this.ViewportBackgroundColour));
 
-                    DeleteConfigurationSection(this.ConfigurationData, "General");
+                    DeleteConfigurationSection(this._configurationData, "General");
 
                     Commit();
                     Reload();
@@ -290,9 +290,9 @@ namespace Everlook.Configuration
         /// </summary>
         public void Reload()
         {
-            lock (this.ReadLock)
+            lock (this._readLock)
             {
-                this.ConfigurationData = this.DefaultParser.ReadFile(GetConfigurationFilePath());
+                this._configurationData = this._defaultParser.ReadFile(GetConfigurationFilePath());
             }
         }
 
@@ -301,22 +301,22 @@ namespace Everlook.Configuration
         /// </summary>
         public void Commit()
         {
-            lock (this.WriteLock)
+            lock (this._writeLock)
             {
-                WriteConfig(this.DefaultParser, this.ConfigurationData);
+                WriteConfig(this._defaultParser, this._configurationData);
             }
         }
 
         private void WriteDefaults()
         {
-            this.ConfigurationData.Sections.Clear();
+            this._configurationData.Sections.Clear();
 
-            this.ConfigurationData.Sections.AddSection(Export);
-            this.ConfigurationData.Sections.AddSection(Privacy);
-            this.ConfigurationData.Sections.AddSection(Viewport);
-            this.ConfigurationData.Sections.AddSection(Explorer);
+            this._configurationData.Sections.AddSection(Export);
+            this._configurationData.Sections.AddSection(Privacy);
+            this._configurationData.Sections.AddSection(Viewport);
+            this._configurationData.Sections.AddSection(Explorer);
 
-            this.ConfigurationData[Export].AddKey(nameof(this.DefaultExportDirectory), Export);
+            this._configurationData[Export].AddKey(nameof(this.DefaultExportDirectory), Export);
 
             KeyData modelExportKeyData = new KeyData(nameof(this.DefaultModelExportFormat))
             {
@@ -331,7 +331,7 @@ namespace Everlook.Configuration
             };
             modelExportKeyData.Comments = modelExportKeyComments;
 
-            this.ConfigurationData[Export].AddKey(modelExportKeyData);
+            this._configurationData[Export].AddKey(modelExportKeyData);
 
             KeyData imageExportKeyData = new KeyData(nameof(this.DefaultImageExportFormat))
             {
@@ -349,7 +349,7 @@ namespace Everlook.Configuration
             };
             imageExportKeyData.Comments = imageExportKeyComments;
 
-            this.ConfigurationData[Export].AddKey(imageExportKeyData);
+            this._configurationData[Export].AddKey(imageExportKeyData);
 
             KeyData audioExportKeyData = new KeyData(nameof(this.DefaultAudioExportFormat))
             {
@@ -366,27 +366,27 @@ namespace Everlook.Configuration
             };
             audioExportKeyData.Comments = audioExportKeyComments;
 
-            this.ConfigurationData[Export].AddKey(audioExportKeyData);
+            this._configurationData[Export].AddKey(audioExportKeyData);
 
-            this.ConfigurationData[Export].AddKey(nameof(this.KeepFileDirectoryStructure), "false");
+            this._configurationData[Export].AddKey(nameof(this.KeepFileDirectoryStructure), "false");
 
-            this.ConfigurationData[Privacy].AddKey(nameof(this.AllowSendingStatistics), "false");
-            this.ConfigurationData[Privacy].AddKey(nameof(this.SendMachineID), "true");
-            this.ConfigurationData[Privacy].AddKey(nameof(this.SendInstallID), "true");
-            this.ConfigurationData[Privacy].AddKey(nameof(this.SendOperatingSystem), "true");
-            this.ConfigurationData[Privacy].AddKey(nameof(this.SendAppVersion), "true");
-            this.ConfigurationData[Privacy].AddKey(nameof(this.SendRuntimeInformation), "true");
+            this._configurationData[Privacy].AddKey(nameof(this.AllowSendingStatistics), "false");
+            this._configurationData[Privacy].AddKey(nameof(this.SendMachineID), "true");
+            this._configurationData[Privacy].AddKey(nameof(this.SendInstallID), "true");
+            this._configurationData[Privacy].AddKey(nameof(this.SendOperatingSystem), "true");
+            this._configurationData[Privacy].AddKey(nameof(this.SendAppVersion), "true");
+            this._configurationData[Privacy].AddKey(nameof(this.SendRuntimeInformation), "true");
 
-            this.ConfigurationData[Viewport].AddKey(nameof(this.ViewportBackgroundColour), "rgb(133, 146, 173)");
-            this.ConfigurationData[Viewport].AddKey(nameof(this.WireframeColour), "rgb(234, 161, 0)");
-            this.ConfigurationData[Viewport].AddKey(nameof(this.OccludeBoundingBoxes), "false");
-            this.ConfigurationData[Viewport].AddKey(nameof(this.CameraSpeed), "1.0");
-            this.ConfigurationData[Viewport].AddKey(nameof(this.RotationSpeed), "1.0");
-            this.ConfigurationData[Viewport].AddKey(nameof(this.CameraFOV), "45.0");
-            this.ConfigurationData[Viewport].AddKey(nameof(this.SprintMultiplier), "2.0");
+            this._configurationData[Viewport].AddKey(nameof(this.ViewportBackgroundColour), "rgb(133, 146, 173)");
+            this._configurationData[Viewport].AddKey(nameof(this.WireframeColour), "rgb(234, 161, 0)");
+            this._configurationData[Viewport].AddKey(nameof(this.OccludeBoundingBoxes), "false");
+            this._configurationData[Viewport].AddKey(nameof(this.CameraSpeed), "1.0");
+            this._configurationData[Viewport].AddKey(nameof(this.RotationSpeed), "1.0");
+            this._configurationData[Viewport].AddKey(nameof(this.CameraFOV), "45.0");
+            this._configurationData[Viewport].AddKey(nameof(this.SprintMultiplier), "2.0");
 
-            this.ConfigurationData[Explorer].AddKey(nameof(this.ShowUnknownFilesWhenFiltering), "true");
-            this.ConfigurationData[Explorer].AddKey(nameof(this.AutoplayAudioFiles), "true");
+            this._configurationData[Explorer].AddKey(nameof(this.ShowUnknownFilesWhenFiltering), "true");
+            this._configurationData[Explorer].AddKey(nameof(this.AutoplayAudioFiles), "true");
         }
 
         private void AddNewConfigurationSection(IniData configData, string keySection)
@@ -464,7 +464,7 @@ namespace Everlook.Configuration
                 value = value.ToLowerInvariant();
             }
 
-            this.ConfigurationData[section][keyName] = value;
+            this._configurationData[section][keyName] = value;
         }
 
         /// <summary>
@@ -475,7 +475,7 @@ namespace Everlook.Configuration
         /// <returns>The string value of the option.</returns>
         private string GetOption(string section, string keyName)
         {
-            return this.ConfigurationData[section][keyName];
+            return this._configurationData[section][keyName];
         }
 
         /// <summary>
@@ -487,7 +487,7 @@ namespace Everlook.Configuration
         /// <returns>true or false, depending on what the option is set to.</returns>
         private bool GetBooleanOption(string section, string keyName, bool defaultValue = false)
         {
-            if (bool.TryParse(this.ConfigurationData[section][keyName], out bool optionValue))
+            if (bool.TryParse(this._configurationData[section][keyName], out bool optionValue))
             {
                 return optionValue;
             }
@@ -504,7 +504,7 @@ namespace Everlook.Configuration
         /// <returns>The value of the option.</returns>
         private int GetIntegerOption(string section, string keyName, int defaultValue = -1)
         {
-            if (int.TryParse(this.ConfigurationData[section][keyName], out int optionValue))
+            if (int.TryParse(this._configurationData[section][keyName], out int optionValue))
             {
                 return optionValue;
             }
@@ -521,7 +521,7 @@ namespace Everlook.Configuration
         /// <returns>The value of the option.</returns>
         private T GetEnumOption<T>(string section, string keyName, T defaultValue) where T : struct
         {
-            if (Enum.TryParse(this.ConfigurationData[section][keyName], true, out T optionValue))
+            if (Enum.TryParse(this._configurationData[section][keyName], true, out T optionValue))
             {
                 return optionValue;
             }
@@ -539,7 +539,7 @@ namespace Everlook.Configuration
         private RGBA GetColourOption(string section, string keyName, RGBA defaultValue = default(RGBA))
         {
             RGBA value = default(RGBA);
-            if (value.Parse(this.ConfigurationData[section][keyName]))
+            if (value.Parse(this._configurationData[section][keyName]))
             {
                 return value;
             }
@@ -556,7 +556,7 @@ namespace Everlook.Configuration
         /// <returns>The value of the option.</returns>
         private double GetDoubleOption(string section, string keyName, double defaultValue = default(double))
         {
-            if (double.TryParse(this.ConfigurationData[section][keyName], out double optionValue))
+            if (double.TryParse(this._configurationData[section][keyName], out double optionValue))
             {
                 return optionValue;
             }

@@ -50,8 +50,8 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(typeof(Texture2D));
 
-        private readonly object TextureLock = new object();
-        private int NativeTextureID;
+        private readonly object _textureLock = new object();
+        private int _nativeTextureID;
 
         /// <summary>
         /// Gets or sets the filter used when magnifying the texture.
@@ -102,7 +102,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         private Texture2D()
         {
-            this.NativeTextureID = GL.GenTexture();
+            this._nativeTextureID = GL.GenTexture();
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         private void SetMagnificationFilter(TextureMagFilter magFilter)
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
                 Bind();
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)magFilter);
@@ -235,7 +235,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         private void SetMiniaturizationFilter(TextureMinFilter minFilter)
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
                 Bind();
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)minFilter);
@@ -248,7 +248,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <returns>The magnification filter.</returns>
         private TextureMagFilter GetMagnificationFilter()
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
                 Bind();
                 GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureMagFilter, out int magFilter);
@@ -262,7 +262,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <returns>The miniaturization filter.</returns>
         private TextureMinFilter GetMiniaturizationFilter()
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
                 Bind();
                 GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureMinFilter, out int minFilter);
@@ -277,7 +277,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="wrapModeT">The wrapping mode on the T axis.</param>
         private void SetWrappingMode(TextureWrapMode wrapModeS, TextureWrapMode wrapModeT)
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
                 Bind();
                 SetWrappingModeS(wrapModeS);
@@ -291,7 +291,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="wrapModeS">The wrapping mode on the S axis.</param>
         private void SetWrappingModeS(TextureWrapMode wrapModeS)
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
                 Bind();
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)wrapModeS);
@@ -304,7 +304,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="wrapModeT">The wrapping mode on the T axis.</param>
         private void SetWrappingModeT(TextureWrapMode wrapModeT)
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
                 Bind();
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)wrapModeT);
@@ -317,7 +317,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <returns>The wrapping mode on the S axis.</returns>
         private TextureWrapMode GetWrappingModeS()
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
                 Bind();
                 GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWrapS, out int wrapModeS);
@@ -331,7 +331,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <returns>The wrapping mode on the T axis.</returns>
         private TextureWrapMode GetWrappingModeT()
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
                 Bind();
                 GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWrapT, out int wrapModeT);
@@ -346,7 +346,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <exception cref="ArgumentException">Thrown if the image format doesn't match the pixel format.</exception>
         private void CreateFromDXT(BLP inTextureData)
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
                 Bind();
 
@@ -405,7 +405,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="inTextureData">The bitmap data.</param>
         private void CreateFromBitmap(Bitmap inTextureData)
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
                 Bind();
 
@@ -438,7 +438,7 @@ namespace Everlook.Viewport.Rendering.Core
 
         private void CreateFromImage(Image<Rgba32> inTextureData)
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
                 Bind();
 
@@ -472,21 +472,21 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         public void Bind()
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
-                GL.BindTexture(TextureTarget.Texture2D, this.NativeTextureID);
+                GL.BindTexture(TextureTarget.Texture2D, this._nativeTextureID);
             }
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            lock (this.TextureLock)
+            lock (this._textureLock)
             {
                 GC.SuppressFinalize(this);
 
-                GL.DeleteTexture(this.NativeTextureID);
-                this.NativeTextureID = -1;
+                GL.DeleteTexture(this._nativeTextureID);
+                this._nativeTextureID = -1;
             }
         }
     }

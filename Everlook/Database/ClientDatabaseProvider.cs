@@ -40,22 +40,22 @@ namespace Everlook.Database
         /// <summary>
         /// The <see cref="WarcraftVersion"/> that this database provider is valid for.
         /// </summary>
-        private readonly WarcraftVersion Version;
+        private readonly WarcraftVersion _version;
 
         /// <summary>
         /// The package where the database data can be sourced from.
         /// </summary>
-        private readonly IPackage ContentSource;
+        private readonly IPackage _contentSource;
 
         /// <summary>
         /// Locking object for threaded access to the databases.
         /// </summary>
-        private readonly object DatabaseLock = new object();
+        private readonly object _databaseLock = new object();
 
         /// <summary>
         /// The loaded databases.
         /// </summary>
-        private readonly Dictionary<DatabaseName, IDBC> Databases = new Dictionary<DatabaseName, IDBC>();
+        private readonly Dictionary<DatabaseName, IDBC> _databases = new Dictionary<DatabaseName, IDBC>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientDatabaseProvider"/> class.
@@ -64,8 +64,8 @@ namespace Everlook.Database
         /// <param name="contentSource">The <see cref="IPackage"/> where data can be retrieved.</param>
         public ClientDatabaseProvider(WarcraftVersion version, IPackage contentSource)
         {
-            this.Version = version;
-            this.ContentSource = contentSource;
+            this._version = version;
+            this._contentSource = contentSource;
         }
 
         /// <summary>
@@ -77,14 +77,14 @@ namespace Everlook.Database
         {
             DatabaseName databaseName = GetDatabaseNameFromRecordType(typeof(T));
 
-            lock (this.DatabaseLock)
+            lock (this._databaseLock)
             {
                 if (!ContainsDatabase(databaseName))
                 {
                     LoadDatabase(databaseName);
                 }
 
-                return this.Databases[databaseName] as DBC<T>;
+                return this._databases[databaseName] as DBC<T>;
             }
         }
 
@@ -121,9 +121,9 @@ namespace Everlook.Database
         /// <returns>true if the provider contains the given database; false otherwise.</returns>
         public bool ContainsDatabase(DatabaseName databaseName)
         {
-            lock (this.DatabaseLock)
+            lock (this._databaseLock)
             {
-                return this.Databases.ContainsKey(databaseName);
+                return this._databases.ContainsKey(databaseName);
             }
         }
 
@@ -133,7 +133,7 @@ namespace Everlook.Database
         /// <param name="databaseName">The name of the database.</param>
         private void LoadDatabase(DatabaseName databaseName)
         {
-            if (this.Databases.ContainsKey(databaseName))
+            if (this._databases.ContainsKey(databaseName))
             {
                 return;
             }
@@ -142,10 +142,10 @@ namespace Everlook.Database
             Type specificDBCType = genericDBCType.MakeGenericType(GetRecordTypeFromDatabaseName(databaseName));
 
             string databasePath = GetDatabasePackagePath(databaseName);
-            byte[] databaseData = this.ContentSource.ExtractFile(databasePath);
+            byte[] databaseData = this._contentSource.ExtractFile(databasePath);
 
-            IDBC database = (IDBC)Activator.CreateInstance(specificDBCType, this.Version, databaseData);
-            this.Databases.Add(databaseName, database);
+            IDBC database = (IDBC)Activator.CreateInstance(specificDBCType, this._version, databaseData);
+            this._databases.Add(databaseName, database);
         }
 
         /// <summary>

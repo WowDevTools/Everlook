@@ -35,7 +35,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         private const string LightColourIdentifier = "LightColour";
         private const string LightIntensityIdentifier = "LightIntensity";
 
-        private readonly int ParentShaderNativeID;
+        private readonly int _parentShaderNativeID;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GlobalLighting"/> class, and attaches it to the given parent shader.
@@ -43,12 +43,12 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         /// <param name="parentShaderID">The native ID of the parent shader.</param>
         public GlobalLighting(int parentShaderID)
         {
-            this.ParentShaderNativeID = parentShaderID;
+            this._parentShaderNativeID = parentShaderID;
         }
 
         private void EnableParent()
         {
-            GL.UseProgram(this.ParentShaderNativeID);
+            GL.UseProgram(this._parentShaderNativeID);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            int colourLoc = GL.GetUniformLocation(this.ParentShaderNativeID, LightColourIdentifier);
+            int colourLoc = GL.GetUniformLocation(this._parentShaderNativeID, LightColourIdentifier);
             GL.Uniform4(colourLoc, lightColour);
         }
 
@@ -71,7 +71,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            int vectorLoc = GL.GetUniformLocation(this.ParentShaderNativeID, LightVectorIdentifier);
+            int vectorLoc = GL.GetUniformLocation(this._parentShaderNativeID, LightVectorIdentifier);
             GL.Uniform3(vectorLoc, lightVector);
         }
 
@@ -83,7 +83,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            int intensityLoc = GL.GetUniformLocation(this.ParentShaderNativeID, LightIntensityIdentifier);
+            int intensityLoc = GL.GetUniformLocation(this._parentShaderNativeID, LightIntensityIdentifier);
             GL.Uniform1(intensityLoc, lightIntensity);
         }
     }

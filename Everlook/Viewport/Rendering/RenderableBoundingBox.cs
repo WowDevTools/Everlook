@@ -40,7 +40,7 @@ namespace Everlook.Viewport.Rendering
     /// </summary>
     public sealed class RenderableBoundingBox : IInstancedRenderable, IActor
     {
-        private readonly BoundingBoxShader BoxShader;
+        private readonly BoundingBoxShader _boxShader;
 
         /// <inheritdoc />
         public Transform ActorTransform { get; set; }
@@ -64,9 +64,9 @@ namespace Everlook.Viewport.Rendering
         /// </summary>
         private bool IsDisposed { get; set; }
 
-        private Box BoundingBoxData;
-        private Buffer<Vector3> VertexBuffer;
-        private Buffer<byte> VertexIndexesBuffer;
+        private Box _boundingBoxData;
+        private Buffer<Vector3> _vertexBuffer;
+        private Buffer<byte> _vertexIndexesBuffer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderableBoundingBox"/> class. The bounds data is taken from
@@ -76,11 +76,11 @@ namespace Everlook.Viewport.Rendering
         /// <param name="transform">The world transform of the box.</param>
         public RenderableBoundingBox(Box boundingBox, Transform transform)
         {
-            this.BoundingBoxData = boundingBox;
+            this._boundingBoxData = boundingBox;
             this.LineColour = Color4.LimeGreen;
 
             this.ActorTransform = transform;
-            this.BoxShader = RenderCache.Instance.GetShader(EverlookShader.BoundingBox) as BoundingBoxShader;
+            this._boxShader = RenderCache.Instance.GetShader(EverlookShader.BoundingBox) as BoundingBoxShader;
 
             this.IsInitialized = false;
         }
@@ -95,17 +95,17 @@ namespace Everlook.Viewport.Rendering
                 return;
             }
 
-            if (this.BoxShader == null)
+            if (this._boxShader == null)
             {
                 throw new ShaderNullException(typeof(BoundingBoxShader));
             }
 
-            this.VertexBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+            this._vertexBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
             {
-                Data = this.BoundingBoxData.GetCorners().ToArray()
+                Data = this._boundingBoxData.GetCorners().ToArray()
             };
 
-            this.VertexBuffer.AttachAttributePointer(new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0));
+            this._vertexBuffer.AttachAttributePointer(new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0));
 
             byte[] boundingBoxIndexValues =
             {
@@ -126,7 +126,7 @@ namespace Everlook.Viewport.Rendering
                 5, 3
             };
 
-            this.VertexIndexesBuffer = new Buffer<byte>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
+            this._vertexIndexesBuffer = new Buffer<byte>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
             {
                 Data = boundingBoxIndexValues
             };
@@ -143,19 +143,19 @@ namespace Everlook.Viewport.Rendering
             GL.Disable(EnableCap.DepthTest);
 
             // Send the vertices to the shader
-            this.VertexBuffer.Bind();
-            this.VertexBuffer.EnableAttributes();
+            this._vertexBuffer.Bind();
+            this._vertexBuffer.EnableAttributes();
 
-            this.VertexIndexesBuffer.Bind();
+            this._vertexIndexesBuffer.Bind();
 
             Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
-            this.BoxShader.Enable();
-            this.BoxShader.SetIsInstance(true);
-            this.BoxShader.SetMVPMatrix(modelViewProjection);
-            this.BoxShader.SetLineColour(this.LineColour);
-            this.BoxShader.SetViewMatrix(viewMatrix);
-            this.BoxShader.SetProjectionMatrix(projectionMatrix);
+            this._boxShader.Enable();
+            this._boxShader.SetIsInstance(true);
+            this._boxShader.SetMVPMatrix(modelViewProjection);
+            this._boxShader.SetLineColour(this.LineColour);
+            this._boxShader.SetViewMatrix(viewMatrix);
+            this._boxShader.SetProjectionMatrix(projectionMatrix);
 
             // Now draw the box
             GL.DrawElementsInstanced
@@ -167,7 +167,7 @@ namespace Everlook.Viewport.Rendering
                 count
             );
 
-            this.VertexBuffer.DisableAttributes();
+            this._vertexBuffer.DisableAttributes();
         }
 
         /// <inheritdoc />
@@ -179,16 +179,16 @@ namespace Everlook.Viewport.Rendering
             GL.Disable(EnableCap.DepthTest);
 
             // Send the vertices to the shader
-            this.VertexBuffer.Bind();
-            this.VertexBuffer.EnableAttributes();
+            this._vertexBuffer.Bind();
+            this._vertexBuffer.EnableAttributes();
 
-            this.VertexIndexesBuffer.Bind();
+            this._vertexIndexesBuffer.Bind();
 
             Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
-            this.BoxShader.Enable();
-            this.BoxShader.SetMVPMatrix(modelViewProjection);
-            this.BoxShader.SetLineColour(this.LineColour);
+            this._boxShader.Enable();
+            this._boxShader.SetMVPMatrix(modelViewProjection);
+            this._boxShader.SetLineColour(this.LineColour);
 
             // Now draw the box
             GL.DrawElements
@@ -199,7 +199,7 @@ namespace Everlook.Viewport.Rendering
                 new IntPtr(0)
             );
 
-            this.VertexBuffer.DisableAttributes();
+            this._vertexBuffer.DisableAttributes();
         }
 
         /// <summary>
@@ -219,8 +219,8 @@ namespace Everlook.Viewport.Rendering
         {
             this.IsDisposed = true;
 
-            this.VertexBuffer.Dispose();
-            this.VertexIndexesBuffer.Dispose();
+            this._vertexBuffer.Dispose();
+            this._vertexIndexesBuffer.Dispose();
         }
     }
 }

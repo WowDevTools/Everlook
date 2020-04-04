@@ -59,22 +59,22 @@ namespace Everlook.Viewport.Rendering.Core
         /// <inheritdoc />
         public ProjectionType Projection => ProjectionType.Perspective;
 
-        private Buffer<float> Vertices;
-        private Buffer<ushort> VertexIndexes;
+        private Buffer<float> _vertices;
+        private Buffer<ushort> _vertexIndexes;
 
         /// <summary>
         /// Gets or sets a value indicating whether this object has been disposed.
         /// </summary>
         private bool IsDisposed { get; set; }
 
-        private readonly BaseGridShader Shader;
+        private readonly BaseGridShader _shader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseGrid"/> class.
         /// </summary>
         public BaseGrid()
         {
-            this.Shader = RenderCache.Instance.GetShader(EverlookShader.BaseGrid) as BaseGridShader;
+            this._shader = RenderCache.Instance.GetShader(EverlookShader.BaseGrid) as BaseGridShader;
             this.ActorTransform = new Transform();
 
             this.IsInitialized = false;
@@ -113,18 +113,18 @@ namespace Everlook.Viewport.Rendering.Core
             vertexIndexes.AddRange(new ushort[] { 0, Quads * 2 });
             vertexIndexes.AddRange(new ushort[] { 1, (Quads * 2) + 1 });
 
-            this.Vertices = new Buffer<float>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+            this._vertices = new Buffer<float>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
             {
                 Data = vertices.ToArray()
             };
 
             // Attach the vertex pointer
-            this.Vertices.AttachAttributePointer
+            this._vertices.AttachAttributePointer
             (
                 new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0)
             );
 
-            this.VertexIndexes = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
+            this._vertexIndexes = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
             {
                 Data = vertexIndexes.ToArray()
             };
@@ -139,19 +139,19 @@ namespace Everlook.Viewport.Rendering.Core
             GL.Enable(EnableCap.DepthTest);
             GL.Disable(EnableCap.CullFace);
 
-            this.Vertices.Bind();
-            this.Vertices.EnableAttributes();
-            this.VertexIndexes.Bind();
+            this._vertices.Bind();
+            this._vertices.EnableAttributes();
+            this._vertexIndexes.Bind();
 
             Matrix4 modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
 
-            this.Shader.Enable();
+            this._shader.Enable();
 
             GL.BlendFunc(BlendingFactor.One, BlendingFactor.Zero);
 
             // Set the default line colour (a light gray)
-            this.Shader.SetLineColour(new Color4(64, 64, 64, 255));
-            this.Shader.SetMVPMatrix(modelViewProjection);
+            this._shader.SetLineColour(new Color4(64, 64, 64, 255));
+            this._shader.SetMVPMatrix(modelViewProjection);
 
             int lineCount = ((Quads * 2) + 2) * 2;
             GL.DrawElements
@@ -162,7 +162,7 @@ namespace Everlook.Viewport.Rendering.Core
                 IntPtr.Zero
             );
 
-            this.Vertices.DisableAttributes();
+            this._vertices.DisableAttributes();
         }
 
         /// <summary>
@@ -181,8 +181,8 @@ namespace Everlook.Viewport.Rendering.Core
         public void Dispose()
         {
             this.IsDisposed = true;
-            this.Vertices.Dispose();
-            this.VertexIndexes.Dispose();
+            this._vertices.Dispose();
+            this._vertexIndexes.Dispose();
         }
     }
 }

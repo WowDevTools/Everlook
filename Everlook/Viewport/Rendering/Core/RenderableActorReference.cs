@@ -35,19 +35,19 @@ namespace Everlook.Viewport.Rendering.Core
     public class RenderableActorReference<T> : IRenderable, IActor where T : class, IRenderable, IActor
     {
         /// <inheritdoc />
-        public bool IsStatic => this.Target.IsStatic;
+        public bool IsStatic => this._target.IsStatic;
 
         /// <inheritdoc />
         public bool IsInitialized { get; set; }
 
         /// <inheritdoc />
-        public ProjectionType Projection => this.Target.Projection;
+        public ProjectionType Projection => this._target.Projection;
 
         /// <inheritdoc />
         public Transform ActorTransform { get; set; }
 
-        private readonly T Target;
-        private readonly Transform DefaultTransform;
+        private readonly T _target;
+        private readonly Transform _defaultTransform;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderableActorReference{T}"/> class.
@@ -75,8 +75,8 @@ namespace Everlook.Viewport.Rendering.Core
                 throw new ArgumentNullException(nameof(transform));
             }
 
-            this.Target = target;
-            this.DefaultTransform = target.ActorTransform;
+            this._target = target;
+            this._defaultTransform = target.ActorTransform;
 
             this.ActorTransform = transform;
         }
@@ -90,9 +90,9 @@ namespace Everlook.Viewport.Rendering.Core
         /// <inheritdoc />
         public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
         {
-            this.Target.ActorTransform = this.ActorTransform;
-            this.Target.Render(viewMatrix, projectionMatrix, camera);
-            this.Target.ActorTransform = this.DefaultTransform;
+            this._target.ActorTransform = this.ActorTransform;
+            this._target.Render(viewMatrix, projectionMatrix, camera);
+            this._target.ActorTransform = this._defaultTransform;
         }
 
         /// <summary>
