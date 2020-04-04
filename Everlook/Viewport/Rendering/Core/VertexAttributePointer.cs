@@ -27,12 +27,12 @@ namespace Everlook.Viewport.Rendering.Core
     /// <summary>
     /// Represents a vertex attribute pointer.
     /// </summary>
-    public class VertexAttributePointer
+    public class VertexAttributePointer : GraphicsObject
     {
         /// <summary>
         /// Gets the attribute array index that the pointer modifies.
         /// </summary>
-        public int LayoutIndex { get; }
+        public uint LayoutIndex { get; }
 
         /// <summary>
         /// Gets the number of components per attribute.
@@ -52,16 +52,17 @@ namespace Everlook.Viewport.Rendering.Core
         /// <summary>
         /// Gets the byte offset between consecutive vertex attributes.
         /// </summary>
-        public int ByteStride { get; }
+        public uint ByteStride { get; }
 
         /// <summary>
         /// Gets the offset to the first component of the first attribute in the array.
         /// </summary>
-        public int FirstAttributeByteOffset { get; }
+        public uint FirstAttributeByteOffset { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VertexAttributePointer"/> class.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
         /// <param name="layoutIndex">The attribute array layout index.</param>
         /// <param name="componentCount">The number of components in the attribute.</param>
         /// <param name="type">The data type of each component in the attribute.</param>
@@ -70,13 +71,15 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="isNormalized">Whether or not the data should be normalized.</param>
         public VertexAttributePointer
         (
-            int layoutIndex,
+            GL gl,
+            uint layoutIndex,
             int componentCount,
             VertexAttribPointerType type,
-            int byteStride,
-            int firstAttributeByteOffset,
+            uint byteStride,
+            uint firstAttributeByteOffset,
             bool isNormalized = false
         )
+            : base(gl)
         {
             this.LayoutIndex = layoutIndex;
             this.ComponentCount = componentCount;
@@ -93,16 +96,19 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         public void Enable()
         {
-            GL.EnableVertexAttribArray(this.LayoutIndex);
-            GL.VertexAttribPointer
-            (
-                this.LayoutIndex,
-                this.ComponentCount,
-                this.Type,
-                this.IsNormalized,
-                this.ByteStride,
-                this.FirstAttributeByteOffset
-            );
+            this.GL.EnableVertexAttribArray(this.LayoutIndex);
+            unsafe
+            {
+                this.GL.VertexAttribPointer
+                (
+                    this.LayoutIndex,
+                    this.ComponentCount,
+                    this.Type,
+                    this.IsNormalized,
+                    this.ByteStride,
+                    (void*)this.FirstAttributeByteOffset
+                );
+            }
         }
 
         /// <summary>
@@ -110,7 +116,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         public void Disable()
         {
-            GL.DisableVertexAttribArray(this.LayoutIndex);
+            this.GL.DisableVertexAttribArray(this.LayoutIndex);
         }
     }
 }

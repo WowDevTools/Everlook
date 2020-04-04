@@ -22,6 +22,7 @@
 
 using System;
 using Everlook.Viewport.Rendering.Core;
+using Silk.NET.OpenGL;
 using Warcraft.BLP;
 using Warcraft.Core.Structures;
 
@@ -40,9 +41,12 @@ namespace Everlook.Viewport.Rendering
         /// <summary>
         /// Initializes a new instance of the <see cref="Everlook.Viewport.Rendering.RenderableBLP"/> class.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        /// <param name="renderCache">The rendering cache.</param>
         /// <param name="inImage">An image object with populated data.</param>
         /// <param name="inTexturePath">The path under which this renderable texture is stored in the archives.</param>
-        public RenderableBLP(BLP inImage, string inTexturePath)
+        public RenderableBLP(GL gl, RenderCache renderCache, BLP inImage, string inTexturePath)
+            : base(gl, renderCache)
         {
             _image = inImage;
             this.TexturePath = inTexturePath;
@@ -58,12 +62,12 @@ namespace Everlook.Viewport.Rendering
                 throw new InvalidOperationException();
             }
 
-            if (Cache.HasCachedTextureForPath(this.TexturePath))
+            if (this.RenderCache.HasCachedTextureForPath(this.TexturePath))
             {
-                return Cache.GetCachedTexture(this.TexturePath);
+                return this.RenderCache.GetCachedTexture(this.TexturePath);
             }
 
-            return Cache.CreateCachedTexture(_image, this.TexturePath);
+            return this.RenderCache.CreateCachedTexture(_image, this.TexturePath);
         }
 
         /// <inheritdoc />
@@ -73,10 +77,9 @@ namespace Everlook.Viewport.Rendering
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            var otherImage = obj as RenderableBLP;
-            if (otherImage == null)
+            if (!(obj is RenderableBLP otherImage))
             {
                 return false;
             }

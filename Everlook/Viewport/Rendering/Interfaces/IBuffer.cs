@@ -45,7 +45,7 @@ namespace Everlook.Viewport.Rendering.Interfaces
         /// <summary>
         /// Gets the byte count of the data in the buffer.
         /// </summary>
-        int Length { get; }
+        ulong Length { get; }
 
         /// <summary>
         /// Attaches the specified attribute pointer to the buffer.

@@ -213,7 +213,7 @@ namespace Everlook.Viewport.Rendering.Core
                 return time % this.Duration;
             }
 
-            return MathHelper.Clamp(time, 0, this.Duration);
+            return Math.Clamp(time, 0, this.Duration);
         }
     }
 }

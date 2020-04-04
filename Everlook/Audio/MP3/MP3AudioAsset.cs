@@ -151,7 +151,7 @@ namespace Everlook.Audio.MP3
         {
             if (_isDisposed)
             {
-                throw new ObjectDisposedException(ToString());
+                throw new ObjectDisposedException(ToString() ?? nameof(MP3AudioAsset));
             }
         }
 

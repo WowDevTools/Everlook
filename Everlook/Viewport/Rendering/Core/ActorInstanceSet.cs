@@ -35,7 +35,7 @@ namespace Everlook.Viewport.Rendering.Core
     /// Represents a set of actor instances, differing by their transforms.
     /// </summary>
     /// <typeparam name="T">A renderable supporting instanced rendering.</typeparam>
-    public class ActorInstanceSet<T> : IRenderable, IBoundedModel
+    public class ActorInstanceSet<T> : GraphicsObject, IRenderable, IBoundedModel
         where T : class, IInstancedRenderable, IActor, IBoundedModel
     {
         /// <inheritdoc />
@@ -71,8 +71,10 @@ namespace Everlook.Viewport.Rendering.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="ActorInstanceSet{T}"/> class.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
         /// <param name="target">The target instanced renderable.</param>
-        public ActorInstanceSet(T target)
+        public ActorInstanceSet(GL gl, T target)
+            : base(gl)
         {
             this.Target = target;
             _instanceTransforms = new List<Transform>();
@@ -92,34 +94,71 @@ namespace Everlook.Viewport.Rendering.Core
         /// <inheritdoc />
         public void Initialize()
         {
-            _instanceModelMatrices = new Buffer<Matrix4x4>(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw);
+            _instanceModelMatrices = new Buffer<Matrix4x4>
+            (
+                this.GL,
+                BufferTargetARB.ArrayBuffer,
+                BufferUsageARB.StaticDraw);
 
             _instanceModelMatrices.AttachAttributePointer
             (
-                new VertexAttributePointer(6, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4x4>(), 0)
+                new VertexAttributePointer
+                (
+                    this.GL,
+                    6,
+                    4,
+                    VertexAttribPointerType.Float,
+                    (uint)Marshal.SizeOf<Matrix4x4>(),
+                    0
+                )
             );
 
             _instanceModelMatrices.AttachAttributePointer
             (
-                new VertexAttributePointer(7, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4x4>(), 16)
+                new VertexAttributePointer
+                (
+                    this.GL,
+                    7,
+                    4,
+                    VertexAttribPointerType.Float,
+                    (uint)Marshal.SizeOf<Matrix4x4>(),
+                    16
+                )
             );
 
             _instanceModelMatrices.AttachAttributePointer
             (
-                new VertexAttributePointer(8, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4x4>(), 32)
+                new VertexAttributePointer
+                (
+                    this.GL,
+                    8,
+                    4,
+                    VertexAttribPointerType.Float,
+                    (uint)Marshal.SizeOf<Matrix4x4>(),
+                    32
+                )
             );
 
             _instanceModelMatrices.AttachAttributePointer
             (
-                new VertexAttributePointer(9, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4x4>(), 48)
+                new VertexAttributePointer
+                (
+                    this.GL,
+                    9,
+                    4,
+                    VertexAttribPointerType.Float,
+                    (uint)Marshal.SizeOf<Matrix4x4>(),
+                    48
+                )
             );
 
             _instanceModelMatrices.Bind();
             _instanceModelMatrices.EnableAttributes();
-            GL.VertexAttribDivisor(6, 1);
-            GL.VertexAttribDivisor(7, 1);
-            GL.VertexAttribDivisor(8, 1);
-            GL.VertexAttribDivisor(9, 1);
+
+            this.GL.VertexAttribDivisor(6, 1);
+            this.GL.VertexAttribDivisor(7, 1);
+            this.GL.VertexAttribDivisor(8, 1);
+            this.GL.VertexAttribDivisor(9, 1);
 
             _instanceModelMatrices.Data = _instanceTransforms.Select(t => t.GetModelMatrix()).ToArray();
 

@@ -24,6 +24,7 @@ using System;
 using System.ComponentModel;
 using Gdk;
 using Gtk;
+using Silk.NET.OpenGL;
 
 namespace Everlook.UI.Widgets
 {
@@ -92,6 +93,21 @@ namespace Everlook.UI.Widgets
             this.HasDepthBuffer = _withDepthBuffer;
             this.HasStencilBuffer = _withStencilBuffer;
             this.HasAlpha = _withAlpha;
+        }
+
+        /// <summary>
+        /// Gets an instance of the OpenGL API.
+        /// </summary>
+        /// <returns>The API instance.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the viewport area has not been initialized.</exception>
+        public GL GetAPI()
+        {
+            if (_isInitialized)
+            {
+                return GL.GetApi();
+            }
+
+            throw new InvalidOperationException();
         }
 
         /// <summary>

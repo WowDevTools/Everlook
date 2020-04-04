@@ -34,7 +34,7 @@ namespace Everlook.Viewport.Rendering.Core
     /// Represents a base grid in the viewport, centered at the world and spanning 100x100 world units, subdivided
     /// into squares.
     /// </summary>
-    public class BaseGrid : IActor, IRenderable
+    public class BaseGrid : GraphicsObject, IActor, IRenderable
     {
         /// <summary>
         /// The size of one side of the grid.
@@ -71,9 +71,12 @@ namespace Everlook.Viewport.Rendering.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseGrid"/> class.
         /// </summary>
-        public BaseGrid()
+        /// <param name="gl">The OpenGL API.</param>
+        /// <param name="renderCache">The rendering cache.</param>
+        public BaseGrid(GL gl, RenderCache renderCache)
+            : base(gl)
         {
-            _shader = (BaseGridShader)RenderCache.Instance.GetShader(EverlookShader.BaseGrid);
+            _shader = (BaseGridShader)renderCache.GetShader(EverlookShader.BaseGrid);
             this.ActorTransform = new Transform();
 
             this.IsInitialized = false;
@@ -118,7 +121,7 @@ namespace Everlook.Viewport.Rendering.Core
             vertexIndexes.AddRange(new ushort[] { 0, Quads * 2 });
             vertexIndexes.AddRange(new ushort[] { 1, (Quads * 2) + 1 });
 
-            _vertices = new Buffer<float>(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw)
+            _vertices = new Buffer<float>(this.GL, BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = vertices.ToArray()
             };
@@ -126,10 +129,10 @@ namespace Everlook.Viewport.Rendering.Core
             // Attach the vertex pointer
             _vertices.AttachAttributePointer
             (
-                new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0)
+                new VertexAttributePointer(this.GL, 0, 3, VertexAttribPointerType.Float, 0, 0)
             );
 
-            _vertexIndexes = new Buffer<ushort>(BufferTargetARB.ElementArrayBuffer, BufferUsageARB.StaticDraw)
+            _vertexIndexes = new Buffer<ushort>(this.GL, BufferTargetARB.ElementArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = vertexIndexes.ToArray()
             };
@@ -145,9 +148,9 @@ namespace Everlook.Viewport.Rendering.Core
                 return;
             }
 
-            GL.Enable(EnableCap.Blend);
-            GL.Enable(EnableCap.DepthTest);
-            GL.Disable(EnableCap.CullFace);
+            this.GL.Enable(EnableCap.Blend);
+            this.GL.Enable(EnableCap.DepthTest);
+            this.GL.Disable(EnableCap.CullFace);
 
             _vertices.Bind();
             _vertices.EnableAttributes();
@@ -157,20 +160,23 @@ namespace Everlook.Viewport.Rendering.Core
 
             _shader.Enable();
 
-            GL.BlendFunc(BlendingFactor.One, BlendingFactor.Zero);
+            this.GL.BlendFunc(BlendingFactor.One, BlendingFactor.Zero);
 
             // Set the default line colour (a light gray)
-            _shader.SetLineColour(new Color4(64, 64, 64, 255));
+            _shader.SetLineColour(new Vector4(64, 64, 64, 255));
             _shader.SetMVPMatrix(modelViewProjection);
 
-            var lineCount = ((Quads * 2) + 2) * 2;
-            GL.DrawElements
-            (
-                PrimitiveType.Lines,
-                lineCount,
-                DrawElementsType.UnsignedShort,
-                IntPtr.Zero
-            );
+            uint lineCount = ((Quads * 2) + 2) * 2;
+            unsafe
+            {
+                this.GL.DrawElements
+                (
+                    PrimitiveType.Lines,
+                    lineCount,
+                    DrawElementsType.UnsignedShort,
+                    (void*)0
+                );
+            }
 
             _vertices.DisableAttributes();
         }
@@ -183,7 +189,7 @@ namespace Everlook.Viewport.Rendering.Core
         {
             if (this.IsDisposed)
             {
-                throw new ObjectDisposedException(ToString());
+                throw new ObjectDisposedException(ToString() ?? nameof(BaseGrid));
             }
         }
 

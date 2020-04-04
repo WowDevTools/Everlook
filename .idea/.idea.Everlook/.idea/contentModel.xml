@@ -251,6 +251,7 @@
           <e p="ExtensionMethods.cs" t="Include" />
           <e p="IGameContext.cs" t="Include" />
           <e p="IconManager.cs" t="Include" />
+          <e p="MathHelper.cs" t="Include" />
           <e p="ResourceManager.cs" t="Include" />
           <e p="StringReferenceListComparer.cs" t="Include" />
           <e p="WarcraftGameContext.cs" t="Include" />
@@ -268,6 +269,7 @@
               <e p="Buffer.cs" t="Include" />
               <e p="DynamicInterpolator.cs" t="Include" />
               <e p="EverlookShader.cs" t="Include" />
+              <e p="GraphicsObject.cs" t="Include" />
               <e p="Lights" t="Include">
                 <e p="AmbientLight.cs" t="Include" />
                 <e p="DirectionalLight.cs" t="Include" />
@@ -331,19 +333,8 @@
         <e p="obj" t="ExcludeRecursive">
           <e p="x86" t="Include">
             <e p="Debug" t="Include">
-              <e p="net461" t="Include">
+              <e p="netcoreapp3.1" t="Include">
                 <e p="Everlook.AssemblyInfo.cs" t="Include" />
-                <e p="NuGet" t="Include">
-                  <e p="74B5D4541C0390BD6C62F006ECE74F7C0EC694F0" t="Include">
-                    <e p="Nullable" t="Include">
-                      <e p="1.2.1" t="Include">
-                        <e p="Nullable" t="Include">
-                          <e p="NullableAttributes.cs" t="Include" />
-                        </e>
-                      </e>
-                    </e>
-                  </e>
-                </e>
               </e>
             </e>
           </e>

@@ -50,6 +50,7 @@ namespace Everlook.Viewport.Rendering
     /// Represents a renderable Game Object Model.
     /// </summary>
     public sealed class RenderableGameModel :
+        GraphicsObject,
         IInstancedRenderable,
         ITickingActor,
         IDefaultCameraPositionProvider,
@@ -72,16 +73,17 @@ namespace Everlook.Viewport.Rendering
                     return Vector3.Zero;
                 }
 
-                return
+                var vec4 = Vector4.Transform
                 (
-                    this.ActorTransform.GetModelMatrix() *
                     new Vector4
                     (
                         _model.BoundingBox.GetCenterCoordinates(),
                         1.0f
-                    )
-                )
-                .Xyz;
+                    ),
+                    this.ActorTransform.GetModelMatrix()
+                );
+
+                return new Vector3(vec4.X, vec4.Y, vec4.Z);
             }
         }
 
@@ -105,7 +107,7 @@ namespace Everlook.Viewport.Rendering
         public int VertexCount => (int)_model.Vertices.Count;
 
         private readonly string? _modelPath;
-        private readonly RenderCache _cache = RenderCache.Instance;
+        private readonly RenderCache _renderCache;
         private readonly WarcraftGameContext _gameContext;
 
         /// <summary>
@@ -141,11 +143,13 @@ namespace Everlook.Viewport.Rendering
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderableGameModel"/> class.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        /// <param name="renderCache">The rendering cache.</param>
         /// <param name="inModel">The model to render.</param>
         /// <param name="gameContext">The game context.</param>
         /// <param name="modelPath">The full path of the model in the package group.</param>
-        public RenderableGameModel(MDX inModel, WarcraftGameContext gameContext, string modelPath)
-            : this(inModel, gameContext)
+        public RenderableGameModel(GL gl, RenderCache renderCache, MDX inModel, WarcraftGameContext gameContext, string modelPath)
+            : this(gl, renderCache, inModel, gameContext)
         {
             _modelPath = modelPath;
         }
@@ -153,10 +157,14 @@ namespace Everlook.Viewport.Rendering
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderableGameModel"/> class.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        /// <param name="renderCache">The rendering cache.</param>
         /// <param name="inModel">The model to render.</param>
         /// <param name="gameContext">The game context.</param>
-        public RenderableGameModel(MDX inModel, WarcraftGameContext gameContext)
+        public RenderableGameModel(GL gl, RenderCache renderCache, MDX inModel, WarcraftGameContext gameContext)
+            : base(gl)
         {
+            _renderCache = renderCache;
             _model = inModel;
             _gameContext = gameContext;
 
@@ -182,14 +190,14 @@ namespace Everlook.Viewport.Rendering
                 return;
             }
 
-            _shader = _cache.GetShader(EverlookShader.GameModel) as GameModelShader;
+            _shader = _renderCache.GetShader(EverlookShader.GameModel) as GameModelShader;
 
             if (_shader == null)
             {
                 throw new ShaderNullException(typeof(GameModelShader));
             }
 
-            _vertexBuffer = new Buffer<byte>(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw)
+            _vertexBuffer = new Buffer<byte>(this.GL, BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = _model.Vertices.Select(v => v.PackForOpenGL()).SelectMany(b => b).ToArray()
             };
@@ -197,22 +205,43 @@ namespace Everlook.Viewport.Rendering
             var attributePointers = new[]
             {
                 // Position
-                new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, MDXVertex.GetSize(), 0),
+                new VertexAttributePointer(this.GL, 0, 3, VertexAttribPointerType.Float, (uint)MDXVertex.GetSize(), 0),
+
                 // Bone weights
-                new VertexAttributePointer(1, 4, VertexAttribPointerType.UnsignedByte, MDXVertex.GetSize(), 12),
+                new VertexAttributePointer
+                (
+                    this.GL,
+                    1,
+                    4,
+                    VertexAttribPointerType.UnsignedByte,
+                    (uint)MDXVertex.GetSize(),
+                    12
+                ),
+
                 // Bone indexes
-                new VertexAttributePointer(2, 4, VertexAttribPointerType.UnsignedByte, MDXVertex.GetSize(), 16),
+                new VertexAttributePointer
+                (
+                    this.GL,
+                    2,
+                    4,
+                    VertexAttribPointerType.UnsignedByte,
+                    (uint)MDXVertex.GetSize(),
+                    16
+                ),
+
                 // Normal
-                new VertexAttributePointer(3, 3, VertexAttribPointerType.Float, MDXVertex.GetSize(), 20),
+                new VertexAttributePointer(this.GL, 3, 3, VertexAttribPointerType.Float, (uint)MDXVertex.GetSize(), 20),
+
                 // UV1
-                new VertexAttributePointer(4, 2, VertexAttribPointerType.Float, MDXVertex.GetSize(), 32),
+                new VertexAttributePointer(this.GL, 4, 2, VertexAttribPointerType.Float, (uint)MDXVertex.GetSize(), 32),
+
                 // UV2
-                new VertexAttributePointer(5, 2, VertexAttribPointerType.Float, MDXVertex.GetSize(), 40)
+                new VertexAttributePointer(this.GL, 5, 2, VertexAttribPointerType.Float, (uint)MDXVertex.GetSize(), 40)
             };
 
             _vertexBuffer.AttachAttributePointers(attributePointers);
 
-            _boundingBox = new RenderableBoundingBox(_model.BoundingBox, this.ActorTransform);
+            _boundingBox = new RenderableBoundingBox(this.GL, _renderCache, _model.BoundingBox, this.ActorTransform);
             _boundingBox.Initialize();
 
             foreach (var texture in _model.Textures)
@@ -222,7 +251,7 @@ namespace Everlook.Viewport.Rendering
                     _textureLookup.Add
                     (
                         texture.Filename,
-                        _cache.GetTexture(texture, _gameContext)
+                        _renderCache.GetTexture(texture, _gameContext)
                     );
                 }
             }
@@ -234,7 +263,12 @@ namespace Everlook.Viewport.Rendering
                     relativeIndex => skin.VertexIndices[relativeIndex]
                 ).ToArray();
 
-                var skinIndexBuffer = new Buffer<ushort>(BufferTargetARB.ElementArrayBuffer, BufferUsageARB.StaticDraw)
+                var skinIndexBuffer = new Buffer<ushort>
+                (
+                    this.GL,
+                    BufferTargetARB.ElementArrayBuffer,
+                    BufferUsageARB.StaticDraw
+                )
                 {
                     Data = absoluteTriangleVertexIndexes
                 };
@@ -459,7 +493,7 @@ namespace Everlook.Viewport.Rendering
             _shader.SetFragmentShaderType(fragmentShader);
             _shader.SetMaterial(batchMaterial);
 
-            var baseColour = Color4.White;
+            var baseColour = Vector4.One;
             if (renderBatch.ColorIndex >= 0)
             {
                 var colorAnimation = _model.ColourAnimations[renderBatch.ColorIndex];
@@ -471,20 +505,20 @@ namespace Everlook.Viewport.Rendering
                 if (colorAnimation.ColourTrack.IsComposite)
                 {
                     rgb = colorAnimation.ColourTrack.CompositeTimelineValues.First();
-                    alpha = colorAnimation.OpacityTrack.CompositeTimelineValues.First() / 0x7fff;
+                    alpha = (float)colorAnimation.OpacityTrack.CompositeTimelineValues.First() / 0x7fff;
                 }
                 else
                 {
                     rgb = colorAnimation.ColourTrack.Values.First().First();
-                    alpha = colorAnimation.OpacityTrack.Values.First().First() / 0x7fff;
+                    alpha = (float)colorAnimation.OpacityTrack.Values.First().First() / 0x7fff;
                 }
 
-                baseColour = new Color4
+                baseColour = new Vector4
                 (
-                    MathHelper.Clamp(rgb.R, 0.0f, 1.0f),
-                    MathHelper.Clamp(rgb.G, 0.0f, 1.0f),
-                    MathHelper.Clamp(rgb.B, 0.0f, 1.0f),
-                    MathHelper.Clamp(alpha, 0.0f, 1.0f)
+                    Math.Clamp(rgb.R, 0.0f, 1.0f),
+                    Math.Clamp(rgb.G, 0.0f, 1.0f),
+                    Math.Clamp(rgb.B, 0.0f, 1.0f),
+                    Math.Clamp(alpha, 0.0f, 1.0f)
                 );
             }
 
@@ -496,14 +530,14 @@ namespace Everlook.Viewport.Rendering
                 float alphaWeight;
                 if (transparencyAnimation.Weight.IsComposite)
                 {
-                    alphaWeight = transparencyAnimation.Weight.CompositeTimelineValues.First() / 0x7fff;
+                    alphaWeight = (float)transparencyAnimation.Weight.CompositeTimelineValues.First() / 0x7fff;
                 }
                 else
                 {
-                    alphaWeight = transparencyAnimation.Weight.Values.First().First() / 0x7fff;
+                    alphaWeight = (float)transparencyAnimation.Weight.Values.First().First() / 0x7fff;
                 }
 
-                baseColour.A *= alphaWeight;
+                baseColour.W *= alphaWeight;
             }
 
             _shader.SetBaseInputColour(baseColour);
@@ -721,7 +755,7 @@ namespace Everlook.Viewport.Rendering
                 _textureLookup.Add
                 (
                     texturePath,
-                    _cache.GetTexture(texture, _gameContext, texturePath)
+                    _renderCache.GetTexture(texture, _gameContext, texturePath)
                 );
             }
         }
@@ -734,7 +768,7 @@ namespace Everlook.Viewport.Rendering
         {
             if (this.IsDisposed)
             {
-                throw new ObjectDisposedException(ToString());
+                throw new ObjectDisposedException(ToString() ?? nameof(RenderableGameModel));
             }
         }
 
@@ -752,10 +786,9 @@ namespace Everlook.Viewport.Rendering
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            var otherModel = obj as RenderableGameModel;
-            if (otherModel == null)
+            if (!(obj is RenderableGameModel otherModel))
             {
                 return false;
             }

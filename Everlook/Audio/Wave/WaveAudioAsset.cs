@@ -201,7 +201,7 @@ namespace Everlook.Audio.Wave
         {
             if (_isDisposed)
             {
-                throw new ObjectDisposedException(ToString());
+                throw new ObjectDisposedException(ToString() ?? nameof(WaveAudioAsset));
             }
         }
 

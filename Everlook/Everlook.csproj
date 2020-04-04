@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net461</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Platforms>x86</Platforms>
     <DefineConstants>$(DefineConstants);GTK3;</DefineConstants>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\stylecop.ruleset</CodeAnalysisRuleSet>
@@ -68,6 +67,8 @@
     <PackageReference Include="Silk.NET.OpenAL" Version="1.0.1" />
     
     <PackageReference Include="Silk.NET.OpenGL" Version="1.0.1" />
+    
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     
     <PackageReference Include="System.Memory" Version="4.5.4" />
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />

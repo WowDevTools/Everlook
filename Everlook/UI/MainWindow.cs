@@ -891,8 +891,8 @@ namespace Everlook.UI
 
             _viewportWidget.GrabFocus();
 
-            _renderingEngine.InitialMouseX = args.Event.X;
-            _renderingEngine.InitialMouseY = args.Event.Y;
+            _renderingEngine.InitialMouseX = args.Event.XRoot;
+            _renderingEngine.InitialMouseY = args.Event.YRoot;
 
             _renderingEngine.WantsToMove = true;
         }
@@ -1297,8 +1297,6 @@ namespace Everlook.UI
 
             _renderingEngine.SetRenderTarget(null);
             _renderingEngine.Dispose();
-
-            RenderCache.Instance?.Dispose();
 
             _viewportWidget.Dispose();
 

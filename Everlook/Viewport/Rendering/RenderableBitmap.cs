@@ -23,6 +23,7 @@
 using System;
 using System.Drawing;
 using Everlook.Viewport.Rendering.Core;
+using Silk.NET.OpenGL;
 using Warcraft.Core.Structures;
 
 namespace Everlook.Viewport.Rendering
@@ -44,9 +45,12 @@ namespace Everlook.Viewport.Rendering
         /// <summary>
         /// Initializes a new instance of the <see cref="Everlook.Viewport.Rendering.RenderableBitmap"/> class.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        /// <param name="renderCache">The rendering cache.</param>
         /// <param name="inImage">In image.</param>
         /// <param name="inTexturePath">The path under which this renderable texture is stored in the archives.</param>
-        public RenderableBitmap(Bitmap inImage, string inTexturePath)
+        public RenderableBitmap(GL gl, RenderCache renderCache, Bitmap inImage, string inTexturePath)
+            : base(gl, renderCache)
         {
             this.Image = inImage;
             this.TexturePath = inTexturePath;
@@ -62,12 +66,12 @@ namespace Everlook.Viewport.Rendering
                 throw new InvalidOperationException();
             }
 
-            if (Cache.HasCachedTextureForPath(this.TexturePath))
+            if (this.RenderCache.HasCachedTextureForPath(this.TexturePath))
             {
-                return Cache.GetCachedTexture(this.TexturePath);
+                return this.RenderCache.GetCachedTexture(this.TexturePath);
             }
 
-            return Cache.CreateCachedTexture(this.Image, this.TexturePath);
+            return this.RenderCache.CreateCachedTexture(this.Image, this.TexturePath);
         }
 
         /// <inheritdoc />
@@ -85,10 +89,9 @@ namespace Everlook.Viewport.Rendering
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            var otherImage = obj as RenderableBitmap;
-            if (otherImage == null)
+            if (!(obj is RenderableBitmap otherImage))
             {
                 return false;
             }

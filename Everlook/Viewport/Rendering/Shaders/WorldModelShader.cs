@@ -23,7 +23,6 @@
 using System;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders.Components;
-using OpenTK.Graphics.OpenGL;
 using Silk.NET.OpenGL;
 using Warcraft.Core.Shading.Blending;
 using Warcraft.WMO.RootFile.Chunks;
@@ -54,9 +53,11 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// <summary>
         /// Initializes a new instance of the <see cref="WorldModelShader"/> class.
         /// </summary>
-        public WorldModelShader()
+        /// <param name="gl">The OpenGL API.</param>
+        public WorldModelShader(GL gl)
+            : base(gl)
         {
-            this.Wireframe = new SolidWireframe(this.NativeShaderProgramID);
+            this.Wireframe = new SolidWireframe(this.GL, this.NativeShaderProgramID);
         }
 
         /// <summary>
@@ -75,20 +76,20 @@ namespace Everlook.Viewport.Rendering.Shaders
             // Set two-sided rendering
             if (modelMaterial.Flags.HasFlag(MaterialFlags.TwoSided))
             {
-                GL.Disable(EnableCap.CullFace);
+                this.GL.Disable(EnableCap.CullFace);
             }
             else
             {
-                GL.Enable(EnableCap.CullFace);
+                this.GL.Enable(EnableCap.CullFace);
             }
 
             if (BlendingState.EnableBlending[modelMaterial.BlendMode])
             {
-                GL.Enable(EnableCap.Blend);
+                this.GL.Enable(EnableCap.Blend);
             }
             else
             {
-                GL.Disable(EnableCap.Blend);
+                this.GL.Disable(EnableCap.Blend);
             }
 
             var dstA = BlendingState.DestinationAlpha[modelMaterial.BlendMode];
@@ -97,7 +98,7 @@ namespace Everlook.Viewport.Rendering.Shaders
             var dstC = BlendingState.DestinationColour[modelMaterial.BlendMode];
             var srcC = BlendingState.SourceColour[modelMaterial.BlendMode];
 
-            GL.BlendFuncSeparate
+            this.GL.BlendFuncSeparate
             (
                 (BlendingFactor)srcC,
                 (BlendingFactor)dstC,

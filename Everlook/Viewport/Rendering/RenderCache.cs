@@ -26,6 +26,7 @@ using System.IO;
 using Everlook.Utility;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders;
+using JetBrains.Annotations;
 using log4net;
 using Silk.NET.OpenGL;
 using Warcraft.BLP;
@@ -42,7 +43,7 @@ namespace Everlook.Viewport.Rendering
     ///
     /// Currently, these are textures and shader programs.
     /// </summary>
-    public sealed class RenderCache : IDisposable
+    public sealed class RenderCache : GraphicsObject, IDisposable
     {
         /// <summary>
         /// Logger instance for this class.
@@ -82,7 +83,7 @@ namespace Everlook.Viewport.Rendering
                         throw new InvalidOperationException();
                     }
 
-                    _fallbackTextureInternal = new Texture2D(fallbackImage);
+                    _fallbackTextureInternal = new Texture2D(this.GL, fallbackImage);
                 }
 
                 return _fallbackTextureInternal;
@@ -92,16 +93,12 @@ namespace Everlook.Viewport.Rendering
         private Texture2D? _fallbackTextureInternal;
 
         /// <summary>
-        /// A singleton instance of the rendering cache.
+        /// Initializes a new instance of the <see cref="RenderCache"/> class.
         /// </summary>
-        public static readonly RenderCache Instance = new RenderCache();
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="RenderCache"/> class.
-        /// </summary>
-        ~RenderCache()
+        /// <param name="gl">The OpenGL API.</param>
+        public RenderCache([NotNull] GL gl)
+            : base(gl)
         {
-            Dispose();
         }
 
         /// <summary>
@@ -297,14 +294,14 @@ namespace Everlook.Viewport.Rendering
         {
             ThrowIfDisposed();
 
-            var texture = new Texture2D(imageData, wrappingModeS, wrappingModeT);
+            var texture = new Texture2D(this.GL, imageData, wrappingModeS, wrappingModeT);
 
             _textureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), texture);
             return texture;
         }
 
         /// <summary>
-        /// Creates a cached texture for the specifed texture, using the specified path
+        /// Creates a cached texture for the specified texture, using the specified path
         /// as a lookup key. This method will create a new texture, and cache it.
         /// </summary>
         /// <param name="imageData">A bitmap containing the image data.</param>
@@ -316,7 +313,7 @@ namespace Everlook.Viewport.Rendering
         {
             ThrowIfDisposed();
 
-            var texture = new Texture2D(imageData);
+            var texture = new Texture2D(this.GL, imageData);
 
             _textureCache.Add(texturePath.ConvertPathSeparatorsToCurrentNativeSeparator().ToUpperInvariant(), texture);
             return texture;
@@ -340,27 +337,27 @@ namespace Everlook.Viewport.Rendering
             {
                 case EverlookShader.Plain2D:
                 {
-                    shaderProgram = new Plain2DShader();
+                    shaderProgram = new Plain2DShader(this.GL);
                     break;
                 }
                 case EverlookShader.WorldModel:
                 {
-                    shaderProgram = new WorldModelShader();
+                    shaderProgram = new WorldModelShader(this.GL);
                     break;
                 }
                 case EverlookShader.BoundingBox:
                 {
-                    shaderProgram = new BoundingBoxShader();
+                    shaderProgram = new BoundingBoxShader(this.GL);
                     break;
                 }
                 case EverlookShader.GameModel:
                 {
-                    shaderProgram = new GameModelShader();
+                    shaderProgram = new GameModelShader(this.GL);
                     break;
                 }
                 case EverlookShader.BaseGrid:
                 {
-                    shaderProgram = new BaseGridShader();
+                    shaderProgram = new BaseGridShader(this.GL);
                     break;
                 }
                 default:
@@ -385,7 +382,7 @@ namespace Everlook.Viewport.Rendering
         {
             if (this.IsDisposed)
             {
-                throw new ObjectDisposedException(ToString());
+                throw new ObjectDisposedException(ToString() ?? nameof(RenderCache));
             }
         }
 

@@ -23,9 +23,8 @@
 using System;
 using System.Numerics;
 using Everlook.Configuration;
+using Everlook.Utility;
 using Gdk;
-using OpenTK;
-using OpenTK.Input;
 
 namespace Everlook.Viewport.Camera
 {
@@ -57,8 +56,8 @@ namespace Everlook.Viewport.Camera
             {
                 return new Vector3
                 (
-                    MathHelper.RadiansToDegrees(_camera.VerticalViewAngle),
-                    MathHelper.RadiansToDegrees(_camera.HorizontalViewAngle),
+                    (float)MathHelper.RadiansToDegrees(_camera.VerticalViewAngle),
+                    (float)MathHelper.RadiansToDegrees(_camera.HorizontalViewAngle),
                     0
                 );
             }
@@ -106,7 +105,7 @@ namespace Everlook.Viewport.Camera
         /// <param name="deltaMouseX">The motion delta along the X axis of the mouse in the last frame.</param>
         /// <param name="deltaMouseY">The motion delta along the Y axis of the mouse in the last frame.</param>
         /// <param name="deltaTime">The time delta between this frame and the previous one.</param>
-        public void Calculate2DMovement(float deltaMouseX, float deltaMouseY, float deltaTime)
+        public void Calculate2DMovement(double deltaMouseX, double deltaMouseY, float deltaTime)
         {
             const float speedMultiplier = 6.0f;
             if (deltaMouseX < 0)
@@ -135,7 +134,7 @@ namespace Everlook.Viewport.Camera
         /// <param name="deltaMouseX">The motion delta along the X axis of the mouse in the last frame.</param>
         /// <param name="deltaMouseY">The motion delta along the Y axis of the mouse in the last frame.</param>
         /// <param name="deltaTime">The time delta between this frame and the previous one.</param>
-        public void Calculate3DMovement(float deltaMouseX, float deltaMouseY, float deltaTime)
+        public void Calculate3DMovement(double deltaMouseX, double deltaMouseY, float deltaTime)
         {
             // Perform radial movement
             RotateHorizontal
@@ -153,11 +152,11 @@ namespace Everlook.Viewport.Camera
             {
                 if (_camera.VerticalViewAngle > MathHelper.DegreesToRadians(90.0f))
                 {
-                    _camera.VerticalViewAngle = MathHelper.DegreesToRadians(90.0f);
+                    _camera.VerticalViewAngle = MathHelper.DegreesToRadians(90.0);
                 }
-                else if (_camera.VerticalViewAngle < MathHelper.DegreesToRadians(-90.0f))
+                else if (_camera.VerticalViewAngle < MathHelper.DegreesToRadians(-90.0))
                 {
-                    _camera.VerticalViewAngle = MathHelper.DegreesToRadians(-90.0f);
+                    _camera.VerticalViewAngle = MathHelper.DegreesToRadians(-90.0);
                 }
             }
 
@@ -206,7 +205,7 @@ namespace Everlook.Viewport.Camera
         /// Rotates the camera on the horizontal axis by the provided amount of degrees.
         /// </summary>
         /// <param name="degrees">The number of degrees to rotate.</param>
-        public void RotateHorizontal(float degrees)
+        public void RotateHorizontal(double degrees)
         {
             _camera.HorizontalViewAngle += degrees;
         }
@@ -215,7 +214,7 @@ namespace Everlook.Viewport.Camera
         /// Rotates the camera on the vertical axis by the provided amount of degrees.
         /// </summary>
         /// <param name="degrees">The number of degrees to rotate.</param>
-        public void RotateVertical(float degrees)
+        public void RotateVertical(double degrees)
         {
             _camera.VerticalViewAngle += degrees;
         }
@@ -224,54 +223,54 @@ namespace Everlook.Viewport.Camera
         /// Moves the camera up along its local Y axis by <paramref name="distance"/> units.
         /// </summary>
         /// <param name="distance">The distance to move.</param>
-        public void MoveUp(float distance)
+        public void MoveUp(double distance)
         {
-            _camera.Position += _camera.UpVector * Math.Abs(distance);
+            _camera.Position += _camera.UpVector * (float)Math.Abs(distance);
         }
 
         /// <summary>
         /// Moves the camera down along its local Y axis by <paramref name="distance"/> units.
         /// </summary>
         /// <param name="distance">The distance to move.</param>
-        public void MoveDown(float distance)
+        public void MoveDown(double distance)
         {
-            _camera.Position -= _camera.UpVector * Math.Abs(distance);
+            _camera.Position -= _camera.UpVector * (float)Math.Abs(distance);
         }
 
         /// <summary>
         /// Moves the camera forward along its local Z axis by <paramref name="distance"/> units.
         /// </summary>
         /// <param name="distance">The distance to move.</param>
-        public void MoveForward(float distance)
+        public void MoveForward(double distance)
         {
-            _camera.Position += _camera.LookDirectionVector * Math.Abs(distance);
+            _camera.Position += _camera.LookDirectionVector * (float)Math.Abs(distance);
         }
 
         /// <summary>
         /// Moves the camera backwards along its local Z axis by <paramref name="distance"/> units.
         /// </summary>
         /// <param name="distance">The distance to move.</param>
-        public void MoveBackward(float distance)
+        public void MoveBackward(double distance)
         {
-            _camera.Position -= _camera.LookDirectionVector * Math.Abs(distance);
+            _camera.Position -= _camera.LookDirectionVector * (float)Math.Abs(distance);
         }
 
         /// <summary>
         /// Moves the camera left along its local X axis by <paramref name="distance"/> units.
         /// </summary>
         /// <param name="distance">The distance to move.</param>
-        public void MoveLeft(float distance)
+        public void MoveLeft(double distance)
         {
-            _camera.Position -= _camera.RightVector * Math.Abs(distance);
+            _camera.Position -= _camera.RightVector * (float)Math.Abs(distance);
         }
 
         /// <summary>
         /// Moves the camera right along its local X axis by <paramref name="distance"/> units.
         /// </summary>
         /// <param name="distance">The distance to move.</param>
-        public void MoveRight(float distance)
+        public void MoveRight(double distance)
         {
-            _camera.Position += _camera.RightVector * Math.Abs(distance);
+            _camera.Position += _camera.RightVector * (float)Math.Abs(distance);
         }
     }
 }

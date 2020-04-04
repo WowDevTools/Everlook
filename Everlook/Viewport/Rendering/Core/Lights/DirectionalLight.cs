@@ -22,8 +22,6 @@
 
 using System;
 using System.Numerics;
-using OpenTK;
-using OpenTK.Graphics;
 
 namespace Everlook.Viewport.Rendering.Core.Lights
 {
@@ -46,13 +44,20 @@ namespace Everlook.Viewport.Rendering.Core.Lights
         /// <summary>
         /// Gets the vector along which the light shines.
         /// </summary>
-        public Vector3 LightVector => new Vector3
-        (
-            (float)Math.Cos(this.HorizontalAngle) * (float)Math.Cos(this.VerticalAngle),
-            (float)Math.Sin(this.VerticalAngle),
-            (float)Math.Sin(this.HorizontalAngle) * (float)Math.Cos(this.VerticalAngle)
-        )
-        .Normalized();
+        public Vector3 LightVector
+        {
+            get
+            {
+                var vec = new Vector3
+                (
+                    (float)Math.Cos(this.HorizontalAngle) * (float)Math.Cos(this.VerticalAngle),
+                    (float)Math.Sin(this.VerticalAngle),
+                    (float)Math.Sin(this.HorizontalAngle) * (float)Math.Cos(this.VerticalAngle)
+                );
+
+                return vec / vec.Length();
+            }
+        }
 
         /// <summary>
         /// Gets or sets the colour of the light.

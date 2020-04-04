@@ -32,9 +32,9 @@ namespace Everlook.Viewport.Rendering.Core
     /// Represents a native OpenGL data buffer.
     /// </summary>
     /// <typeparam name="T">Any structure.</typeparam>
-    public sealed class Buffer<T> : IDisposable, IBuffer where T : struct
+    public sealed class Buffer<T> : GraphicsObject, IDisposable, IBuffer where T : unmanaged
     {
-        private readonly int _nativeBufferID;
+        private readonly uint _nativeBufferID;
 
         /// <inheritdoc />
         public BufferTargetARB Target { get; }
@@ -43,7 +43,7 @@ namespace Everlook.Viewport.Rendering.Core
         public BufferUsageARB Usage { get; }
 
         /// <inheritdoc />
-        public int Length { get; private set; }
+        public ulong Length { get; private set; }
 
         /// <summary>
         /// Gets the attribute pointers of the buffer.
@@ -59,8 +59,20 @@ namespace Everlook.Viewport.Rendering.Core
             {
                 Bind();
 
-                var bufferData = new T[this.Length / Marshal.SizeOf<T>()];
-                GL.GetBufferSubData(this.Target, IntPtr.Zero, this.Length, bufferData);
+                var bufferData = new T[this.Length / (ulong)Marshal.SizeOf<T>()];
+                unsafe
+                {
+                    fixed (void* ptr = bufferData)
+                    {
+                        this.GL.GetBufferSubData
+                        (
+                            this.Target,
+                            IntPtr.Zero,
+                            new UIntPtr(this.Length),
+                            ptr
+                        );
+                    }
+                }
 
                 return bufferData;
             }
@@ -69,23 +81,32 @@ namespace Everlook.Viewport.Rendering.Core
             {
                 Bind();
 
-                this.Length = value.Length * Marshal.SizeOf<T>();
-                GL.BufferData(this.Target, this.Length, value, this.Usage);
+                this.Length = (ulong)value.Length * (ulong)Marshal.SizeOf<T>();
+
+                unsafe
+                {
+                    fixed (void* ptr = value)
+                    {
+                        this.GL.BufferData(this.Target, new UIntPtr(this.Length), ptr, this.Usage);
+                    }
+                }
             }
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Buffer{T}"/> class.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
         /// <param name="target">The intended use of the buffer.</param>
         /// <param name="usage">A hint as to how the buffer's data might be read or written.</param>
-        public Buffer(BufferTargetARB target, BufferUsageARB usage)
+        public Buffer(GL gl, BufferTargetARB target, BufferUsageARB usage)
+            : base(gl)
         {
             this.Target = target;
             this.Usage = usage;
             this.Attributes = new List<VertexAttributePointer>();
 
-            _nativeBufferID = GL.GenBuffer();
+            _nativeBufferID = this.GL.GenBuffer();
         }
 
         /// <inheritdoc />
@@ -136,13 +157,13 @@ namespace Everlook.Viewport.Rendering.Core
         /// <inheritdoc />
         public void Bind()
         {
-            GL.BindBuffer(this.Target, _nativeBufferID);
+            this.GL.BindBuffer(this.Target, _nativeBufferID);
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            GL.DeleteBuffer(_nativeBufferID);
+            this.GL.DeleteBuffer(_nativeBufferID);
         }
     }
 }

@@ -22,8 +22,8 @@
 
 using System.Numerics;
 using Everlook.Viewport.Rendering.Core;
-using OpenTK;
-using OpenTK.Graphics;
+using JetBrains.Annotations;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Shaders
 {
@@ -47,6 +47,15 @@ namespace Everlook.Viewport.Rendering.Shaders
 
         /// <inheritdoc />
         protected override string? GeometryShaderResourceName => null;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BoundingBoxShader"/> class.
+        /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        public BoundingBoxShader([NotNull] GL gl)
+            : base(gl)
+        {
+        }
 
         /// <summary>
         /// Sets the instancing flag.
@@ -79,9 +88,9 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// Sets the line colour of the bounding box.
         /// </summary>
         /// <param name="colour">The colour to set the lines to.</param>
-        public void SetLineColour(Color4 colour)
+        public void SetLineColour(Vector4 colour)
         {
-            SetColor4(colour, ColourIdentifier);
+            SetVector4(colour, ColourIdentifier);
         }
     }
 }

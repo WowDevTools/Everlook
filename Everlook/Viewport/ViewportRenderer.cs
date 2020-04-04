@@ -22,10 +22,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Everlook.Configuration;
 using Everlook.UI.Widgets;
 using Everlook.Viewport.Camera;
+using Everlook.Viewport.Rendering;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Gdk;
@@ -38,7 +40,7 @@ namespace Everlook.Viewport
     /// Viewport renderer for the main Everlook UI. This class manages an OpenGL rendering thread, which
     /// uses rendering built into the different renderable objects.
     /// </summary>
-    public sealed class ViewportRenderer : IDisposable
+    public sealed class ViewportRenderer : GraphicsObject, IDisposable
     {
         /// <summary>
         /// Logger instance for this class.
@@ -50,6 +52,11 @@ namespace Everlook.Viewport
         /// Used to get proper dimensions for the OpenGL viewport.
         /// </summary>
         private readonly ViewportArea _viewportWidget;
+
+        /// <summary>
+        /// Holds the rendering cache.
+        /// </summary>
+        private readonly RenderCache _renderCache;
 
         /*
             RenderTarget and related control flow data.
@@ -114,7 +121,7 @@ namespace Everlook.Viewport
         /// <summary>
         /// The OpenGL ID of the vertex array valid for the current context.
         /// </summary>
-        private int _vertexArrayID;
+        private uint _vertexArrayID;
 
         /// <summary>
         /// Gets a value indicating whether or not this instance has been initialized and is ready
@@ -145,10 +152,12 @@ namespace Everlook.Viewport
         /// </summary>
         /// <param name="viewportWidget">The widget which the viewport should be rendered to.</param>
         public ViewportRenderer(ViewportArea viewportWidget)
+            : base(viewportWidget.GetAPI())
         {
             _viewportWidget = viewportWidget;
             _camera = new ViewportCamera();
             _movement = new CameraMovement(_camera);
+            _renderCache = new RenderCache(this.GL);
 
             this.IsInitialized = false;
         }
@@ -162,44 +171,55 @@ namespace Everlook.Viewport
 
             Log.Info($"Initializing {nameof(ViewportRenderer)} and setting up default OpenGL state...");
 
-            var numExtensions = GL.GetInteger(GetPName.NumExtensions);
+            var numExtensions = this.GL.GetInteger(GetPName.NumExtensions);
             var extensions = new List<string>();
-            for (var i = 0; i < numExtensions; ++i)
+            for (var i = 0u; i < numExtensions; ++i)
             {
-                extensions.Add(GL.GetString(StringName.Extensions, i));
+                extensions.Add(this.GL.GetString(StringName.Extensions, i));
             }
 
             if (extensions.Contains("GL_KHR_debug"))
             {
-                //GL.Enable(EnableCap.DebugOutput);
-                GL.Enable(EnableCap.DebugOutputSynchronous);
-                GL.DebugMessageCallback(OnGLDebugMessage, IntPtr.Zero);
+                this.GL.Enable(EnableCap.DebugOutputSynchronous);
+
+                unsafe
+                {
+                    this.GL.DebugMessageCallback(OnGLDebugMessage, (void*)0);
+                }
             }
 
             // Generate the vertex array
-            GL.GenVertexArrays(1, out _vertexArrayID);
-            GL.BindVertexArray(_vertexArrayID);
+            unsafe
+            {
+                fixed (uint* ptr = &_vertexArrayID)
+                {
+                    this.GL.GenVertexArrays(1, ptr);
+                }
+            }
+
+            this.GL.BindVertexArray(_vertexArrayID);
 
             // GL.Disable(EnableCap.AlphaTest);
 
             // Make sure we use the depth buffer when drawing
-            GL.Enable(EnableCap.DepthTest);
-            GL.DepthFunc(DepthFunction.Lequal);
-            GL.DepthMask(true);
+            this.GL.Enable(EnableCap.DepthTest);
+            this.GL.DepthFunc(DepthFunction.Lequal);
+            this.GL.DepthMask(true);
 
             // Enable backface culling for performance reasons
-            GL.Enable(EnableCap.CullFace);
+            this.GL.Enable(EnableCap.CullFace);
 
             // Set a simple default blending function
-            GL.Enable(EnableCap.Blend);
-            GL.BlendEquation(BlendEquationModeEXT.FuncAdd);
-            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            this.GL.Enable(EnableCap.Blend);
+            this.GL.BlendEquation(BlendEquationModeEXT.FuncAdd);
+            this.GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             // Initialize the viewport
-            var widgetWidth = _viewportWidget.AllocatedWidth;
-            var widgetHeight = _viewportWidget.AllocatedHeight;
-            GL.Viewport(0, 0, widgetWidth, widgetHeight);
-            GL.ClearColor
+            var widgetWidth = (uint)_viewportWidget.AllocatedWidth;
+            var widgetHeight = (uint)_viewportWidget.AllocatedHeight;
+
+            this.GL.Viewport(0, 0, widgetWidth, widgetHeight);
+            this.GL.ClearColor
             (
                 (float)_configuration.ViewportBackgroundColour.Red,
                 (float)_configuration.ViewportBackgroundColour.Green,
@@ -207,9 +227,9 @@ namespace Everlook.Viewport
                 (float)_configuration.ViewportBackgroundColour.Alpha
             );
 
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            this.GL.Clear((uint)(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit));
 
-            _grid = new BaseGrid();
+            _grid = new BaseGrid(this.GL, _renderCache);
             _grid.Initialize();
 
             this.IsInitialized = true;
@@ -221,7 +241,7 @@ namespace Everlook.Viewport
         /// <param name="colour">The new colour to use.</param>
         public void SetClearColour(RGBA colour)
         {
-            GL.ClearColor
+            this.GL.ClearColor
             (
                 (float)colour.Red,
                 (float)colour.Green,
@@ -232,10 +252,10 @@ namespace Everlook.Viewport
 
         private static void OnGLDebugMessage
         (
-            DebugSource source,
-            DebugType type,
+            GLEnum source,
+            GLEnum type,
             int id,
-            DebugSeverity severity,
+            GLEnum severity,
             int length,
             IntPtr message,
             IntPtr userparam
@@ -259,10 +279,11 @@ namespace Everlook.Viewport
             lock (_renderTargetLock)
             {
                 // Make sure the viewport is accurate for the current widget size on screen
-                var widgetWidth = _viewportWidget.AllocatedWidth;
-                var widgetHeight = _viewportWidget.AllocatedHeight;
-                GL.Viewport(0, 0, widgetWidth, widgetHeight);
-                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+                var widgetWidth = (uint)_viewportWidget.AllocatedWidth;
+                var widgetHeight = (uint)_viewportWidget.AllocatedHeight;
+
+                this.GL.Viewport(0, 0, widgetWidth, widgetHeight);
+                this.GL.Clear((uint)(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit));
 
                 if (!this.HasRenderTarget || this.RenderTarget is null)
                 {
@@ -314,11 +335,16 @@ namespace Everlook.Viewport
         /// </summary>
         private void Calculate2DMovement()
         {
-            var mouseX = Mouse.GetCursorState().X;
-            var mouseY = Mouse.GetCursorState().Y;
+            var mouse = Display.Default.ListDevices().FirstOrDefault(d => d.HasCursor);
+            if (mouse is null)
+            {
+                return;
+            }
 
-            float deltaMouseX = this.InitialMouseX - mouseX;
-            float deltaMouseY = this.InitialMouseY - mouseY;
+            mouse.GetPosition(Screen.Default, out var mouseX, out var mouseY);
+
+            var deltaMouseX = this.InitialMouseX - mouseX;
+            var deltaMouseY = this.InitialMouseY - mouseY;
 
             _movement.Calculate2DMovement(deltaMouseX, deltaMouseY, this.DeltaTime);
 
@@ -332,16 +358,21 @@ namespace Everlook.Viewport
         /// </summary>
         private void Calculate3DMovement()
         {
-            var mouseX = Mouse.GetCursorState().X;
-            var mouseY = Mouse.GetCursorState().Y;
+            var mouse = Display.Default.ListDevices().FirstOrDefault(d => d.HasCursor);
+            if (mouse is null)
+            {
+                return;
+            }
 
-            float deltaMouseX = this.InitialMouseX - mouseX;
-            float deltaMouseY = this.InitialMouseY - mouseY;
+            mouse.GetPosition(Screen.Default, out var mouseX, out var mouseY);
+
+            var deltaMouseX = this.InitialMouseX - mouseX;
+            var deltaMouseY = this.InitialMouseY - mouseY;
 
             _movement.Calculate3DMovement(deltaMouseX, deltaMouseY, this.DeltaTime);
 
             // Return the mouse to its original position
-            Mouse.SetPosition(this.InitialMouseX, this.InitialMouseY);
+            mouse.Warp(Screen.Default, (int)this.InitialMouseX, (int)this.InitialMouseY);
         }
 
         /// <summary>
@@ -374,8 +405,8 @@ namespace Everlook.Viewport
                 {
                     return;
                 }
-                _camera.ViewportWidth = _viewportWidget.AllocatedWidth;
-                _camera.ViewportHeight = _viewportWidget.AllocatedHeight;
+                _camera.ViewportWidth = (uint)_viewportWidget.AllocatedWidth;
+                _camera.ViewportHeight = (uint)_viewportWidget.AllocatedHeight;
 
                 if (this.RenderTarget is IDefaultCameraPositionProvider cameraPositionProvider)
                 {
@@ -396,7 +427,7 @@ namespace Everlook.Viewport
         {
             if (this.IsDisposed)
             {
-                throw new ObjectDisposedException(ToString());
+                throw new ObjectDisposedException(ToString() ?? nameof(ViewportRenderer));
             }
         }
 
@@ -407,7 +438,13 @@ namespace Everlook.Viewport
 
             this.RenderTarget?.Dispose();
 
-            GL.DeleteVertexArrays(1, ref _vertexArrayID);
+            unsafe
+            {
+                fixed (uint* ptr = &_vertexArrayID)
+                {
+                    this.GL.DeleteVertexArrays(1u, ptr);
+                }
+            }
         }
     }
 }
