@@ -324,30 +324,15 @@ namespace Everlook.Package
         }
 
         /// <inheritdoc />
-        [Obsolete]
-        public byte[] ExtractFile(string filePath)
-        {
-            for (var i = _packages.Count - 1; i >= 0; --i)
-            {
-                if (_packages[i].TryExtractFile(filePath, out var data))
-                {
-                    return data;
-                }
-            }
-
-            throw new FileNotFoundException("The specified file was not found in this package group.", filePath);
-        }
-
-        /// <inheritdoc />
         public bool HasFileList()
         {
             return false;
         }
 
         /// <inheritdoc />
-        public IEnumerable<string>? GetFileList()
+        public IEnumerable<string> GetFileList()
         {
-            return null;
+            return new List<string>();
         }
 
         /// <inheritdoc />
@@ -378,18 +363,6 @@ namespace Everlook.Package
             }
 
             return false;
-        }
-
-        /// <inheritdoc />
-        [Obsolete]
-        public MPQFileInfo GetFileInfo(string filePath)
-        {
-            if (!TryGetFileInfo(filePath, out var fileInfo))
-            {
-                throw new FileNotFoundException("The specified file was not found in this package group.", filePath);
-            }
-
-            return fileInfo;
         }
 
         /// <inheritdoc />

@@ -53,7 +53,7 @@ namespace Everlook.Database.Access
                 throw new ArgumentException("The given foreign key is not valid for searching by WMO group ID.");
             }
 
-            return database.FirstOrDefault(x => x.WMOGroupID == groupID.Key);
+            return database.First(x => x?.WMOGroupID == groupID.Key) ?? throw new InvalidOperationException();
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Everlook.Database.Access
                 throw new ArgumentException("The given foreign key is not valid for searching by WMO ID.");
             }
 
-            return database.FirstOrDefault(x => x.WMOID == wmoID.Key);
+            return database.First(x => x?.WMOID == wmoID.Key) ?? throw new InvalidOperationException();
         }
     }
 }

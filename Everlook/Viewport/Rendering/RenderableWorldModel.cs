@@ -143,10 +143,10 @@ namespace Everlook.Viewport.Rendering
             new Dictionary<string, List<ActorInstanceSet<RenderableGameModel>>>();
 
         /// <inheritdoc />
-        public int PolygonCount => _model.Groups.Sum(g => g.GroupData.VertexIndices.VertexIndices.Count / 3);
+        public int PolygonCount => _model.Groups.Sum(g => g.GroupData.VertexIndices!.VertexIndices.Count / 3);
 
         /// <inheritdoc />
-        public int VertexCount => _model.Groups.Sum(g => g.GroupData.Vertices.Vertices.Count);
+        public int VertexCount => _model.Groups.Sum(g => g.GroupData.Vertices!.Vertices.Count);
 
         /// <inheritdoc />
         public bool IsInitialized { get; set; }
@@ -341,7 +341,7 @@ namespace Everlook.Viewport.Rendering
                     doodadSetInstanceGroups.Add(instanceSet);
                 }
 
-                _doodadSets.Add(doodadSet.Name, doodadSetInstanceGroups);
+                _doodadSets.Add(doodadSet.Name!, doodadSetInstanceGroups);
             }
         }
 
@@ -469,7 +469,7 @@ namespace Everlook.Viewport.Rendering
                 return;
             }
 
-            foreach (var doodadInstanceSet in _doodadSets[this.DoodadSet])
+            foreach (var doodadInstanceSet in _doodadSets[this.DoodadSet!])
             {
                 doodadInstanceSet.ShouldRenderBounds = this.ShouldRenderBounds;
             }
@@ -538,7 +538,7 @@ namespace Everlook.Viewport.Rendering
                 _shader.SetMVPMatrix(modelViewProjection);
 
                 // Set the texture as the first diffuse texture in unit 0
-                var texture = _renderCache.GetCachedTexture(modelMaterial.DiffuseTexture);
+                var texture = _renderCache.GetCachedTexture(modelMaterial.DiffuseTexture!);
                 texture.WrappingMode = modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClampS)
                     ? TextureWrapMode.ClampToBorder
                     : TextureWrapMode.Repeat;
@@ -572,7 +572,7 @@ namespace Everlook.Viewport.Rendering
         /// <returns>The names of the doodad sets.</returns>
         public IEnumerable<string> GetDoodadSetNames()
         {
-            return _model.RootInformation.DoodadSets.DoodadSets.Select(ds => ds.Name);
+            return _model.RootInformation.DoodadSets.DoodadSets.Select(ds => ds.Name!);
         }
 
         /// <summary>

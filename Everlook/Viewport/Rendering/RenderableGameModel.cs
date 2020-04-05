@@ -101,10 +101,10 @@ namespace Everlook.Viewport.Rendering
         public Transform ActorTransform { get; set; }
 
         /// <inheritdoc />
-        public int PolygonCount => (int)_model.Skins.Sum(s => s.Triangles.Count / 3);
+        public int PolygonCount => (int)_model.Skins!.Sum(s => s.Triangles!.Count / 3);
 
         /// <inheritdoc />
-        public int VertexCount => (int)_model.Vertices.Count;
+        public int VertexCount => (int)_model.Vertices!.Count;
 
         private readonly string? _modelPath;
         private readonly RenderCache _renderCache;
@@ -199,7 +199,7 @@ namespace Everlook.Viewport.Rendering
 
             _vertexBuffer = new Buffer<byte>(this.GL, BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw)
             {
-                Data = _model.Vertices.Select(v => v.PackForOpenGL()).SelectMany(b => b).ToArray()
+                Data = _model.Vertices!.Select(v => v.PackForOpenGL()).SelectMany(b => b).ToArray()
             };
 
             var attributePointers = new[]
@@ -244,7 +244,7 @@ namespace Everlook.Viewport.Rendering
             _boundingBox = new RenderableBoundingBox(this.GL, _renderCache, _model.BoundingBox, this.ActorTransform);
             _boundingBox.Initialize();
 
-            foreach (var texture in _model.Textures)
+            foreach (var texture in _model.Textures!)
             {
                 if (!_textureLookup.ContainsKey(texture.Filename))
                 {
@@ -256,11 +256,11 @@ namespace Everlook.Viewport.Rendering
                 }
             }
 
-            foreach (var skin in _model.Skins)
+            foreach (var skin in _model.Skins!)
             {
-                var absoluteTriangleVertexIndexes = skin.Triangles.Select
+                var absoluteTriangleVertexIndexes = skin.Triangles!.Select
                 (
-                    relativeIndex => skin.VertexIndices[relativeIndex]
+                    relativeIndex => skin.VertexIndices![relativeIndex]
                 ).ToArray();
 
                 var skinIndexBuffer = new Buffer<ushort>
@@ -281,7 +281,7 @@ namespace Everlook.Viewport.Rendering
                 }
 
                 // In models earlier than Cata, we need to calculate the shader selector value at runtime.
-                foreach (var renderBatch in skin.RenderBatches)
+                foreach (var renderBatch in skin.RenderBatches!)
                 {
                     var shaderSelector = MDXShaderHelper.GetRuntimeShaderID
                     (
@@ -349,7 +349,7 @@ namespace Everlook.Viewport.Rendering
                 this.GL.Enable(EnableCap.Blend);
             }
 
-            foreach (var skin in _model.Skins)
+            foreach (var skin in _model.Skins!)
             {
                 _skinIndexArrayBuffers[skin].Bind();
                 if (this.ShouldRenderWireframe)
@@ -358,7 +358,7 @@ namespace Everlook.Viewport.Rendering
                     this.GL.Enable(EnableCap.Blend);
                 }
 
-                foreach (var renderBatch in skin.RenderBatches)
+                foreach (var renderBatch in skin.RenderBatches!)
                 {
                     if (renderBatch.ShaderID == 0xFFFFu)
                     {
@@ -367,7 +367,7 @@ namespace Everlook.Viewport.Rendering
 
                     PrepareBatchForRender(renderBatch);
 
-                    var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
+                    var skinSection = skin.Sections![renderBatch.SkinSectionIndex];
 
                     unsafe
                     {
@@ -433,7 +433,7 @@ namespace Everlook.Viewport.Rendering
                 this.GL.Enable(EnableCap.Blend);
             }
 
-            foreach (var skin in _model.Skins)
+            foreach (var skin in _model.Skins!)
             {
                 _skinIndexArrayBuffers[skin].Bind();
                 if (this.ShouldRenderWireframe)
@@ -442,7 +442,7 @@ namespace Everlook.Viewport.Rendering
                     this.GL.Enable(EnableCap.Blend);
                 }
 
-                foreach (var renderBatch in skin.RenderBatches)
+                foreach (var renderBatch in skin.RenderBatches!)
                 {
                     if (renderBatch.ShaderID == 0xFFFFu)
                     {
@@ -451,7 +451,7 @@ namespace Everlook.Viewport.Rendering
 
                     PrepareBatchForRender(renderBatch);
 
-                    var skinSection = skin.Sections[renderBatch.SkinSectionIndex];
+                    var skinSection = skin.Sections![renderBatch.SkinSectionIndex];
                     unsafe
                     {
                         this.GL.DrawElements
@@ -472,7 +472,7 @@ namespace Everlook.Viewport.Rendering
             }
 
             // Release the attribute arrays
-            _vertexBuffer.DisableAttributes();
+            _vertexBuffer?.DisableAttributes();
         }
 
         /// <summary>
@@ -484,7 +484,7 @@ namespace Everlook.Viewport.Rendering
         {
             var fragmentShader = MDXShaderHelper.GetFragmentShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
             var vertexShader = MDXShaderHelper.GetVertexShaderType(renderBatch.TextureCount, renderBatch.ShaderID);
-            var batchMaterial = _model.Materials[renderBatch.MaterialIndex];
+            var batchMaterial = _model.Materials![renderBatch.MaterialIndex];
 
             if (_shader is null)
             {
@@ -498,7 +498,7 @@ namespace Everlook.Viewport.Rendering
             var baseColour = Vector4.One;
             if (renderBatch.ColorIndex >= 0)
             {
-                var colorAnimation = _model.ColourAnimations[renderBatch.ColorIndex];
+                var colorAnimation = _model.ColourAnimations![renderBatch.ColorIndex];
 
                 // TODO: Sample based on animated values
                 RGB rgb;
@@ -506,13 +506,13 @@ namespace Everlook.Viewport.Rendering
 
                 if (colorAnimation.ColourTrack.IsComposite)
                 {
-                    rgb = colorAnimation.ColourTrack.CompositeTimelineValues.First();
-                    alpha = (float)colorAnimation.OpacityTrack.CompositeTimelineValues.First() / 0x7fff;
+                    rgb = colorAnimation.ColourTrack.CompositeTimelineValues!.First();
+                    alpha = (float)colorAnimation.OpacityTrack.CompositeTimelineValues!.First() / 0x7fff;
                 }
                 else
                 {
-                    rgb = colorAnimation.ColourTrack.Values.First().First();
-                    alpha = (float)colorAnimation.OpacityTrack.Values.First().First() / 0x7fff;
+                    rgb = colorAnimation.ColourTrack.Values!.First().First();
+                    alpha = (float)colorAnimation.OpacityTrack.Values!.First().First() / 0x7fff;
                 }
 
                 baseColour = new Vector4
@@ -526,17 +526,17 @@ namespace Everlook.Viewport.Rendering
 
             if ((short)renderBatch.TransparencyLookupTableIndex >= 0)
             {
-                var transparencyAnimationIndex = _model.TransparencyLookupTable[renderBatch.TransparencyLookupTableIndex];
-                var transparencyAnimation = _model.TransparencyAnimations[transparencyAnimationIndex];
+                var transparencyAnimationIndex = _model.TransparencyLookupTable![renderBatch.TransparencyLookupTableIndex];
+                var transparencyAnimation = _model.TransparencyAnimations![transparencyAnimationIndex];
 
                 float alphaWeight;
                 if (transparencyAnimation.Weight.IsComposite)
                 {
-                    alphaWeight = (float)transparencyAnimation.Weight.CompositeTimelineValues.First() / 0x7fff;
+                    alphaWeight = (float)transparencyAnimation.Weight.CompositeTimelineValues!.First() / 0x7fff;
                 }
                 else
                 {
-                    alphaWeight = (float)transparencyAnimation.Weight.Values.First().First() / 0x7fff;
+                    alphaWeight = (float)transparencyAnimation.Weight.Values!.First().First() / 0x7fff;
                 }
 
                 baseColour.W *= alphaWeight;
@@ -544,9 +544,9 @@ namespace Everlook.Viewport.Rendering
 
             _shader.SetBaseInputColour(baseColour);
 
-            var textureIndexes = _model.TextureLookupTable.Skip(renderBatch.TextureLookupTableIndex)
+            var textureIndexes = _model.TextureLookupTable!.Skip(renderBatch.TextureLookupTableIndex)
                 .Take(renderBatch.TextureCount);
-            var textures = _model.Textures.Where((t, i) => textureIndexes.Contains((short)i)).ToList();
+            var textures = _model.Textures!.Where((t, i) => textureIndexes.Contains((short)i)).ToList();
 
             for (var i = 0; i < textures.Count; ++i)
             {
@@ -626,7 +626,7 @@ namespace Everlook.Viewport.Rendering
                 r =>
                 string.Equals
                 (
-                    Path.ChangeExtension(r.ModelPath.Value, "mdx"),
+                    Path.ChangeExtension(r!.ModelPath.Value, "mdx"),
                     Path.ChangeExtension(_modelPath, "mdx"),
                     StringComparison.InvariantCultureIgnoreCase
                 )
@@ -638,13 +638,13 @@ namespace Everlook.Viewport.Rendering
             }
 
             // Then flatten out their IDs
-            var modelDataRecordIDs = modelDataRecords.Select(r => r.ID).ToList();
+            var modelDataRecordIDs = modelDataRecords.Select(r => r!.ID).ToList();
 
             // Then get any display info record which references this model
             var displayInfoDatabase = _gameContext.Database.GetDatabase<CreatureDisplayInfoRecord>();
             var modelDisplayRecords = displayInfoDatabase.Where
             (
-                r => modelDataRecordIDs.Contains(r.Model.Key)
+                r => modelDataRecordIDs.Contains(r!.Model.Key)
             ).ToList();
 
             if (!modelDisplayRecords.Any())
@@ -660,6 +660,11 @@ namespace Everlook.Viewport.Rendering
             // Finally, return any record with a unique set of textures
             foreach (var displayRecord in modelDisplayRecords)
             {
+                if (displayRecord is null)
+                {
+                    continue;
+                }
+
                 if (textureListMapping.ContainsKey(displayRecord.TextureVariations))
                 {
                     continue;
@@ -700,7 +705,7 @@ namespace Everlook.Viewport.Rendering
         {
             this.CurrentDisplayInfo = _gameContext.Database.GetDatabase<CreatureDisplayInfoRecord>()
                 .GetRecordByID(variationID);
-            CacheDisplayInfo(this.CurrentDisplayInfo);
+            CacheDisplayInfo(this.CurrentDisplayInfo!);
         }
 
         /// <summary>
@@ -714,7 +719,7 @@ namespace Everlook.Viewport.Rendering
                 throw new InvalidOperationException();
             }
 
-            foreach (var texture in _model.Textures)
+            foreach (var texture in _model.Textures!)
             {
                 int textureIndex;
                 switch (texture.TextureType)

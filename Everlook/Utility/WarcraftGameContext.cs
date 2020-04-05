@@ -91,11 +91,11 @@ namespace Everlook.Utility
         }
 
         /// <inheritdoc />
-        public FileReference? GetReferenceForPath(string path)
+        public FileReference? GetReferenceForPath(string? path)
         {
             if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentNullException(nameof(path));
+                return null;
             }
 
             var treePath = this.FileTree.GetPath(path);

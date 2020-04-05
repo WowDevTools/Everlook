@@ -180,13 +180,6 @@ namespace Everlook.Package
         }
 
         /// <inheritdoc />
-        [Obsolete]
-        public byte[]? ExtractFile(string filePath)
-        {
-            return _package?.ExtractFile(filePath);
-        }
-
-        /// <inheritdoc />
         public bool HasFileList()
         {
             if (_package is null)
@@ -229,21 +222,6 @@ namespace Everlook.Package
             }
 
             return _package.TryGetFileInfo(filePath, out fileInfo);
-        }
-
-        /// <inheritdoc />
-        [Obsolete]
-        public MPQFileInfo? GetFileInfo(string filePath)
-        {
-            try
-            {
-                return _package?.GetFileInfo(filePath);
-            }
-            catch (FileNotFoundException)
-            {
-                // TODO: YUCK
-                return null;
-            }
         }
 
         /// <inheritdoc />

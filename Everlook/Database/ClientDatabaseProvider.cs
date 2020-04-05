@@ -97,7 +97,7 @@ namespace Everlook.Database
         public T GetRecordByID<T>(int id) where T : DBCRecord, new()
         {
             var database = GetDatabase<T>();
-            return database.GetRecordByID(id);
+            return database.GetRecordByID(id) ?? throw new InvalidOperationException();
         }
 
         /// <summary>
@@ -141,7 +141,10 @@ namespace Everlook.Database
             var specificDBCType = genericDBCType.MakeGenericType(GetRecordTypeFromDatabaseName(databaseName));
 
             var databasePath = GetDatabasePackagePath(databaseName);
-            var databaseData = _contentSource.ExtractFile(databasePath);
+            if (!_contentSource.TryExtractFile(databasePath, out var databaseData))
+            {
+                throw new InvalidOperationException();
+            }
 
             if (!(Activator.CreateInstance(specificDBCType, _version, databaseData) is IDBC database))
             {

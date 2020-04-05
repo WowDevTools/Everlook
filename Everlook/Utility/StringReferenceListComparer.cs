@@ -34,16 +34,6 @@ namespace Everlook.Utility
         /// <inheritdoc />
         public bool Equals(IReadOnlyList<StringReference> x, IReadOnlyList<StringReference> y)
         {
-            if (x is null && y is null)
-            {
-                return true;
-            }
-
-            if (x is null || y is null)
-            {
-                return false;
-            }
-
             if (x.Count != y.Count)
             {
                 return false;
@@ -80,7 +70,7 @@ namespace Everlook.Utility
 
                 foreach (var reference in obj)
                 {
-                    hash *= 23 + reference.Value.GetHashCode();
+                    hash *= 23 + (reference.Value?.GetHashCode()).GetValueOrDefault();
                     hash *= 23 + reference.Offset.GetHashCode();
                 }
 
