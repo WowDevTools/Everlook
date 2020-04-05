@@ -193,11 +193,6 @@ namespace Everlook.Package
         /// <exception cref="ArgumentNullException">Thrown if the package is null.</exception>
         public void AddPackage(PackageInteractionHandler package)
         {
-            if (package is null)
-            {
-                throw new ArgumentNullException(nameof(package));
-            }
-
             if (_packages.Contains(package))
             {
                 return;
@@ -252,7 +247,7 @@ namespace Everlook.Package
             }
 
             var package = GetPackageByName(fileReference.PackageName);
-            return !(package is null) && package.TryExtractReference(fileReference, out data);
+            return package.TryExtractReference(fileReference, out data);
         }
 
         /// <summary>

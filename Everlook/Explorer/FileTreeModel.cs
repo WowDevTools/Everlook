@@ -127,11 +127,6 @@ namespace Everlook.Explorer
         /// <returns>A set of all the child references of the given reference.</returns>
         public IEnumerable<FileReference> EnumerateFilesOfReference(FileReference fileReference)
         {
-            if (fileReference is null)
-            {
-                yield break;
-            }
-
             if (fileReference.IsFile)
             {
                 yield return fileReference;

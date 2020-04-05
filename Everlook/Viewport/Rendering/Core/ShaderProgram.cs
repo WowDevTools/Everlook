@@ -174,11 +174,6 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="texture">The texture to bind.</param>
         public void BindTexture2D(TextureUnit textureUnit, TextureUniform uniform, Texture2D texture)
         {
-            if (texture is null)
-            {
-                throw new ArgumentNullException(nameof(texture));
-            }
-
             Enable();
 
             var textureVariableHandle = this.GL.GetUniformLocation(this.NativeShaderProgramID, uniform.ToString());

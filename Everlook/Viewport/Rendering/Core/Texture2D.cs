@@ -115,11 +115,6 @@ namespace Everlook.Viewport.Rendering.Core
         public Texture2D(GL gl, Bitmap imageData, TextureWrapMode wrapMode = TextureWrapMode.Repeat)
             : this(gl)
         {
-            if (imageData is null)
-            {
-                throw new ArgumentNullException(nameof(imageData));
-            }
-
             CreateFromBitmap(imageData);
 
             this.MagnificationFilter = TextureMagFilter.Linear;

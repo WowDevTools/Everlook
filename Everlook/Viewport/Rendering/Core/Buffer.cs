@@ -112,11 +112,6 @@ namespace Everlook.Viewport.Rendering.Core
         /// <inheritdoc />
         public void AttachAttributePointer(VertexAttributePointer attributePointer)
         {
-            if (attributePointer is null)
-            {
-                throw new ArgumentNullException(nameof(attributePointer));
-            }
-
             Bind();
             this.Attributes.Add(attributePointer);
         }
@@ -124,11 +119,6 @@ namespace Everlook.Viewport.Rendering.Core
         /// <inheritdoc />
         public void AttachAttributePointers(IEnumerable<VertexAttributePointer> attributePointers)
         {
-            if (attributePointers is null)
-            {
-                throw new ArgumentNullException(nameof(attributePointers));
-            }
-
             Bind();
             foreach (var attributePointer in attributePointers)
             {

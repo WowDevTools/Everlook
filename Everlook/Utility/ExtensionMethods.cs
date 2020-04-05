@@ -40,11 +40,6 @@ namespace Everlook.Utility
         /// <param name="notebook">The notebook to clear the pages from.</param>
         public static void ClearPages(this Gtk.Notebook notebook)
         {
-            if (notebook is null)
-            {
-                throw new ArgumentNullException(nameof(notebook));
-            }
-
             while (notebook.NPages > 0)
             {
                 notebook.RemovePage(-1);

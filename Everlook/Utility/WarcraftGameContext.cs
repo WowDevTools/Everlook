@@ -56,16 +56,6 @@ namespace Everlook.Utility
         /// <exception cref="ArgumentNullException">Thrown if the assets or the file tree are null.</exception>
         public WarcraftGameContext(WarcraftVersion version, PackageGroup assets, FileTreeModel fileTree)
         {
-            if (assets is null)
-            {
-                throw new ArgumentNullException(nameof(assets));
-            }
-
-            if (fileTree is null)
-            {
-                throw new ArgumentNullException(nameof(fileTree));
-            }
-
             this.Version = version;
             this.Assets = assets;
             this.FileTree = fileTree;

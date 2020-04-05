@@ -707,11 +707,6 @@ namespace Everlook.Viewport.Rendering
         /// <param name="displayInfoRecord">The display info record to cache.</param>
         private void CacheDisplayInfo(CreatureDisplayInfoRecord displayInfoRecord)
         {
-            if (displayInfoRecord is null)
-            {
-                throw new ArgumentNullException(nameof(displayInfoRecord));
-            }
-
             if (_modelPath is null)
             {
                 throw new InvalidOperationException();

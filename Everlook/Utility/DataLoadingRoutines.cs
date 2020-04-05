@@ -58,11 +58,6 @@ namespace Everlook.Utility
         /// <returns>A WMO object.</returns>
         public static WMO LoadWorldModel(FileReference fileReference)
         {
-            if (fileReference is null)
-            {
-                throw new ArgumentNullException(nameof(fileReference));
-            }
-
             WMO worldModel;
             try
             {
@@ -201,11 +196,6 @@ namespace Everlook.Utility
         /// <returns>A BLP object containing the image data pointed to by the reference.</returns>
         public static BLP LoadBinaryImage(FileReference fileReference)
         {
-            if (fileReference is null)
-            {
-                throw new ArgumentNullException(nameof(fileReference));
-            }
-
             BLP image;
             try
             {
@@ -329,11 +319,6 @@ namespace Everlook.Utility
         /// <returns>An object containing the model data pointed to by the reference.</returns>
         public static MDX LoadGameModel(FileReference fileReference)
         {
-            if (fileReference is null)
-            {
-                throw new ArgumentNullException(nameof(fileReference));
-            }
-
             MDX model;
             try
             {
