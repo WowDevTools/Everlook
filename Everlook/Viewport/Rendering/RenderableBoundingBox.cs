@@ -63,7 +63,7 @@ namespace Everlook.Viewport.Rendering
         /// </summary>
         private bool IsDisposed { get; set; }
 
-        private Box _boundingBoxData;
+        private readonly Box _boundingBoxData;
         private Buffer<Vector3>? _vertexBuffer;
         private Buffer<byte>? _vertexIndexesBuffer;
 

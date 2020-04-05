@@ -58,7 +58,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         /// <param name="point">The point from which to measure the distance.</param>
         /// <returns>The distance between the point and the plane.</returns>
-        public float Distance(Vector3 point)
+        public readonly float Distance(Vector3 point)
         {
             return Vector3.Dot(this.Normal, point - this.PointOnPlane);
         }

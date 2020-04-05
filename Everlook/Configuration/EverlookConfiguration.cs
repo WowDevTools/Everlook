@@ -56,7 +56,7 @@ namespace Everlook.Configuration
         private readonly object _writeLock = new object();
 
         private readonly FileIniDataParser _defaultParser = new FileIniDataParser();
-        private IniData _configurationData;
+        private readonly IniData _configurationData;
 
         /// <summary>
         /// Gets or sets the sprinting speed multiplier.

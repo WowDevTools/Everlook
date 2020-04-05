@@ -57,7 +57,7 @@ namespace Everlook.Viewport.Rendering
         /// <summary>
         /// Holds the render cache.
         /// </summary>
-        private RenderCache _renderCache;
+        private readonly RenderCache _renderCache;
 
         /// <summary>
         /// Gets or sets a value indicating whether this object has been disposed.
@@ -539,14 +539,9 @@ namespace Everlook.Viewport.Rendering
 
                 // Set the texture as the first diffuse texture in unit 0
                 var texture = _renderCache.GetCachedTexture(modelMaterial.DiffuseTexture);
-                if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClampS))
-                {
-                    texture.WrappingMode = TextureWrapMode.ClampToBorder;
-                }
-                else
-                {
-                    texture.WrappingMode = TextureWrapMode.Repeat;
-                }
+                texture.WrappingMode = modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClampS)
+                    ? TextureWrapMode.ClampToBorder
+                    : TextureWrapMode.Repeat;
 
                 _shader.BindTexture2D(TextureUnit.Texture0, TextureUniform.Texture0, texture);
 

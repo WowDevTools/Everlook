@@ -125,59 +125,55 @@ namespace Everlook.Audio.Wave
                 throw new ArgumentException("The file data could not be extracted.", nameof(fileReference));
             }
 
-            using (var ms = new MemoryStream(fileBytes))
+            using var ms = new MemoryStream(fileBytes);
+            using var br = new BinaryReader(ms);
+            var signature = new string(br.ReadChars(4));
+            if (signature != "RIFF")
             {
-                using (var br = new BinaryReader(ms))
-                {
-                    var signature = new string(br.ReadChars(4));
-                    if (signature != "RIFF")
-                    {
-                        throw new NotSupportedException("The file data is not a wave file.");
-                    }
-
-                    // Skip chunk size
-                    br.BaseStream.Position += 4;
-
-                    var format = new string(br.ReadChars(4));
-                    if (format != "WAVE")
-                    {
-                        throw new NotSupportedException("The file data is not a wave file.");
-                    }
-
-                    var formatSignature = new string(br.ReadChars(4));
-                    if (formatSignature != "fmt ")
-                    {
-                        throw new NotSupportedException("The file data is not a wave file.");
-                    }
-
-                    // Skip format chunk size
-                    br.BaseStream.Position += 4;
-
-                    // Skip audio format
-                    br.BaseStream.Position += 2;
-
-                    this.Channels = br.ReadInt16();
-                    this.SampleRate = br.ReadInt32();
-
-                    // Skip byte rate
-                    br.BaseStream.Position += 4;
-
-                    // Skip block alignment
-                    br.BaseStream.Position += 2;
-
-                    this.BitsPerSample = br.ReadInt16();
-
-                    var dataSignature = new string(br.ReadChars(4));
-                    if (dataSignature != "data")
-                    {
-                        throw new NotSupportedException("The file data is not a wave file.");
-                    }
-
-                    var dataChunkSize = br.ReadInt32();
-
-                    this.PCMStream = new MemoryStream(br.ReadBytes(dataChunkSize));
-                }
+                throw new NotSupportedException("The file data is not a wave file.");
             }
+
+            // Skip chunk size
+            br.BaseStream.Position += 4;
+
+            var format = new string(br.ReadChars(4));
+            if (format != "WAVE")
+            {
+                throw new NotSupportedException("The file data is not a wave file.");
+            }
+
+            var formatSignature = new string(br.ReadChars(4));
+            if (formatSignature != "fmt ")
+            {
+                throw new NotSupportedException("The file data is not a wave file.");
+            }
+
+            // Skip format chunk size
+            br.BaseStream.Position += 4;
+
+            // Skip audio format
+            br.BaseStream.Position += 2;
+
+            this.Channels = br.ReadInt16();
+            this.SampleRate = br.ReadInt32();
+
+            // Skip byte rate
+            br.BaseStream.Position += 4;
+
+            // Skip block alignment
+            br.BaseStream.Position += 2;
+
+            this.BitsPerSample = br.ReadInt16();
+
+            var dataSignature = new string(br.ReadChars(4));
+            if (dataSignature != "data")
+            {
+                throw new NotSupportedException("The file data is not a wave file.");
+            }
+
+            var dataChunkSize = br.ReadInt32();
+
+            this.PCMStream = new MemoryStream(br.ReadBytes(dataChunkSize));
         }
 
         /// <summary>
