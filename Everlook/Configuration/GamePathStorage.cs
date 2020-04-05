@@ -71,10 +71,8 @@ namespace Everlook.Configuration
                 int formatVersion;
                 using (var fs = File.OpenRead(GetPathStoragePath()))
                 {
-                    using (var br = new BinaryReader(fs))
-                    {
-                        formatVersion = br.ReadInt32();
-                    }
+                    using var br = new BinaryReader(fs);
+                    formatVersion = br.ReadInt32();
                 }
 
                 if (formatVersion != FormatVersion)
@@ -104,21 +102,19 @@ namespace Everlook.Configuration
         /// <param name="pathToStore">Path to store.</param>
         public void StorePath(string alias, WarcraftVersion version, string pathToStore)
         {
-            if (!this.GamePaths.Contains((alias, version, pathToStore)))
+            if (this.GamePaths.Contains((alias, version, pathToStore)))
             {
-                lock (_storageLock)
-                {
-                    using (var fs = File.Open(GetPathStoragePath(), FileMode.Append, FileAccess.Write))
-                    {
-                        using (var bw = new BinaryWriter(fs))
-                        {
-                            bw.WriteNullTerminatedString(alias);
-                            bw.Write((uint)version);
-                            bw.WriteNullTerminatedString(pathToStore);
-                            bw.Flush();
-                        }
-                    }
-                }
+                return;
+            }
+
+            lock (_storageLock)
+            {
+                using var fs = File.Open(GetPathStoragePath(), FileMode.Append, FileAccess.Write);
+                using var bw = new BinaryWriter(fs);
+                bw.WriteNullTerminatedString(alias);
+                bw.Write((uint)version);
+                bw.WriteNullTerminatedString(pathToStore);
+                bw.Flush();
             }
         }
 
@@ -131,26 +127,24 @@ namespace Everlook.Configuration
         public void RemoveStoredPath(string alias, WarcraftVersion version, string pathToRemove)
         {
             var storedPaths = this.GamePaths;
-            if (storedPaths.Contains((alias, version, pathToRemove)))
+            if (!storedPaths.Contains((alias, version, pathToRemove)))
             {
-                ClearPaths();
-                lock (_storageLock)
-                {
-                    storedPaths.Remove((alias, version, pathToRemove));
+                return;
+            }
 
-                    using (var fs = File.Open(GetPathStoragePath(), FileMode.Append, FileAccess.Write))
-                    {
-                        using (var bw = new BinaryWriter(fs))
-                        {
-                            foreach ((var remainingAlias, var remainingVersion, var remainingPath) in storedPaths)
-                            {
-                                bw.WriteNullTerminatedString(remainingAlias);
-                                bw.Write((uint)remainingVersion);
-                                bw.WriteNullTerminatedString(remainingPath);
-                                bw.Flush();
-                            }
-                        }
-                    }
+            ClearPaths();
+            lock (_storageLock)
+            {
+                storedPaths.Remove((alias, version, pathToRemove));
+
+                using var fs = File.Open(GetPathStoragePath(), FileMode.Append, FileAccess.Write);
+                using var bw = new BinaryWriter(fs);
+                foreach (var (remainingAlias, remainingVersion, remainingPath) in storedPaths)
+                {
+                    bw.WriteNullTerminatedString(remainingAlias);
+                    bw.Write((uint)remainingVersion);
+                    bw.WriteNullTerminatedString(remainingPath);
+                    bw.Flush();
                 }
             }
         }
@@ -162,29 +156,25 @@ namespace Everlook.Configuration
             {
                 try
                 {
-                    using (var fs = File.OpenRead(GetPathStoragePath()))
+                    using var fs = File.OpenRead(GetPathStoragePath());
+                    using var br = new BinaryReader(fs);
+                    var formatVersion = br.ReadInt32();
+                    if (formatVersion != FormatVersion)
                     {
-                        using (var br = new BinaryReader(fs))
+                        Log.Warn("Read an unsupported path store version. Aborting.");
+                    }
+                    else
+                    {
+                        while (br.BaseStream.Position != br.BaseStream.Length)
                         {
-                            var formatVersion = br.ReadInt32();
-                            if (formatVersion != FormatVersion)
-                            {
-                                Log.Warn("Read an unsupported path store version. Aborting.");
-                            }
-                            else
-                            {
-                                while (br.BaseStream.Position != br.BaseStream.Length)
-                                {
-                                    storedPaths.Add
-                                    (
-                                        (
-                                            br.ReadNullTerminatedString(),
-                                            (WarcraftVersion)br.ReadUInt32(),
-                                            br.ReadNullTerminatedString()
-                                        )
-                                    );
-                                }
-                            }
+                            storedPaths.Add
+                            (
+                                (
+                                    br.ReadNullTerminatedString(),
+                                    (WarcraftVersion)br.ReadUInt32(),
+                                    br.ReadNullTerminatedString()
+                                )
+                            );
                         }
                     }
                 }
@@ -204,13 +194,9 @@ namespace Everlook.Configuration
             {
                 File.Delete(GetPathStoragePath());
 
-                using (var fs = File.Create(GetPathStoragePath()))
-                {
-                    using (var bw = new BinaryWriter(fs))
-                    {
-                        bw.Write(FormatVersion);
-                    }
-                }
+                using var fs = File.Create(GetPathStoragePath());
+                using var bw = new BinaryWriter(fs);
+                bw.Write(FormatVersion);
             }
         }
 

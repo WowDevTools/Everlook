@@ -50,15 +50,13 @@ namespace Everlook.UI
         /// <returns>An initialized instance of the EverlookDirectoryExportDialog class.</returns>
         public static EverlookDirectoryExportDialog Create(FileReference inExportTarget)
         {
-            using (var builder = new Builder(null, "Everlook.interfaces.EverlookDirectoryExport.glade", null))
-            {
-                return new EverlookDirectoryExportDialog
-                (
-                    builder,
-                    builder.GetObject("EverlookDirectoryExportDialog").Handle,
-                    inExportTarget
-                );
-            }
+            using var builder = new Builder(null, "Everlook.interfaces.EverlookDirectoryExport.glade", null);
+            return new EverlookDirectoryExportDialog
+            (
+                builder,
+                builder.GetObject("EverlookDirectoryExportDialog").Handle,
+                inExportTarget
+            );
         }
 
         /// <summary>

@@ -1050,15 +1050,13 @@ namespace Everlook.UI
                 }
                 case WarcraftFileType.BinaryImage:
                 {
-                    using (var exportDialog = EverlookImageExportDialog.Create(fileReference))
+                    using var exportDialog = EverlookImageExportDialog.Create(fileReference);
+                    if (exportDialog.Run() == (int)ResponseType.Ok)
                     {
-                        if (exportDialog.Run() == (int)ResponseType.Ok)
-                        {
-                            exportDialog.RunExport();
-                        }
-
-                        exportDialog.Hide();
+                        exportDialog.RunExport();
                     }
+
+                    exportDialog.Hide();
                     break;
                 }
             }
@@ -1097,28 +1095,26 @@ namespace Everlook.UI
         /// <param name="e">E.</param>
         private async void OnPreferencesButtonClicked(object? sender, EventArgs e)
         {
-            using (var preferencesDialog = EverlookPreferences.Create())
+            using var preferencesDialog = EverlookPreferences.Create();
+            preferencesDialog.TransientFor = this;
+            if (preferencesDialog.Run() == (int)ResponseType.Ok)
             {
-                preferencesDialog.TransientFor = this;
-                if (preferencesDialog.Run() == (int)ResponseType.Ok)
-                {
-                    preferencesDialog.SavePreferences();
-                }
+                preferencesDialog.SavePreferences();
+            }
 
-                preferencesDialog.Hide();
+            preferencesDialog.Hide();
 
-                // Commit the changes
-                ReloadViewportBackground();
+            // Commit the changes
+            ReloadViewportBackground();
 
-                if (preferencesDialog.DidGameListChange)
-                {
-                    await ReloadGames();
-                }
+            if (preferencesDialog.DidGameListChange)
+            {
+                await ReloadGames();
+            }
 
-                if (preferencesDialog.ShouldRefilterTree)
-                {
-                    await RefilterTrees();
-                }
+            if (preferencesDialog.ShouldRefilterTree)
+            {
+                await RefilterTrees();
             }
         }
 
@@ -1165,13 +1161,15 @@ namespace Everlook.UI
                             File.Delete(exportpath);
                         }
 
-                        using
+                        await using var fs = new FileStream
                         (
-                            var fs = new FileStream(exportpath, FileMode.CreateNew, FileAccess.Write, FileShare.None)
-                        )
-                        {
-                            await fs.WriteAsync(file, 0, file.Length);
-                        }
+                            exportpath,
+                            FileMode.CreateNew,
+                            FileAccess.Write,
+                            FileShare.None
+                        );
+
+                        await fs.WriteAsync(file, 0, file.Length);
                     }
                     catch (UnauthorizedAccessException unex)
                     {

@@ -275,20 +275,22 @@ namespace Everlook.Viewport.Rendering
 
                 _skinIndexArrayBuffers.Add(skin, skinIndexBuffer);
 
-                if (_model.Version <= WarcraftVersion.Wrath)
+                if (_model.Version > WarcraftVersion.Wrath)
                 {
-                    // In models earlier than Cata, we need to calculate the shader selector value at runtime.
-                    foreach (var renderBatch in skin.RenderBatches)
-                    {
-                        var shaderSelector = MDXShaderHelper.GetRuntimeShaderID
-                        (
-                            renderBatch.ShaderID,
-                            renderBatch,
-                            _model
-                        );
+                    continue;
+                }
 
-                        renderBatch.ShaderID = shaderSelector;
-                    }
+                // In models earlier than Cata, we need to calculate the shader selector value at runtime.
+                foreach (var renderBatch in skin.RenderBatches)
+                {
+                    var shaderSelector = MDXShaderHelper.GetRuntimeShaderID
+                    (
+                        renderBatch.ShaderID,
+                        renderBatch,
+                        _model
+                    );
+
+                    renderBatch.ShaderID = shaderSelector;
                 }
             }
 

@@ -369,13 +369,13 @@ namespace Everlook.Explorer
             var currentIndex = parentNode.ChildOffsets.IndexOf(currentOffset);
             var nextIndex = currentIndex + 1;
 
-            if (nextIndex < (int)parentNode.ChildCount)
+            if (nextIndex >= (int)parentNode.ChildCount)
             {
-                iter.UserData = new IntPtr((long)parentNode.ChildOffsets[nextIndex]);
-                return true;
+                return false;
             }
 
-            return false;
+            iter.UserData = new IntPtr((long)parentNode.ChildOffsets[nextIndex]);
+            return true;
         }
 
         /// <summary>
@@ -399,13 +399,13 @@ namespace Everlook.Explorer
             var currentIndex = parentNode.ChildOffsets.IndexOf(currentOffset);
             var previousIndex = currentIndex - 1;
 
-            if (previousIndex >= 0 && previousIndex < (int)parentNode.ChildCount)
+            if (previousIndex < 0 || previousIndex >= (int)parentNode.ChildCount)
             {
-                iter.UserData = new IntPtr((long)parentNode.ChildOffsets[previousIndex]);
-                return true;
+                return false;
             }
 
-            return false;
+            iter.UserData = new IntPtr((long)parentNode.ChildOffsets[previousIndex]);
+            return true;
         }
 
         /// <summary>

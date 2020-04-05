@@ -75,16 +75,18 @@ namespace Everlook.Viewport.Rendering
             {
                 ThrowIfDisposed();
 
-                if (_fallbackTextureInternal is null)
+                if (!(_fallbackTextureInternal is null))
                 {
-                    var fallbackImage = ResourceManager.GetFallbackImage();
-                    if (fallbackImage is null)
-                    {
-                        throw new InvalidOperationException();
-                    }
-
-                    _fallbackTextureInternal = new Texture2D(this.GL, fallbackImage);
+                    return _fallbackTextureInternal;
                 }
+
+                var fallbackImage = ResourceManager.GetFallbackImage();
+                if (fallbackImage is null)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                _fallbackTextureInternal = new Texture2D(this.GL, fallbackImage);
 
                 return _fallbackTextureInternal;
             }
@@ -262,11 +264,9 @@ namespace Everlook.Viewport.Rendering
                         return this.FallbackTexture;
                     }
 
-                    using (var ms = new MemoryStream(data))
-                    {
-                        var texture = new Bitmap(ms);
-                        return CreateCachedTexture(texture, texturePath);
-                    }
+                    using var ms = new MemoryStream(data);
+                    var texture = new Bitmap(ms);
+                    return CreateCachedTexture(texture, texturePath);
                 }
             }
 

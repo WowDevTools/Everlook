@@ -218,12 +218,14 @@ namespace Everlook.Viewport.Rendering
             // Load the textures used in this model
             foreach (var texture in _model.GetTextures())
             {
-                if (!string.IsNullOrEmpty(texture))
+                if (string.IsNullOrEmpty(texture))
                 {
-                    if (!_textureLookup.ContainsKey(texture))
-                    {
-                        _textureLookup.Add(texture, _renderCache.GetTexture(texture, _gameContext.Assets));
-                    }
+                    continue;
+                }
+
+                if (!_textureLookup.ContainsKey(texture))
+                {
+                    _textureLookup.Add(texture, _renderCache.GetTexture(texture, _gameContext.Assets));
                 }
             }
 
@@ -462,17 +464,19 @@ namespace Everlook.Viewport.Rendering
                 }
             }
 
-            if (this.ShouldRenderDoodads)
+            if (!this.ShouldRenderDoodads)
             {
-                foreach (var doodadInstanceSet in _doodadSets[this.DoodadSet])
-                {
-                    doodadInstanceSet.ShouldRenderBounds = this.ShouldRenderBounds;
-                }
+                return;
+            }
 
-                foreach (var doodadInstanceSet in _doodadSets[this.DoodadSet])
-                {
-                    doodadInstanceSet.Render(viewMatrix, projectionMatrix, camera);
-                }
+            foreach (var doodadInstanceSet in _doodadSets[this.DoodadSet])
+            {
+                doodadInstanceSet.ShouldRenderBounds = this.ShouldRenderBounds;
+            }
+
+            foreach (var doodadInstanceSet in _doodadSets[this.DoodadSet])
+            {
+                doodadInstanceSet.Render(viewMatrix, projectionMatrix, camera);
             }
 
             // TODO: Summarize the render batches from each group that has the same material ID

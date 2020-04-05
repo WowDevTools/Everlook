@@ -72,10 +72,8 @@ namespace Everlook.UI
         /// <returns>An initialized instance of the EverlookGameLoadingDialog class.</returns>
         public static EverlookGameLoadingDialog Create(Window parent)
         {
-            using (var builder = new Builder(null, "Everlook.interfaces.EverlookGameLoadingDialog.glade", null))
-            {
-                return new EverlookGameLoadingDialog(builder, builder.GetObject("_gameLoadingDialog").Handle, parent);
-            }
+            using var builder = new Builder(null, "Everlook.interfaces.EverlookGameLoadingDialog.glade", null);
+            return new EverlookGameLoadingDialog(builder, builder.GetObject("_gameLoadingDialog").Handle, parent);
         }
 
         private EverlookGameLoadingDialog(Builder builder, IntPtr handle, Window parent)
@@ -166,13 +164,11 @@ namespace Everlook.UI
                     return;
                 }
 
-                using (var sr = new StreamReader(shaderStream))
+                using var sr = new StreamReader(shaderStream);
+                while (sr.BaseStream.Length > sr.BaseStream.Position)
                 {
-                    while (sr.BaseStream.Length > sr.BaseStream.Position)
-                    {
-                        // Add italics to all jokes. Jokes are in Pango markup format
-                        _jokes.Add($"<i>{sr.ReadLine()}</i>");
-                    }
+                    // Add italics to all jokes. Jokes are in Pango markup format
+                    _jokes.Add($"<i>{sr.ReadLine()}</i>");
                 }
             }
 

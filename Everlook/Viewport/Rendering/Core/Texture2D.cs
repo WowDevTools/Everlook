@@ -194,18 +194,14 @@ namespace Everlook.Viewport.Rendering.Core
                 finally
                 {
                     // Load a fallback bitmap instead
-                    using (var mipZero = imageData.GetMipMap(0))
-                    {
-                        CreateFromImage(mipZero);
-                    }
+                    using var mipZero = imageData.GetMipMap(0);
+                    CreateFromImage(mipZero);
                 }
             }
             else
             {
-                using (var mipZero = imageData.GetMipMap(0))
-                {
-                    CreateFromImage(mipZero);
-                }
+                using var mipZero = imageData.GetMipMap(0);
+                CreateFromImage(mipZero);
             }
 
             this.MagnificationFilter = magFilter;

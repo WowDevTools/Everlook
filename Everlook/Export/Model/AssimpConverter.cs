@@ -99,15 +99,17 @@ namespace Everlook.Export.Model
                         mesh.TextureCoordinateChannels[0].Add(new Vector3D(vertex.UV1.X, vertex.UV1.Y, 0.0f));
                         mesh.TextureCoordinateChannels[1].Add(new Vector3D(vertex.UV2.X, vertex.UV2.Y, 0.0f));
 
-                        if (mesh.HasBones)
+                        if (!mesh.HasBones)
                         {
-                            for (var boneAttributeIndex = 0; boneAttributeIndex < 4; ++boneAttributeIndex)
-                            {
-                                var bone = mesh.Bones[vertex.BoneIndices[boneAttributeIndex]];
+                            continue;
+                        }
 
-                                var weight = vertex.BoneWeights[boneAttributeIndex];
-                                bone.VertexWeights.Add(new VertexWeight(i, weight));
-                            }
+                        for (var boneAttributeIndex = 0; boneAttributeIndex < 4; ++boneAttributeIndex)
+                        {
+                            var bone = mesh.Bones[vertex.BoneIndices[boneAttributeIndex]];
+
+                            var weight = vertex.BoneWeights[boneAttributeIndex];
+                            bone.VertexWeights.Add(new VertexWeight(i, weight));
                         }
                     }
 

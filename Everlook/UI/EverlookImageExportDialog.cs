@@ -64,15 +64,13 @@ namespace Everlook.UI
         /// <returns>An initialized instance of the EverlookImageExportDialog class.</returns>
         public static EverlookImageExportDialog Create(FileReference inExportTarget)
         {
-            using (var builder = new Builder(null, "Everlook.interfaces.EverlookImageExport.glade", null))
-            {
-                return new EverlookImageExportDialog
-                (
-                    builder,
-                    builder.GetObject("EverlookImageExportDialog").Handle,
-                    inExportTarget
-                );
-            }
+            using var builder = new Builder(null, "Everlook.interfaces.EverlookImageExport.glade", null);
+            return new EverlookImageExportDialog
+            (
+                builder,
+                builder.GetObject("EverlookImageExportDialog").Handle,
+                inExportTarget
+            );
         }
 
         /// <summary>
@@ -174,14 +172,12 @@ namespace Everlook.UI
 
                         var fullExportPath = $"{exportPath}_{i}.{formatExtension}";
 
-                        using (var fs = File.OpenWrite(fullExportPath))
-                        {
-                            _image.GetMipMap((uint)i).Save
-                            (
-                                fs,
-                                GetImageEncoderFromFormat((ImageFormat)_exportFormatComboBox.Active)
-                            );
-                        }
+                        using var fs = File.OpenWrite(fullExportPath);
+                        _image.GetMipMap((uint)i).Save
+                        (
+                            fs,
+                            GetImageEncoderFromFormat((ImageFormat)_exportFormatComboBox.Active)
+                        );
                     }
 
                     ++i;
@@ -240,12 +236,14 @@ namespace Everlook.UI
         [GLib.ConnectBefore]
         protected void OnMipListingButtonPressed(object? sender, ButtonPressEventArgs e)
         {
-            if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
+            if (e.Event.Type != EventType.ButtonPress || e.Event.Button != 3)
             {
-                _exportPopupMenu.ShowAll();
-
-                _exportPopupMenu.PopupAtPointer(e.Event);
+                return;
             }
+
+            _exportPopupMenu.ShowAll();
+
+            _exportPopupMenu.PopupAtPointer(e.Event);
         }
 
         /// <summary>

@@ -257,12 +257,10 @@ namespace Everlook.Explorer
                 var treeClosureCopy = tree;
                 tree = await Task.Run(() => optimizer.OptimizeTree(treeClosureCopy, optimizeTreeProgress, ct), ct);
 
-                using (var fs = File.OpenWrite(packageTreeFilePath))
+                await using (var fs = File.OpenWrite(packageTreeFilePath))
                 {
-                    using (var serializer = new TreeSerializer(fs))
-                    {
-                        await serializer.SerializeAsync(tree, ct);
-                    }
+                    using var serializer = new TreeSerializer(fs);
+                    await serializer.SerializeAsync(tree, ct);
                 }
 
                 nodeTree = new SerializedTree(File.OpenRead(packageTreeFilePath));
@@ -309,13 +307,11 @@ namespace Everlook.Explorer
                 sb.Append(packageSize);
             }
 
-            using (var md5 = MD5.Create())
-            {
-                var input = Encoding.UTF8.GetBytes(sb.ToString());
-                var hash = md5.ComputeHash(input);
+            using var md5 = MD5.Create();
+            var input = Encoding.UTF8.GetBytes(sb.ToString());
+            var hash = md5.ComputeHash(input);
 
-                return BitConverter.ToString(hash);
-            }
+            return BitConverter.ToString(hash);
         }
     }
 }

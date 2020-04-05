@@ -20,7 +20,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using System;
 using System.Numerics;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders.Components;
