@@ -30,8 +30,11 @@ using Everlook.Viewport.Rendering;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Gdk;
+using Gtk;
 using log4net;
 using Silk.NET.OpenGL;
+using Key = Gdk.Key;
+using Window = Gtk.Window;
 
 namespace Everlook.Viewport
 {
@@ -186,8 +189,22 @@ namespace Everlook.Viewport
                     return;
                 }
 
-                this.CurrentMouseX = args.Event.X;
-                this.CurrentMouseY = args.Event.Y;
+                if
+                (
+                    Math.Abs(args.Event.X - this.InitialMouseX) < 1.0f &&
+                    Math.Abs(args.Event.Y - this.InitialMouseY) < 1.0f
+                )
+                {
+                    // When we warp the mouse, there may be some floating-point errors. We take a tolerance of one
+                    // pixel, and reset the current to initial if we're within that tolerance.
+                    this.CurrentMouseX = this.InitialMouseX;
+                    this.CurrentMouseY = this.InitialMouseY;
+                }
+                else
+                {
+                    this.CurrentMouseX = args.Event.X;
+                    this.CurrentMouseY = args.Event.Y;
+                }
             };
 
             _viewportWidget.KeyPressEvent += (o, args) =>
@@ -482,18 +499,23 @@ namespace Everlook.Viewport
 
             _movement.Calculate3DMovement(deltaMouseX, deltaMouseY, this.DeltaTime);
 
-            // Return the mouse to its original position
-            /*motionEvent.Device.Warp
+            _viewportWidget.Toplevel.Window.GetOrigin(out var windowX, out var windowY);
+            _viewportWidget.TranslateCoordinates
             (
-                motionEvent.Window.Screen,
-                (int)(motionEvent.XRoot - deltaMouseX),
-                (int)(motionEvent.YRoot - deltaMouseY)
+                _viewportWidget.Toplevel,
+                0,
+                0,
+                out var widgetX,
+                out var widgetY
             );
-            */
 
-            // Update the initial location for the next frame
-            this.InitialMouseX = this.CurrentMouseX;
-            this.InitialMouseY = this.CurrentMouseY;
+            // Return the mouse to its original position
+            Display.Default.DeviceManager.ClientPointer.Warp
+            (
+                Screen.Default,
+                (int)(windowX + this.InitialMouseX + widgetX),
+                (int)(windowY + this.InitialMouseY + widgetY)
+            );
         }
 
         /// <summary>

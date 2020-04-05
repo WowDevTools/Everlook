@@ -973,6 +973,9 @@ namespace Everlook.UI
             _renderingEngine.InitialMouseX = args.Event.X;
             _renderingEngine.InitialMouseY = args.Event.Y;
 
+            _renderingEngine.CurrentMouseX = args.Event.X;
+            _renderingEngine.CurrentMouseY = args.Event.Y;
+
             _renderingEngine.WantsToMove = true;
         }
 
