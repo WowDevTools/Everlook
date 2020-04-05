@@ -89,7 +89,7 @@
 
     <ItemGroup>
         <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113" PrivateAssets="all" />
-        <PackageReference Include="Nullable" Version="1.2.0" PrivateAssets="all" />
+        <PackageReference Include="Nullable" Version="1.2.1" PrivateAssets="all" />
     </ItemGroup>
 
     <!-- JetBrains Annotations -->

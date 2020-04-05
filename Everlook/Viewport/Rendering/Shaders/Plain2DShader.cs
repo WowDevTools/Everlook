@@ -20,9 +20,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System.Numerics;
 using Everlook.Viewport.Rendering.Core;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using JetBrains.Annotations;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Shaders
 {
@@ -41,6 +42,15 @@ namespace Everlook.Viewport.Rendering.Shaders
 
         /// <inheritdoc />
         protected override string? GeometryShaderResourceName => null;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Plain2DShader"/> class.
+        /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        public Plain2DShader([NotNull] GL gl)
+            : base(gl)
+        {
+        }
 
         /// <summary>
         /// Sets the channel mask of the shader.

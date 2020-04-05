@@ -1,5 +1,5 @@
 //
-//  AmbientLight.cs
+//  MathHelper.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -20,23 +20,33 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using System.Numerics;
+using System;
 
-namespace Everlook.Viewport.Rendering.Core.Lights
+namespace Everlook.Utility
 {
     /// <summary>
-    /// Represents an ambient light source.
+    /// Various mathematical helper functions.
     /// </summary>
-    public class AmbientLight
+    public static class MathHelper
     {
         /// <summary>
-        /// Gets or sets the colour of the light.
+        /// Converts degrees to radians.
         /// </summary>
-        public Vector4 LightColour { get; set; }
+        /// <param name="degrees">The value in degrees.</param>
+        /// <returns>The value in radians.</returns>
+        public static double DegreesToRadians(double degrees)
+        {
+            return degrees * (Math.PI / 180.0);
+        }
 
         /// <summary>
-        /// Gets or sets the intensity, in lux, of the light.
+        /// Converts radians to degrees.
         /// </summary>
-        public float Intensity { get; set; }
+        /// <param name="radians">The value in radians.</param>
+        /// <returns>The value in degrees.</returns>
+        public static double RadiansToDegrees(double radians)
+        {
+            return radians / (Math.PI / 180.0);
+        }
     }
 }

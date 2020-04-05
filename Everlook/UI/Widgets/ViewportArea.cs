@@ -22,11 +22,9 @@
 
 using System;
 using System.ComponentModel;
-using System.Threading;
 using Gdk;
 using Gtk;
-using OpenTK;
-using OpenTK.Graphics;
+using Silk.NET.OpenGL;
 
 namespace Everlook.UI.Widgets
 {
@@ -34,14 +32,12 @@ namespace Everlook.UI.Widgets
     /// The <see cref="ViewportArea"/> is a GTK widget for which an OpenGL context can be used to draw arbitrary
     /// graphics.
     /// </summary>
-    [CLSCompliant(false)]
     [ToolboxItem(true)]
     public class ViewportArea : GLArea
     {
-        private static int _graphicsContextCount;
-        private static bool _isSharedContextInitialized;
+        private readonly bool _isDebugEnabled;
+        private readonly bool _isForwardCompatible;
 
-        private IGraphicsContext? _tkGraphicsContext;
         private bool _isInitialized;
 
         /// <summary>
@@ -55,69 +51,56 @@ namespace Everlook.UI.Widgets
         public double DeltaTime { get; private set; }
 
         /// <summary>
-        /// Gets the context flags used in the creation of this widget.
+        /// Called when this <see cref="ViewportArea"/> has finished initializing.
         /// </summary>
-        public GraphicsContextFlags ContextFlags { get; }
+        public event EventHandler? Initialized;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewportArea"/> class.
         /// </summary>
-        public ViewportArea()
-            : this(GraphicsMode.Default)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ViewportArea"/> class. The given <see cref="GraphicsMode"/> is
-        /// used to hint the area about context creation.
-        /// </summary>
-        /// <param name="graphicsMode">
-        /// The <see cref="GraphicsMode"/> which the widget should be constructed with.
-        /// </param>
-        public ViewportArea(GraphicsMode graphicsMode)
-            : this(graphicsMode, 1, 0, GraphicsContextFlags.Default)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ViewportArea"/> class.
-        /// </summary>
-        /// <param name="graphicsMode">
-        /// The <see cref="GraphicsMode"/> which the widget should be constructed with.
-        /// </param>
-        /// <param name="glVersionMajor">The major OpenGL version to attempt to initialize.</param>
-        /// <param name="glVersionMinor">The minor OpenGL version to attempt to initialize.</param>
-        /// <param name="contextFlags">
-        /// Any flags which should be used during initialization of the <see cref="GraphicsContext"/>.
-        /// </param>
+        /// <param name="glVersionMajor">The major version of OpenGL to request.</param>
+        /// <param name="glVersionMinor">The minor version of OpenGL to request.</param>
+        /// <param name="isDebugEnabled">Whether the OpenGL context should be debuggable.</param>
+        /// <param name="isForwardCompatible">Whether the OpenGL context should be forward compatible.</param>
+        /// <param name="withDepthBuffer">Whether the viewport area should have a depth buffer.</param>
+        /// <param name="withStencilBuffer">Whether the viewport area should have a stencil buffer.</param>
+        /// <param name="withAlpha">Whether the viewport area should have an alpha channel.</param>
         public ViewportArea
         (
-            GraphicsMode graphicsMode,
             int glVersionMajor,
             int glVersionMinor,
-            GraphicsContextFlags contextFlags
+            bool isDebugEnabled = false,
+            bool isForwardCompatible = false,
+            bool withDepthBuffer = true,
+            bool withStencilBuffer = true,
+            bool withAlpha = true
         )
         {
-            this.ContextFlags = contextFlags;
+            _isDebugEnabled = isDebugEnabled;
+            _isForwardCompatible = isForwardCompatible;
 
             AddTickCallback(UpdateFrameTime);
 
             SetRequiredVersion(glVersionMajor, glVersionMinor);
 
-            if (graphicsMode.Depth > 0)
+            this.HasDepthBuffer = withDepthBuffer;
+            this.HasStencilBuffer = withStencilBuffer;
+            this.HasAlpha = withAlpha;
+        }
+
+        /// <summary>
+        /// Gets an instance of the OpenGL API.
+        /// </summary>
+        /// <returns>The API instance.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the viewport area has not been initialized.</exception>
+        public GL GetAPI()
+        {
+            if (_isInitialized)
             {
-                this.HasDepthBuffer = true;
+                return GL.GetApi();
             }
 
-            if (graphicsMode.Stencil > 0)
-            {
-                this.HasStencilBuffer = true;
-            }
-
-            if (graphicsMode.ColorFormat.Alpha > 0)
-            {
-                this.HasAlpha = true;
-            }
+            throw new InvalidOperationException();
         }
 
         /// <summary>
@@ -152,21 +135,17 @@ namespace Everlook.UI.Widgets
 
             GetRequiredVersion(out var major, out var minor);
             gdkGLContext.SetRequiredVersion(major, minor);
-
-            gdkGLContext.DebugEnabled = this.ContextFlags.HasFlag(GraphicsContextFlags.Debug);
-            gdkGLContext.ForwardCompatible = this.ContextFlags.HasFlag(GraphicsContextFlags.ForwardCompatible);
+            gdkGLContext.DebugEnabled = _isDebugEnabled;
+            gdkGLContext.ForwardCompatible = _isForwardCompatible;
 
             gdkGLContext.Realize();
             return gdkGLContext;
         }
 
-        /// <inheritdoc />
-        public override void Destroy()
+        /// <inheritdoc/>
+        protected override void OnDestroyed()
         {
-            GC.SuppressFinalize(this);
             Dispose(true);
-
-            base.Destroy();
         }
 
         /// <inheritdoc />
@@ -180,53 +159,6 @@ namespace Everlook.UI.Widgets
             }
 
             MakeCurrent();
-            OnShuttingDown();
-            if (!GraphicsContext.ShareContexts || (Interlocked.Decrement(ref _graphicsContextCount) != 0))
-            {
-                return;
-            }
-
-            OnGraphicsContextShuttingDown();
-            _isSharedContextInitialized = false;
-        }
-
-        /// <summary>
-        /// Called when the first <see cref="GraphicsContext"/> is created in the case where
-        /// GraphicsContext.ShareContexts == true;
-        /// </summary>
-        public static event EventHandler? GraphicsContextInitialized;
-
-        /// <summary>
-        /// Called when the first <see cref="GraphicsContext"/> is being destroyed in the case where
-        /// GraphicsContext.ShareContext == true;
-        /// </summary>
-        public static event EventHandler? GraphicsContextShuttingDown;
-
-        /// <summary>
-        /// Called when this <see cref="ViewportArea"/> has finished initializing and has a valid
-        /// <see cref="GraphicsContext"/>.
-        /// </summary>
-        public event EventHandler? Initialized;
-
-        /// <summary>
-        /// Called when this <see cref="ViewportArea"/> is being disposed.
-        /// </summary>
-        public event EventHandler? ShuttingDown;
-
-        /// <summary>
-        /// Invokes the <see cref="GraphicsContextInitialized"/> event.
-        /// </summary>
-        private static void OnGraphicsContextInitialized()
-        {
-            GraphicsContextInitialized?.Invoke(null, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Invokes the <see cref="GraphicsContextShuttingDown"/> event.
-        /// </summary>
-        private static void OnGraphicsContextShuttingDown()
-        {
-            GraphicsContextShuttingDown?.Invoke(null, EventArgs.Empty);
         }
 
         /// <summary>
@@ -235,14 +167,6 @@ namespace Everlook.UI.Widgets
         protected virtual void OnInitialized()
         {
             this.Initialized?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Invokes the <see cref="ShuttingDown"/> event.
-        /// </summary>
-        protected virtual void OnShuttingDown()
-        {
-            this.ShuttingDown?.Invoke(this, EventArgs.Empty);
         }
 
         /// <inheritdoc />
@@ -258,8 +182,7 @@ namespace Everlook.UI.Widgets
         }
 
         /// <summary>
-        /// Initializes the <see cref="ViewportArea"/> with its given values and creates a
-        /// <see cref="GraphicsContext"/>.
+        /// Initializes the <see cref="ViewportArea"/> with its given values.
         /// </summary>
         private void Initialize()
         {
@@ -267,31 +190,6 @@ namespace Everlook.UI.Widgets
 
             // Make the GDK GL context current
             MakeCurrent();
-
-            // Create a dummy context that will grab the GdkGLContext that is current on the thread
-            _tkGraphicsContext = new GraphicsContext(ContextHandle.Zero, null);
-
-            if (this.ContextFlags.HasFlag(GraphicsContextFlags.Debug))
-            {
-                _tkGraphicsContext.ErrorChecking = true;
-            }
-
-            if (GraphicsContext.ShareContexts)
-            {
-                Interlocked.Increment(ref _graphicsContextCount);
-
-                if (!_isSharedContextInitialized)
-                {
-                    _isSharedContextInitialized = true;
-                    ((IGraphicsContextInternal)_tkGraphicsContext).LoadAll();
-                    OnGraphicsContextInitialized();
-                }
-            }
-            else
-            {
-                ((IGraphicsContextInternal)_tkGraphicsContext).LoadAll();
-                OnGraphicsContextInitialized();
-            }
 
             OnInitialized();
         }

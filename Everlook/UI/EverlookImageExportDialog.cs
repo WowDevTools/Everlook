@@ -64,15 +64,13 @@ namespace Everlook.UI
         /// <returns>An initialized instance of the EverlookImageExportDialog class.</returns>
         public static EverlookImageExportDialog Create(FileReference inExportTarget)
         {
-            using (var builder = new Builder(null, "Everlook.interfaces.EverlookImageExport.glade", null))
-            {
-                return new EverlookImageExportDialog
-                (
-                    builder,
-                    builder.GetObject("EverlookImageExportDialog").Handle,
-                    inExportTarget
-                );
-            }
+            using var builder = new Builder(null, "Everlook.interfaces.EverlookImageExport.glade", null);
+            return new EverlookImageExportDialog
+            (
+                builder,
+                builder.GetObject("EverlookImageExportDialog").Handle,
+                inExportTarget
+            );
         }
 
         /// <summary>
@@ -110,7 +108,11 @@ namespace Everlook.UI
 
             this.Title = $"Export Image | {imageFilename}";
 
-            var file = _exportTarget.Extract();
+            if (!_exportTarget.TryExtract(out var file))
+            {
+                throw new ArgumentException("The file data could not be extracted.", nameof(_exportTarget));
+            }
+
             _image = new BLP(file);
 
             _exportFormatComboBox.Active = (int)_config.DefaultImageExportFormat;
@@ -170,14 +172,12 @@ namespace Everlook.UI
 
                         var fullExportPath = $"{exportPath}_{i}.{formatExtension}";
 
-                        using (var fs = File.OpenWrite(fullExportPath))
-                        {
-                            _image.GetMipMap((uint)i).Save
-                            (
-                                fs,
-                                GetImageEncoderFromFormat((ImageFormat)_exportFormatComboBox.Active)
-                            );
-                        }
+                        using var fs = File.OpenWrite(fullExportPath);
+                        _image.GetMipMap((uint)i).Save
+                        (
+                            fs,
+                            GetImageEncoderFromFormat((ImageFormat)_exportFormatComboBox.Active)
+                        );
                     }
 
                     ++i;
@@ -234,15 +234,16 @@ namespace Everlook.UI
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
         [GLib.ConnectBefore]
-        protected void OnMipListingButtonPressed(object sender, ButtonPressEventArgs e)
+        protected void OnMipListingButtonPressed(object? sender, ButtonPressEventArgs e)
         {
-            if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
+            if (e.Event.Type != EventType.ButtonPress || e.Event.Button != 3)
             {
-                _exportPopupMenu.ShowAll();
-
-                _exportPopupMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
-                //this.ExportPopupMenu.Popup();
+                return;
             }
+
+            _exportPopupMenu.ShowAll();
+
+            _exportPopupMenu.PopupAtPointer(e.Event);
         }
 
         /// <summary>
@@ -250,7 +251,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        protected void OnSelectAllItemActivated(object sender, EventArgs e)
+        protected void OnSelectAllItemActivated(object? sender, EventArgs e)
         {
             _mipLevelListStore.Foreach
             (
@@ -267,7 +268,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        protected void OnSelectNoneItemActivated(object sender, EventArgs e)
+        protected void OnSelectNoneItemActivated(object? sender, EventArgs e)
         {
             _mipLevelListStore.Foreach
             (
@@ -284,7 +285,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        protected void OnExportMipToggleClicked(object sender, ToggledArgs e)
+        protected void OnExportMipToggleClicked(object? sender, ToggledArgs e)
         {
             TreeIter iter;
             _mipLevelListStore.GetIterFromString(out iter, e.Path);
@@ -299,7 +300,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        protected void OnOkButtonClicked(object sender, EventArgs e)
+        protected void OnOkButtonClicked(object? sender, EventArgs e)
         {
             RunExport();
         }

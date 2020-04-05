@@ -85,7 +85,7 @@ namespace Everlook.Explorer
         /// <param name="ct">A cancellation token.</param>
         /// <param name="progress">An <see cref="IProgress{GameLoadingProgress}"/> object for progress reporting.</param>
         /// <returns>A tuple with a package group and a node tree for the requested game.</returns>
-        public async Task<(PackageGroup? packageGroup, SerializedTree? nodeTree)> LoadGameAsync
+        public async Task<(PackageGroup? PackageGroup, SerializedTree? NodeTree)> LoadGameAsync
         (
             string gameAlias,
             string gamePath,
@@ -156,7 +156,7 @@ namespace Everlook.Explorer
                 double totalSteps = packagePaths.Count * 2;
 
                 // Load packages
-                var packages = new List<(string packageName, IPackage package)>();
+                var packages = new List<(string PackageName, IPackage Package)>();
                 foreach (var packagePath in packagePaths)
                 {
                     ct.ThrowIfCancellationRequested();
@@ -182,7 +182,7 @@ namespace Everlook.Explorer
                 }
 
                 // Load dictionary if neccesary
-                if (_dictionary == null)
+                if (_dictionary is null)
                 {
                     progress?.Report(new GameLoadingProgress
                     {
@@ -219,15 +219,15 @@ namespace Everlook.Explorer
                                     CompletionPercentage = steps / totalSteps,
                                     State = GameLoadingState.BuildingNodeTree,
                                     Alias = gameAlias,
-                                    CurrentPackage = packageInfo.packageName,
+                                    CurrentPackage = packageInfo.PackageName,
                                     NodesCreationProgress = p
                                 }
                             );
                         }
                     );
 
-                    await Task.Run(() => builder.AddPackage(packageInfo.packageName, packageInfo.package, createNodesProgress, ct), ct);
-                    packageGroup.AddPackage((PackageInteractionHandler)packageInfo.package);
+                    await Task.Run(() => builder.AddPackage(packageInfo.PackageName, packageInfo.Package, createNodesProgress, ct), ct);
+                    packageGroup.AddPackage((PackageInteractionHandler)packageInfo.Package);
 
                     ++completedSteps;
                 }
@@ -257,12 +257,10 @@ namespace Everlook.Explorer
                 var treeClosureCopy = tree;
                 tree = await Task.Run(() => optimizer.OptimizeTree(treeClosureCopy, optimizeTreeProgress, ct), ct);
 
-                using (var fs = File.OpenWrite(packageTreeFilePath))
+                await using (var fs = File.OpenWrite(packageTreeFilePath))
                 {
-                    using (var serializer = new TreeSerializer(fs))
-                    {
-                        await serializer.SerializeAsync(tree, ct);
-                    }
+                    using var serializer = new TreeSerializer(fs);
+                    await serializer.SerializeAsync(tree, ct);
                 }
 
                 nodeTree = new SerializedTree(File.OpenRead(packageTreeFilePath));
@@ -309,13 +307,11 @@ namespace Everlook.Explorer
                 sb.Append(packageSize);
             }
 
-            using (var md5 = MD5.Create())
-            {
-                var input = Encoding.UTF8.GetBytes(sb.ToString());
-                var hash = md5.ComputeHash(input);
+            using var md5 = MD5.Create();
+            var input = Encoding.UTF8.GetBytes(sb.ToString());
+            var hash = md5.ComputeHash(input);
 
-                return BitConverter.ToString(hash);
-            }
+            return BitConverter.ToString(hash);
         }
     }
 }

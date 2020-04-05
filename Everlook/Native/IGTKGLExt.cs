@@ -1,5 +1,5 @@
 //
-//  AmbientLight.cs
+//  IGTKGLExt.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -20,23 +20,23 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using System.Numerics;
+using System;
+using AdvancedDLSupport;
 
-namespace Everlook.Viewport.Rendering.Core.Lights
+// ReSharper disable ExplicitCallerInfoArgument
+namespace Everlook.Native
 {
     /// <summary>
-    /// Represents an ambient light source.
+    /// Represents the native interface to the GTK GL Extensions library.
     /// </summary>
-    public class AmbientLight
+    public interface IGTKGLExt
     {
         /// <summary>
-        /// Gets or sets the colour of the light.
+        /// Gets a function pointer to the named symbol via GDK.
         /// </summary>
-        public Vector4 LightColour { get; set; }
-
-        /// <summary>
-        /// Gets or sets the intensity, in lux, of the light.
-        /// </summary>
-        public float Intensity { get; set; }
+        /// <param name="functionName">The name of the symbol.</param>
+        /// <returns>A pointer to the symbol, or IntPtr.Zero.</returns>
+        [NativeSymbol("gdk_gl_get_proc_address")]
+        IntPtr GetProcAddress(string functionName);
     }
 }

@@ -30,7 +30,8 @@
                 "db",
                 "x",
                 "y",
-                "z"
+                "z",
+                "uv"
             ]
         },
         "maintainabilityRules" : {

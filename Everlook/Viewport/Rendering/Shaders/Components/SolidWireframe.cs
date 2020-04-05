@@ -20,17 +20,17 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System.Numerics;
+using Everlook.Viewport.Rendering.Core;
 using Gdk;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Shaders.Components
 {
     /// <summary>
     /// This shader component controls an implementation of solid wireframe rendering.
     /// </summary>
-    public class SolidWireframe
+    public class SolidWireframe : GraphicsObject
     {
         private const string ViewportMatrix = nameof(ViewportMatrix);
 
@@ -44,14 +44,14 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         /// <summary>
         /// The standard colour of the wireframe.
         /// </summary>
-        public static readonly Color4 StandardColour = new Color4(234, 161, 0, 255);
+        public static readonly Vector4 StandardColour = new Vector4(234, 161, 0, 255);
 
         /// <summary>
         /// The standard highlight colour of the wireframe.
         /// </summary>
-        public static readonly Color4 HighlightColour = new Color4(217, 129, 3, 255);
+        public static readonly Vector4 HighlightColour = new Vector4(217, 129, 3, 255);
 
-        private readonly int _parentShaderNativeID;
+        private readonly uint _parentShaderNativeID;
 
         private bool _enabledInternal;
 
@@ -72,8 +72,10 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         /// Initializes a new instance of the <see cref="SolidWireframe"/> class, and attaches it to the given parent
         /// shader.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
         /// <param name="parentShaderID">The native ID of the parent shader.</param>
-        public SolidWireframe(int parentShaderID)
+        public SolidWireframe(GL gl, uint parentShaderID)
+            : base(gl)
         {
             _parentShaderNativeID = parentShaderID;
             this.Enabled = false;
@@ -85,15 +87,15 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
 
         private void EnableParent()
         {
-            GL.UseProgram(_parentShaderNativeID);
+            this.GL.UseProgram(_parentShaderNativeID);
         }
 
         private void SetWireframeState(bool isEnabled)
         {
             EnableParent();
 
-            var enabledLoc = GL.GetUniformLocation(_parentShaderNativeID, IsWireframeEnabled);
-            GL.Uniform1(enabledLoc, isEnabled ? 1 : 0);
+            var enabledLoc = this.GL.GetUniformLocation(_parentShaderNativeID, IsWireframeEnabled);
+            this.GL.Uniform1(enabledLoc, isEnabled ? 1 : 0);
         }
 
         /// <summary>
@@ -105,8 +107,8 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            var lineWidthLoc = GL.GetUniformLocation(_parentShaderNativeID, WireframeLineWidth);
-            GL.Uniform1(lineWidthLoc, lineWidth);
+            var lineWidthLoc = this.GL.GetUniformLocation(_parentShaderNativeID, WireframeLineWidth);
+            this.GL.Uniform1(lineWidthLoc, lineWidth);
         }
 
         /// <summary>
@@ -115,7 +117,7 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         /// <param name="wireframeColour">The wire colour.</param>
         public void SetWireframeColour(RGBA wireframeColour)
         {
-            var colour = new Color4
+            var colour = new Vector4
             (
                 (float)wireframeColour.Red,
                 (float)wireframeColour.Green,
@@ -130,12 +132,12 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         /// Sets the colour of the wireframe.
         /// </summary>
         /// <param name="wireframeColour">The wire colour.</param>
-        public void SetWireframeColour(Color4 wireframeColour)
+        public void SetWireframeColour(Vector4 wireframeColour)
         {
             EnableParent();
 
-            var colourLoc = GL.GetUniformLocation(_parentShaderNativeID, WireframeColour);
-            GL.Uniform4(colourLoc, wireframeColour);
+            var colourLoc = this.GL.GetUniformLocation(_parentShaderNativeID, WireframeColour);
+            this.GL.Uniform4(colourLoc, wireframeColour);
         }
 
         /// <summary>
@@ -146,20 +148,23 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            var fadeWidthLoc = GL.GetUniformLocation(_parentShaderNativeID, WireframeFadeWidth);
-            GL.Uniform1(fadeWidthLoc, fadeWidth);
+            var fadeWidthLoc = this.GL.GetUniformLocation(_parentShaderNativeID, WireframeFadeWidth);
+            this.GL.Uniform1(fadeWidthLoc, fadeWidth);
         }
 
         /// <summary>
         /// Sets the viewport matrix that will transform NDC coordinates to screen space coordinates.
         /// </summary>
         /// <param name="viewportMatrix">The viewport matrix.</param>
-        public void SetViewportMatrix(Matrix3 viewportMatrix)
+        public void SetViewportMatrix(Matrix4x4 viewportMatrix)
         {
             EnableParent();
 
-            var viewportMatrixLoc = GL.GetUniformLocation(_parentShaderNativeID, ViewportMatrix);
-            GL.UniformMatrix3(viewportMatrixLoc, false, ref viewportMatrix);
+            var viewportMatrixLoc = this.GL.GetUniformLocation(_parentShaderNativeID, ViewportMatrix);
+            unsafe
+            {
+                this.GL.UniformMatrix4(viewportMatrixLoc, 1, false, &viewportMatrix.M11);
+            }
         }
     }
 }

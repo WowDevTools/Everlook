@@ -21,13 +21,13 @@
 //
 
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using Everlook.Exceptions.Shader;
 using Everlook.Utility;
 using Everlook.Viewport.Rendering.Shaders.GLSLExtended;
 using log4net;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Core
 {
@@ -35,7 +35,7 @@ namespace Everlook.Viewport.Rendering.Core
     /// Wraps basic OpenGL functionality for a shader program. This class is made to be extended out into
     /// more advanced shaders with specific functionality.
     /// </summary>
-    public abstract class ShaderProgram : IDisposable
+    public abstract class ShaderProgram : GraphicsObject, IDisposable
     {
         private const string MVPIdentifier = "ModelViewProjection";
 
@@ -47,13 +47,16 @@ namespace Everlook.Viewport.Rendering.Core
         /// <summary>
         /// Gets the native OpenGL ID of the shader program.
         /// </summary>
-        protected int NativeShaderProgramID { get; private set; }
+        protected uint NativeShaderProgramID { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ShaderProgram"/> class, compiling and linking its associated
         /// shader sources into a shader program on the GPU.
         /// </summary>
-        protected ShaderProgram()
+        /// <param name="gl">The OpenGL API.</param>
+        [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor", Justification = "Required.")]
+        protected ShaderProgram(GL gl)
+            : base(gl)
         {
             var vertexShaderSource = GetShaderSource(this.VertexShaderResourceName);
             var fragmentShaderSource = GetShaderSource(this.FragmentShaderResourceName);
@@ -88,7 +91,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// Sets the Model-View-Projection matrix of this shader.
         /// </summary>
         /// <param name="mvpMatrix">The ModelViewProjection matrix.</param>
-        public void SetMVPMatrix(Matrix4 mvpMatrix)
+        public void SetMVPMatrix(Matrix4x4 mvpMatrix)
         {
             SetMatrix(mvpMatrix, MVPIdentifier);
         }
@@ -102,8 +105,8 @@ namespace Everlook.Viewport.Rendering.Core
         {
             Enable();
 
-            var variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
-            GL.Uniform1(variableHandle, value ? 1 : 0);
+            var variableHandle = this.GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+            this.GL.Uniform1(variableHandle, value ? 1 : 0);
         }
 
         /// <summary>
@@ -112,12 +115,15 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="matrix">The matrix.</param>
         /// <param name="uniformName">The name of the uniform variable.</param>
         /// <param name="shouldTranspose">Whether or not the matrix should be transposed.</param>
-        protected void SetMatrix(Matrix4 matrix, string uniformName, bool shouldTranspose = false)
+        protected void SetMatrix(Matrix4x4 matrix, string uniformName, bool shouldTranspose = false)
         {
             Enable();
 
-            var variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
-            GL.UniformMatrix4(variableHandle, shouldTranspose, ref matrix);
+            var variableHandle = this.GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+            unsafe
+            {
+                this.GL.UniformMatrix4(variableHandle, 1, shouldTranspose, &matrix.M11);
+            }
         }
 
         /// <summary>
@@ -129,8 +135,8 @@ namespace Everlook.Viewport.Rendering.Core
         {
             Enable();
 
-            var variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
-            GL.Uniform1(variableHandle, value);
+            var variableHandle = this.GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+            this.GL.Uniform1(variableHandle, value);
         }
 
         /// <summary>
@@ -142,21 +148,8 @@ namespace Everlook.Viewport.Rendering.Core
         {
             Enable();
 
-            var variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
-            GL.Uniform4(variableHandle, value);
-        }
-
-        /// <summary>
-        /// Sets the uniform named by <paramref name="uniformName"/> to <paramref name="value"/>.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="uniformName">The name of the uniform variable.</param>
-        protected void SetColor4(Color4 value, string uniformName)
-        {
-            Enable();
-
-            var variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
-            GL.Uniform4(variableHandle, value);
+            var variableHandle = this.GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+            this.GL.Uniform4(variableHandle, value);
         }
 
         /// <summary>
@@ -168,8 +161,8 @@ namespace Everlook.Viewport.Rendering.Core
         {
             Enable();
 
-            var variableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
-            GL.Uniform1(variableHandle, value);
+            var variableHandle = this.GL.GetUniformLocation(this.NativeShaderProgramID, uniformName);
+            this.GL.Uniform1(variableHandle, value);
         }
 
         /// <summary>
@@ -181,17 +174,12 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="texture">The texture to bind.</param>
         public void BindTexture2D(TextureUnit textureUnit, TextureUniform uniform, Texture2D texture)
         {
-            if (texture == null)
-            {
-                throw new ArgumentNullException(nameof(texture));
-            }
-
             Enable();
 
-            var textureVariableHandle = GL.GetUniformLocation(this.NativeShaderProgramID, uniform.ToString());
-            GL.Uniform1(textureVariableHandle, (int)uniform);
+            var textureVariableHandle = this.GL.GetUniformLocation(this.NativeShaderProgramID, uniform.ToString());
+            this.GL.Uniform1(textureVariableHandle, (int)uniform);
 
-            GL.ActiveTexture(textureUnit);
+            this.GL.ActiveTexture(textureUnit);
             texture.Bind();
         }
 
@@ -232,33 +220,33 @@ namespace Everlook.Viewport.Rendering.Core
         /// </param>
         /// <returns>A native handle to a shader program.</returns>
         /// <exception cref="ShaderLinkingException">Thrown if the linking fails.</exception>
-        private static int LinkShader(int vertexShaderID, int fragmentShaderID, int geometryShaderID = -1)
+        private uint LinkShader(uint vertexShaderID, uint fragmentShaderID, uint geometryShaderID = 0)
         {
             Log.Info("Linking shader program...");
-            var program = GL.CreateProgram();
+            var program = this.GL.CreateProgram();
 
-            GL.AttachShader(program, vertexShaderID);
-            GL.AttachShader(program, fragmentShaderID);
+            this.GL.AttachShader(program, vertexShaderID);
+            this.GL.AttachShader(program, fragmentShaderID);
 
-            if (geometryShaderID > -1)
+            if (geometryShaderID > 0)
             {
-                GL.AttachShader(program, geometryShaderID);
+                this.GL.AttachShader(program, geometryShaderID);
             }
 
-            GL.LinkProgram(program);
+            this.GL.LinkProgram(program);
 
-            GL.GetProgram(program, GetProgramParameterName.LinkStatus, out var result);
+            this.GL.GetProgram(program, ProgramPropertyARB.LinkStatus, out var result);
             var linkingSucceeded = result > 0;
 
-            GL.GetProgram(program, GetProgramParameterName.InfoLogLength, out var linkingLogLength);
-            GL.GetProgramInfoLog(program, out var linkingLog);
+            this.GL.GetProgram(program, ProgramPropertyARB.InfoLogLength, out var linkingLogLength);
+            this.GL.GetProgramInfoLog(program, out var linkingLog);
 
             // Clean up the shader source code and unlinked object files from graphics memory
-            GL.DetachShader(program, vertexShaderID);
-            GL.DetachShader(program, fragmentShaderID);
+            this.GL.DetachShader(program, vertexShaderID);
+            this.GL.DetachShader(program, fragmentShaderID);
 
-            GL.DeleteShader(vertexShaderID);
-            GL.DeleteShader(fragmentShaderID);
+            this.GL.DeleteShader(vertexShaderID);
+            this.GL.DeleteShader(fragmentShaderID);
 
             if (!linkingSucceeded)
             {
@@ -281,7 +269,7 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="shaderSource">The source code of the shader.</param>
         /// <returns>A native handle to the shader object code.</returns>
         /// <exception cref="ShaderCompilationException">Thrown if the compilation fails.</exception>
-        private static int CompileShader(ShaderType shaderType, string shaderSource)
+        private uint CompileShader(ShaderType shaderType, string shaderSource)
         {
             if (string.IsNullOrEmpty(shaderSource))
             {
@@ -292,21 +280,21 @@ namespace Everlook.Viewport.Rendering.Core
                 );
             }
 
-            var shader = GL.CreateShader(shaderType);
+            var shader = this.GL.CreateShader(shaderType);
 
             Log.Info("Compiling shader...");
-            GL.ShaderSource(shader, shaderSource);
-            GL.CompileShader(shader);
+            this.GL.ShaderSource(shader, shaderSource);
+            this.GL.CompileShader(shader);
 
-            GL.GetShader(shader, ShaderParameter.CompileStatus, out var result);
+            this.GL.GetShader(shader, ShaderParameterName.CompileStatus, out var result);
             var compilationSucceeded = result > 0;
 
-            GL.GetShader(shader, ShaderParameter.InfoLogLength, out var compilationLogLength);
-            GL.GetShaderInfoLog(shader, out var compilationLog);
+            this.GL.GetShader(shader, ShaderParameterName.InfoLogLength, out var compilationLogLength);
+            this.GL.GetShaderInfoLog(shader, out var compilationLog);
 
             if (!compilationSucceeded)
             {
-                GL.DeleteShader(shader);
+                this.GL.DeleteShader(shader);
 
                 throw new ShaderCompilationException(ShaderType.VertexShader, compilationLog);
             }
@@ -345,14 +333,14 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         public void Enable()
         {
-            GL.UseProgram(this.NativeShaderProgramID);
+            this.GL.UseProgram(this.NativeShaderProgramID);
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            GL.DeleteProgram(this.NativeShaderProgramID);
-            this.NativeShaderProgramID = -1;
+            this.GL.DeleteProgram(this.NativeShaderProgramID);
+            this.NativeShaderProgramID = 0;
         }
     }
 }

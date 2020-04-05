@@ -21,9 +21,12 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Assimp;
 using Warcraft.MDX;
+using Warcraft.MDX.Data;
+using Warcraft.MDX.Geometry.Skin;
 
 namespace Everlook.Export.Model
 {
@@ -50,12 +53,32 @@ namespace Everlook.Export.Model
             var defaultMaterial = new Material();
             scene.Materials.Add(defaultMaterial);
 
+            if (model.Skins is null)
+            {
+                return scene;
+            }
+
             foreach (var skin in model.Skins)
             {
                 var skinNode = new Node($"LOD_{model.Skins.ToList().IndexOf(skin)}", modelNode);
                 modelNode.Children.Add(skinNode);
 
-                var skinVerts = skin.VertexIndices.Select(i => model.Vertices[i]).ToArray();
+                if (skin.VertexIndices is null)
+                {
+                    continue;
+                }
+
+                if (model.Vertices is null)
+                {
+                    continue;
+                }
+
+                var skinVerts = skin.VertexIndices.Select(i => model.Vertices?[i]).ToArray();
+
+                if (skin.Sections is null)
+                {
+                    continue;
+                }
 
                 foreach (var section in skin.Sections)
                 {
@@ -64,13 +87,16 @@ namespace Everlook.Export.Model
 
                     mesh.MaterialIndex = scene.Materials.IndexOf(defaultMaterial);
 
-                    var modelBones = model.Bones.Skip(section.StartBoneIndex).Take(section.BoneCount);
-                    foreach (var modelBone in modelBones)
+                    if (!(model.Bones is null))
                     {
-                        var bone = new Bone();
+                        var modelBones = model.Bones.Skip(section.StartBoneIndex).Take(section.BoneCount);
+                        foreach (var modelBone in modelBones)
+                        {
+                            var bone = new Bone();
 
-                        // TODO: Calculate offset matrices
-                        mesh.Bones.Add(bone);
+                            // TODO: Calculate offset matrices
+                            mesh.Bones.Add(bone);
+                        }
                     }
 
                     var batchNode = new Node($"Section_{skin.Sections.ToList().IndexOf(section)}", skinNode);
@@ -93,22 +119,34 @@ namespace Everlook.Export.Model
                         var localIndex = skinVertexIndexes[i];
                         var vertex = skinVerts[localIndex];
 
+                        if (vertex is null)
+                        {
+                            continue;
+                        }
+
                         mesh.Vertices.Add(new Vector3D(vertex.Position.X, vertex.Position.Y, vertex.Position.Z));
                         mesh.Normals.Add(new Vector3D(vertex.Normal.X, vertex.Normal.Y, vertex.Normal.Z));
 
                         mesh.TextureCoordinateChannels[0].Add(new Vector3D(vertex.UV1.X, vertex.UV1.Y, 0.0f));
                         mesh.TextureCoordinateChannels[1].Add(new Vector3D(vertex.UV2.X, vertex.UV2.Y, 0.0f));
 
-                        if (mesh.HasBones)
+                        if (!mesh.HasBones)
                         {
-                            for (var boneAttributeIndex = 0; boneAttributeIndex < 4; ++boneAttributeIndex)
-                            {
-                                var bone = mesh.Bones[vertex.BoneIndices[boneAttributeIndex]];
-
-                                var weight = vertex.BoneWeights[boneAttributeIndex];
-                                bone.VertexWeights.Add(new VertexWeight(i, weight));
-                            }
+                            continue;
                         }
+
+                        for (var boneAttributeIndex = 0; boneAttributeIndex < 4; ++boneAttributeIndex)
+                        {
+                            var bone = mesh.Bones[vertex.BoneIndices[boneAttributeIndex]];
+
+                            var weight = vertex.BoneWeights[boneAttributeIndex];
+                            bone.VertexWeights.Add(new VertexWeight(i, weight));
+                        }
+                    }
+
+                    if (skin.Triangles is null)
+                    {
+                        continue;
                     }
 
                     var triangleIndexes = new Span<ushort>

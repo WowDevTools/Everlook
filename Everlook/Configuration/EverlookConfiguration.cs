@@ -56,7 +56,7 @@ namespace Everlook.Configuration
         private readonly object _writeLock = new object();
 
         private readonly FileIniDataParser _defaultParser = new FileIniDataParser();
-        private IniData _configurationData;
+        private readonly IniData _configurationData;
 
         /// <summary>
         /// Gets or sets the sprinting speed multiplier.
@@ -406,11 +406,13 @@ namespace Everlook.Configuration
 
         private void AddNewConfigurationOption(IniData configData, string keySection, string keyName, string keyData)
         {
-            if (!configData.Sections[keySection].ContainsKey(keyName))
+            if (configData.Sections[keySection].ContainsKey(keyName))
             {
-                configData.Sections[keySection].AddKey(keyName);
-                configData.Sections[keySection][keyName] = keyData;
+                return;
             }
+
+            configData.Sections[keySection].AddKey(keyName);
+            configData.Sections[keySection][keyName] = keyData;
         }
 
         private void RenameConfigurationOption
@@ -421,25 +423,29 @@ namespace Everlook.Configuration
             string newKeyName
         )
         {
-            if (configData.Sections[keySection].ContainsKey(oldKeyName))
+            if (!configData.Sections[keySection].ContainsKey(oldKeyName))
             {
-                var oldKeyData = configData.Sections[keySection][oldKeyName];
-
-                AddNewConfigurationOption(configData, keySection, newKeyName, oldKeyData);
-
-                configData.Sections[keySection].RemoveKey(oldKeyName);
+                return;
             }
+
+            var oldKeyData = configData.Sections[keySection][oldKeyName];
+
+            AddNewConfigurationOption(configData, keySection, newKeyName, oldKeyData);
+
+            configData.Sections[keySection].RemoveKey(oldKeyName);
         }
 
         private void RenameConfigurationSection(IniData configData, string oldSectionName, string newSectionName)
         {
-            if (configData.Sections.ContainsSection(oldSectionName))
+            if (!configData.Sections.ContainsSection(oldSectionName))
             {
-                var oldSectionData = configData.Sections.GetSectionData(oldSectionName);
-                configData.Sections.RemoveSection(oldSectionName);
-                configData.Sections.AddSection(newSectionName);
-                configData.Sections.SetSectionData(newSectionName, oldSectionData);
+                return;
             }
+
+            var oldSectionData = configData.Sections.GetSectionData(oldSectionName);
+            configData.Sections.RemoveSection(oldSectionName);
+            configData.Sections.AddSection(newSectionName);
+            configData.Sections.SetSectionData(newSectionName, oldSectionData);
         }
 
         private void DeleteConfigurationSection(IniData configData, string sectionName)
@@ -458,13 +464,15 @@ namespace Everlook.Configuration
             string keyName
         )
         {
-            if (!configData.Sections[newKeySection].ContainsKey(keyName))
+            if (configData.Sections[newKeySection].ContainsKey(keyName))
             {
-                var keyValue = configData.Sections[oldKeySection][keyName];
-                configData.Sections[newKeySection].AddKey(keyName, keyValue);
-
-                configData.Sections[oldKeySection].RemoveKey(keyName);
+                return;
             }
+
+            var keyValue = configData.Sections[oldKeySection][keyName];
+            configData.Sections[newKeySection].AddKey(keyName, keyValue);
+
+            configData.Sections[oldKeySection].RemoveKey(keyName);
         }
 
         /// <summary>
@@ -479,6 +487,14 @@ namespace Everlook.Configuration
             where T : notnull
         {
             var value = optionValue.ToString();
+            if (value is null)
+            {
+                throw new InvalidOperationException
+                (
+                    "The value was null when transformed into its string representation."
+                );
+            }
+
             if (storeAsLowerCase)
             {
                 value = value.ToLowerInvariant();

@@ -43,8 +43,53 @@ namespace Everlook.Utility
         /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(typeof(IconManager));
 
-        private static readonly Dictionary<(string iconName, int iconSize), Pixbuf> IconCache =
-            new Dictionary<(string iconName, int iconSize), Pixbuf>();
+        private static readonly Dictionary<(string IconName, int IconSize), Pixbuf> IconCache =
+            new Dictionary<(string IconName, int IconSize), Pixbuf>();
+
+        private static readonly Dictionary<WarcraftFileType, string> KnownIconTypes = new Dictionary<WarcraftFileType, string>
+        {
+            { WarcraftFileType.Directory,              Stock.Directory },
+            { WarcraftFileType.MoPaQArchive,           "package-x-generic" },
+            { WarcraftFileType.TerrainTable,           "x-office-spreadsheet" },
+            { WarcraftFileType.DatabaseContainer,      "x-office-spreadsheet" },
+            { WarcraftFileType.Hashmap,                "x-office-spreadsheet" },
+            { WarcraftFileType.TerrainWater,           "Blender-Wave-Icon" },
+            { WarcraftFileType.TerrainLiquid,          "Blender-Wave-Icon" },
+            { WarcraftFileType.TerrainLevel,           "text-x-generic-template" },
+            { WarcraftFileType.TerrainData,            "Blender-Planet-Icon" },
+            { WarcraftFileType.GameObjectModel,        "Blender-Armature-Icon" },
+            { WarcraftFileType.WorldObjectModel,       "Blender-Object-Icon" },
+            { WarcraftFileType.WorldObjectModelGroup,  "Blender-Object-Icon" },
+            { WarcraftFileType.WaveAudio,              "audio-x-generic" },
+            { WarcraftFileType.MP3Audio,               "audio-x-generic" },
+            { WarcraftFileType.VorbisAudio,            "audio-x-generic" },
+            { WarcraftFileType.WMAAudio,               "audio-x-generic" },
+            { WarcraftFileType.Subtitles,              "gnome-subtitles" },
+            { WarcraftFileType.Text,                   "text-x-generic" },
+            { WarcraftFileType.AddonManifest,          "text-x-generic" },
+            { WarcraftFileType.AddonManifestSignature, "text-x-generic" },
+            { WarcraftFileType.GIFImage,               "image-gif" },
+            { WarcraftFileType.PNGImage,               "image-png" },
+            { WarcraftFileType.JPGImage,               "image-jpeg" },
+            { WarcraftFileType.IconImage,              "image-x-ico" },
+            { WarcraftFileType.BitmapImage,            "image-bmp" },
+            { WarcraftFileType.BinaryImage,            "image-x-generic" },
+            { WarcraftFileType.TargaImage,             "image-x-generic" },
+            { WarcraftFileType.PDF,                    "application-pdf" },
+            { WarcraftFileType.Web,                    "text-html" },
+            { WarcraftFileType.Assembly,               "application-x-executable" },
+            { WarcraftFileType.Font,                   "font-x-generic" },
+            { WarcraftFileType.Animation,              "Blender-JumpingToon-Icon" },
+            { WarcraftFileType.Physics,                "Blender-Deform-Icon" },
+            { WarcraftFileType.Skeleton,               "Blender-Skeleton-Icon" },
+            { WarcraftFileType.DataCache,              "text-x-sql" },
+            { WarcraftFileType.INI,                    "utilities-terminal" },
+            { WarcraftFileType.ConfigurationFile,      "utilities-terminal" },
+            { WarcraftFileType.Script,                 "utilities-terminal" },
+            { WarcraftFileType.Lighting,               "Blender-Sun-Icon" },
+            { WarcraftFileType.Shader,                 "Blender-Shader-Icon" },
+            { WarcraftFileType.XML,                    "text-xml" }
+        };
 
         /// <summary>
         /// Loads all embedded builtin icons into the application's icon theme.
@@ -80,7 +125,7 @@ namespace Everlook.Utility
                 var iconName = manifestNameParts.ElementAt(manifestNameParts.Length - 2);
 
                 var iconBuffer = LoadEmbeddedImage(manifestIconName);
-                if (iconBuffer != null)
+                if (!(iconBuffer is null))
                 {
                     IconTheme.AddBuiltinIcon(iconName, 16, iconBuffer);
                 }
@@ -96,27 +141,23 @@ namespace Everlook.Utility
         /// <returns>A pixel buffer containing the image.</returns>
         private static Pixbuf? LoadEmbeddedImage(string resourceName, int width = 16, int height = 16)
         {
-            using (var vectorStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+            using var vectorStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+            if (vectorStream is null)
             {
-                if (vectorStream == null)
-                {
-                    return null;
-                }
+                return null;
+            }
 
-                using (var ms = new MemoryStream())
-                {
-                    vectorStream.CopyTo(ms);
+            using var ms = new MemoryStream();
+            vectorStream.CopyTo(ms);
 
-                    try
-                    {
-                        return new Pixbuf(ms.ToArray(), width, height);
-                    }
-                    catch (GException gex)
-                    {
-                        Log.Error($"Failed to load resource \"{resourceName}\" due to a GException: {gex}");
-                        return null;
-                    }
-                }
+            try
+            {
+                return new Pixbuf(ms.ToArray(), width, height);
+            }
+            catch (GException gex)
+            {
+                Log.Error($"Failed to load resource \"{resourceName}\" due to a GException: {gex}");
+                return null;
             }
         }
 
@@ -134,8 +175,12 @@ namespace Everlook.Utility
             }
             catch (GException gex)
             {
-                Log.Warn($"Loading of icon \"{iconName}\" failed. Exception message: {gex.Message}\n" +
-                         $"A fallback icon will be used instead.");
+                Log.Warn
+                (
+                    $"Loading of icon \"{iconName}\" failed. Exception message: {gex.Message}\n" +
+                    $"A fallback icon will be used instead."
+                );
+
                 return LoadIconPixbuf("empty");
             }
         }
@@ -159,142 +204,12 @@ namespace Everlook.Utility
         /// <param name="fileType">The file type.</param>
         public static Pixbuf GetIconForFiletype(WarcraftFileType fileType)
         {
-            switch (fileType)
+            if (KnownIconTypes.TryGetValue(fileType, out var result))
             {
-                case WarcraftFileType.Directory:
-                {
-                    return GetIcon(Stock.Directory);
-                }
-                case WarcraftFileType.MoPaQArchive:
-                {
-                    return GetIcon("package-x-generic");
-                }
-                case WarcraftFileType.TerrainTable:
-                case WarcraftFileType.DatabaseContainer:
-                case WarcraftFileType.Hashmap:
-                {
-                    return GetIcon("x-office-spreadsheet");
-                }
-                case WarcraftFileType.TerrainWater:
-                case WarcraftFileType.TerrainLiquid:
-                {
-                    return GetIcon("Blender-Wave-Icon");
-                }
-                case WarcraftFileType.TerrainLevel:
-                {
-                    return GetIcon("text-x-generic-template");
-                }
-                case WarcraftFileType.TerrainData:
-                {
-                    return GetIcon("Blender-Planet-Icon");
-                }
-                case WarcraftFileType.GameObjectModel:
-                {
-                    return GetIcon("Blender-Armature-Icon");
-                }
-                case WarcraftFileType.WorldObjectModel:
-                case WarcraftFileType.WorldObjectModelGroup:
-                {
-                    return GetIcon("Blender-Object-Icon");
-                }
-                case WarcraftFileType.WaveAudio:
-                case WarcraftFileType.MP3Audio:
-                case WarcraftFileType.VorbisAudio:
-                case WarcraftFileType.WMAAudio:
-                {
-                    return GetIcon("audio-x-generic");
-                }
-                case WarcraftFileType.Subtitles:
-                {
-                    return GetIcon("gnome-subtitles");
-                }
-                case WarcraftFileType.Text:
-                case WarcraftFileType.AddonManifest:
-                case WarcraftFileType.AddonManifestSignature:
-                {
-                    return GetIcon("text-x-generic");
-                }
-                case WarcraftFileType.GIFImage:
-                {
-                    return GetIcon("image-gif");
-                }
-                case WarcraftFileType.PNGImage:
-                {
-                    return GetIcon("image-png");
-                }
-                case WarcraftFileType.JPGImage:
-                {
-                    return GetIcon("image-jpeg");
-                }
-                case WarcraftFileType.IconImage:
-                {
-                    return GetIcon("image-x-ico");
-                }
-                case WarcraftFileType.BitmapImage:
-                {
-                    return GetIcon("image-bmp");
-                }
-                case WarcraftFileType.BinaryImage:
-                case WarcraftFileType.TargaImage:
-                {
-                    return GetIcon("image-x-generic");
-                }
-                case WarcraftFileType.PDF:
-                {
-                    return GetIcon("application-pdf");
-                }
-                case WarcraftFileType.Web:
-                {
-                    return GetIcon("text-html");
-                }
-                case WarcraftFileType.Assembly:
-                {
-                    return GetIcon("application-x-executable");
-                }
-                case WarcraftFileType.Font:
-                {
-                    return GetIcon("font-x-generic");
-                }
-                case WarcraftFileType.Animation:
-                {
-                    return GetIcon("Blender-JumpingToon-Icon");
-                }
-                case WarcraftFileType.Physics:
-                {
-                    return GetIcon("Blender-Deform-Icon");
-                }
-                case WarcraftFileType.Skeleton:
-                {
-                    return GetIcon("Blender-Skeleton-Icon");
-                }
-                case WarcraftFileType.DataCache:
-                {
-                    return GetIcon("text-x-sql");
-                }
-                case WarcraftFileType.INI:
-                case WarcraftFileType.ConfigurationFile:
-                case WarcraftFileType.Script:
-                {
-                    return GetIcon("utilities-terminal");
-                }
-                case WarcraftFileType.Lighting:
-                {
-                    return GetIcon("Blender-Sun-Icon");
-                }
-                case WarcraftFileType.Shader:
-                {
-                    return GetIcon("Blender-Shader-Icon");
-                }
-                case WarcraftFileType.XML:
-                {
-                    return GetIcon("text-xml");
-                }
-                case WarcraftFileType.Unknown:
-                default:
-                {
-                    return GetIcon(Stock.File);
-                }
+                return GetIcon(result);
             }
+
+            return GetIcon(Stock.File);
         }
 
         /// <summary>

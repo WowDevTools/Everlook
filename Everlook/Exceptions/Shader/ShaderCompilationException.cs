@@ -21,7 +21,7 @@
 //
 
 using System;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Exceptions.Shader
 {

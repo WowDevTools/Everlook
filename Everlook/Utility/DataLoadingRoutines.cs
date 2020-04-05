@@ -28,6 +28,7 @@ using Everlook.Explorer;
 using Everlook.Viewport.Rendering;
 using Everlook.Viewport.Rendering.Interfaces;
 using log4net;
+using Silk.NET.OpenGL;
 using Warcraft.BLP;
 using Warcraft.Core;
 using Warcraft.Core.Extensions;
@@ -57,15 +58,14 @@ namespace Everlook.Utility
         /// <returns>A WMO object.</returns>
         public static WMO LoadWorldModel(FileReference fileReference)
         {
-            if (fileReference == null)
-            {
-                throw new ArgumentNullException(nameof(fileReference));
-            }
-
             WMO worldModel;
             try
             {
-                var fileData = fileReference.Extract();
+                if (!fileReference.TryExtract(out var fileData))
+                {
+                    throw new FileNotFoundException();
+                }
+
                 worldModel = new WMO(fileData);
 
                 var modelPathWithoutExtension = $"{fileReference.FileDirectory.Replace('/', '\\')}\\" +
@@ -77,7 +77,11 @@ namespace Everlook.Utility
 
                     try
                     {
-                        var modelGroupData = fileReference.Context.Assets.ExtractFile(modelGroupPath);
+                        if (!fileReference.Context.Assets.TryExtractFile(modelGroupPath, out var modelGroupData))
+                        {
+                            throw new FileNotFoundException();
+                        }
+
                         worldModel.AddModelGroup(new ModelGroup(modelGroupData));
                     }
                     catch (FileNotFoundException fex)
@@ -107,7 +111,7 @@ namespace Everlook.Utility
         /// <returns>A WMO object, containing just the specified model group.</returns>
         public static WMO LoadWorldModelGroup(FileReference fileReference)
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }
@@ -115,14 +119,22 @@ namespace Everlook.Utility
             // Get the file name of the root object
             var modelRootPath = fileReference.FilePath.Remove(fileReference.FilePath.Length - 8, 4);
 
-            WMO worldModel;
             // Extract it and load just this model group
+            WMO worldModel;
             try
             {
-                var rootData = fileReference.Context.Assets.ExtractFile(modelRootPath);
+                if (!fileReference.Context.Assets.TryExtractFile(modelRootPath, out var rootData))
+                {
+                    throw new FileNotFoundException();
+                }
+
                 worldModel = new WMO(rootData);
 
-                var modelGroupData = fileReference.Extract();
+                if (!fileReference.TryExtract(out var modelGroupData))
+                {
+                    throw new FileNotFoundException();
+                }
+
                 worldModel.AddModelGroup(new ModelGroup(modelGroupData));
             }
             catch (FileNotFoundException fex)
@@ -148,13 +160,21 @@ namespace Everlook.Utility
         /// NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
         /// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        /// <param name="renderCache">The rendering cache.</param>
         /// <param name="worldModel">The model object.</param>
         /// <param name="fileReference">The reference it was constructed from.</param>
         /// <returns>An encapsulated renderable OpenGL object.</returns>
-        public static IRenderable CreateRenderableWorldModel(WMO worldModel, FileReference fileReference)
+        public static IRenderable CreateRenderableWorldModel
+        (
+            GL gl,
+            RenderCache renderCache,
+            WMO worldModel,
+            FileReference fileReference
+        )
         {
             var warcraftContext = fileReference.Context as WarcraftGameContext;
-            if (warcraftContext == null)
+            if (warcraftContext is null)
             {
                 // TODO: This is bad practice. Refactor
                 throw new ArgumentException
@@ -163,7 +183,7 @@ namespace Everlook.Utility
                 );
             }
 
-            var renderableWorldModel = new RenderableWorldModel(worldModel, warcraftContext);
+            var renderableWorldModel = new RenderableWorldModel(gl, renderCache, worldModel, warcraftContext);
             renderableWorldModel.LoadDoodads();
 
             return renderableWorldModel;
@@ -176,15 +196,13 @@ namespace Everlook.Utility
         /// <returns>A BLP object containing the image data pointed to by the reference.</returns>
         public static BLP LoadBinaryImage(FileReference fileReference)
         {
-            if (fileReference == null)
-            {
-                throw new ArgumentNullException(nameof(fileReference));
-            }
-
             BLP image;
             try
             {
-                var fileData = fileReference.Extract();
+                if (!fileReference.TryExtract(out var fileData))
+                {
+                    throw new FileNotFoundException();
+                }
 
                 try
                 {
@@ -192,9 +210,12 @@ namespace Everlook.Utility
                 }
                 catch (FileLoadException fex)
                 {
-                    Log.Warn(
+                    Log.Warn
+                    (
                         $"FileLoadException when loading BLP image: {fex.Message}\n" +
-                        $"Please report this on GitHub or via email.");
+                        $"Please report this on GitHub or via email."
+                    );
+
                     throw;
                 }
             }
@@ -213,12 +234,20 @@ namespace Everlook.Utility
         /// NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
         /// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        /// <param name="renderCache">The rendering cache.</param>
         /// <param name="binaryImage">The image object.</param>
         /// <param name="fileReference">The reference it was constructed from.</param>
         /// <returns>An encapsulated renderable OpenGL object.</returns>
-        public static IRenderable CreateRenderableBinaryImage(BLP binaryImage, FileReference fileReference)
+        public static IRenderable CreateRenderableBinaryImage
+        (
+            GL gl,
+            RenderCache renderCache,
+            BLP binaryImage,
+            FileReference fileReference
+        )
         {
-            var renderableImage = new RenderableBLP(binaryImage, fileReference.FilePath);
+            var renderableImage = new RenderableBLP(gl, renderCache, binaryImage, fileReference.FilePath);
 
             return renderableImage;
         }
@@ -230,7 +259,7 @@ namespace Everlook.Utility
         /// <returns>A bitmap containing the image data pointed to by the reference.</returns>
         public static Bitmap LoadBitmapImage(FileReference fileReference)
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }
@@ -238,16 +267,21 @@ namespace Everlook.Utility
             Bitmap image;
             try
             {
-                var fileData = fileReference.Extract();
-                using (var ms = new MemoryStream(fileData))
+                if (!fileReference.TryExtract(out var fileData))
                 {
-                    image = new Bitmap(ms);
+                    throw new FileNotFoundException();
                 }
+
+                using var ms = new MemoryStream(fileData);
+                image = new Bitmap(ms);
             }
             catch (FileNotFoundException fex)
             {
-                Log.Warn(
-                    $"Failed to load the image \"{fileReference.FilePath}\": {fex}");
+                Log.Warn
+                (
+                    $"Failed to load the image \"{fileReference.FilePath}\": {fex}"
+                );
+
                 throw;
             }
 
@@ -260,12 +294,20 @@ namespace Everlook.Utility
         /// NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
         /// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        /// <param name="renderCache">The rendering cache.</param>
         /// <param name="bitmapImage">The image object.</param>
         /// <param name="fileReference">The reference it was constructed from.</param>
         /// <returns>An encapsulated renderable OpenGL object.</returns>
-        public static IRenderable CreateRenderableBitmapImage(Bitmap bitmapImage, FileReference fileReference)
+        public static IRenderable CreateRenderableBitmapImage
+        (
+            GL gl,
+            RenderCache renderCache,
+            Bitmap bitmapImage,
+            FileReference fileReference
+        )
         {
-            var renderableImage = new RenderableBitmap(bitmapImage, fileReference.FilePath);
+            var renderableImage = new RenderableBitmap(gl, renderCache, bitmapImage, fileReference.FilePath);
 
             return renderableImage;
         }
@@ -277,15 +319,14 @@ namespace Everlook.Utility
         /// <returns>An object containing the model data pointed to by the reference.</returns>
         public static MDX LoadGameModel(FileReference fileReference)
         {
-            if (fileReference == null)
-            {
-                throw new ArgumentNullException(nameof(fileReference));
-            }
-
             MDX model;
             try
             {
-                var fileData = fileReference.Extract();
+                if (!fileReference.TryExtract(out var fileData))
+                {
+                    throw new FileNotFoundException();
+                }
+
                 model = new MDX(fileData);
 
                 if (model.Version >= WarcraftVersion.Wrath)
@@ -298,21 +339,21 @@ namespace Everlook.Utility
                     for (var i = 0; i < model.SkinCount; ++i)
                     {
                         var modelSkinPath = $"{modelDirectory}\\{modelFilename}{i:D2}.skin";
-                        var skinData = fileReference.Context.Assets.ExtractFile(modelSkinPath);
-
-                        using (var ms = new MemoryStream(skinData))
+                        if (!fileReference.Context.Assets.TryExtractFile(modelSkinPath, out var skinData))
                         {
-                            using (var br = new BinaryReader(ms))
-                            {
-                                var skinIdentifier = new string(br.ReadChars(4));
-                                if (skinIdentifier != "SKIN")
-                                {
-                                    break;
-                                }
-
-                                skins.Add(br.ReadMDXSkin(model.Version));
-                            }
+                            continue;
                         }
+
+                        using var ms = new MemoryStream(skinData);
+                        using var br = new BinaryReader(ms);
+
+                        var skinIdentifier = new string(br.ReadChars(4));
+                        if (skinIdentifier != "SKIN")
+                        {
+                            break;
+                        }
+
+                        skins.Add(br.ReadMDXSkin(model.Version));
                     }
 
                     model.SetSkins(skins);
@@ -342,13 +383,21 @@ namespace Everlook.Utility
         /// NOTE: This method *must* be called in the UI thread after the OpenGL context has been made current.
         /// The <see cref="IRenderable"/> constructors commonly make extensive use of OpenGL methods.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        /// <param name="renderCache">The rendering cache.</param>
         /// <param name="gameModel">The model object.</param>
         /// <param name="fileReference">The reference it was constructed from.</param>
         /// <returns>An encapsulated renderable OpenGL object.</returns>
-        public static IRenderable CreateRenderableGameModel(MDX gameModel, FileReference fileReference)
+        public static IRenderable CreateRenderableGameModel
+        (
+            GL gl,
+            RenderCache renderCache,
+            MDX gameModel,
+            FileReference fileReference
+        )
         {
             var warcraftContext = fileReference.Context as WarcraftGameContext;
-            if (warcraftContext == null)
+            if (warcraftContext is null)
             {
                 // TODO: This is bad practice. Refactor
                 throw new ArgumentException
@@ -357,7 +406,14 @@ namespace Everlook.Utility
                 );
             }
 
-            var renderableModel = new RenderableGameModel(gameModel, warcraftContext, fileReference.FilePath);
+            var renderableModel = new RenderableGameModel
+            (
+                gl,
+                renderCache,
+                gameModel,
+                warcraftContext,
+                fileReference.FilePath
+            );
 
             return renderableModel;
         }

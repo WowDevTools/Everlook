@@ -20,48 +20,50 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+using System.Numerics;
+using Everlook.Viewport.Rendering.Core;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Shaders.Components
 {
     /// <summary>
     /// A global light shader component.
     /// </summary>
-    public class GlobalLighting
+    public class GlobalLighting : GraphicsObject
     {
         private const string LightVectorIdentifier = "LightVector";
         private const string LightColourIdentifier = "LightColour";
         private const string LightIntensityIdentifier = "LightIntensity";
 
-        private readonly int _parentShaderNativeID;
+        private readonly uint _parentShaderNativeID;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GlobalLighting"/> class, and attaches it to the given parent
         /// shader.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
         /// <param name="parentShaderID">The native ID of the parent shader.</param>
-        public GlobalLighting(int parentShaderID)
+        public GlobalLighting(GL gl, uint parentShaderID)
+            : base(gl)
         {
             _parentShaderNativeID = parentShaderID;
         }
 
         private void EnableParent()
         {
-            GL.UseProgram(_parentShaderNativeID);
+            this.GL.UseProgram(_parentShaderNativeID);
         }
 
         /// <summary>
         /// Sets the colour of the global lighting shader component.
         /// </summary>
         /// <param name="lightColour">The colour of the light.</param>
-        public void SetLightColour(Color4 lightColour)
+        public void SetLightColour(Vector4 lightColour)
         {
             EnableParent();
 
-            var colourLoc = GL.GetUniformLocation(_parentShaderNativeID, LightColourIdentifier);
-            GL.Uniform4(colourLoc, lightColour);
+            var colourLoc = this.GL.GetUniformLocation(_parentShaderNativeID, LightColourIdentifier);
+            this.GL.Uniform4(colourLoc, lightColour);
         }
 
         /// <summary>
@@ -72,8 +74,8 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            var vectorLoc = GL.GetUniformLocation(_parentShaderNativeID, LightVectorIdentifier);
-            GL.Uniform3(vectorLoc, lightVector);
+            var vectorLoc = this.GL.GetUniformLocation(_parentShaderNativeID, LightVectorIdentifier);
+            this.GL.Uniform3(vectorLoc, lightVector);
         }
 
         /// <summary>
@@ -84,8 +86,8 @@ namespace Everlook.Viewport.Rendering.Shaders.Components
         {
             EnableParent();
 
-            var intensityLoc = GL.GetUniformLocation(_parentShaderNativeID, LightIntensityIdentifier);
-            GL.Uniform1(intensityLoc, lightIntensity);
+            var intensityLoc = this.GL.GetUniformLocation(_parentShaderNativeID, LightIntensityIdentifier);
+            this.GL.Uniform1(intensityLoc, lightIntensity);
         }
     }
 }

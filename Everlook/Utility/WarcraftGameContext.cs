@@ -56,16 +56,6 @@ namespace Everlook.Utility
         /// <exception cref="ArgumentNullException">Thrown if the assets or the file tree are null.</exception>
         public WarcraftGameContext(WarcraftVersion version, PackageGroup assets, FileTreeModel fileTree)
         {
-            if (assets == null)
-            {
-                throw new ArgumentNullException(nameof(assets));
-            }
-
-            if (fileTree == null)
-            {
-                throw new ArgumentNullException(nameof(fileTree));
-            }
-
             this.Version = version;
             this.Assets = assets;
             this.FileTree = fileTree;
@@ -81,14 +71,14 @@ namespace Everlook.Utility
         public FileReference GetReferenceForDoodad(DoodadInstance doodadInstance)
         {
             var doodadReference = GetReferenceForPath(doodadInstance.Name);
-            if (doodadReference != null)
+            if (!(doodadReference is null))
             {
                 return doodadReference;
             }
 
             // Doodads may have the *.mdx extension instead of *.m2. Try with that as well.
             doodadReference = GetReferenceForPath(Path.ChangeExtension(doodadInstance.Name, "m2"));
-            if (doodadReference == null)
+            if (doodadReference is null)
             {
                 throw new ArgumentException
                 (
@@ -101,15 +91,15 @@ namespace Everlook.Utility
         }
 
         /// <inheritdoc />
-        public FileReference? GetReferenceForPath(string path)
+        public FileReference? GetReferenceForPath(string? path)
         {
             if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentNullException(nameof(path));
+                return null;
             }
 
             var treePath = this.FileTree.GetPath(path);
-            if (treePath == null)
+            if (treePath is null)
             {
                 return null;
             }

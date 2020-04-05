@@ -22,10 +22,10 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using Everlook.Configuration;
+using Everlook.Utility;
 using Everlook.Viewport.Rendering.Core;
-using OpenTK;
-using OpenTK.Graphics.ES10;
 
 namespace Everlook.Viewport.Camera
 {
@@ -66,12 +66,12 @@ namespace Everlook.Viewport.Camera
         /// <summary>
         /// Gets or sets the width of the camera viewport in pixels.
         /// </summary>
-        public int ViewportWidth { get; set; }
+        public uint ViewportWidth { get; set; }
 
         /// <summary>
         /// Gets or sets the height of the camera viewport in pixels.
         /// </summary>
-        public int ViewportHeight { get; set; }
+        public uint ViewportHeight { get; set; }
 
         private Vector3 _positionInternal;
 
@@ -117,12 +117,12 @@ namespace Everlook.Viewport.Camera
             private set;
         }
 
-        private float _horizontalViewAngleInternal;
+        private double _horizontalViewAngleInternal;
 
         /// <summary>
         /// Gets or sets the current horizontal view angle of the observer.
         /// </summary>
-        public float HorizontalViewAngle
+        public double HorizontalViewAngle
         {
             get => _horizontalViewAngleInternal;
             set
@@ -132,13 +132,13 @@ namespace Everlook.Viewport.Camera
             }
         }
 
-        private float _verticalViewAngleInternal;
+        private double _verticalViewAngleInternal;
 
         /// <summary>
         /// Gets or sets the current vertical view angle of the observer. This angle is
         /// limited to -90 and 90 (straight down and straight up, respectively).
         /// </summary>
-        public float VerticalViewAngle
+        public double VerticalViewAngle
         {
             get => _verticalViewAngleInternal;
             set
@@ -170,8 +170,8 @@ namespace Everlook.Viewport.Camera
         /// </summary>
         public void ResetRotation()
         {
-            this.HorizontalViewAngle = MathHelper.DegreesToRadians(180.0f);
-            this.VerticalViewAngle = MathHelper.DegreesToRadians(0.0f);
+            this.HorizontalViewAngle = (float)MathHelper.DegreesToRadians(180.0);
+            this.VerticalViewAngle = (float)MathHelper.DegreesToRadians(0.0);
         }
 
         private void RecalculateInternals()
@@ -186,9 +186,9 @@ namespace Everlook.Viewport.Camera
 
             this.RightVector = new Vector3
             (
-                (float)Math.Sin(this.HorizontalViewAngle - MathHelper.PiOver2),
+                (float)Math.Sin(this.HorizontalViewAngle - (Math.PI / 2)),
                 0,
-                (float)Math.Cos(this.HorizontalViewAngle - MathHelper.PiOver2)
+                (float)Math.Cos(this.HorizontalViewAngle - (Math.PI / 2))
             );
 
             this.UpVector = Vector3.Cross(this.RightVector, this.LookDirectionVector);
@@ -197,13 +197,13 @@ namespace Everlook.Viewport.Camera
         /// <summary>
         /// Gets the calculated projection matrix for this camera, using the values contained inside it.
         /// </summary>
-        /// <returns>A <see cref="Matrix4"/> projection matrix.</returns>
-        public Matrix4 GetProjectionMatrix()
+        /// <returns>A <see cref="Matrix4x4"/> projection matrix.</returns>
+        public Matrix4x4 GetProjectionMatrix()
         {
-            Matrix4 projectionMatrix;
+            Matrix4x4 projectionMatrix;
             if (this.Projection == ProjectionType.Orthographic)
             {
-                projectionMatrix = Matrix4.CreateOrthographic
+                projectionMatrix = Matrix4x4.CreateOrthographic
                 (
                     this.ViewportWidth,
                     this.ViewportHeight,
@@ -214,9 +214,9 @@ namespace Everlook.Viewport.Camera
             else
             {
                 var aspectRatio = (float)this.ViewportWidth / this.ViewportHeight;
-                projectionMatrix = Matrix4.CreatePerspectiveFieldOfView
+                projectionMatrix = Matrix4x4.CreatePerspectiveFieldOfView
                 (
-                    MathHelper.DegreesToRadians((float)EverlookConfiguration.Instance.CameraFOV),
+                    (float)MathHelper.DegreesToRadians(EverlookConfiguration.Instance.CameraFOV),
                     aspectRatio,
                     DefaultNearClippingDistance,
                     DefaultFarClippingDistance
@@ -229,10 +229,10 @@ namespace Everlook.Viewport.Camera
         /// <summary>
         /// Gets the view matrix of this camera (i.e, where it is looking).
         /// </summary>
-        /// <returns>A <see cref="Matrix4"/> view matrix.</returns>
-        public Matrix4 GetViewMatrix()
+        /// <returns>A <see cref="Matrix4x4"/> view matrix.</returns>
+        public Matrix4x4 GetViewMatrix()
         {
-            return Matrix4.LookAt
+            return Matrix4x4.CreateLookAt
             (
                 this.Position,
                 this.Position + this.LookDirectionVector,
@@ -251,16 +251,17 @@ namespace Everlook.Viewport.Camera
                 Justification = "Used for matrix parameter alignment."
             )
         ]
-        public Matrix3 GetViewportMatrix()
+        public Matrix4x4 GetViewportMatrix()
         {
             var widthOver2 = this.ViewportWidth / 2.0f;
             var heightOver2 = this.ViewportHeight / 2.0f;
 
-            return new Matrix3
+            return new Matrix4x4
             (
-                widthOver2, 0,           widthOver2,
-                0,          heightOver2, heightOver2,
-                0,          0,           1
+                widthOver2, 0,           widthOver2,  0,
+                0,          heightOver2, heightOver2, 0,
+                0,          0,           1,           0,
+                0,          0,           0,           1
             );
         }
     }

@@ -22,12 +22,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using JetBrains.Annotations;
+using Silk.NET.OpenGL;
 using Warcraft.Core.Extensions;
 using Warcraft.Core.Structures;
 
@@ -36,12 +37,12 @@ namespace Everlook.Viewport.Rendering
     /// <summary>
     /// Represents a renderable 2D image, and contains common functionality required to render one.
     /// </summary>
-    public abstract class RenderableImage : IRenderable, IActor, IDefaultCameraPositionProvider
+    public abstract class RenderableImage : GraphicsObject, IRenderable, IActor, IDefaultCameraPositionProvider
     {
         /// <summary>
         /// Gets a reference to the global shader cache.
         /// </summary>
-        protected static RenderCache Cache => RenderCache.Instance;
+        protected RenderCache RenderCache { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this object has been disposed.
@@ -133,6 +134,17 @@ namespace Everlook.Viewport.Rendering
         public uint MipCount => GetNumReasonableMipLevels();
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="RenderableImage"/> class.
+        /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        /// <param name="renderCache">The rendering cache.</param>
+        protected RenderableImage([NotNull] GL gl, RenderCache renderCache)
+            : base(gl)
+        {
+            this.RenderCache = renderCache;
+        }
+
+        /// <summary>
         /// TODO: Put this in Warcraft.Core instead.
         /// </summary>
         /// <returns>The number of reasonable mipmap levels.</returns>
@@ -172,13 +184,13 @@ namespace Everlook.Viewport.Rendering
             this.Texture = LoadTexture();
 
             // Use cached shaders whenever possible
-            this.Shader = Cache.GetShader(EverlookShader.Plain2D) as Plain2DShader;
+            this.Shader = this.RenderCache.GetShader(EverlookShader.Plain2D) as Plain2DShader;
 
             this.ActorTransform = new Transform();
 
-            GL.Enable(EnableCap.Blend);
-            GL.BlendEquation(BlendEquationMode.FuncAdd);
-            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            this.GL.Enable(EnableCap.Blend);
+            this.GL.BlendEquation(BlendEquationModeEXT.FuncAdd);
+            this.GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             this.IsInitialized = true;
         }
@@ -191,7 +203,7 @@ namespace Everlook.Viewport.Rendering
         protected abstract Texture2D LoadTexture();
 
         /// <inheritdoc />
-        public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+        public void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera)
         {
             ThrowIfDisposed();
 
@@ -216,26 +228,37 @@ namespace Everlook.Viewport.Rendering
 
             // Render the object
             // Send the vertices to the shader
-            GL.EnableVertexAttribArray(0);
+            this.GL.EnableVertexAttribArray(0);
             this.VertexBuffer.Bind();
-            GL.VertexAttribPointer(
-                0,
-                2,
-                VertexAttribPointerType.Float,
-                false,
-                0,
-                0);
+
+            unsafe
+            {
+                this.GL.VertexAttribPointer
+                (
+                    0u,
+                    2,
+                    VertexAttribPointerType.Float,
+                    false,
+                    0u,
+                    (void*)0
+                );
+            }
 
             // Send the UV coordinates to the shader
-            GL.EnableVertexAttribArray(1);
+            this.GL.EnableVertexAttribArray(1);
             this.UVBuffer.Bind();
-            GL.VertexAttribPointer(
-                1,
-                2,
-                VertexAttribPointerType.Float,
-                false,
-                0,
-                0);
+            unsafe
+            {
+                this.GL.VertexAttribPointer
+                (
+                    1u,
+                    2,
+                    VertexAttribPointerType.Float,
+                    false,
+                    0u,
+                    (void*)0
+                );
+            }
 
             // Set the channel mask
             this.Shader.SetChannelMask(this.ChannelMask);
@@ -243,7 +266,7 @@ namespace Everlook.Viewport.Rendering
             // Set the texture ID as a uniform sampler in unit 0
             this.Shader.SetTexture(this.Texture);
 
-            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            this.GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             // Set the model view matrix
             var modelViewProjection = this.ActorTransform.GetModelMatrix() * viewMatrix * projectionMatrix;
@@ -253,11 +276,14 @@ namespace Everlook.Viewport.Rendering
 
             // Finally, draw the image
             this.VertexIndexBuffer.Bind();
-            GL.DrawElements(BeginMode.Triangles, 6, DrawElementsType.UnsignedShort, 0);
+            unsafe
+            {
+                this.GL.DrawElements(PrimitiveType.Triangles, 6u, DrawElementsType.UnsignedShort, (void*)0);
+            }
 
             // Release the attribute arrays
-            GL.DisableVertexAttribArray(0);
-            GL.DisableVertexAttribArray(1);
+            this.GL.DisableVertexAttribArray(0);
+            this.GL.DisableVertexAttribArray(1);
         }
 
         /// <summary>
@@ -285,7 +311,7 @@ namespace Everlook.Viewport.Rendering
             };
 
             // Buffer the generated vertices in the GPU
-            return new Buffer<Vector2>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+            return new Buffer<Vector2>(this.GL, BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = vertexPositions.ToArray()
             };
@@ -295,12 +321,12 @@ namespace Everlook.Viewport.Rendering
         /// Generates a vertex index buffer for the four corner vertices.
         /// </summary>
         /// <returns>The vertex index buffer.</returns>
-        protected static Buffer<ushort> GenerateVertexIndexes()
+        protected Buffer<ushort> GenerateVertexIndexes()
         {
             // Generate vertex indexes
             var vertexIndexes = new List<ushort> { 1, 0, 2, 2, 3, 1 };
 
-            return new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw)
+            return new Buffer<ushort>(this.GL, BufferTargetARB.ElementArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = vertexIndexes.ToArray()
             };
@@ -310,7 +336,7 @@ namespace Everlook.Viewport.Rendering
         /// Generates a UV coordinate buffer for the four corner vertices.
         /// </summary>
         /// <returns>The native OpenGL ID of the buffer.</returns>
-        protected static Buffer<Vector2> GenerateTextureCoordinates()
+        protected Buffer<Vector2> GenerateTextureCoordinates()
         {
             // Generate UV coordinates
             var textureCoordinates = new List<Vector2>
@@ -322,7 +348,7 @@ namespace Everlook.Viewport.Rendering
             };
 
             // Buffer the generated UV coordinates in the GPU
-            return new Buffer<Vector2>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+            return new Buffer<Vector2>(this.GL, BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw)
             {
                 Data = textureCoordinates.ToArray()
             };
@@ -336,7 +362,7 @@ namespace Everlook.Viewport.Rendering
         {
             if (this.IsDisposed)
             {
-                throw new ObjectDisposedException(ToString());
+                throw new ObjectDisposedException(ToString() ?? nameof(RenderableImage));
             }
         }
 

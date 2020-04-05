@@ -21,181 +21,112 @@
 //
 
 using System;
-using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Xml;
 using Everlook.Explorer;
+using Everlook.Silk;
 using Everlook.UI;
 using Everlook.Utility;
 using FileTree.Tree.Serialized;
 using GLib;
 using log4net;
-using OpenTK;
+using log4net.Config;
+using log4net.Repository.Hierarchy;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Silk.NET.Core.Loader;
+using Silk.NET.Core.Platform;
+
 using Application = Gtk.Application;
+using Task = System.Threading.Tasks.Task;
 
 namespace Everlook
 {
     /// <summary>
     /// The main entry class, containing the entry point and some top-level diagnostics.
     /// </summary>
-    internal static class Program
+    internal class Program
     {
         /// <summary>
-        /// Logger instance for this class.
+        /// Holds the logging instance for this class.
         /// </summary>
-        private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
+        private static ILogger<Program>? _log;
 
         /// <summary>
         /// The entry point.
         /// </summary>
-        public static void Main()
+        /// <param name="args">The command-line arguments.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        [STAThread]
+        public static async Task Main(string[] args)
         {
-            // Bind any unhandled exceptions in the main thread so that they are logged.
-            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+            ExceptionManager.UnhandledException += OnUnhandledGLibException;
 
-            // Set correct working directory for compatibility with double-clicking
-            Directory.SetCurrentDirectory(DirectoryHelpers.GetLocalDir());
-
+            IconManager.LoadEmbeddedIcons();
+            Application.Init();
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 Environment.SetEnvironmentVariable("GSETTINGS_SCHEMA_DIR", "share\\glib-2.0\\schemas\\");
             }
 
-            log4net.Config.XmlConfigurator.Configure();
-
-            Log.Info("----------------");
-            Log.Info("Initializing Everlook...");
-
-            Log.Info("Initializing OpenTK...");
-
-            // OpenGL
-            var toolkitOptions = new ToolkitOptions
+            const string configurationName = "Everlook.log4net.config";
+            var logConfig = new XmlDocument();
+            await using (var configStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(configurationName))
             {
-                Backend = PlatformBackend.PreferNative,
-                EnableHighResolution = true
-            };
-
-            using (Toolkit.Init(toolkitOptions))
-            {
-                Log.Info($"OpenTK initialized using the {GetOpenTKBackend()} backend.");
-
-                Log.Info("Initializing GTK...");
-
-                // Bind any unhandled exceptions in the GTK UI so that they are logged.
-                ExceptionManager.UnhandledException += OnGLibUnhandledException;
-
-                Log.Info("Registering treeview types with the native backend...");
-                var nodeType = (GType)typeof(SerializedNode);
-                GType.Register(nodeType, typeof(SerializedNode));
-
-                var referenceType = (GType)typeof(FileReference);
-                GType.Register(referenceType, typeof(FileReference));
-
-                // GTK
-                IconManager.LoadEmbeddedIcons();
-                Application.Init();
-                var win = MainWindow.Create();
-                win.Show();
-                Application.Run();
-            }
-        }
-
-        /// <summary>
-        /// Gets the backend used by OpenTK.
-        /// </summary>
-        /// <returns>The name of the backend.</returns>
-        private static string GetOpenTKBackend()
-        {
-            if (OpenTK.Configuration.RunningOnSdl2)
-            {
-                return "SDL2";
-            }
-
-            if (OpenTK.Configuration.RunningOnX11)
-            {
-                return "X11";
-            }
-
-            return "native";
-        }
-
-        /// <summary>
-        /// Passes any unhandled exceptions from the GTK UI to the generic handler.
-        /// </summary>
-        /// <param name="args">The event object containing the information about the exception.</param>
-        private static void OnGLibUnhandledException(UnhandledExceptionArgs args)
-        {
-            OnUnhandledException(null, args);
-        }
-
-        /// <summary>
-        /// Event handler for all unhandled exceptions that may be encountered during runtime. While there should never
-        /// be any unhandled exceptions in an ideal program, unexpected issues can and will arise. This handler logs
-        /// the exception and all relevant information to a logfile and prints it to the console for debugging purposes.
-        /// </summary>
-        /// <param name="sender">The sending object.</param>
-        /// <param name="unhandledExceptionEventArgs">
-        /// The event object containing the information about the exception.
-        /// </param>
-        private static void OnUnhandledException(object? sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
-        {
-            // Force english exception output
-            System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
-
-            Log.Fatal("----------------");
-            Log.Fatal("FATAL UNHANDLED EXCEPTION!");
-            Log.Fatal("Something has gone terribly, terribly wrong during runtime.");
-            Log.Fatal("The following is what information could be gathered by the program before crashing.");
-            Log.Fatal("Please report this to <jarl.gullberg@gmail.com> or via GitHub. Include the full log and a " +
-                      "description of what you were doing when it happened.");
-
-            var unhandledException = (Exception)unhandledExceptionEventArgs.ExceptionObject;
-            switch (unhandledException)
-            {
-                case null:
+                if (configStream is null)
                 {
-                    return;
+                    throw new InvalidOperationException("The log4net configuration stream could not be found.");
                 }
-                case DllNotFoundException _:
-                {
-                    Log.Fatal
-                    (
-                        "This exception is typical of instances where the GTK runtime has not been properly copied " +
-                        "to the working directory or is not available on your system.\n" +
-                        "If you're on Windows, make sure that the bundled GTK libraries are present.\n" +
-                        "If you're on macOS, try installing GTK through Homebrew.\n" +
-                        "If you're on Linux, check with your package maintainer that all dependencies are properly " +
-                        "listed."
-                    );
-                    break;
-                }
-                case GraphicsException _:
-                {
-                    Log.Fatal
-                    (
-                        "Some type of graphics error occurred. On macOS, this is usally indicative of an OpenGL " +
-                        "context which doesn't meet Everlook's requirements. Please note that Everlook requires at " +
-                        "least OpenGL 3.3.\n" +
-                        "If you're running via XQuartz, please note that XQuartz does not provide contexts above " +
-                        "OpenGL 2.1."
-                    );
-                    break;
-                }
+
+                logConfig.Load(configStream);
             }
 
-            Log.Fatal($"Exception type: {unhandledException!.GetType().FullName}");
-            Log.Fatal($"Exception Message: {unhandledException.Message}");
-            Log.Fatal($"Exception Stacktrace: {unhandledException.StackTrace}");
+            var repo = LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(Hierarchy));
+            XmlConfigurator.Configure(repo, logConfig["log4net"]);
 
-            if (unhandledException.InnerException == null)
-            {
-                return;
-            }
+            SilkManager.Register<GLSymbolLoader>(new GDKGLSymbolLoader());
 
-            Log.Fatal($"Inner exception type: {unhandledException.InnerException.GetType().FullName}");
-            Log.Fatal($"Inner exception Message: {unhandledException.InnerException.Message}");
-            Log.Fatal($"Inner exception Stacktrace: {unhandledException.InnerException.StackTrace}");
+            var nodeType = (GType)typeof(SerializedNode);
+            GType.Register(nodeType, typeof(SerializedNode));
+
+            var referenceType = (GType)typeof(FileReference);
+            GType.Register(referenceType, typeof(FileReference));
+
+            var host = CreateHostBuilder(args).Build();
+
+            _log = host.Services.GetRequiredService<ILogger<Program>>();
+            var app = host.Services.GetRequiredService<Startup>();
+            app.Start();
+
+            Application.Run();
         }
+
+        private static void OnUnhandledGLibException(UnhandledExceptionArgs args)
+        {
+            _log.LogError((Exception)args.ExceptionObject, "Unhandled GLib exception.");
+        }
+
+        private static IHostBuilder CreateHostBuilder(string[] args) => new HostBuilder()
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                config.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "config"));
+                config.AddJsonFile("appsettings.json");
+            })
+            .ConfigureServices((hostingContext, services) =>
+            {
+                services.AddSingleton(new Application("net.Everlook.Everlook", ApplicationFlags.None));
+
+                services.AddTransient(MainWindow.Create);
+                services.AddSingleton<Startup>();
+            })
+            .ConfigureLogging(l =>
+            {
+                l.ClearProviders();
+                l.AddLog4Net();
+            });
     }
 }

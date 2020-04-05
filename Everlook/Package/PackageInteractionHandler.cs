@@ -26,8 +26,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using Everlook.Explorer;
-using log4net;
-using Warcraft.Core;
 using Warcraft.MPQ;
 using Warcraft.MPQ.FileInfo;
 
@@ -39,11 +37,6 @@ namespace Everlook.Package
     /// </summary>
     public sealed class PackageInteractionHandler : IDisposable, IPackage
     {
-        /// <summary>
-        /// Logger instance for this class.
-        /// </summary>
-        private static readonly ILog Log = LogManager.GetLogger(typeof(PackageInteractionHandler));
-
         /// <summary>
         /// Gets the package path.
         /// </summary>
@@ -58,7 +51,19 @@ namespace Everlook.Package
         /// Gets the name of the package.
         /// </summary>
         /// <value>The name of the package.</value>
-        public string PackageName => Path.GetFileNameWithoutExtension(this.PackagePath);
+        public string PackageName
+        {
+            get
+            {
+                var filename = Path.GetFileNameWithoutExtension(this.PackagePath);
+                if (filename is null)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return filename;
+            }
+        }
 
         private MPQ? _package;
 
@@ -135,46 +140,30 @@ namespace Everlook.Package
         }
 
         /// <summary>
-        /// Extracts the specified reference from its associated package. This method only operates on the file path.
+        /// Attempts to extract a file from the package group. This method returns the most recently overridden version
+        /// of the specified file with no regard for the origin package. The returned file may originate from the
+        /// package referenced in the <paramref name="fileReference"/>, or it may originate from a patch package.
+        ///
+        /// If the file does not exist in any package, this method will return false.
         /// </summary>
+        /// <returns>The file or null.</returns>
         /// <param name="fileReference">Reference reference.</param>
-        /// <returns>The raw data of the file pointed to by the reference.</returns>
-        public byte[]? ExtractReference(FileReference fileReference)
+        /// <param name="data">The data.</param>
+        public bool TryExtractReference(FileReference fileReference, [NotNullWhen(true)] out byte[]? data)
         {
-            if (!fileReference.IsFile)
-            {
-                throw new ArgumentException("The specified reference can't be extracted.", nameof(fileReference));
-            }
-
-            try
-            {
-                return ExtractFile(fileReference.FilePath);
-            }
-            catch (InvalidFileSectorTableException fex)
-            {
-                Log.Warn
-                (
-                    $"Failed to extract the file \"{fileReference.FilePath}\" due to an invalid sector table " +
-                    $"(\"{fex.Message}\")."
-                );
-                throw;
-            }
+            return TryExtractFile(fileReference.FilePath, out data);
         }
 
         /// <summary>
-        /// Gets a set of information about the specified package file, such as stored size, disk size
-        /// and storage flags.
+        /// Attempts to get the reference info for the specified reference. This method gets the most recent info for
+        /// the file from overriding packages.
         /// </summary>
         /// <returns>The reference info.</returns>
         /// <param name="fileReference">Reference reference.</param>
-        public MPQFileInfo? GetReferenceInfo(FileReference fileReference)
+        /// <param name="fileInfo">The file information.</param>
+        public bool TryGetReferenceInfo(FileReference fileReference, [NotNullWhen(true)] out MPQFileInfo? fileInfo)
         {
-            if (!fileReference.IsFile)
-            {
-                throw new ArgumentException("The specified reference is not a file.", nameof(fileReference));
-            }
-
-            return GetFileInfo(fileReference.FilePath);
+            return TryGetFileInfo(fileReference.FilePath, out fileInfo);
         }
 
         /// <inheritdoc />
@@ -188,12 +177,6 @@ namespace Everlook.Package
             }
 
             return _package.TryExtractFile(filePath, out data);
-        }
-
-        /// <inheritdoc />
-        public byte[]? ExtractFile(string filePath)
-        {
-            return _package?.ExtractFile(filePath);
         }
 
         /// <inheritdoc />
@@ -239,12 +222,6 @@ namespace Everlook.Package
             }
 
             return _package.TryGetFileInfo(filePath, out fileInfo);
-        }
-
-        /// <inheritdoc />
-        public MPQFileInfo? GetFileInfo(string filePath)
-        {
-            return _package?.GetFileInfo(filePath);
         }
 
         /// <inheritdoc />

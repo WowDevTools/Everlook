@@ -20,12 +20,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using System;
+using System.Numerics;
 using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Shaders.Components;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 using Warcraft.Core.Shading.Blending;
 using Warcraft.Core.Shading.MDX;
 using Warcraft.MDX.Visual;
@@ -64,11 +62,13 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// <summary>
         /// Initializes a new instance of the <see cref="GameModelShader"/> class.
         /// </summary>
-        public GameModelShader()
+        /// <param name="gl">The OpenGL API.</param>
+        public GameModelShader(GL gl)
+            : base(gl)
         {
-            this.Wireframe = new SolidWireframe(this.NativeShaderProgramID);
+            this.Wireframe = new SolidWireframe(this.GL, this.NativeShaderProgramID);
 
-            SetBaseInputColour(Color4.White);
+            SetBaseInputColour(Vector4.One);
             SetFragmentShaderType(MDXFragmentShaderType.Combiners_Opaque);
         }
 
@@ -85,7 +85,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// Sets the current model matrix of the shader.
         /// </summary>
         /// <param name="modelMatrix">The model matrix.</param>
-        public void SetModelMatrix(Matrix4 modelMatrix)
+        public void SetModelMatrix(Matrix4x4 modelMatrix)
         {
             SetMatrix(modelMatrix, ModelMatrix);
         }
@@ -94,7 +94,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// Sets the current view matrix of the shader.
         /// </summary>
         /// <param name="viewMatrix">The model-view matrix.</param>
-        public void SetViewMatrix(Matrix4 viewMatrix)
+        public void SetViewMatrix(Matrix4x4 viewMatrix)
         {
             SetMatrix(viewMatrix, ViewMatrix);
         }
@@ -103,7 +103,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// Sets the current projection matrix of the shader.
         /// </summary>
         /// <param name="projectionMatrix">The projection matrix.</param>
-        public void SetProjectionMatrix(Matrix4 projectionMatrix)
+        public void SetProjectionMatrix(Matrix4x4 projectionMatrix)
         {
             SetMatrix(projectionMatrix, ProjectionMatrix);
         }
@@ -112,9 +112,9 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// Sets the base input colour for the shader.
         /// </summary>
         /// <param name="colour">The base colour.</param>
-        public void SetBaseInputColour(Color4 colour)
+        public void SetBaseInputColour(Vector4 colour)
         {
-            SetColor4(colour, BaseColour);
+            SetVector4(colour, BaseColour);
         }
 
         /// <summary>
@@ -177,30 +177,25 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// <param name="modelMaterial">The material to use.</param>
         public void SetMaterial(MDXMaterial modelMaterial)
         {
-            if (modelMaterial == null)
-            {
-                throw new ArgumentNullException(nameof(modelMaterial));
-            }
-
             Enable();
 
             // Set two-sided rendering
             if (modelMaterial.Flags.HasFlag(MDXRenderFlag.TwoSided))
             {
-                GL.Disable(EnableCap.CullFace);
+                this.GL.Disable(EnableCap.CullFace);
             }
             else
             {
-                GL.Enable(EnableCap.CullFace);
+                this.GL.Enable(EnableCap.CullFace);
             }
 
             if (BlendingState.EnableBlending[modelMaterial.BlendMode])
             {
-                GL.Enable(EnableCap.Blend);
+                this.GL.Enable(EnableCap.Blend);
             }
             else
             {
-                GL.Disable(EnableCap.Blend);
+                this.GL.Disable(EnableCap.Blend);
             }
 
             var dstA = BlendingState.DestinationAlpha[modelMaterial.BlendMode];
@@ -209,12 +204,12 @@ namespace Everlook.Viewport.Rendering.Shaders
             var dstC = BlendingState.DestinationColour[modelMaterial.BlendMode];
             var srcC = BlendingState.SourceColour[modelMaterial.BlendMode];
 
-            GL.BlendFuncSeparate
+            this.GL.BlendFuncSeparate
             (
-                (BlendingFactorSrc)srcC,
-                (BlendingFactorDest)dstC,
-                (BlendingFactorSrc)srcA,
-                (BlendingFactorDest)dstA
+                (BlendingFactor)srcC,
+                (BlendingFactor)dstC,
+                (BlendingFactor)srcA,
+                (BlendingFactor)dstA
             );
 
             switch (modelMaterial.BlendMode)

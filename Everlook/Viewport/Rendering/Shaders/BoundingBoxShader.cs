@@ -20,9 +20,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using System.Numerics;
 using Everlook.Viewport.Rendering.Core;
-using OpenTK;
-using OpenTK.Graphics;
+using JetBrains.Annotations;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Shaders
 {
@@ -48,6 +49,15 @@ namespace Everlook.Viewport.Rendering.Shaders
         protected override string? GeometryShaderResourceName => null;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="BoundingBoxShader"/> class.
+        /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        public BoundingBoxShader([NotNull] GL gl)
+            : base(gl)
+        {
+        }
+
+        /// <summary>
         /// Sets the instancing flag.
         /// </summary>
         /// <param name="isInstanced">Whether or not the shader should render instances.</param>
@@ -60,7 +70,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// Sets the current view matrix of the shader.
         /// </summary>
         /// <param name="viewMatrix">The model-view matrix.</param>
-        public void SetViewMatrix(Matrix4 viewMatrix)
+        public void SetViewMatrix(Matrix4x4 viewMatrix)
         {
             SetMatrix(viewMatrix, ViewMatrix);
         }
@@ -69,7 +79,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// Sets the current projection matrix of the shader.
         /// </summary>
         /// <param name="projectionMatrix">The projection matrix.</param>
-        public void SetProjectionMatrix(Matrix4 projectionMatrix)
+        public void SetProjectionMatrix(Matrix4x4 projectionMatrix)
         {
             SetMatrix(projectionMatrix, ProjectionMatrix);
         }
@@ -78,9 +88,9 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// Sets the line colour of the bounding box.
         /// </summary>
         /// <param name="colour">The colour to set the lines to.</param>
-        public void SetLineColour(Color4 colour)
+        public void SetLineColour(Vector4 colour)
         {
-            SetColor4(colour, ColourIdentifier);
+            SetVector4(colour, ColourIdentifier);
         }
     }
 }

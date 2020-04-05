@@ -20,7 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using OpenTK;
+using System.Numerics;
 
 namespace Everlook.Viewport.Rendering.Core
 {
@@ -94,14 +94,14 @@ namespace Everlook.Viewport.Rendering.Core
         }
 
         /// <summary>
-        /// Gets the <see cref="Matrix4"/> object representing the model matrix of this transform.
+        /// Gets the <see cref="Matrix4x4"/> object representing the model matrix of this transform.
         /// </summary>
         /// <returns>A matrix containing model-space transformation data.</returns>
-        public Matrix4 GetModelMatrix()
+        public Matrix4x4 GetModelMatrix()
         {
-            var modelScale = Matrix4.CreateScale(this.Scale);
-            var modelOrientation = Matrix4.CreateFromQuaternion(this.Orientation);
-            var modelTranslation = Matrix4.CreateTranslation(this.Translation);
+            var modelScale = Matrix4x4.CreateScale(this.Scale);
+            var modelOrientation = Matrix4x4.CreateFromQuaternion(this.Orientation);
+            var modelTranslation = Matrix4x4.CreateTranslation(this.Translation);
 
             return modelScale * modelOrientation * modelTranslation;
         }

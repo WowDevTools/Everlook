@@ -60,10 +60,8 @@ namespace Everlook.UI
         /// <returns>An initialized instance of the EverlookPreferences class.</returns>
         public static EverlookPreferences Create()
         {
-            using (var builder = new Builder(null, "Everlook.interfaces.EverlookPreferences.glade", null))
-            {
-                return new EverlookPreferences(builder, builder.GetObject("_preferencesDialog").Handle);
-            }
+            using var builder = new Builder(null, "Everlook.interfaces.EverlookPreferences.glade", null);
+            return new EverlookPreferences(builder, builder.GetObject("_preferencesDialog").Handle);
         }
 
         /// <summary>
@@ -99,7 +97,7 @@ namespace Everlook.UI
         /// <param name="sender">The sending object.</param>
         /// <param name="e">The event arguments.</param>
         [ConnectBefore]
-        private void OnShowUnknownFilesToggled(object sender, EventArgs e)
+        private void OnShowUnknownFilesToggled(object? sender, EventArgs e)
         {
             // Refilter if the option has changed
             if (_showUnknownFilesCheckButton.Active != _config.ShowUnknownFilesWhenFiltering)
@@ -117,7 +115,7 @@ namespace Everlook.UI
         /// <param name="sender">The sending object.</param>
         /// <param name="e">The event arguments.</param>
         [ConnectBefore]
-        private void OnAllowStatsToggled(object sender, EventArgs e)
+        private void OnAllowStatsToggled(object? sender, EventArgs e)
         {
             var suboptionSensitivity = _allowStatsCheckButton.Active;
 
@@ -165,7 +163,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">The event arguments.</param>
-        private void OnAliasEntryChanged(object sender, EventArgs eventArgs)
+        private void OnAliasEntryChanged(object? sender, EventArgs eventArgs)
         {
             _newGamePathDialog.SetResponseSensitive(ResponseType.Ok, !string.IsNullOrEmpty(_aliasEntry.Text));
         }
@@ -175,7 +173,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">The event arguments.</param>
-        private void OnAddPathButtonClicked(object sender, EventArgs eventArgs)
+        private void OnAddPathButtonClicked(object? sender, EventArgs eventArgs)
         {
             var defaultLocation = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
             _pathChooser.SetCurrentFolderUri(defaultLocation.ToString());
@@ -217,7 +215,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnRemovePathButtonClicked(object sender, EventArgs e)
+        private void OnRemovePathButtonClicked(object? sender, EventArgs e)
         {
             TreeIter selectedIter;
             _gamePathSelectionTreeView.Selection.GetSelected(out selectedIter);

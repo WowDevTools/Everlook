@@ -22,9 +22,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Everlook.Explorer;
 using Gdk;
-using OpenTK;
 using Warcraft.Core.Structures;
 
 namespace Everlook.Utility
@@ -40,11 +40,6 @@ namespace Everlook.Utility
         /// <param name="notebook">The notebook to clear the pages from.</param>
         public static void ClearPages(this Gtk.Notebook notebook)
         {
-            if (notebook == null)
-            {
-                throw new ArgumentNullException(nameof(notebook));
-            }
-
             while (notebook.NPages > 0)
             {
                 notebook.RemovePage(-1);
@@ -53,7 +48,7 @@ namespace Everlook.Utility
 
         /// <summary>
         /// Converts any non-native path separators to the current native path separator,
-        /// e.g backslashes to forwardslashes on *nix, and vice versa.
+        /// e.g backslashes to forward slashes on *nix, and vice versa.
         /// </summary>
         /// <returns>The path.</returns>
         /// <param name="inputPath">Input path.</param>
@@ -89,52 +84,12 @@ namespace Everlook.Utility
         /// <returns>A pixel buffer containg the icon.</returns>
         public static Pixbuf GetIcon(this FileReference fileReference)
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }
 
             return IconManager.GetIconForFiletype(fileReference.FilePath);
-        }
-
-        /// <summary>
-        /// Converts the current OpenGL vector to a Warcraft vector structure.
-        /// </summary>
-        /// <param name="vector3">An <see cref="OpenTK.Vector3"/>-type vector.</param>
-        /// <returns>A System.Numerics vector.</returns>
-        public static System.Numerics.Vector3 ToSystemVector(this Vector3 vector3)
-        {
-            return new System.Numerics.Vector3(vector3.X, vector3.Y, vector3.Z);
-        }
-
-        /// <summary>
-        /// Converts the current Warcraft vector to an OpenGL vector structure.
-        /// </summary>
-        /// <param name="vector3">A <see cref="System.Numerics.Vector3"/>-type vector.</param>
-        /// <returns>An OpenTK vector.</returns>
-        public static Vector3 ToOpenGLVector(this System.Numerics.Vector3 vector3)
-        {
-            return new Vector3(vector3.X, vector3.Y, vector3.Z);
-        }
-
-        /// <summary>
-        /// Converts the current Warcraft vector to an OpenGL vector structure.
-        /// </summary>
-        /// <param name="vector2">A <see cref="System.Numerics.Vector2"/>-type vector.</param>
-        /// <returns>An OpenTK vector.</returns>
-        public static Vector2 ToOpenGLVector(this System.Numerics.Vector2 vector2)
-        {
-            return new Vector2(vector2.X, vector2.Y);
-        }
-
-        /// <summary>
-        /// Converts the current Warcraft quaternion to an OpenGL quaternion structure.
-        /// </summary>
-        /// <param name="quaternion">A <see cref="System.Numerics.Quaternion"/>-type vector.</param>
-        /// <returns>An OpenTK vector.</returns>
-        public static Quaternion ToOpenGLQuaternion(this System.Numerics.Quaternion quaternion)
-        {
-            return new Quaternion(quaternion.X, quaternion.Y, quaternion.Z, quaternion.W);
         }
 
         /// <summary>
@@ -150,15 +105,15 @@ namespace Everlook.Utility
             var xDiff = top.X - bottom.X;
             var yDiff = top.Y - bottom.Y;
 
-            yield return top.ToOpenGLVector();
-            yield return top.ToOpenGLVector() - new Vector3(xDiff, 0, 0);
-            yield return top.ToOpenGLVector() - new Vector3(xDiff, yDiff, 0);
-            yield return top.ToOpenGLVector() - new Vector3(0, yDiff, 0);
+            yield return top;
+            yield return top - new Vector3(xDiff, 0, 0);
+            yield return top - new Vector3(xDiff, yDiff, 0);
+            yield return top - new Vector3(0, yDiff, 0);
 
-            yield return bottom.ToOpenGLVector();
-            yield return bottom.ToOpenGLVector() + new Vector3(xDiff, 0, 0);
-            yield return bottom.ToOpenGLVector() + new Vector3(xDiff, yDiff, 0);
-            yield return bottom.ToOpenGLVector() + new Vector3(0, yDiff, 0);
+            yield return bottom;
+            yield return bottom + new Vector3(xDiff, 0, 0);
+            yield return bottom + new Vector3(xDiff, yDiff, 0);
+            yield return bottom + new Vector3(0, yDiff, 0);
         }
     }
 }

@@ -72,10 +72,8 @@ namespace Everlook.UI
         /// <returns>An initialized instance of the EverlookGameLoadingDialog class.</returns>
         public static EverlookGameLoadingDialog Create(Window parent)
         {
-            using (var builder = new Builder(null, "Everlook.interfaces.EverlookGameLoadingDialog.glade", null))
-            {
-                return new EverlookGameLoadingDialog(builder, builder.GetObject("_gameLoadingDialog").Handle, parent);
-            }
+            using var builder = new Builder(null, "Everlook.interfaces.EverlookGameLoadingDialog.glade", null);
+            return new EverlookGameLoadingDialog(builder, builder.GetObject("_gameLoadingDialog").Handle, parent);
         }
 
         private EverlookGameLoadingDialog(Builder builder, IntPtr handle, Window parent)
@@ -161,18 +159,16 @@ namespace Everlook.UI
             using (var shaderStream =
                 Assembly.GetExecutingAssembly().GetManifestResourceStream("Everlook.Content.jokes.txt"))
             {
-                if (shaderStream == null)
+                if (shaderStream is null)
                 {
                     return;
                 }
 
-                using (var sr = new StreamReader(shaderStream))
+                using var sr = new StreamReader(shaderStream);
+                while (sr.BaseStream.Length > sr.BaseStream.Position)
                 {
-                    while (sr.BaseStream.Length > sr.BaseStream.Position)
-                    {
-                        // Add italics to all jokes. Jokes are in Pango markup format
-                        _jokes.Add($"<i>{sr.ReadLine()}</i>");
-                    }
+                    // Add italics to all jokes. Jokes are in Pango markup format
+                    _jokes.Add($"<i>{sr.ReadLine()}</i>");
                 }
             }
 
@@ -261,10 +257,10 @@ namespace Everlook.UI
                                            $"{_currentLoadingProgress.OperationCount}) {statusMessage}";
         }
 
-        /// <inheritdoc />
-        public override void Destroy()
+        /// <inheritdoc/>
+        protected override void Dispose(bool disposing)
         {
-            base.Destroy();
+            base.Dispose(disposing);
 
             GLib.Timeout.Remove(_jokeTimeoutID);
             GLib.Timeout.Remove(_secondaryProgressPulserTimeoutID);

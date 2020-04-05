@@ -43,7 +43,7 @@ namespace Everlook.Viewport.Rendering.Shaders.GLSLExtended
         {
             // Find a list of includes
             var includeRegex = new Regex("#include\\s+?\"(?<includeFile>.+)\"", RegexOptions.Multiline);
-            var matches = includeRegex.Matches(source).Cast<Match>().Reverse();
+            var matches = includeRegex.Matches(source).Reverse();
 
             // Remove any trailing dot separators from the resource directory.
             baseResourceDirectory = baseResourceDirectory.TrimEnd('.');
@@ -57,7 +57,7 @@ namespace Everlook.Viewport.Rendering.Shaders.GLSLExtended
 
                 // Try loading it from the resource manifest
                 var fileContents = Utility.ResourceManager.LoadStringResource($"{baseResourceDirectory}.{resourceName}");
-                if (fileContents == null)
+                if (fileContents is null)
                 {
                     throw new FileNotFoundException
                     (

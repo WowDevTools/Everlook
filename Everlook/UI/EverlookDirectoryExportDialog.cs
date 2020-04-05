@@ -50,15 +50,13 @@ namespace Everlook.UI
         /// <returns>An initialized instance of the EverlookDirectoryExportDialog class.</returns>
         public static EverlookDirectoryExportDialog Create(FileReference inExportTarget)
         {
-            using (var builder = new Builder(null, "Everlook.interfaces.EverlookDirectoryExport.glade", null))
-            {
-                return new EverlookDirectoryExportDialog
-                (
-                    builder,
-                    builder.GetObject("EverlookDirectoryExportDialog").Handle,
-                    inExportTarget
-                );
-            }
+            using var builder = new Builder(null, "Everlook.interfaces.EverlookDirectoryExport.glade", null);
+            return new EverlookDirectoryExportDialog
+            (
+                builder,
+                builder.GetObject("EverlookDirectoryExportDialog").Handle,
+                inExportTarget
+            );
         }
 
         /// <summary>
@@ -138,7 +136,7 @@ namespace Everlook.UI
                     Directory.CreateDirectory(Directory.GetParent(exportPath).FullName);
 
                     byte[] fileData = referenceToExport.Extract();
-                    if (fileData != null)
+                    if (!(fileData is null))
                     {
                         File.WriteAllBytes(exportPath, fileData);
                     }
@@ -155,15 +153,15 @@ namespace Everlook.UI
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
         [GLib.ConnectBefore]
-        private void OnItemListingButtonPressed(object sender, ButtonPressEventArgs e)
+        private void OnItemListingButtonPressed(object? sender, ButtonPressEventArgs e)
         {
-            if (e.Event.Type == EventType.ButtonPress && e.Event.Button == 3)
+            if (e.Event.Type != EventType.ButtonPress || e.Event.Button != 3)
             {
-                _exportPopupMenu.ShowAll();
-
-                _exportPopupMenu.PopupForDevice(e.Event.Device, null, null, null, null, e.Event.Button, e.Event.Time);
-                //this.ExportPopupMenu.Popup();
+                return;
             }
+
+            _exportPopupMenu.ShowAll();
+            _exportPopupMenu.PopupAtPointer(e.Event);
         }
 
         /// <summary>
@@ -171,7 +169,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnSelectAllItemActivated(object sender, EventArgs e)
+        private void OnSelectAllItemActivated(object? sender, EventArgs e)
         {
             _itemExportListStore.Foreach
             (
@@ -188,7 +186,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnSelectNoneItemActivated(object sender, EventArgs e)
+        private void OnSelectNoneItemActivated(object? sender, EventArgs e)
         {
             _itemExportListStore.Foreach
             (
@@ -205,7 +203,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnExportItemToggleClicked(object sender, ToggledArgs e)
+        private void OnExportItemToggleClicked(object? sender, ToggledArgs e)
         {
             TreeIter iter;
             _itemExportListStore.GetIterFromString(out iter, e.Path);
@@ -220,7 +218,7 @@ namespace Everlook.UI
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnOkButtonClicked(object sender, EventArgs e)
+        private void OnOkButtonClicked(object? sender, EventArgs e)
         {
             RunExport();
         }

@@ -22,7 +22,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Warcraft.Core;
 using Warcraft.DBC;
 using Warcraft.DBC.Definitions;
@@ -98,7 +97,7 @@ namespace Everlook.Database
         public T GetRecordByID<T>(int id) where T : DBCRecord, new()
         {
             var database = GetDatabase<T>();
-            return database.GetRecordByID(id);
+            return database.GetRecordByID(id) ?? throw new InvalidOperationException();
         }
 
         /// <summary>
@@ -142,9 +141,16 @@ namespace Everlook.Database
             var specificDBCType = genericDBCType.MakeGenericType(GetRecordTypeFromDatabaseName(databaseName));
 
             var databasePath = GetDatabasePackagePath(databaseName);
-            var databaseData = _contentSource.ExtractFile(databasePath);
+            if (!_contentSource.TryExtractFile(databasePath, out var databaseData))
+            {
+                throw new InvalidOperationException();
+            }
 
-            var database = (IDBC)Activator.CreateInstance(specificDBCType, _version, databaseData);
+            if (!(Activator.CreateInstance(specificDBCType, _version, databaseData) is IDBC database))
+            {
+                throw new InvalidOperationException("Something caused the database instantiation to fail.");
+            }
+
             _databases.Add(databaseName, database);
         }
 

@@ -52,7 +52,7 @@ namespace Everlook.UI.Helpers
         )
         {
             var cellText = cell as CellRendererText;
-            if (cellText == null)
+            if (cellText is null)
             {
                 return;
             }
@@ -97,7 +97,7 @@ namespace Everlook.UI.Helpers
             var cellText = cell as CellRendererText;
             var reference = (FileReference)model.GetValue(iter, 0);
 
-            if (reference == null || cellText == null)
+            if (reference is null || cellText is null)
             {
                 return;
             }
@@ -123,7 +123,7 @@ namespace Everlook.UI.Helpers
             var cellIcon = cell as CellRendererPixbuf;
             var reference = (FileReference)model.GetValue(iter, 0);
 
-            if (reference == null || cellIcon == null)
+            if (reference is null || cellIcon is null)
             {
                 return;
             }

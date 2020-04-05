@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Everlook.Configuration;
 using Everlook.Exceptions.Shader;
 using Everlook.Utility;
@@ -31,20 +32,10 @@ using Everlook.Viewport.Rendering.Core;
 using Everlook.Viewport.Rendering.Interfaces;
 using Everlook.Viewport.Rendering.Shaders;
 using log4net;
-using OpenTK;
+using Silk.NET.OpenGL;
 using Warcraft.WMO;
 using Warcraft.WMO.GroupFile;
-using Warcraft.WMO.GroupFile.Chunks;
 using Warcraft.WMO.RootFile.Chunks;
-using BufferTarget = OpenTK.Graphics.OpenGL.BufferTarget;
-using BufferUsageHint = OpenTK.Graphics.OpenGL.BufferUsageHint;
-using DrawElementsType = OpenTK.Graphics.OpenGL.DrawElementsType;
-using EnableCap = OpenTK.Graphics.OpenGL.EnableCap;
-using GL = OpenTK.Graphics.OpenGL.GL;
-using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
-using TextureUnit = OpenTK.Graphics.OpenGL.TextureUnit;
-using TextureWrapMode = OpenTK.Graphics.OpenGL.TextureWrapMode;
-using VertexAttribPointerType = OpenTK.Graphics.OpenGL.VertexAttribPointerType;
 
 namespace Everlook.Viewport.Rendering
 {
@@ -52,6 +43,7 @@ namespace Everlook.Viewport.Rendering
     /// Represents a renderable World Model Object.
     /// </summary>
     public sealed class RenderableWorldModel :
+        GraphicsObject,
         IRenderable,
         ITickingActor,
         IDefaultCameraPositionProvider,
@@ -61,6 +53,11 @@ namespace Everlook.Viewport.Rendering
         /// Logger instance for this class.
         /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(typeof(RenderableWorldModel));
+
+        /// <summary>
+        /// Holds the render cache.
+        /// </summary>
+        private readonly RenderCache _renderCache;
 
         /// <summary>
         /// Gets or sets a value indicating whether this object has been disposed.
@@ -88,20 +85,20 @@ namespace Everlook.Viewport.Rendering
                     return Vector3.Zero;
                 }
 
-                return
+                var vec4 = Vector4.Transform
                 (
-                    this.ActorTransform.GetModelMatrix() *
                     new Vector4
                     (
                         _model.Groups
-                        .First()
-                        .GetBoundingBox()
-                        .GetCenterCoordinates()
-                        .ToOpenGLVector(),
+                            .First()
+                            .GetBoundingBox()
+                            .GetCenterCoordinates(),
                         1.0f
-                    )
-                )
-                .Xyz;
+                    ),
+                    this.ActorTransform.GetModelMatrix()
+                );
+
+                return new Vector3(vec4.X, vec4.Y, vec4.Z);
             }
         }
 
@@ -114,7 +111,6 @@ namespace Everlook.Viewport.Rendering
         /// <inheritdoc />
         public Transform ActorTransform { get; set; }
 
-        private readonly RenderCache _cache = RenderCache.Instance;
         private readonly WarcraftGameContext _gameContext;
 
         /// <summary>
@@ -147,10 +143,10 @@ namespace Everlook.Viewport.Rendering
             new Dictionary<string, List<ActorInstanceSet<RenderableGameModel>>>();
 
         /// <inheritdoc />
-        public int PolygonCount => _model.Groups.Sum(g => g.GroupData.VertexIndices.VertexIndices.Count / 3);
+        public int PolygonCount => _model.Groups.Sum(g => g.GroupData.VertexIndices!.VertexIndices.Count / 3);
 
         /// <inheritdoc />
-        public int VertexCount => _model.Groups.Sum(g => g.GroupData.Vertices.Vertices.Count);
+        public int VertexCount => _model.Groups.Sum(g => g.GroupData.Vertices!.Vertices.Count);
 
         /// <inheritdoc />
         public bool IsInitialized { get; set; }
@@ -180,10 +176,14 @@ namespace Everlook.Viewport.Rendering
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderableWorldModel"/> class.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        /// <param name="renderCache">The rendering cache.</param>
         /// <param name="inModel">The model to render.</param>
         /// <param name="gameContext">The game context.</param>
-        public RenderableWorldModel(WMO inModel, WarcraftGameContext gameContext)
+        public RenderableWorldModel(GL gl, RenderCache renderCache, WMO inModel, WarcraftGameContext gameContext)
+            : base(gl)
         {
+            _renderCache = renderCache;
             _model = inModel;
             _gameContext = gameContext;
 
@@ -204,9 +204,9 @@ namespace Everlook.Viewport.Rendering
 
             this.IsInitialized = true;
 
-            _shader = _cache.GetShader(EverlookShader.WorldModel) as WorldModelShader;
+            _shader = _renderCache.GetShader(EverlookShader.WorldModel) as WorldModelShader;
 
-            if (_shader == null)
+            if (_shader is null)
             {
                 throw new ShaderNullException(typeof(WorldModelShader));
             }
@@ -218,12 +218,14 @@ namespace Everlook.Viewport.Rendering
             // Load the textures used in this model
             foreach (var texture in _model.GetTextures())
             {
-                if (!string.IsNullOrEmpty(texture))
+                if (string.IsNullOrEmpty(texture))
                 {
-                    if (!_textureLookup.ContainsKey(texture))
-                    {
-                        _textureLookup.Add(texture, _cache.GetTexture(texture, _gameContext.Assets));
-                    }
+                    continue;
+                }
+
+                if (!_textureLookup.ContainsKey(texture))
+                {
+                    _textureLookup.Add(texture, _renderCache.GetTexture(texture, _gameContext.Assets));
                 }
             }
 
@@ -295,14 +297,21 @@ namespace Everlook.Viewport.Rendering
                         var doodadReference = _gameContext.GetReferenceForDoodad(firstInstance);
                         var doodadModel = DataLoadingRoutines.LoadGameModel(doodadReference);
 
-                        if (doodadModel == null)
+                        if (doodadModel is null)
                         {
                             Log.Warn($"Failed to load doodad \"{firstInstance.Name}\"");
                             continue;
                         }
 
                         // Then create a new renderable game model
-                        var renderableDoodad = new RenderableGameModel(doodadModel, _gameContext, firstInstance.Name);
+                        var renderableDoodad = new RenderableGameModel
+                        (
+                            this.GL,
+                            _renderCache,
+                            doodadModel,
+                            _gameContext,
+                            firstInstance.Name
+                        );
 
                         // And cache it
                         _doodadCache.Add(firstInstance.Name, renderableDoodad);
@@ -315,20 +324,24 @@ namespace Everlook.Viewport.Rendering
                         (
                             new Transform
                             (
-                                doodadInstance.Position.ToOpenGLVector(),
-                                doodadInstance.Orientation.ToOpenGLQuaternion(),
+                                doodadInstance.Position,
+                                doodadInstance.Orientation,
                                 new Vector3(doodadInstance.Scale)
                             )
                         );
                     }
 
-                    var instanceSet = new ActorInstanceSet<RenderableGameModel>(_doodadCache[firstInstance.Name]);
+                    var instanceSet = new ActorInstanceSet<RenderableGameModel>
+                    (
+                        this.GL, _doodadCache[firstInstance.Name]
+                    );
+
                     instanceSet.SetInstances(instanceTransforms);
 
                     doodadSetInstanceGroups.Add(instanceSet);
                 }
 
-                _doodadSets.Add(doodadSet.Name, doodadSetInstanceGroups);
+                _doodadSets.Add(doodadSet.Name!, doodadSetInstanceGroups);
             }
         }
 
@@ -342,30 +355,39 @@ namespace Everlook.Viewport.Rendering
                 Buffers
             */
 
-            var vertexBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
-            var normalBuffer = new Buffer<Vector3>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
-            var coordinateBuffer = new Buffer<Vector2>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
-            var vertexIndexes = new Buffer<ushort>(BufferTarget.ElementArrayBuffer, BufferUsageHint.StaticDraw);
+            var vertexBuffer = new Buffer<Vector3>(this.GL, BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw);
+            var normalBuffer = new Buffer<Vector3>(this.GL, BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw);
+            var coordinateBuffer = new Buffer<Vector2>(this.GL, BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw);
+            var vertexIndexes = new Buffer<ushort>
+            (
+                this.GL, BufferTargetARB.ElementArrayBuffer, BufferUsageARB.StaticDraw
+            );
 
             // Upload all of the vertices in this group
-            vertexBuffer.Data = modelGroup.GetVertices().Select(v => v.ToOpenGLVector()).ToArray();
+            vertexBuffer.Data = modelGroup.GetVertices().Select(v => v).ToArray();
             _vertexBufferLookup.Add(modelGroup, vertexBuffer);
 
-            vertexBuffer.AttachAttributePointer(new VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 0, 0));
+            vertexBuffer.AttachAttributePointer
+            (
+                new VertexAttributePointer(this.GL, 0, 3, VertexAttribPointerType.Float, 0, 0)
+            );
 
             // Upload all of the normals in this group
-            normalBuffer.Data = modelGroup.GetNormals().Select(v => v.ToOpenGLVector()).ToArray();
+            normalBuffer.Data = modelGroup.GetNormals().Select(v => v).ToArray();
             _normalBufferLookup.Add(modelGroup, normalBuffer);
 
-            normalBuffer.AttachAttributePointer(new VertexAttributePointer(1, 3, VertexAttribPointerType.Float, 0, 0));
+            normalBuffer.AttachAttributePointer
+            (
+                new VertexAttributePointer(this.GL, 1, 3, VertexAttribPointerType.Float, 0, 0)
+            );
 
             // Upload all of the UVs in this group
-            coordinateBuffer.Data = modelGroup.GetTextureCoordinates().Select(v => v.ToOpenGLVector()).ToArray();
+            coordinateBuffer.Data = modelGroup.GetTextureCoordinates().Select(v => v).ToArray();
             _textureCoordinateBufferLookup.Add(modelGroup, coordinateBuffer);
 
             coordinateBuffer.AttachAttributePointer
             (
-                new VertexAttributePointer(2, 2, VertexAttribPointerType.Float, 0, 0)
+                new VertexAttributePointer(this.GL, 2, 2, VertexAttribPointerType.Float, 0, 0)
             );
 
             // Upload vertex indices for this group
@@ -374,6 +396,8 @@ namespace Everlook.Viewport.Rendering
 
             var boundingBox = new RenderableBoundingBox
             (
+                this.GL,
+                _renderCache,
                 modelGroup.GetBoundingBox(),
                 this.ActorTransform
             );
@@ -398,7 +422,7 @@ namespace Everlook.Viewport.Rendering
         }
 
         /// <inheritdoc />
-        public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+        public void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera)
         {
             ThrowIfDisposed();
 
@@ -440,17 +464,19 @@ namespace Everlook.Viewport.Rendering
                 }
             }
 
-            if (this.ShouldRenderDoodads)
+            if (!this.ShouldRenderDoodads)
             {
-                foreach (var doodadInstanceSet in _doodadSets[this.DoodadSet])
-                {
-                    //doodadInstanceSet.ShouldRenderBounds = this.ShouldRenderBounds;
-                }
+                return;
+            }
 
-                foreach (var doodadInstanceSet in _doodadSets[this.DoodadSet])
-                {
-                    doodadInstanceSet.Render(viewMatrix, projectionMatrix, camera);
-                }
+            foreach (var doodadInstanceSet in _doodadSets[this.DoodadSet!])
+            {
+                doodadInstanceSet.ShouldRenderBounds = this.ShouldRenderBounds;
+            }
+
+            foreach (var doodadInstanceSet in _doodadSets[this.DoodadSet])
+            {
+                doodadInstanceSet.Render(viewMatrix, projectionMatrix, camera);
             }
 
             // TODO: Summarize the render batches from each group that has the same material ID
@@ -467,7 +493,7 @@ namespace Everlook.Viewport.Rendering
         /// <summary>
         /// Renders the specified model group on a batch basis.
         /// </summary>
-        private void RenderGroup(ModelGroup modelGroup, Matrix4 modelViewProjection)
+        private void RenderGroup(ModelGroup modelGroup, Matrix4x4 modelViewProjection)
         {
             if (_shader is null || this.DoodadSet is null)
             {
@@ -475,7 +501,7 @@ namespace Everlook.Viewport.Rendering
             }
 
             // Reenable depth test
-            GL.Enable(EnableCap.DepthTest);
+            this.GL.Enable(EnableCap.DepthTest);
 
             // Render the object
             // Send the vertices to the shader
@@ -496,7 +522,7 @@ namespace Everlook.Viewport.Rendering
                 _shader.Wireframe.SetWireframeColour(EverlookConfiguration.Instance.WireframeColour);
 
                 // Override blend setting
-                GL.Enable(EnableCap.Blend);
+                this.GL.Enable(EnableCap.Blend);
             }
 
             // Render all the different materials (opaque first, transparent after)
@@ -512,28 +538,26 @@ namespace Everlook.Viewport.Rendering
                 _shader.SetMVPMatrix(modelViewProjection);
 
                 // Set the texture as the first diffuse texture in unit 0
-                var texture = _cache.GetCachedTexture(modelMaterial.DiffuseTexture);
-                if (modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClampS))
-                {
-                    texture.WrappingMode = TextureWrapMode.Clamp;
-                }
-                else
-                {
-                    texture.WrappingMode = TextureWrapMode.Repeat;
-                }
+                var texture = _renderCache.GetCachedTexture(modelMaterial.DiffuseTexture!);
+                texture.WrappingMode = modelMaterial.Flags.HasFlag(MaterialFlags.TextureWrappingClampS)
+                    ? TextureWrapMode.ClampToBorder
+                    : TextureWrapMode.Repeat;
 
                 _shader.BindTexture2D(TextureUnit.Texture0, TextureUniform.Texture0, texture);
 
                 // Finally, draw the model
-                GL.DrawRangeElements
-                (
-                    PrimitiveType.Triangles,
-                    renderBatch.FirstPolygonIndex,
-                    renderBatch.FirstPolygonIndex + renderBatch.PolygonIndexCount - 1,
-                    renderBatch.PolygonIndexCount,
-                    DrawElementsType.UnsignedShort,
-                    new IntPtr(renderBatch.FirstPolygonIndex * 2)
-                );
+                unsafe
+                {
+                    this.GL.DrawRangeElements
+                    (
+                        PrimitiveType.Triangles,
+                        renderBatch.FirstPolygonIndex,
+                        renderBatch.FirstPolygonIndex + renderBatch.PolygonIndexCount - 1,
+                        renderBatch.PolygonIndexCount,
+                        DrawElementsType.UnsignedShort,
+                        (void*)(renderBatch.FirstPolygonIndex * 2)
+                    );
+                }
             }
 
             // Release the attribute arrays
@@ -548,7 +572,7 @@ namespace Everlook.Viewport.Rendering
         /// <returns>The names of the doodad sets.</returns>
         public IEnumerable<string> GetDoodadSetNames()
         {
-            return _model.RootInformation.DoodadSets.DoodadSets.Select(ds => ds.Name);
+            return _model.RootInformation.DoodadSets.DoodadSets.Select(ds => ds.Name!);
         }
 
         /// <summary>
@@ -559,7 +583,7 @@ namespace Everlook.Viewport.Rendering
         {
             if (this.IsDisposed)
             {
-                throw new ObjectDisposedException(ToString());
+                throw new ObjectDisposedException(ToString() ?? nameof(RenderableWorldModel));
             }
         }
 
@@ -595,10 +619,9 @@ namespace Everlook.Viewport.Rendering
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            var otherModel = obj as RenderableWorldModel;
-            if (otherModel == null)
+            if (!(obj is RenderableWorldModel otherModel))
             {
                 return false;
             }

@@ -41,15 +41,13 @@ namespace Everlook.Utility
             string resourceString;
             using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourcePath))
             {
-                if (resourceStream == null)
+                if (resourceStream is null)
                 {
                     return null;
                 }
 
-                using (var sr = new StreamReader(resourceStream))
-                {
-                    resourceString = sr.ReadToEnd();
-                }
+                using var sr = new StreamReader(resourceStream);
+                resourceString = sr.ReadToEnd();
             }
 
             return resourceString;
@@ -65,15 +63,13 @@ namespace Everlook.Utility
             var executingAssembly = Assembly.GetExecutingAssembly();
             const string fallbackTextureName = "Everlook.Content.Textures.FallbackTexture.png";
 
-            using (var imageStream = executingAssembly.GetManifestResourceStream(fallbackTextureName))
+            using var imageStream = executingAssembly.GetManifestResourceStream(fallbackTextureName);
+            if (imageStream is null)
             {
-                if (imageStream == null)
-                {
-                    return null;
-                }
-
-                return new Bitmap(imageStream);
+                return null;
             }
+
+            return new Bitmap(imageStream);
         }
     }
 }

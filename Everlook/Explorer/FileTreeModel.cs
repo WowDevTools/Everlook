@@ -36,7 +36,7 @@ using Object = GLib.Object;
 namespace Everlook.Explorer
 {
     /// <summary>
-    /// GTK TreeModel which serves an <see cref="OptimizedNodeTree"/>.
+    /// GTK TreeModel which serves tree nodes.
     /// </summary>
     public class FileTreeModel : Object, ITreeModelImplementor
     {
@@ -127,11 +127,6 @@ namespace Everlook.Explorer
         /// <returns>A set of all the child references of the given reference.</returns>
         public IEnumerable<FileReference> EnumerateFilesOfReference(FileReference fileReference)
         {
-            if (fileReference == null)
-            {
-                yield break;
-            }
-
             if (fileReference.IsFile)
             {
                 yield return fileReference;
@@ -184,7 +179,7 @@ namespace Everlook.Explorer
             }
 
             var node = _tree.GetNode((ulong)iter.UserData);
-            if (node == null)
+            if (node is null)
             {
                 throw new InvalidDataException("The iter did not contain a valid node offset.");
             }
@@ -312,7 +307,7 @@ namespace Everlook.Explorer
 
             var result = new TreePath();
             var node = _tree.GetNode((ulong)iter.UserData);
-            if (node == null)
+            if (node is null)
             {
                 return result;
             }
@@ -345,7 +340,7 @@ namespace Everlook.Explorer
             }
 
             var node = iter.Equals(TreeIter.Zero) ? _tree.Root : _tree.GetNode((ulong)iter.UserData);
-            if (node == null)
+            if (node is null)
             {
                 return;
             }
@@ -374,13 +369,13 @@ namespace Everlook.Explorer
             var currentIndex = parentNode.ChildOffsets.IndexOf(currentOffset);
             var nextIndex = currentIndex + 1;
 
-            if (nextIndex < (int)parentNode.ChildCount)
+            if (nextIndex >= (int)parentNode.ChildCount)
             {
-                iter.UserData = new IntPtr((long)parentNode.ChildOffsets[nextIndex]);
-                return true;
+                return false;
             }
 
-            return false;
+            iter.UserData = new IntPtr((long)parentNode.ChildOffsets[nextIndex]);
+            return true;
         }
 
         /// <summary>
@@ -404,13 +399,13 @@ namespace Everlook.Explorer
             var currentIndex = parentNode.ChildOffsets.IndexOf(currentOffset);
             var previousIndex = currentIndex - 1;
 
-            if (previousIndex >= 0 && previousIndex < (int)parentNode.ChildCount)
+            if (previousIndex < 0 || previousIndex >= (int)parentNode.ChildCount)
             {
-                iter.UserData = new IntPtr((long)parentNode.ChildOffsets[previousIndex]);
-                return true;
+                return false;
             }
 
-            return false;
+            iter.UserData = new IntPtr((long)parentNode.ChildOffsets[previousIndex]);
+            return true;
         }
 
         /// <summary>
@@ -431,7 +426,7 @@ namespace Everlook.Explorer
             iter = TreeIter.Zero;
 
             var node = parent.Equals(TreeIter.Zero) ? _tree.Root : _tree.GetNode((ulong)parent.UserData);
-            if (node == null)
+            if (node is null)
             {
                 throw new ArgumentException("The given iter was not valid.", nameof(parent));
             }
@@ -461,7 +456,7 @@ namespace Everlook.Explorer
             }
 
             var node = iter.Equals(TreeIter.Zero) ? _tree.Root : _tree.GetNode((ulong)iter.UserData);
-            if (node == null)
+            if (node is null)
             {
                 throw new ArgumentException("The given iter was not valid.", nameof(iter));
             }
@@ -489,7 +484,7 @@ namespace Everlook.Explorer
             }
 
             var node = _tree.GetNode((ulong)iter.UserData);
-            if (node == null)
+            if (node is null)
             {
                 throw new ArgumentException("The given iter was not valid.", nameof(iter));
             }
@@ -522,7 +517,7 @@ namespace Everlook.Explorer
 
             var node = iter.Equals(TreeIter.Zero) ? _tree.Root : _tree.GetNode((ulong)iter.UserData);
 
-            if (node == null)
+            if (node is null)
             {
                 throw new ArgumentException("The given iter was not valid.", nameof(parent));
             }
@@ -555,13 +550,13 @@ namespace Everlook.Explorer
             iter = TreeIter.Zero;
 
             var childNode = _tree.GetNode((ulong)child.UserData);
-            if (childNode == null)
+            if (childNode is null)
             {
                 throw new ArgumentException("The given iter was not valid.", nameof(child));
             }
 
             var parentNode = _tree.GetNode((ulong)childNode.ParentOffset);
-            if (parentNode == null)
+            if (parentNode is null)
             {
                 return false;
             }

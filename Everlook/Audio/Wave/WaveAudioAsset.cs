@@ -24,7 +24,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Everlook.Explorer;
-using OpenTK.Audio.OpenAL;
+using Silk.NET.OpenAL;
 using Warcraft.Core;
 
 namespace Everlook.Audio.Wave
@@ -40,7 +40,7 @@ namespace Everlook.Audio.Wave
         private bool _isDisposed;
 
         /// <inheritdoc />
-        public ALFormat Format
+        public BufferFormat Format
         {
             get
             {
@@ -48,11 +48,11 @@ namespace Everlook.Audio.Wave
                 {
                     case 1:
                     {
-                        return this.BitsPerSample == 8 ? ALFormat.Mono8 : ALFormat.Mono16;
+                        return this.BitsPerSample == 8 ? BufferFormat.Mono8 : BufferFormat.Mono16;
                     }
                     case 2:
                     {
-                        return this.BitsPerSample == 8 ? ALFormat.Stereo8 : ALFormat.Stereo16;
+                        return this.BitsPerSample == 8 ? BufferFormat.Stereo8 : BufferFormat.Stereo16;
                     }
                     default:
                     {
@@ -71,7 +71,7 @@ namespace Everlook.Audio.Wave
             {
                 ThrowIfDisposed();
 
-                if (_pcmDataInternal != null)
+                if (!(_pcmDataInternal is null))
                 {
                     return _pcmDataInternal;
                 }
@@ -111,11 +111,6 @@ namespace Everlook.Audio.Wave
         /// <exception cref="ArgumentNullException">Thrown if the file data can't be extracted.</exception>
         public WaveAudioAsset(FileReference fileReference)
         {
-            if (fileReference == null)
-            {
-                throw new ArgumentNullException(nameof(fileReference));
-            }
-
             if (fileReference.GetReferencedFileType() != WarcraftFileType.WaveAudio)
             {
                 throw new ArgumentException
@@ -125,65 +120,60 @@ namespace Everlook.Audio.Wave
                 );
             }
 
-            var fileBytes = fileReference.Extract();
-            if (fileBytes == null)
+            if (!fileReference.TryExtract(out var fileBytes))
             {
                 throw new ArgumentException("The file data could not be extracted.", nameof(fileReference));
             }
 
-            using (var ms = new MemoryStream(fileBytes))
+            using var ms = new MemoryStream(fileBytes);
+            using var br = new BinaryReader(ms);
+            var signature = new string(br.ReadChars(4));
+            if (signature != "RIFF")
             {
-                using (var br = new BinaryReader(ms))
-                {
-                    var signature = new string(br.ReadChars(4));
-                    if (signature != "RIFF")
-                    {
-                        throw new NotSupportedException("The file data is not a wave file.");
-                    }
-
-                    // Skip chunk size
-                    br.BaseStream.Position += 4;
-
-                    var format = new string(br.ReadChars(4));
-                    if (format != "WAVE")
-                    {
-                        throw new NotSupportedException("The file data is not a wave file.");
-                    }
-
-                    var formatSignature = new string(br.ReadChars(4));
-                    if (formatSignature != "fmt ")
-                    {
-                        throw new NotSupportedException("The file data is not a wave file.");
-                    }
-
-                    // Skip format chunk size
-                    br.BaseStream.Position += 4;
-
-                    // Skip audio format
-                    br.BaseStream.Position += 2;
-
-                    this.Channels = br.ReadInt16();
-                    this.SampleRate = br.ReadInt32();
-
-                    // Skip byte rate
-                    br.BaseStream.Position += 4;
-
-                    // Skip block alignment
-                    br.BaseStream.Position += 2;
-
-                    this.BitsPerSample = br.ReadInt16();
-
-                    var dataSignature = new string(br.ReadChars(4));
-                    if (dataSignature != "data")
-                    {
-                        throw new NotSupportedException("The file data is not a wave file.");
-                    }
-
-                    var dataChunkSize = br.ReadInt32();
-
-                    this.PCMStream = new MemoryStream(br.ReadBytes(dataChunkSize));
-                }
+                throw new NotSupportedException("The file data is not a wave file.");
             }
+
+            // Skip chunk size
+            br.BaseStream.Position += 4;
+
+            var format = new string(br.ReadChars(4));
+            if (format != "WAVE")
+            {
+                throw new NotSupportedException("The file data is not a wave file.");
+            }
+
+            var formatSignature = new string(br.ReadChars(4));
+            if (formatSignature != "fmt ")
+            {
+                throw new NotSupportedException("The file data is not a wave file.");
+            }
+
+            // Skip format chunk size
+            br.BaseStream.Position += 4;
+
+            // Skip audio format
+            br.BaseStream.Position += 2;
+
+            this.Channels = br.ReadInt16();
+            this.SampleRate = br.ReadInt32();
+
+            // Skip byte rate
+            br.BaseStream.Position += 4;
+
+            // Skip block alignment
+            br.BaseStream.Position += 2;
+
+            this.BitsPerSample = br.ReadInt16();
+
+            var dataSignature = new string(br.ReadChars(4));
+            if (dataSignature != "data")
+            {
+                throw new NotSupportedException("The file data is not a wave file.");
+            }
+
+            var dataChunkSize = br.ReadInt32();
+
+            this.PCMStream = new MemoryStream(br.ReadBytes(dataChunkSize));
         }
 
         /// <summary>
@@ -201,7 +191,7 @@ namespace Everlook.Audio.Wave
         {
             if (_isDisposed)
             {
-                throw new ObjectDisposedException(ToString());
+                throw new ObjectDisposedException(ToString() ?? nameof(WaveAudioAsset));
             }
         }
 

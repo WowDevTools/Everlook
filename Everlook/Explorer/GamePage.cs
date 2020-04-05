@@ -337,7 +337,7 @@ namespace Everlook.Explorer
             var cellIcon = cell as CellRendererPixbuf;
             var node = (SerializedNode)model.GetValue(iter, 0);
 
-            if (node == null || cellIcon == null)
+            if (node is null || cellIcon is null)
             {
                 return;
             }
@@ -381,7 +381,7 @@ namespace Everlook.Explorer
             var cellText = cell as CellRendererText;
             var node = (SerializedNode)model.GetValue(iter, 0);
 
-            if (node == null || cellText == null)
+            if (node is null || cellText is null)
             {
                 return;
             }
@@ -405,10 +405,10 @@ namespace Everlook.Explorer
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">Arguments describing the row that was activated.</param>
-        private void OnQueueForExportRequested(object sender, EventArgs eventArgs)
+        private void OnQueueForExportRequested(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }
@@ -421,10 +421,10 @@ namespace Everlook.Explorer
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">Arguments describing the row that was activated.</param>
-        private void OnExportItemRequested(object sender, EventArgs eventArgs)
+        private void OnExportItemRequested(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }
@@ -439,10 +439,10 @@ namespace Everlook.Explorer
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">Arguments describing the row that was activated.</param>
-        private void OnOpenItem(object sender, EventArgs eventArgs)
+        private void OnOpenItem(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }
@@ -465,10 +465,10 @@ namespace Everlook.Explorer
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">Arguments describing the row that was activated.</param>
-        private void OnCopyPath(object sender, EventArgs eventArgs)
+        private void OnCopyPath(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }
@@ -483,10 +483,10 @@ namespace Everlook.Explorer
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">Arguments describing the row that was activated.</param>
-        private void OnSaveItem(object sender, EventArgs eventArgs)
+        private void OnSaveItem(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }
@@ -525,7 +525,7 @@ namespace Everlook.Explorer
             var filterPath = _treeSorter.ConvertPathToChildPath(sorterPath);
             var modelPath = _treeFilter.ConvertPathToChildPath(filterPath);
 
-            if (modelPath == null)
+            if (modelPath is null)
             {
                 _saveItem.Sensitive = false;
                 _exportItem.Sensitive = false;
@@ -554,9 +554,7 @@ namespace Everlook.Explorer
             }
 
             _treeContextMenu.ShowAll();
-
-            //this.TreeContextMenu.Popup(); // only available in GTK >= 3.22
-            _treeContextMenu.PopupForDevice(args.Event.Device, null, null, null, null, args.Event.Button, args.Event.Time);
+            _treeContextMenu.PopupAtPointer(args.Event);
         }
 
         /// <summary>
@@ -565,10 +563,10 @@ namespace Everlook.Explorer
         /// </summary>
         /// <param name="sender">The sending object.</param>
         /// <param name="eventArgs">Arguments describing the row that was activated.</param>
-        private void OnSelectionChanged(object sender, EventArgs eventArgs)
+        private void OnSelectionChanged(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }
@@ -587,7 +585,7 @@ namespace Everlook.Explorer
         private void OnRowActivated(object o, RowActivatedArgs args)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }
@@ -655,8 +653,7 @@ namespace Everlook.Explorer
                 case WarcraftFileType.Font:
                 case WarcraftFileType.Script:
                 {
-                    var fileData = fileReference.Extract();
-                    if (fileData != null)
+                    if (fileReference.TryExtract(out var fileData))
                     {
                         // create a temporary file and write the data to it.
                         var tempPath = Path.Combine(Path.GetTempPath(), fileReference.Filename);

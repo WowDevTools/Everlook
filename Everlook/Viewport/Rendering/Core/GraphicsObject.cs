@@ -1,5 +1,5 @@
 //
-//  AmbientLight.cs
+//  GraphicsObject.cs
 //
 //  Author:
 //       Jarl Gullberg <jarl.gullberg@gmail.com>
@@ -20,23 +20,29 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using System.Numerics;
+using JetBrains.Annotations;
+using Silk.NET.OpenGL;
 
-namespace Everlook.Viewport.Rendering.Core.Lights
+namespace Everlook.Viewport.Rendering.Core
 {
     /// <summary>
-    /// Represents an ambient light source.
+    /// Represents the base class of any graphics-aware object.
     /// </summary>
-    public class AmbientLight
+    [PublicAPI]
+    public abstract class GraphicsObject
     {
         /// <summary>
-        /// Gets or sets the colour of the light.
+        /// Gets the OpenGL API available to this object.
         /// </summary>
-        public Vector4 LightColour { get; set; }
+        protected GL GL { get; }
 
         /// <summary>
-        /// Gets or sets the intensity, in lux, of the light.
+        /// Initializes a new instance of the <see cref="GraphicsObject"/> class.
         /// </summary>
-        public float Intensity { get; set; }
+        /// <param name="gl">The OpenGL API.</param>
+        public GraphicsObject(GL gl)
+        {
+            this.GL = gl;
+        }
     }
 }

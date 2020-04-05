@@ -23,19 +23,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using Everlook.Viewport.Camera;
 using Everlook.Viewport.Rendering.Interfaces;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Viewport.Rendering.Core
 {
     /// <summary>
-    /// Represets a set of actor instances, differing by their transforms.
+    /// Represents a set of actor instances, differing by their transforms.
     /// </summary>
     /// <typeparam name="T">A renderable supporting instanced rendering.</typeparam>
-    public class ActorInstanceSet<T> : IRenderable, IBoundedModel
+    public class ActorInstanceSet<T> : GraphicsObject, IRenderable, IBoundedModel
         where T : class, IInstancedRenderable, IActor, IBoundedModel
     {
         /// <inheritdoc />
@@ -64,15 +64,17 @@ namespace Everlook.Viewport.Rendering.Core
         /// </summary>
         public int Count => _instanceTransforms.Count;
 
-        private Buffer<Matrix4>? _instanceModelMatrices;
+        private Buffer<Matrix4x4>? _instanceModelMatrices;
 
         private List<Transform> _instanceTransforms;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActorInstanceSet{T}"/> class.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
         /// <param name="target">The target instanced renderable.</param>
-        public ActorInstanceSet(T target)
+        public ActorInstanceSet(GL gl, T target)
+            : base(gl)
         {
             this.Target = target;
             _instanceTransforms = new List<Transform>();
@@ -92,34 +94,71 @@ namespace Everlook.Viewport.Rendering.Core
         /// <inheritdoc />
         public void Initialize()
         {
-            _instanceModelMatrices = new Buffer<Matrix4>(BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw);
+            _instanceModelMatrices = new Buffer<Matrix4x4>
+            (
+                this.GL,
+                BufferTargetARB.ArrayBuffer,
+                BufferUsageARB.StaticDraw);
 
             _instanceModelMatrices.AttachAttributePointer
             (
-                new VertexAttributePointer(6, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 0)
+                new VertexAttributePointer
+                (
+                    this.GL,
+                    6,
+                    4,
+                    VertexAttribPointerType.Float,
+                    (uint)Marshal.SizeOf<Matrix4x4>(),
+                    0
+                )
             );
 
             _instanceModelMatrices.AttachAttributePointer
             (
-                new VertexAttributePointer(7, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 16)
+                new VertexAttributePointer
+                (
+                    this.GL,
+                    7,
+                    4,
+                    VertexAttribPointerType.Float,
+                    (uint)Marshal.SizeOf<Matrix4x4>(),
+                    16
+                )
             );
 
             _instanceModelMatrices.AttachAttributePointer
             (
-                new VertexAttributePointer(8, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 32)
+                new VertexAttributePointer
+                (
+                    this.GL,
+                    8,
+                    4,
+                    VertexAttribPointerType.Float,
+                    (uint)Marshal.SizeOf<Matrix4x4>(),
+                    32
+                )
             );
 
             _instanceModelMatrices.AttachAttributePointer
             (
-                new VertexAttributePointer(9, 4, VertexAttribPointerType.Float, Marshal.SizeOf<Matrix4>(), 48)
+                new VertexAttributePointer
+                (
+                    this.GL,
+                    9,
+                    4,
+                    VertexAttribPointerType.Float,
+                    (uint)Marshal.SizeOf<Matrix4x4>(),
+                    48
+                )
             );
 
             _instanceModelMatrices.Bind();
             _instanceModelMatrices.EnableAttributes();
-            GL.VertexAttribDivisor(6, 1);
-            GL.VertexAttribDivisor(7, 1);
-            GL.VertexAttribDivisor(8, 1);
-            GL.VertexAttribDivisor(9, 1);
+
+            this.GL.VertexAttribDivisor(6, 1);
+            this.GL.VertexAttribDivisor(7, 1);
+            this.GL.VertexAttribDivisor(8, 1);
+            this.GL.VertexAttribDivisor(9, 1);
 
             _instanceModelMatrices.Data = _instanceTransforms.Select(t => t.GetModelMatrix()).ToArray();
 
@@ -127,7 +166,7 @@ namespace Everlook.Viewport.Rendering.Core
         }
 
         /// <inheritdoc />
-        public void Render(Matrix4 viewMatrix, Matrix4 projectionMatrix, ViewportCamera camera)
+        public void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, ViewportCamera camera)
         {
             if (!this.IsInitialized || _instanceModelMatrices is null)
             {

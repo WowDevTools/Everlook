@@ -21,8 +21,8 @@
 //
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Threading.Tasks;
 using Everlook.Utility;
 using FileTree.Tree.Nodes;
 using FileTree.Tree.Serialized;
@@ -52,19 +52,31 @@ namespace Everlook.Explorer
         /// Gets the name of the package where the file is stored.
         /// </summary>
         /// <value>The name of the package.</value>
-        public string PackageName { get; } = string.Empty;
+        public string PackageName { get; }
 
         /// <summary>
         /// Gets the file path of the file inside the package. This string uses the backslash character ('\') as its
         /// directory separator.
         /// </summary>
         /// <value>The file path.</value>
-        public string FilePath { get; } = string.Empty;
+        public string FilePath { get; }
 
         /// <summary>
         /// Gets the directory that the file resides in.
         /// </summary>
-        public string FileDirectory => Path.GetDirectoryName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar));
+        public string FileDirectory
+        {
+            get
+            {
+                var directory = Path.GetDirectoryName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar));
+                if (directory is null)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return directory;
+            }
+        }
 
         /// <summary>
         /// Gets the file info of this reference.
@@ -74,12 +86,12 @@ namespace Everlook.Explorer
         {
             get
             {
-                if (this.IsFile)
+                if (!this.IsFile)
                 {
-                    return this.Context.Assets.GetReferenceInfo(this);
+                    return null;
                 }
 
-                return null;
+                return this.Context.Assets.TryGetReferenceInfo(this, out var result) ? result : null;
             }
         }
 
@@ -115,9 +127,22 @@ namespace Everlook.Explorer
         /// <summary>
         /// Gets the name of the file or directory.
         /// </summary>
-        public string Filename => this.IsDirectory ?
-            Path.GetDirectoryName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar)) :
-            Path.GetFileName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar));
+        public string Filename
+        {
+            get
+            {
+                var filename = this.IsDirectory
+                    ? Path.GetDirectoryName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar))
+                    : Path.GetFileName(this.FilePath.Replace('\\', Path.DirectorySeparatorChar));
+
+                if (filename is null)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return filename;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileReference"/> class.
@@ -135,21 +160,13 @@ namespace Everlook.Explorer
         }
 
         /// <summary>
-        /// Asynchronously extracts this instance from the package group it is associated with.
+        /// Attempts to extract this instance from the package group it is associated with.
         /// </summary>
-        /// <returns>A task wrapping the raw data of the file pointed to by the reference.</returns>
-        public Task<byte[]?> ExtractAsync()
+        /// <param name="data">The extracted data.</param>
+        /// <returns>true if the data was successfully extracted; otherwise, false.</returns>
+        public bool TryExtract([NotNullWhen(true)] out byte[]? data)
         {
-            return Task.Factory.StartNew(Extract);
-        }
-
-        /// <summary>
-        /// Extracts this instance from the package group it is associated with.
-        /// </summary>
-        /// <returns>The raw data of the file pointed to by the reference.</returns>
-        public byte[]? Extract()
-        {
-            return this.Context.Assets.ExtractVersionedReference(this);
+            return this.Context.Assets.TryExtractVersionedReference(this, out data);
         }
 
         /// <summary>
@@ -162,23 +179,22 @@ namespace Everlook.Explorer
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            var other = obj as FileReference;
-            return other != null && Equals(other);
+            return obj is FileReference other && Equals(other);
         }
 
         /// <inheritdoc />
         public bool Equals(FileReference other)
         {
-            if (other != null)
+            if (other is null)
             {
-                return
-                    this.Context.Equals(other.Context) &&
-                    this.PackageName == other.PackageName &&
-                    this.FilePath == other.FilePath;
+                return false;
             }
-            return false;
+
+            return this.Context.Equals(other.Context) &&
+                   this.PackageName == other.PackageName &&
+                   this.FilePath == other.FilePath;
         }
 
         /// <inheritdoc />

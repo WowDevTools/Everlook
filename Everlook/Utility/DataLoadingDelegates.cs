@@ -21,7 +21,9 @@
 //
 
 using Everlook.Explorer;
+using Everlook.Viewport.Rendering;
 using Everlook.Viewport.Rendering.Interfaces;
+using Silk.NET.OpenGL;
 
 namespace Everlook.Utility
 {
@@ -41,12 +43,20 @@ namespace Everlook.Utility
         /// <summary>
         /// A delegate which will create an <see cref="IRenderable"/> from the specified item.
         /// </summary>
+        /// <param name="gl">The OpenGL API.</param>
+        /// <param name="renderCache">The rendering cache.</param>
         /// <param name="renderableItem">The item to encapsulate in a renderable version of it.</param>
         /// <param name="fileReference">The file reference associated with the object.</param>
         /// <typeparam name="T">
         /// A type which can be encapsulated in another type implementing <see cref="IRenderable"/>.
         /// </typeparam>
         /// <returns>A renderable object.</returns>
-        public delegate IRenderable CreateRenderable<in T>(T renderableItem, FileReference fileReference);
+        public delegate IRenderable CreateRenderable<in T>
+        (
+            GL gl,
+            RenderCache renderCache,
+            T renderableItem,
+            FileReference fileReference
+        );
     }
 }
