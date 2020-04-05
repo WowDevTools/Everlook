@@ -142,7 +142,7 @@ namespace Everlook.Utility
         private static Pixbuf? LoadEmbeddedImage(string resourceName, int width = 16, int height = 16)
         {
             using var vectorStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
-            if (vectorStream == null)
+            if (vectorStream is null)
             {
                 return null;
             }

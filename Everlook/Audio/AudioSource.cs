@@ -314,7 +314,7 @@ namespace Everlook.Audio
         /// <returns>An AudioSource.</returns>
         public static AudioSource CreateFromSoundEntry(SoundEntriesRecord soundEntry)
         {
-            if (soundEntry == null)
+            if (soundEntry is null)
             {
                 throw new ArgumentNullException(nameof(soundEntry));
             }
@@ -369,7 +369,7 @@ namespace Everlook.Audio
         /// <returns>An asynchronous task.</returns>
         public async Task SetAudioAsync(FileReference fileReference)
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }

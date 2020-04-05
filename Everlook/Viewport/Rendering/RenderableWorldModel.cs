@@ -206,7 +206,7 @@ namespace Everlook.Viewport.Rendering
 
             _shader = _renderCache.GetShader(EverlookShader.WorldModel) as WorldModelShader;
 
-            if (_shader == null)
+            if (_shader is null)
             {
                 throw new ShaderNullException(typeof(WorldModelShader));
             }
@@ -295,7 +295,7 @@ namespace Everlook.Viewport.Rendering
                         var doodadReference = _gameContext.GetReferenceForDoodad(firstInstance);
                         var doodadModel = DataLoadingRoutines.LoadGameModel(doodadReference);
 
-                        if (doodadModel == null)
+                        if (doodadModel is null)
                         {
                             Log.Warn($"Failed to load doodad \"{firstInstance.Name}\"");
                             continue;

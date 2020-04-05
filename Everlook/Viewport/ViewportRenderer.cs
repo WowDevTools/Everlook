@@ -502,7 +502,7 @@ namespace Everlook.Viewport
         /// <returns>true if movement is disabled; false otherwise.</returns>
         public bool IsMovementDisabled()
         {
-            return this.RenderTarget == null || !this.RenderTarget.IsInitialized;
+            return this.RenderTarget is null || !this.RenderTarget.IsInitialized;
         }
 
         /// <summary>

@@ -111,7 +111,7 @@ namespace Everlook.Audio.MP3
         /// <exception cref="ArgumentNullException">Thrown if the file data can't be extracted.</exception>
         public MP3AudioAsset(FileReference fileReference)
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }

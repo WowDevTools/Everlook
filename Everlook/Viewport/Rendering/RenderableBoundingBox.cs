@@ -97,7 +97,7 @@ namespace Everlook.Viewport.Rendering
                 return;
             }
 
-            if (_boxShader == null)
+            if (_boxShader is null)
             {
                 throw new ShaderNullException(typeof(BoundingBoxShader));
             }

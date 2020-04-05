@@ -182,7 +182,7 @@ namespace Everlook.Explorer
                 }
 
                 // Load dictionary if neccesary
-                if (_dictionary == null)
+                if (_dictionary is null)
                 {
                     progress?.Report(new GameLoadingProgress
                     {

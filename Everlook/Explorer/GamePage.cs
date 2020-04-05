@@ -337,7 +337,7 @@ namespace Everlook.Explorer
             var cellIcon = cell as CellRendererPixbuf;
             var node = (SerializedNode)model.GetValue(iter, 0);
 
-            if (node == null || cellIcon == null)
+            if (node is null || cellIcon is null)
             {
                 return;
             }
@@ -381,7 +381,7 @@ namespace Everlook.Explorer
             var cellText = cell as CellRendererText;
             var node = (SerializedNode)model.GetValue(iter, 0);
 
-            if (node == null || cellText == null)
+            if (node is null || cellText is null)
             {
                 return;
             }
@@ -408,7 +408,7 @@ namespace Everlook.Explorer
         private void OnQueueForExportRequested(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }
@@ -424,7 +424,7 @@ namespace Everlook.Explorer
         private void OnExportItemRequested(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }
@@ -442,7 +442,7 @@ namespace Everlook.Explorer
         private void OnOpenItem(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }
@@ -468,7 +468,7 @@ namespace Everlook.Explorer
         private void OnCopyPath(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }
@@ -486,7 +486,7 @@ namespace Everlook.Explorer
         private void OnSaveItem(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }
@@ -525,7 +525,7 @@ namespace Everlook.Explorer
             var filterPath = _treeSorter.ConvertPathToChildPath(sorterPath);
             var modelPath = _treeFilter.ConvertPathToChildPath(filterPath);
 
-            if (modelPath == null)
+            if (modelPath is null)
             {
                 _saveItem.Sensitive = false;
                 _exportItem.Sensitive = false;
@@ -566,7 +566,7 @@ namespace Everlook.Explorer
         private void OnSelectionChanged(object? sender, EventArgs eventArgs)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }
@@ -585,7 +585,7 @@ namespace Everlook.Explorer
         private void OnRowActivated(object o, RowActivatedArgs args)
         {
             var fileReference = GetSelectedReference();
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 return;
             }

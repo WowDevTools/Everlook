@@ -111,7 +111,7 @@ namespace Everlook.Audio.Wave
         /// <exception cref="ArgumentNullException">Thrown if the file data can't be extracted.</exception>
         public WaveAudioAsset(FileReference fileReference)
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }

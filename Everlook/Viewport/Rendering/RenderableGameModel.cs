@@ -192,7 +192,7 @@ namespace Everlook.Viewport.Rendering
 
             _shader = _renderCache.GetShader(EverlookShader.GameModel) as GameModelShader;
 
-            if (_shader == null)
+            if (_shader is null)
             {
                 throw new ShaderNullException(typeof(GameModelShader));
             }
@@ -707,7 +707,7 @@ namespace Everlook.Viewport.Rendering
         /// <param name="displayInfoRecord">The display info record to cache.</param>
         private void CacheDisplayInfo(CreatureDisplayInfoRecord displayInfoRecord)
         {
-            if (displayInfoRecord == null)
+            if (displayInfoRecord is null)
             {
                 throw new ArgumentNullException(nameof(displayInfoRecord));
             }

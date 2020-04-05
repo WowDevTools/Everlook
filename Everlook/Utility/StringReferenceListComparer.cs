@@ -34,12 +34,12 @@ namespace Everlook.Utility
         /// <inheritdoc />
         public bool Equals(IReadOnlyList<StringReference> x, IReadOnlyList<StringReference> y)
         {
-            if (x == null && y == null)
+            if (x is null && y is null)
             {
                 return true;
             }
 
-            if (x == null || y == null)
+            if (x is null || y is null)
             {
                 return false;
             }

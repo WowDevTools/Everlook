@@ -115,7 +115,7 @@ namespace Everlook.Viewport.Rendering.Core
         public Texture2D(GL gl, Bitmap imageData, TextureWrapMode wrapMode = TextureWrapMode.Repeat)
             : this(gl)
         {
-            if (imageData == null)
+            if (imageData is null)
             {
                 throw new ArgumentNullException(nameof(imageData));
             }
@@ -177,7 +177,7 @@ namespace Everlook.Viewport.Rendering.Core
         )
             : this(gl)
         {
-            if (imageData == null)
+            if (imageData is null)
             {
                 throw new ArgumentNullException(nameof(imageData));
             }

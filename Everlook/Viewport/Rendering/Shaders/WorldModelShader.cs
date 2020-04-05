@@ -66,7 +66,7 @@ namespace Everlook.Viewport.Rendering.Shaders
         /// <param name="modelMaterial">The material to use.</param>
         public void SetMaterial(ModelMaterial modelMaterial)
         {
-            if (modelMaterial == null)
+            if (modelMaterial is null)
             {
                 throw new ArgumentNullException(nameof(modelMaterial));
             }

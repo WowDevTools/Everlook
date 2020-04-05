@@ -193,7 +193,7 @@ namespace Everlook.Package
         /// <exception cref="ArgumentNullException">Thrown if the package is null.</exception>
         public void AddPackage(PackageInteractionHandler package)
         {
-            if (package == null)
+            if (package is null)
             {
                 throw new ArgumentNullException(nameof(package));
             }
@@ -277,7 +277,7 @@ namespace Everlook.Package
         /// <param name="fileReference">Reference reference.</param>
         public bool ContainsReference(FileReference fileReference)
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }

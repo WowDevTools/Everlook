@@ -847,7 +847,7 @@ namespace Everlook.UI
             CancellationToken ct
         )
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }
@@ -1331,7 +1331,7 @@ namespace Everlook.UI
 
             _exportQueueTreeView.GetPathAtPos((int)e.Event.X, (int)e.Event.Y, out var path);
 
-            if (path == null)
+            if (path is null)
             {
                 return;
             }

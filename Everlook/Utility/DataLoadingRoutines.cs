@@ -58,7 +58,7 @@ namespace Everlook.Utility
         /// <returns>A WMO object.</returns>
         public static WMO LoadWorldModel(FileReference fileReference)
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }
@@ -116,7 +116,7 @@ namespace Everlook.Utility
         /// <returns>A WMO object, containing just the specified model group.</returns>
         public static WMO LoadWorldModelGroup(FileReference fileReference)
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }
@@ -179,7 +179,7 @@ namespace Everlook.Utility
         )
         {
             var warcraftContext = fileReference.Context as WarcraftGameContext;
-            if (warcraftContext == null)
+            if (warcraftContext is null)
             {
                 // TODO: This is bad practice. Refactor
                 throw new ArgumentException
@@ -201,7 +201,7 @@ namespace Everlook.Utility
         /// <returns>A BLP object containing the image data pointed to by the reference.</returns>
         public static BLP LoadBinaryImage(FileReference fileReference)
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }
@@ -269,7 +269,7 @@ namespace Everlook.Utility
         /// <returns>A bitmap containing the image data pointed to by the reference.</returns>
         public static Bitmap LoadBitmapImage(FileReference fileReference)
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }
@@ -329,7 +329,7 @@ namespace Everlook.Utility
         /// <returns>An object containing the model data pointed to by the reference.</returns>
         public static MDX LoadGameModel(FileReference fileReference)
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }
@@ -412,7 +412,7 @@ namespace Everlook.Utility
         )
         {
             var warcraftContext = fileReference.Context as WarcraftGameContext;
-            if (warcraftContext == null)
+            if (warcraftContext is null)
             {
                 // TODO: This is bad practice. Refactor
                 throw new ArgumentException

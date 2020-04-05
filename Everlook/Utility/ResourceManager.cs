@@ -41,7 +41,7 @@ namespace Everlook.Utility
             string resourceString;
             using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourcePath))
             {
-                if (resourceStream == null)
+                if (resourceStream is null)
                 {
                     return null;
                 }
@@ -67,7 +67,7 @@ namespace Everlook.Utility
 
             using (var imageStream = executingAssembly.GetManifestResourceStream(fallbackTextureName))
             {
-                if (imageStream == null)
+                if (imageStream is null)
                 {
                     return null;
                 }

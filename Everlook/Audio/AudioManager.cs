@@ -79,7 +79,7 @@ namespace Everlook.Audio
         /// <param name="audioSource">The audio source to unregister.</param>
         public static void UnregisterSource(AudioSource audioSource)
         {
-            if (audioSource == null)
+            if (audioSource is null)
             {
                 return;
             }

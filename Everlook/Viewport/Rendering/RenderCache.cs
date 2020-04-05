@@ -75,7 +75,7 @@ namespace Everlook.Viewport.Rendering
             {
                 ThrowIfDisposed();
 
-                if (_fallbackTextureInternal == null)
+                if (_fallbackTextureInternal is null)
                 {
                     var fallbackImage = ResourceManager.GetFallbackImage();
                     if (fallbackImage is null)

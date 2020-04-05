@@ -65,12 +65,12 @@ namespace Everlook.Viewport.Rendering.Core
         /// <param name="transform">The transform of the instance.</param>
         public RenderableActorReference(T target, Transform transform)
         {
-            if (target == null)
+            if (target is null)
             {
                 throw new ArgumentNullException(nameof(target));
             }
 
-            if (transform == null)
+            if (transform is null)
             {
                 throw new ArgumentNullException(nameof(transform));
             }

@@ -161,7 +161,7 @@ namespace Everlook.UI
             using (var shaderStream =
                 Assembly.GetExecutingAssembly().GetManifestResourceStream("Everlook.Content.jokes.txt"))
             {
-                if (shaderStream == null)
+                if (shaderStream is null)
                 {
                     return;
                 }

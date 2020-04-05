@@ -57,7 +57,7 @@ namespace Everlook.Viewport.Rendering.Shaders.GLSLExtended
 
                 // Try loading it from the resource manifest
                 var fileContents = Utility.ResourceManager.LoadStringResource($"{baseResourceDirectory}.{resourceName}");
-                if (fileContents == null)
+                if (fileContents is null)
                 {
                     throw new FileNotFoundException
                     (

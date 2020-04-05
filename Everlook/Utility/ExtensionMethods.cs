@@ -40,7 +40,7 @@ namespace Everlook.Utility
         /// <param name="notebook">The notebook to clear the pages from.</param>
         public static void ClearPages(this Gtk.Notebook notebook)
         {
-            if (notebook == null)
+            if (notebook is null)
             {
                 throw new ArgumentNullException(nameof(notebook));
             }
@@ -89,7 +89,7 @@ namespace Everlook.Utility
         /// <returns>A pixel buffer containg the icon.</returns>
         public static Pixbuf GetIcon(this FileReference fileReference)
         {
-            if (fileReference == null)
+            if (fileReference is null)
             {
                 throw new ArgumentNullException(nameof(fileReference));
             }
