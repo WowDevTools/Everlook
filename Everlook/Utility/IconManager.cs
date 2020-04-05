@@ -125,7 +125,7 @@ namespace Everlook.Utility
                 var iconName = manifestNameParts.ElementAt(manifestNameParts.Length - 2);
 
                 var iconBuffer = LoadEmbeddedImage(manifestIconName);
-                if (iconBuffer != null)
+                if (!(iconBuffer is null))
                 {
                     IconTheme.AddBuiltinIcon(iconName, 16, iconBuffer);
                 }

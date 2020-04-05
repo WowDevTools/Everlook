@@ -172,7 +172,7 @@ namespace Everlook.Viewport.Rendering
 
             // Set a default display info for this model
             var displayInfo = GetSkinVariations().FirstOrDefault();
-            if (displayInfo != null)
+            if (!(displayInfo is null))
             {
                 this.CurrentDisplayInfo = displayInfo;
             }
@@ -293,7 +293,7 @@ namespace Everlook.Viewport.Rendering
             }
 
             // Cache the default display info
-            if (this.CurrentDisplayInfo != null)
+            if (!(this.CurrentDisplayInfo is null))
             {
                 CacheDisplayInfo(this.CurrentDisplayInfo);
             }

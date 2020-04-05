@@ -81,7 +81,7 @@ namespace Everlook.Utility
         public FileReference GetReferenceForDoodad(DoodadInstance doodadInstance)
         {
             var doodadReference = GetReferenceForPath(doodadInstance.Name);
-            if (doodadReference != null)
+            if (!(doodadReference is null))
             {
                 return doodadReference;
             }

@@ -72,7 +72,7 @@ namespace Everlook.Audio.MP3
             {
                 ThrowIfDisposed();
 
-                if (_pcmDataInternal != null)
+                if (!(_pcmDataInternal is null))
                 {
                     return _pcmDataInternal;
                 }

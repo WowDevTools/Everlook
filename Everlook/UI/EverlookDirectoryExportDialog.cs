@@ -138,7 +138,7 @@ namespace Everlook.UI
                     Directory.CreateDirectory(Directory.GetParent(exportPath).FullName);
 
                     byte[] fileData = referenceToExport.Extract();
-                    if (fileData != null)
+                    if (!(fileData is null))
                     {
                         File.WriteAllBytes(exportPath, fileData);
                     }

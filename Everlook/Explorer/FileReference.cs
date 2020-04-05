@@ -187,7 +187,7 @@ namespace Everlook.Explorer
         /// <inheritdoc />
         public bool Equals(FileReference other)
         {
-            if (other != null)
+            if (!(other is null))
             {
                 return
                     this.Context.Equals(other.Context) &&

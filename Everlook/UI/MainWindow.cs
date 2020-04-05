@@ -339,7 +339,7 @@ namespace Everlook.UI
                         _modelVariationComboBox.GetActiveIter(out var activeIter);
 
                         var variationObject = _modelVariationListStore.GetValue(activeIter, 1);
-                        if (variationObject != null)
+                        if (!(variationObject is null))
                         {
                             var variationID = (int)variationObject;
 
@@ -889,7 +889,7 @@ namespace Everlook.UI
                     ct
                 );
 
-                if (renderable != null)
+                if (!(renderable is null))
                 {
                     ct.ThrowIfCancellationRequested();
 
